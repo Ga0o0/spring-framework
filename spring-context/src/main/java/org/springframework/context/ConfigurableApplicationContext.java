@@ -68,30 +68,36 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @since 2.5
 	 * @see org.springframework.instrument.classloading.LoadTimeWeaver
 	 */
+	// 工厂中 LoadTimeWeaver bean 的名称。
+	// 如果提供了这样的 bean，上下文将使用临时的 ClassLoader 进行类型匹配，以便 LoadTimeWeaver 能够处理所有实际的 bean 类。
 	String LOAD_TIME_WEAVER_BEAN_NAME = "loadTimeWeaver";
 
 	/**
 	 * Name of the {@link Environment} bean in the factory.
 	 * @since 3.1
 	 */
+	// 工厂中的 {@link Environment} bean 的名称。
 	String ENVIRONMENT_BEAN_NAME = "environment";
 
 	/**
 	 * Name of the System properties bean in the factory.
 	 * @see java.lang.System#getProperties()
 	 */
+	// 工厂中的系统属性 bean 的名称。
 	String SYSTEM_PROPERTIES_BEAN_NAME = "systemProperties";
 
 	/**
 	 * Name of the System environment bean in the factory.
 	 * @see java.lang.System#getenv()
 	 */
+	// 工厂中系统环境 bean 的名称。
 	String SYSTEM_ENVIRONMENT_BEAN_NAME = "systemEnvironment";
 
 	/**
 	 * Name of the {@link ApplicationStartup} bean in the factory.
 	 * @since 5.3
 	 */
+	// 工厂中的 {@link ApplicationStartup} bean 的名称。
 	String APPLICATION_STARTUP_BEAN_NAME = "applicationStartup";
 
 	/**

@@ -58,6 +58,13 @@ public class XmlReaderContext extends ReaderContext {
 	 * @param reader the XML bean definition reader in use
 	 * @param namespaceHandlerResolver the XML namespace resolver
 	 */
+	// 构造一个新的 {@code XmlReaderContext}。
+	// @param resource XML bean 定义资源
+	// @param problemReporter 正在使用的问题报告器
+	// @param eventListener 正在使用的事件监听器
+	// @param sourceExtractor 正在使用的源提取器
+	// @param reader 正在使用的 XML bean 定义读取器
+	// @param namespaceHandlerResolver XML 命名空间解析器
 	public XmlReaderContext(
 			Resource resource, ProblemReporter problemReporter,
 			ReaderEventListener eventListener, SourceExtractor sourceExtractor,
@@ -119,6 +126,7 @@ public class XmlReaderContext extends ReaderContext {
 	 * Return the namespace resolver.
 	 * @see XmlBeanDefinitionReader#setNamespaceHandlerResolver
 	 */
+	// 返回命名空间解析器。
 	public final NamespaceHandlerResolver getNamespaceHandlerResolver() {
 		return this.namespaceHandlerResolver;
 	}

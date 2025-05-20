@@ -55,9 +55,11 @@ package org.springframework.core.env;
 public class StandardEnvironment extends AbstractEnvironment {
 
 	/** System environment property source name: {@value}. */
+	// 系统环境属性源名称：{@value}。
 	public static final String SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME = "systemEnvironment";
 
 	/** JVM system properties property source name: {@value}. */
+	// JVM 系统属性属性源名称：{@value}。
 	public static final String SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME = "systemProperties";
 
 
@@ -65,6 +67,7 @@ public class StandardEnvironment extends AbstractEnvironment {
 	 * Create a new {@code StandardEnvironment} instance with a default
 	 * {@link MutablePropertySources} instance.
 	 */
+	// 使用默认的 {@link MutablePropertySources} 实例创建一个新的 {@code StandardEnvironment} 实例。
 	public StandardEnvironment() {
 	}
 
@@ -92,6 +95,13 @@ public class StandardEnvironment extends AbstractEnvironment {
 	 * @see #getSystemProperties()
 	 * @see #getSystemEnvironment()
 	 */
+	// 使用适用于任何标准的属性源自定义属性源集
+	// Java 环境：
+	// <ul>
+	// <li>{@value #SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME}
+	// <li>{@value #SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME}
+	// </ul>
+	// <p>{@value #SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME} 中的属性优先于 {@value #SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME} 中的属性。
 	@Override
 	protected void customizePropertySources(MutablePropertySources propertySources) {
 		propertySources.addLast(

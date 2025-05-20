@@ -76,6 +76,9 @@ public class ResourceEditorRegistrar implements PropertyEditorRegistrar {
 	 * @see org.springframework.core.io.support.ResourcePatternResolver
 	 * @see org.springframework.context.ApplicationContext
 	 */
+	// 为给定的 {@link ResourceLoader} 和 {@link PropertyResolver} 创建一个新的 ResourceEditorRegistrar。
+	// @param resourceLoader 用于创建编辑器的 ResourceLoader（或 ResourcePatternResolver）（通常为 ApplicationContext）
+	// @param propertyResolver PropertyResolver（通常为 Environment）
 	public ResourceEditorRegistrar(ResourceLoader resourceLoader, PropertyResolver propertyResolver) {
 		this.resourceLoader = resourceLoader;
 		this.propertyResolver = propertyResolver;

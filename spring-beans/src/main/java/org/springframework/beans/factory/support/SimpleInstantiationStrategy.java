@@ -39,6 +39,8 @@ import org.springframework.util.StringUtils;
  * @author Stephane Nicoll
  * @since 1.1
  */
+// 用于 BeanFactory 的简单对象实例化策略。
+// <p>不支持方法注入，但它提供了钩子供子类重写以添加方法注入支持，例如通过重写方法。
 public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
 	private static final ThreadLocal<Method> currentlyInvokedFactoryMethod = new ThreadLocal<>();
@@ -72,7 +74,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
-		// Don't override the class with CGLIB if no overrides.
+		// Don't override the class with CGLIB if no overrides. --> 译文：如果没有覆盖，请不要使用 CGLIB 覆盖该类。
 		if (!bd.hasMethodOverrides()) {
 			Constructor<?> constructorToUse;
 			synchronized (bd.constructorArgumentLock) {
@@ -94,7 +96,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 			return BeanUtils.instantiateClass(constructorToUse);
 		}
 		else {
-			// Must generate CGLIB subclass.
+			// Must generate CGLIB subclass. --> 译文：必须生成CGLIB子类。
 			return instantiateWithMethodInjection(bd, beanName, owner);
 		}
 	}

@@ -44,6 +44,12 @@ import org.springframework.lang.Nullable;
  * @see #getConfigLocations
  * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
  */
+// 方便的 {@link org.springframework.context.ApplicationContext} 实现基类，
+// 可从包含 {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader} 可理解的 bean 定义的 XML 文档中提取配置。
+//
+// <p>子类只需实现 {@link #getConfigResources} 和/或 {@link #getConfigLocations} 方法。
+// 此外，它们可以重写 {@link #getResourceByPath} 钩子，以便以特定于环境的方式解释相对路径，
+// 以及/或者重写 {@link #getResourcePatternResolver} 以进行扩展的模式解析。
 public abstract class AbstractXmlApplicationContext extends AbstractRefreshableConfigApplicationContext {
 
 	private boolean validating = true;
@@ -59,6 +65,8 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * Create a new AbstractXmlApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */
+	// 使用给定的父上下文创建一个新的 AbstractXmlApplicationContext。
+	// @param parent 父上下文
 	public AbstractXmlApplicationContext(@Nullable ApplicationContext parent) {
 		super(parent);
 	}
@@ -78,20 +86,26 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @see #initBeanDefinitionReader
 	 * @see #loadBeanDefinitions
 	 */
+	// 通过 XmlBeanDefinitionReader 加载 bean 定义。
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
-		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
+		// Create a new XmlBeanDefinitionReader for the given BeanFactory. --> 译文：为给定的 BeanFactory 创建一个新的 XmlBeanDefinitionReader。
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
 		// Configure the bean definition reader with this context's
-		// resource loading environment.
+		// resource loading environment. --> 译文：使用此上下文的资源加载环境配置 Bean 定义读取器。
+		// 设置读取 Bean 定义时要使用的环境。
 		beanDefinitionReader.setEnvironment(getEnvironment());
+		// 设置要用于资源位置的 ResourceLoader。
 		beanDefinitionReader.setResourceLoader(this);
+		// 设置用于分析的 SAX 实体解析程序。
 		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
 		// Allow a subclass to provide custom initialization of the reader,
-		// then proceed with actually loading the bean definitions.
+		// then proceed with actually loading the bean definitions. --> 译文：允许子类提供读取器的自定义初始化，然后继续实际加载 Bean 定义。
+		// 初始化用于加载此上下文的 bean 定义的 bean 定义读取器。默认实现会设置验证标志。
 		initBeanDefinitionReader(beanDefinitionReader);
+		// 使用给定的 XmlBeanDefinitionReader 加载 Bean 定义。
 		loadBeanDefinitions(beanDefinitionReader);
 	}
 
@@ -104,6 +118,9 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @see XmlBeanDefinitionReader#setValidating
 	 * @see XmlBeanDefinitionReader#setDocumentReaderClass
 	 */
+	// 初始化用于加载此上下文的 bean 定义的 bean 定义读取器。默认实现会设置验证标志。
+	// <p>可在子类中重写，例如，关闭 XML 验证或使用其他 {@link BeanDefinitionDocumentReader} 实现。
+	// @param reader 此上下文使用的 bean 定义读取器
 	protected void initBeanDefinitionReader(XmlBeanDefinitionReader reader) {
 		reader.setValidating(this.validating);
 	}
@@ -120,13 +137,21 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @see #getResources
 	 * @see #getResourcePatternResolver
 	 */
+	// 使用给定的 XmlBeanDefinitionReader 加载 Bean 定义。
+	// <p>Bean 工厂的生命周期由 {@link #refreshBeanFactory} 方法处理；因此，此方法仅用于加载和/或注册 Bean 定义。
+	// @param reader 要使用的 XmlBeanDefinitionReader
+	// @throws BeansException（如果 Bean 注册错误）
+	// @throws IOException（如果未找到所需的 XML 文档）
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws BeansException, IOException {
+		// 返回一个 Resource 对象数组，指向构建此上下文所需的 XML Bean 定义文件。
 		Resource[] configResources = getConfigResources();
 		if (configResources != null) {
 			reader.loadBeanDefinitions(configResources);
 		}
+		// 返回一个资源位置数组，指向构建此上下文所需的 XML bean 定义文件。
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {
+			// 从指定的资源位置加载 bean 定义。
 			reader.loadBeanDefinitions(configLocations);
 		}
 	}
@@ -139,6 +164,9 @@ public abstract class AbstractXmlApplicationContext extends AbstractRefreshableC
 	 * @return an array of Resource objects, or {@code null} if none
 	 * @see #getConfigLocations()
 	 */
+	// 返回一个 Resource 对象数组，指向构建此上下文所需的 XML Bean 定义文件。
+	// <p>默认实现返回 {@code null}。子类可以重写此实现，以提供预构建的 Resource 对象，而不是位置字符串。
+	// @return 一个 Resource 对象数组，如果没有，则返回 {@code null}
 	@Nullable
 	protected Resource[] getConfigResources() {
 		return null;

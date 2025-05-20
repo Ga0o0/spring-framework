@@ -88,6 +88,10 @@ public interface BeanDefinitionReader {
 	 * @return the number of bean definitions found
 	 * @throws BeanDefinitionStoreException in case of loading or parsing errors
 	 */
+	// 从指定资源加载 bean 定义。
+	// @param resource 资源描述符
+	// @return 找到的 bean 定义数量
+	// @throws 加载或解析错误时抛出 BeanDefinitionStoreException
 	int loadBeanDefinitions(Resource resource) throws BeanDefinitionStoreException;
 
 	/**

@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
  * @see PropertiesBeanDefinitionReader
  * @see org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
  */
+// 对 Bean 定义读取器实现有用的实用方法。主要供内部使用。
 public abstract class BeanDefinitionReaderUtils {
 
 	/**
@@ -119,11 +120,11 @@ public abstract class BeanDefinitionReaderUtils {
 		}
 
 		if (isInnerBean) {
-			// Inner bean: generate identity hashcode suffix.
+			// Inner bean: generate identity hashcode suffix. --> 译文：内部 bean：生成身份哈希码后缀。
 			return generatedBeanName + GENERATED_BEAN_NAME_SEPARATOR + ObjectUtils.getIdentityHexString(definition);
 		}
 
-		// Top-level bean: use plain class name with unique suffix if necessary.
+		// Top-level bean: use plain class name with unique suffix if necessary. --> 译文：顶级 bean：如有必要，请使用带有唯一后缀的普通类名。
 		return uniqueBeanName(generatedBeanName, registry);
 	}
 
@@ -155,15 +156,19 @@ public abstract class BeanDefinitionReaderUtils {
 	 * @param registry the bean factory to register with
 	 * @throws BeanDefinitionStoreException if registration failed
 	 */
+	// 将指定的 bean 定义注册到指定的 bean 工厂。
+	// @param definitionHolder bean 定义，包括名称和别名
+	// @param registry 要注册的 bean 工厂
+	// @throws BeanDefinitionStoreException（如果注册失败）
 	public static void registerBeanDefinition(
 			BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry)
 			throws BeanDefinitionStoreException {
 
-		// Register bean definition under primary name.
+		// Register bean definition under primary name. --> 译文：使用主名称注册 Bean 定义。
 		String beanName = definitionHolder.getBeanName();
 		registry.registerBeanDefinition(beanName, definitionHolder.getBeanDefinition());
 
-		// Register aliases for bean name, if any.
+		// Register aliases for bean name, if any. --> 译文：为 Bean 名称注册别名（如果有）。
 		String[] aliases = definitionHolder.getAliases();
 		if (aliases != null) {
 			for (String alias : aliases) {

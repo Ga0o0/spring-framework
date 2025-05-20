@@ -200,11 +200,13 @@ public class DefaultLifecycleProcessor implements LifecycleProcessor, BeanFactor
 
 		this.stoppedBeans = null;
 		try {
+			// invoke org.springframework.context.Lifecycle#start()
 			startBeans(true);
 		}
 		catch (ApplicationContextException ex) {
 			// Some bean failed to auto-start within context refresh:
-			// stop already started beans on context refresh failure.
+			// stop already started beans on context refresh failure. --> 译文：某些 Bean 无法在上下文刷新内自动启动：上下文刷新失败时停止已启动的 Bean。
+			// invoke org.springframework.context.Lifecycle#start()
 			stopBeans();
 			throw ex;
 		}

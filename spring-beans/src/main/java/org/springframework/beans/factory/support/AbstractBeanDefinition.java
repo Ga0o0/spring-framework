@@ -530,6 +530,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * returned from all calls.
 	 * @see #SCOPE_SINGLETON
 	 */
+	// 返回这是否是一个<b>Singleton</b>，所有调用都返回一个共享实例。
 	@Override
 	public boolean isSingleton() {
 		return SCOPE_SINGLETON.equals(this.scope) || SCOPE_DEFAULT.equals(this.scope);
@@ -559,6 +560,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Return whether this bean is "abstract", i.e. not meant to be instantiated
 	 * itself but rather just serving as parent for concrete child bean definitions.
 	 */
+	// 返回此 bean 是否为 “abstract”，即不打算自行实例化，而只是作为具体子 bean 定义的父级。
 	@Override
 	public boolean isAbstract() {
 		return this.abstractFlag;
@@ -579,6 +581,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * eagerly instantiated on startup. Only applicable to a singleton bean.
 	 * @return whether to apply lazy-init semantics ({@code false} by default)
 	 */
+	// 返回此 bean 是否应延迟初始化，即在启动时不立即实例化。仅适用于单例 bean。
+	// @return 是否应用延迟初始化语义（默认为 {@code false}）
 	@Override
 	public boolean isLazyInit() {
 		return (this.lazyInit != null && this.lazyInit);

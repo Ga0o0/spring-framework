@@ -221,6 +221,12 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * pre-Jakarta {@code javax.annotation.ManagedBean} and {@code javax.inject.Named}
 	 * equivalents), if available.
 	 */
+	// 为 {@link Component @Component} 注册默认过滤器。
+	// <p>这将隐式注册所有带有 {@link Component @Component} 元注解的注解，
+	// 包括 {@link Repository @Repository}、{@link Service @Service} 和 {@link Controller @Controller} 构造型注解。
+	// <p>还支持 Jakarta EE 的 {@link jakarta.annotation.ManagedBean}
+	// 和 JSR-330 的 {@link jakarta.inject.Named} 注解
+	// （以及 Jakarta 之前的 {@code javax.annotation.ManagedBean} 和 {@code javax.inject.Named} 等效注解）（如果可用）。
 	@SuppressWarnings("unchecked")
 	protected void registerDefaultFilters() {
 		this.includeFilters.add(new AnnotationTypeFilter(Component.class));

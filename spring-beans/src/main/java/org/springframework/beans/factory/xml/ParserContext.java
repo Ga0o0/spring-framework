@@ -38,6 +38,7 @@ import org.springframework.lang.Nullable;
  * @see XmlReaderContext
  * @see BeanDefinitionParserDelegate
  */
+// 在 Bean 定义解析过程中传递的上下文，封装了所有相关配置和状态。嵌套在 {@link XmlReaderContext} 中。
 public final class ParserContext {
 
 	private final XmlReaderContext readerContext;

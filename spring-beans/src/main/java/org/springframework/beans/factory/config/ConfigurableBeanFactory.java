@@ -105,6 +105,8 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * then removed once the BeanFactory completes its bootstrap phase.
 	 * @since 2.5
 	 */
+	// 指定一个临时的 ClassLoader 用于类型匹配。默认值为 None，即直接使用标准 Bean ClassLoader。
+	// <p>通常仅在涉及<i>加载时织入</i>时才指定临时 ClassLoader，以确保实际的 Bean 类尽可能延迟加载。BeanFactory 完成引导阶段后，临时加载器将被移除。
 	void setTempClassLoader(@Nullable ClassLoader tempClassLoader);
 
 	/**
@@ -137,6 +139,9 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * here, supporting "#{...}" expressions in a Unified EL compatible style.
 	 * @since 3.0
 	 */
+	// 指定 Bean 定义值中表达式的解析策略。
+	// <p>BeanFactory 默认不启用表达式支持。
+	// ApplicationContext 通常会在此处设置标准表达式策略，以兼容 Unified EL 的风格支持 “#{...}” 表达式。
 	void setBeanExpressionResolver(@Nullable BeanExpressionResolver resolver);
 
 	/**
@@ -168,6 +173,10 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * preferable to use this method instead of {@link #registerCustomEditor}.
 	 * @param registrar the PropertyEditorRegistrar to register
 	 */
+	// 添加一个 PropertyEditorRegistrar 以应用于所有 Bean 创建过程。
+	// <p>此类注册器会创建新的 PropertyEditor 实例并将其注册到指定的注册表中，每次创建 Bean 时都会刷新。
+	// 这避免了自定义编辑器的同步需求；因此，通常建议使用此方法而不是 {@link #registerCustomEditor}。
+	// @param registrar 要注册的 PropertyEditorRegistrar
 	void addPropertyEditorRegistrar(PropertyEditorRegistrar registrar);
 
 	/**
@@ -242,6 +251,10 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * will always be applied after programmatically registered ones.
 	 * @param beanPostProcessor the post-processor to register
 	 */
+	// 添加一个新的 BeanPostProcessor，它将应用于此工厂创建的 Bean。在工厂配置期间调用。
+	// <p>注意：此处提交的后处理器将按照注册的顺序应用；任何通过实现 {@link org.springframework.core.Ordered} 接口表达的排序语义都将被忽略。
+	// 请注意，自动检测到的后处理器（例如 ApplicationContext 中的 Bean）将始终在以编程方式注册的后处理器之后应用。
+	// @param beanPostProcessor 要注册的后处理器
 	void addBeanPostProcessor(BeanPostProcessor beanPostProcessor);
 
 	/**
@@ -410,6 +423,8 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * <p>Any exception that arises during destruction should be caught
 	 * and logged instead of propagated to the caller of this method.
 	 */
+	// 销毁此工厂中的所有单例 bean，包括已注册为可释放的内部 bean。在工厂关闭时调用。
+	// <p>销毁过程中出现的任何异常都应被捕获并记录下来，而不是传播给此方法的调用者。
 	void destroySingletons();
 
 }

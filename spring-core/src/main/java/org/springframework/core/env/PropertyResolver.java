@@ -109,6 +109,10 @@ public interface PropertyResolver {
 	 * @throws IllegalArgumentException if given text is {@code null}
 	 * or if any placeholders are unresolvable
 	 */
+	// 解析给定文本中的 ${...} 占位符，并将其替换为通过 {@link #getProperty} 解析的相应属性值。
+	// 无法解析且没有默认值的占位符将引发 IllegalArgumentException 异常。
+	// @return 解析后的字符串（永不为 null）
+	// @throws IllegalArgumentException，如果给定文本为 null 或任何占位符无法解析
 	String resolveRequiredPlaceholders(String text) throws IllegalArgumentException;
 
 }

@@ -34,6 +34,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// ComponentDefinition 基于标准 BeanDefinition，公开给定的 bean 定义以及给定 bean 的内部 bean 定义和 bean 引用。
 public class BeanComponentDefinition extends BeanDefinitionHolder implements ComponentDefinition {
 
 	private final BeanDefinition[] innerBeanDefinitions;
@@ -46,6 +47,9 @@ public class BeanComponentDefinition extends BeanDefinitionHolder implements Com
 	 * @param beanDefinition the BeanDefinition
 	 * @param beanName the name of the bean
 	 */
+	// 为给定的 bean 创建一个新的 BeanComponentDefinition。
+	// @param beanDefinition BeanDefinition
+	// @param beanName Bean 的名称
 	public BeanComponentDefinition(BeanDefinition beanDefinition, String beanName) {
 		this(new BeanDefinitionHolder(beanDefinition, beanName));
 	}
@@ -56,6 +60,10 @@ public class BeanComponentDefinition extends BeanDefinitionHolder implements Com
 	 * @param beanName the name of the bean
 	 * @param aliases alias names for the bean, or {@code null} if none
 	 */
+	// 为给定的 bean 创建一个新的 BeanComponentDefinition。
+	// @param beanDefinition BeanDefinition
+	// @param beanName Bean 的名称
+	// @param aliases Bean 的别名，如果没有则返回 {@code null}
 	public BeanComponentDefinition(BeanDefinition beanDefinition, String beanName, @Nullable String[] aliases) {
 		this(new BeanDefinitionHolder(beanDefinition, beanName, aliases));
 	}
@@ -65,6 +73,8 @@ public class BeanComponentDefinition extends BeanDefinitionHolder implements Com
 	 * @param beanDefinitionHolder the BeanDefinitionHolder encapsulating
 	 * the bean definition as well as the name of the bean
 	 */
+	// 为给定的 Bean 创建一个新的 BeanComponentDefinition。
+	// @param beanDefinitionHolder BeanDefinitionHolder 封装了 Bean 定义以及 Bean 的名称
 	public BeanComponentDefinition(BeanDefinitionHolder beanDefinitionHolder) {
 		super(beanDefinitionHolder);
 

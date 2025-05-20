@@ -58,6 +58,9 @@ public class DelegatingEntityResolver implements EntityResolver {
 	 * @param classLoader the ClassLoader to use for loading
 	 * (can be {@code null} to use the default ClassLoader)
 	 */
+	// 创建一个新的 DelegatingEntityResolver，委托给默认的 {@link BeansDtdResolver} 和默认的 {@link PluggableSchemaResolver}。
+	// <p>使用提供的 {@link ClassLoader} 配置 {@link PluggableSchemaResolver}。
+	// @param classLoader 用于加载的 ClassLoader（可以为 {@code null} 以使用默认 ClassLoader）
 	public DelegatingEntityResolver(@Nullable ClassLoader classLoader) {
 		this.dtdResolver = new BeansDtdResolver();
 		this.schemaResolver = new PluggableSchemaResolver(classLoader);

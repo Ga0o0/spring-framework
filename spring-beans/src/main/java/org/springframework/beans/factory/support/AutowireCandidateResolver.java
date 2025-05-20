@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
  * @author Mark Fisher
  * @since 2.5
  */
+// 策略接口用于确定特定 bean 定义是否有资格成为特定依赖项的自动装配候选者。
 public interface AutowireCandidateResolver {
 
 	/**

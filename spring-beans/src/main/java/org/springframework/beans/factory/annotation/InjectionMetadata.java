@@ -142,6 +142,7 @@ public class InjectionMetadata {
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
 			for (InjectedElement element : elementsToIterate) {
+				// invoke org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement#inject()
 				element.inject(target, beanName, pvs);
 			}
 		}

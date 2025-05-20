@@ -55,6 +55,8 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	 * Create a new AbstractRefreshableConfigApplicationContext with the given parent context.
 	 * @param parent the parent context
 	 */
+	// 使用给定的父上下文创建一个新的 AbstractRefreshableConfigApplicationContext。
+	// @param parent 父上下文
 	public AbstractRefreshableConfigApplicationContext(@Nullable ApplicationContext parent) {
 		super(parent);
 	}
@@ -73,6 +75,8 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	 * Set the config locations for this application context.
 	 * <p>If not set, the implementation may use a default as appropriate.
 	 */
+	// 设置此应用上下文的配置位置。
+	// <p>如果未设置，实现可能会根据需要使用默认值。
 	public void setConfigLocations(@Nullable String... locations) {
 		if (locations != null) {
 			Assert.noNullElements(locations, "Config locations must not be null");
@@ -96,6 +100,9 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	 * @see #getResources
 	 * @see #getResourcePatternResolver
 	 */
+	// 返回一个资源位置数组，指向构建此上下文所需的 XML bean 定义文件。还可以包含位置模式，这些模式将通过 ResourcePatternResolver 进行解析。
+	// <p>默认实现返回 {@code null}。子类可以重写此实现，以提供一组用于加载 bean 定义的资源位置。
+	// @return 一个资源位置数组，如果没有则返回 {@code null}。
 	@Nullable
 	protected String[] getConfigLocations() {
 		return (this.configLocations != null ? this.configLocations : getDefaultConfigLocations());
@@ -121,7 +128,13 @@ public abstract class AbstractRefreshableConfigApplicationContext extends Abstra
 	 * @return the resolved file path
 	 * @see org.springframework.core.env.Environment#resolveRequiredPlaceholders(String)
 	 */
+	// 解析给定路径，如有必要，用相应的环境属性值替换占位符。应用于配置位置。
+	// @param path 原始文件路径
+	// @return 解析后的文件路径
 	protected String resolvePath(String path) {
+		// config 路径解析：${spring.config:spring}.xml -> spring.xml
+		// org.springframework.core.env.AbstractPropertyResolver#createPlaceholderHelper
+		// 默认解析器：PropertyPlaceholderHelper#PropertyPlaceholderHelper(String, String, String, boolean)
 		return getEnvironment().resolveRequiredPlaceholders(path);
 	}
 

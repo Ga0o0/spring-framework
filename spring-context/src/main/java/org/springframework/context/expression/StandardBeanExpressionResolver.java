@@ -114,6 +114,9 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 	 * configured via the {@link #MAX_SPEL_EXPRESSION_LENGTH_PROPERTY_NAME} property.
 	 * @param beanClassLoader the factory's bean class loader
 	 */
+	// 使用给定的 bean 类加载器创建一个新的 {@code StandardBeanExpressionResolver}，并将其作为表达式编译的基础。
+	// <p>从 Spring Framework 6.1.3 开始，可以通过 {@link #MAX_SPEL_EXPRESSION_LENGTH_PROPERTY_NAME} 属性配置最大 SpEL 表达式长度。
+	// @param beanClassLoader 工厂的 bean 类加载器
 	public StandardBeanExpressionResolver(@Nullable ClassLoader beanClassLoader) {
 		SpelParserConfiguration parserConfig = new SpelParserConfiguration(
 				null, beanClassLoader, false, false, Integer.MAX_VALUE, retrieveMaxExpressionLength());

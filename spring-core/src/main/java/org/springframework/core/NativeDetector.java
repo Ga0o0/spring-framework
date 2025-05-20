@@ -24,6 +24,7 @@ import org.springframework.lang.Nullable;
  * @author Sebastien Deleuze
  * @since 5.3.4
  */
+// 用于检测 GraalVM 原生镜像环境的通用委托。
 public abstract class NativeDetector {
 
 	// See https://github.com/oracle/graal/blob/master/sdk/src/org.graalvm.nativeimage/src/org/graalvm/nativeimage/ImageInfo.java

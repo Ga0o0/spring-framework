@@ -82,6 +82,9 @@ import org.springframework.util.xml.DomUtils;
  * @see ParserContext
  * @see DefaultBeanDefinitionDocumentReader
  */
+// 用于解析 XML Bean 定义的状态委托类。
+// 旨在供主解析器以及任何扩展 {@link BeanDefinitionParser BeanDefinitionParsers}
+// 或 {@link BeanDefinitionDecorator BeanDefinitionDecorators} 使用。
 public class BeanDefinitionParserDelegate {
 
 	public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
@@ -245,6 +248,7 @@ public class BeanDefinitionParserDelegate {
 	 * Create a new BeanDefinitionParserDelegate associated with the supplied
 	 * {@link XmlReaderContext}.
 	 */
+	// 创建与提供的 {@link XmlReaderContext} 关联的新 BeanDefinitionParserDelegate。
 	public BeanDefinitionParserDelegate(XmlReaderContext readerContext) {
 		Assert.notNull(readerContext, "XmlReaderContext must not be null");
 		this.readerContext = readerContext;
@@ -304,8 +308,12 @@ public class BeanDefinitionParserDelegate {
 	 * @see #populateDefaults(DocumentDefaultsDefinition, DocumentDefaultsDefinition, org.w3c.dom.Element)
 	 * @see #getDefaults()
 	 */
+	// 初始化默认的 lazy-init、自动装配、依赖项检查设置、init-method、destroy-method 和合并设置。
+	// 如果未在本地显式设置默认值，则通过回退到指定的父级来支持嵌套的“bean”元素用例。
 	public void initDefaults(Element root, @Nullable BeanDefinitionParserDelegate parent) {
+		// 使用默认的 lazy-init、autowire、依赖项检查设置、init-method、destroy-method 和 merge 设置填充给定的 DocumentDefaultsDefinition 实例。
 		populateDefaults(this.defaults, (parent != null ? parent.defaults : null), root);
+		// 触发默认注册事件。
 		this.readerContext.fireDefaultsRegistered(this.defaults);
 	}
 
@@ -318,43 +326,48 @@ public class BeanDefinitionParserDelegate {
 	 * @param parentDefaults the parent BeanDefinitionParserDelegate (if any) defaults to fall back to
 	 * @param root the root element of the current bean definition document (or nested beans element)
 	 */
+	// 使用默认的 lazy-init、autowire、依赖项检查设置、init-method、destroy-method 和 merge 设置填充给定的 DocumentDefaultsDefinition 实例。
+	// 如果未在本地显式设置默认值，则通过回退到 {@code parentDefaults} 来支持嵌套的“bean”元素用例。
+	// @param defaults 填充的默认值
+	// @param parentDefaults 父级 BeanDefinitionParserDelegate（如果有）默认回退到的默认值
+	// @param root 当前 bean 定义文档（或嵌套 bean 元素）的根元素
 	protected void populateDefaults(DocumentDefaultsDefinition defaults, @Nullable DocumentDefaultsDefinition parentDefaults, Element root) {
-		String lazyInit = root.getAttribute(DEFAULT_LAZY_INIT_ATTRIBUTE);
+		String lazyInit = root.getAttribute(DEFAULT_LAZY_INIT_ATTRIBUTE); // default-lazy-init
 		if (isDefaultValue(lazyInit)) {
-			// Potentially inherited from outer <beans> sections, otherwise falling back to false.
+			// Potentially inherited from outer <beans> sections, otherwise falling back to false. --> 译文：可能从外部 <beans> 部分继承，否则将恢复为 false。
 			lazyInit = (parentDefaults != null ? parentDefaults.getLazyInit() : FALSE_VALUE);
 		}
 		defaults.setLazyInit(lazyInit);
 
-		String merge = root.getAttribute(DEFAULT_MERGE_ATTRIBUTE);
+		String merge = root.getAttribute(DEFAULT_MERGE_ATTRIBUTE); // default-merge
 		if (isDefaultValue(merge)) {
-			// Potentially inherited from outer <beans> sections, otherwise falling back to false.
-			merge = (parentDefaults != null ? parentDefaults.getMerge() : FALSE_VALUE);
+			// Potentially inherited from outer <beans> sections, otherwise falling back to false. --> 译文：可能从外部 <beans> 部分继承，否则将恢复为 false。
+			merge = (parentDefaults != null ? parentDefaults.getMerge() : FALSE_VALUE); // FALSE_VALUE --> false
 		}
 		defaults.setMerge(merge);
 
-		String autowire = root.getAttribute(DEFAULT_AUTOWIRE_ATTRIBUTE);
+		String autowire = root.getAttribute(DEFAULT_AUTOWIRE_ATTRIBUTE); // default-autowire
 		if (isDefaultValue(autowire)) {
-			// Potentially inherited from outer <beans> sections, otherwise falling back to 'no'.
-			autowire = (parentDefaults != null ? parentDefaults.getAutowire() : AUTOWIRE_NO_VALUE);
+			// Potentially inherited from outer <beans> sections, otherwise falling back to 'no'. --> 译文：可能从外部 <beans> 部分继承，否则将返回“否”。
+			autowire = (parentDefaults != null ? parentDefaults.getAutowire() : AUTOWIRE_NO_VALUE); // AUTOWIRE_NO_VALUE --> no
 		}
 		defaults.setAutowire(autowire);
 
-		if (root.hasAttribute(DEFAULT_AUTOWIRE_CANDIDATES_ATTRIBUTE)) {
+		if (root.hasAttribute(DEFAULT_AUTOWIRE_CANDIDATES_ATTRIBUTE)) { // default-autowire-candidates
 			defaults.setAutowireCandidates(root.getAttribute(DEFAULT_AUTOWIRE_CANDIDATES_ATTRIBUTE));
 		}
 		else if (parentDefaults != null) {
 			defaults.setAutowireCandidates(parentDefaults.getAutowireCandidates());
 		}
 
-		if (root.hasAttribute(DEFAULT_INIT_METHOD_ATTRIBUTE)) {
+		if (root.hasAttribute(DEFAULT_INIT_METHOD_ATTRIBUTE)) { // default-init-method
 			defaults.setInitMethod(root.getAttribute(DEFAULT_INIT_METHOD_ATTRIBUTE));
 		}
 		else if (parentDefaults != null) {
 			defaults.setInitMethod(parentDefaults.getInitMethod());
 		}
 
-		if (root.hasAttribute(DEFAULT_DESTROY_METHOD_ATTRIBUTE)) {
+		if (root.hasAttribute(DEFAULT_DESTROY_METHOD_ATTRIBUTE)) { // default-destroy-method
 			defaults.setDestroyMethod(root.getAttribute(DEFAULT_DESTROY_METHOD_ATTRIBUTE));
 		}
 		else if (parentDefaults != null) {
@@ -1365,6 +1378,9 @@ public class BeanDefinitionParserDelegate {
 	 * @param ele the element to parse
 	 * @return the resulting bean definition
 	 */
+	// 解析自定义元素（默认命名空间之外）。
+	// @param ele 待解析的元素
+	// @return 返回生成的 bean 定义
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele) {
 		return parseCustomElement(ele, null);
@@ -1376,17 +1392,25 @@ public class BeanDefinitionParserDelegate {
 	 * @param containingBd the containing bean definition (if any)
 	 * @return the resulting bean definition
 	 */
+	// 解析自定义元素（默认命名空间之外）。
+	// @param ele 待解析的元素
+	// @param containingBd 包含 bean 的定义（如果有）
+	// @return 返回生成的 bean 定义
 	@Nullable
 	public BeanDefinition parseCustomElement(Element ele, @Nullable BeanDefinition containingBd) {
+		// 获取指定节点的命名空间 URI。
 		String namespaceUri = getNamespaceURI(ele);
 		if (namespaceUri == null) {
 			return null;
 		}
+		// 返回命名空间解析器，并解析命名空间 URI 并返回找到的 NamespaceHandler 实现。
 		NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver().resolve(namespaceUri);
 		if (handler == null) {
 			error("Unable to locate Spring NamespaceHandler for XML schema namespace [" + namespaceUri + "]", ele);
 			return null;
 		}
+		// 解析指定的 {@link Element}，并将生成的 {@link BeanDefinition BeanDefinitions} 注册到嵌入在提供的 {@link ParserContext}
+		// 中的 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}。
 		return handler.parse(ele, new ParserContext(this.readerContext, this, containingBd));
 	}
 
@@ -1407,19 +1431,24 @@ public class BeanDefinitionParserDelegate {
 	 * @param containingBd the containing bean definition (if any)
 	 * @return the decorated bean definition
 	 */
+	// 如果适用，通过命名空间处理程序装饰给定的 bean 定义。
+	// @param ele 当前元素
+	// @param originalDef 当前 bean 定义
+	// @param containingBd 包含 bean 的定义（如果有）
+	// @return 被装饰的 bean 定义
 	public BeanDefinitionHolder decorateBeanDefinitionIfRequired(
 			Element ele, BeanDefinitionHolder originalDef, @Nullable BeanDefinition containingBd) {
 
 		BeanDefinitionHolder finalDefinition = originalDef;
 
-		// Decorate based on custom attributes first.
+		// Decorate based on custom attributes first. --> 译文：首先根据自定义属性进行装饰。
 		NamedNodeMap attributes = ele.getAttributes();
 		for (int i = 0; i < attributes.getLength(); i++) {
 			Node node = attributes.item(i);
 			finalDefinition = decorateIfRequired(node, finalDefinition, containingBd);
 		}
 
-		// Decorate based on custom nested elements.
+		// Decorate based on custom nested elements. --> 译文：根据自定义嵌套元素进行装饰。
 		NodeList children = ele.getChildNodes();
 		for (int i = 0; i < children.getLength(); i++) {
 			Node node = children.item(i);
@@ -1489,6 +1518,9 @@ public class BeanDefinitionParserDelegate {
 	 * different namespace identification mechanism.
 	 * @param node the node
 	 */
+	// 获取指定节点的命名空间 URI。
+	// <p>默认实现使用 {@link Node#getNamespaceURI}。子类可以重写默认实现，以提供不同的命名空间识别机制。
+	// @param node 节点
 	@Nullable
 	public String getNamespaceURI(Node node) {
 		return node.getNamespaceURI();
@@ -1521,6 +1553,7 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Determine whether the given URI indicates the default namespace.
 	 */
+	// 确定给定的 URI 是否指示默认命名空间。
 	public boolean isDefaultNamespace(@Nullable String namespaceUri) {
 		return !StringUtils.hasLength(namespaceUri) || BEANS_NAMESPACE_URI.equals(namespaceUri);
 	}
@@ -1528,6 +1561,7 @@ public class BeanDefinitionParserDelegate {
 	/**
 	 * Determine whether the given node indicates the default namespace.
 	 */
+	// 确定给定的节点是否指示默认命名空间。
 	public boolean isDefaultNamespace(Node node) {
 		return isDefaultNamespace(getNamespaceURI(node));
 	}

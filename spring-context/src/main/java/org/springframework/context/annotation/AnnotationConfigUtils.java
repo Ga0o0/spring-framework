@@ -59,11 +59,15 @@ import org.springframework.util.ClassUtils;
  * @see org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
  * @see org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor
  */
+// 工具类，允许方便地注册常用的 org.springframework.beans.factory.config.BeanPostProcessor
+// 和 org.springframework.beans.factory.config.BeanFactoryPostProcessor 定义，以实现基于注解的配置。
+// 此外，还注册了一个常用的 org.springframework.beans.factory.support.AutowireCandidateResolver。
 public abstract class AnnotationConfigUtils {
 
 	/**
 	 * The bean name of the internally managed Configuration annotation processor.
 	 */
+	// 内部管理的配置注释处理器的 bean 名称。
 	public static final String CONFIGURATION_ANNOTATION_PROCESSOR_BEAN_NAME =
 			"org.springframework.context.annotation.internalConfigurationAnnotationProcessor";
 
@@ -75,24 +79,30 @@ public abstract class AnnotationConfigUtils {
 	 * {@link ConfigurationClassPostProcessor}.
 	 * @since 3.1.1
 	 */
+	// 处理 {@link Configuration} 类时使用的内部管理 BeanNameGenerator 的 bean 名称。
+	// 由 AnnotationConfigApplicationContext 和 AnnotationConfigWebApplicationContext 在引导期间设置，
+	// 以便使任何自定义名称生成策略可用于底层 ConfigurationClassPostProcessor。
 	public static final String CONFIGURATION_BEAN_NAME_GENERATOR =
 			"org.springframework.context.annotation.internalConfigurationBeanNameGenerator";
 
 	/**
 	 * The bean name of the internally managed Autowired annotation processor.
 	 */
+	// 内部管理的自动装配注解处理器的 bean 名称。
 	public static final String AUTOWIRED_ANNOTATION_PROCESSOR_BEAN_NAME =
 			"org.springframework.context.annotation.internalAutowiredAnnotationProcessor";
 
 	/**
 	 * The bean name of the internally managed common annotation processor.
 	 */
+	// 内部管理的通用注解处理器的 bean 名称。
 	public static final String COMMON_ANNOTATION_PROCESSOR_BEAN_NAME =
 			"org.springframework.context.annotation.internalCommonAnnotationProcessor";
 
 	/**
 	 * The bean name of the internally managed JPA annotation processor.
 	 */
+	// 内部管理的 JPA 注解处理器的 bean 名称。
 	public static final String PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME =
 			"org.springframework.context.annotation.internalPersistenceAnnotationProcessor";
 
@@ -102,12 +112,14 @@ public abstract class AnnotationConfigUtils {
 	/**
 	 * The bean name of the internally managed @EventListener annotation processor.
 	 */
+	// 内部管理的 @EventListener 注解处理器的 bean 名称。
 	public static final String EVENT_LISTENER_PROCESSOR_BEAN_NAME =
 			"org.springframework.context.event.internalEventListenerProcessor";
 
 	/**
 	 * The bean name of the internally managed EventListenerFactory.
 	 */
+	// 内部管理的 EventListenerFactory 的 bean 名称。
 	public static final String EVENT_LISTENER_FACTORY_BEAN_NAME =
 			"org.springframework.context.event.internalEventListenerFactory";
 
@@ -129,6 +141,8 @@ public abstract class AnnotationConfigUtils {
 	 * Register all relevant annotation post processors in the given registry.
 	 * @param registry the registry to operate on
 	 */
+	// 在给定的注册表中注册所有相关的注释后处理器。
+	// @param registry 要操作的注册表
 	public static void registerAnnotationConfigProcessors(BeanDefinitionRegistry registry) {
 		registerAnnotationConfigProcessors(registry, null);
 	}
@@ -141,6 +155,10 @@ public abstract class AnnotationConfigUtils {
 	 * @return a Set of BeanDefinitionHolders, containing all bean definitions
 	 * that have actually been registered by this call
 	 */
+	// 在给定的注册表中注册所有相关的注解后置处理器。
+	// @param registry 要操作的注册表
+	// @param source 触发此注册的配置源元素（已提取）。可以为 {@code null}。
+	// @return 一个 BeanDefinitionHolders 集合，包含本次调用实际注册的所有 Bean 定义
 	public static Set<BeanDefinitionHolder> registerAnnotationConfigProcessors(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
 
@@ -169,6 +187,7 @@ public abstract class AnnotationConfigUtils {
 		}
 
 		// Check for Jakarta Annotations support, and if present add the CommonAnnotationBeanPostProcessor.
+		// --> 译文：检查 Jakarta Annotations 支持，如果存在则添加 CommonAnnotationBeanPostProcessor。
 		if ((jakartaAnnotationsPresent || jsr250Present) &&
 				!registry.containsBeanDefinition(COMMON_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition(CommonAnnotationBeanPostProcessor.class);
@@ -177,6 +196,7 @@ public abstract class AnnotationConfigUtils {
 		}
 
 		// Check for JPA support, and if present add the PersistenceAnnotationBeanPostProcessor.
+		// --> 译文：检查是否支持 JPA，如果存在则添加 PersistenceAnnotationBeanPostProcessor。
 		if (jpaPresent && !registry.containsBeanDefinition(PERSISTENCE_ANNOTATION_PROCESSOR_BEAN_NAME)) {
 			RootBeanDefinition def = new RootBeanDefinition();
 			try {

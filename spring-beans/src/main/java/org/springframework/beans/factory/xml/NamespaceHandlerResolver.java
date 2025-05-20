@@ -27,6 +27,8 @@ import org.springframework.lang.Nullable;
  * @see NamespaceHandler
  * @see org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader
  */
+// 由 {@link org.springframework.beans.factory.xml.DefaultBeanDefinitionDocumentReader}
+// 用于查找特定命名空间 URI 的 {@link NamespaceHandler} 实现。
 @FunctionalInterface
 public interface NamespaceHandlerResolver {
 
@@ -36,6 +38,9 @@ public interface NamespaceHandlerResolver {
 	 * @param namespaceUri the relevant namespace URI
 	 * @return the located {@link NamespaceHandler} (may be {@code null})
 	 */
+	// 解析命名空间 URI 并返回找到的 {@link NamespaceHandler} 实现。
+	// @param namespaceUri 相关的命名空间 URI
+	// @return 找到的 {@link NamespaceHandler}（可能为 {@code null}）
 	@Nullable
 	NamespaceHandler resolve(String namespaceUri);
 

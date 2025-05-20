@@ -274,6 +274,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	/**
 	 * Derive further bean definitions from the configuration classes in the registry.
 	 */
+	// 从注册表中的配置类中获取进一步的 bean 定义。
 	@Override
 	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
 		int registryId = System.identityHashCode(registry);
@@ -359,6 +360,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * Build and validate a configuration model based on the registry of
 	 * {@link Configuration} classes.
 	 */
+	// 根据 {@link Configuration} 类的注册表构建并验证配置模型。
 	public void processConfigBeanDefinitions(BeanDefinitionRegistry registry) {
 		List<BeanDefinitionHolder> configCandidates = new ArrayList<>();
 		String[] candidateNames = registry.getBeanDefinitionNames();
@@ -376,11 +378,13 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Return immediately if no @Configuration classes were found
+		// --> 译文：如果没有找到 @Configuration 类，请立即返回
 		if (configCandidates.isEmpty()) {
 			return;
 		}
 
 		// Sort by previously determined @Order value, if applicable
+		// --> 译文：按先前确定的 @Order 值排序（如果适用）
 		configCandidates.sort((bd1, bd2) -> {
 			int i1 = ConfigurationClassUtils.getOrder(bd1.getBeanDefinition());
 			int i2 = ConfigurationClassUtils.getOrder(bd2.getBeanDefinition());
@@ -388,6 +392,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		});
 
 		// Detect any custom bean name generation strategy supplied through the enclosing application context
+		// --> 译文：检测通过封闭的应用程序上下文提供的任何自定义 Bean 名称生成策略
 		SingletonBeanRegistry singletonRegistry = null;
 		if (registry instanceof SingletonBeanRegistry sbr) {
 			singletonRegistry = sbr;
@@ -406,6 +411,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		}
 
 		// Parse each @Configuration class
+		// --> 译文：解析每个 @Configuration 类
 		ConfigurationClassParser parser = new ConfigurationClassParser(
 				this.metadataReaderFactory, this.problemReporter, this.environment,
 				this.resourceLoader, this.componentScanBeanNameGenerator, registry);
@@ -453,16 +459,19 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		while (!candidates.isEmpty());
 
 		// Register the ImportRegistry as a bean in order to support ImportAware @Configuration classes
+		// --> 译文：将 ImportRegistry 注册为 Bean 以支持 ImportAware @Configuration 类
 		if (singletonRegistry != null && !singletonRegistry.containsSingleton(IMPORT_REGISTRY_BEAN_NAME)) {
 			singletonRegistry.registerSingleton(IMPORT_REGISTRY_BEAN_NAME, parser.getImportRegistry());
 		}
 
 		// Store the PropertySourceDescriptors to contribute them Ahead-of-time if necessary
+		// --> 译文：存储 PropertySourceDescriptors，以便在必要时提前提供它们
 		this.propertySourceDescriptors = parser.getPropertySourceDescriptors();
 
 		if (this.metadataReaderFactory instanceof CachingMetadataReaderFactory cachingMetadataReaderFactory) {
 			// Clear cache in externally provided MetadataReaderFactory; this is a no-op
 			// for a shared cache since it'll be cleared by the ApplicationContext.
+			// --> 译文：清除外部提供的 MetadataReaderFactory 中的缓存；这对于共享缓存来说是无操作，因为它将被 ApplicationContext 清除。
 			cachingMetadataReaderFactory.clearCache();
 		}
 	}

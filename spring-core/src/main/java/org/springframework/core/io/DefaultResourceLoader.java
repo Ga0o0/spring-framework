@@ -46,6 +46,9 @@ import org.springframework.util.StringUtils;
  * @see FileSystemResourceLoader
  * @see org.springframework.context.support.ClassPathXmlApplicationContext
  */
+// {@link ResourceLoader} 接口的默认实现。
+// <p>由 {@link ResourceEditor} 使用，并作为 {@link org.springframework.context.support.AbstractApplicationContext} 的基类。也可单独使用。
+// <p>如果位置值为 URL，则返回 {@link UrlResource}；如果位置值为非 URL 路径或“classpath:”伪 URL，则返回 {@link ClassPathResource}。
 public class DefaultResourceLoader implements ResourceLoader {
 
 	@Nullable
@@ -63,6 +66,10 @@ public class DefaultResourceLoader implements ResourceLoader {
 	 * a specific ClassLoader to {@link #DefaultResourceLoader(ClassLoader)}.
 	 * @see java.lang.Thread#getContextClassLoader()
 	 */
+	// 创建一个新的 DefaultResourceLoader。
+	// <p>ClassLoader 的访问将在实际资源访问时使用线程上下文类加载器进行（自 5.3 起）。
+	// 如需更多控制，请将特定的 ClassLoader 传递给 {@link #DefaultResourceLoader(ClassLoader)}。
+	// @see java.lang.Thread#getContextClassLoader()
 	public DefaultResourceLoader() {
 	}
 
@@ -137,6 +144,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 	 * @since 5.0
 	 * @see #getResourceCache
 	 */
+	// 清除此资源加载器中的所有资源缓存。
 	public void clearResourceCaches() {
 		this.resourceCaches.clear();
 	}

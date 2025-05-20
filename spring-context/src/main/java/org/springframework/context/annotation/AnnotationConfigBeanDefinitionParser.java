@@ -37,6 +37,7 @@ import org.springframework.lang.Nullable;
  * @since 2.5
  * @see AnnotationConfigUtils
  */
+// <context:annotation-config/> 元素的解析器。
 public class AnnotationConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 	@Override
@@ -45,19 +46,23 @@ public class AnnotationConfigBeanDefinitionParser implements BeanDefinitionParse
 		Object source = parserContext.extractSource(element);
 
 		// Obtain bean definitions for all relevant BeanPostProcessors.
+		// --> 译文：获取所有相关 BeanPostProcessors 的 bean 定义。
 		Set<BeanDefinitionHolder> processorDefinitions =
 				AnnotationConfigUtils.registerAnnotationConfigProcessors(parserContext.getRegistry(), source);
 
 		// Register component for the surrounding <context:annotation-config> element.
+		// --> 译文：为周围的 <context:annotation-config> 元素注册组件。
 		CompositeComponentDefinition compDefinition = new CompositeComponentDefinition(element.getTagName(), source);
 		parserContext.pushContainingComponent(compDefinition);
 
 		// Nest the concrete beans in the surrounding component.
+		// --> 译文：将具体 bean 嵌套在周围的组件中。
 		for (BeanDefinitionHolder processorDefinition : processorDefinitions) {
 			parserContext.registerComponent(new BeanComponentDefinition(processorDefinition));
 		}
 
 		// Finally register the composite component.
+		// --> 译文：最后注册复合组件。
 		parserContext.popAndRegisterContainingComponent();
 
 		return null;

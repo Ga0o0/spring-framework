@@ -204,6 +204,73 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.core.io.ResourceLoader#getResource(String)
  * @see ClassLoader#getResources(String)
  */
+// 一个 {@link ResourcePatternResolver} 实现，能够将指定的资源位置路径解析为一个或多个匹配的资源。
+// <p>源路径可以是与目标 {@link org.springframework.core.io.Resource} 一对一映射的简单路径，
+// 也可以包含特殊的 "{@code classpath*:}" 前缀和/或内部 Ant 风格的路径模式（使用 Spring 的 {@link AntPathMatcher} 实用程序进行匹配）。
+// 后两者实际上都是通配符。
+//
+// <h3>无通配符</h3>
+//
+// <p>在简单情况下，如果指定的位置路径不以 {@code "classpath*:}" 前缀开头，也不包含 {@link PathMatcher} 模式，
+// 则此解析器将通过对底层 {@code ResourceLoader} 调用 {@code getResource()} 返回单个资源。
+// 例如，真实 URL（例如“{@code file:C:/context.xml}”）、伪 URL（例如“{@code classpath:/context.xml}”）
+// 以及简单的无前缀路径（例如“{@code /WEB-INF/context.xml}”）。
+// 后者将以特定于底层 {@code ResourceLoader} 的方式解析（例如，对于 {@code WebApplicationContext}，解析为 {@code ServletContextResource}）。
+//
+// <h3>Ant 样式模式</h3>
+//
+// <p>当路径位置包含 Ant 样式模式时，例如：
+// <pre class="code">
+// 		/WEB-INF/*-context.xml
+// 		com/example/**&#47;applicationContext.xml
+// 		file:C:/some/path/*-context.xml
+// 		classpath:com/example/**&#47;applicationContext.xml
+// </pre>
+// 解析器会遵循更复杂但定义明确的流程来尝试解析通配符。它会为路径中最后一个非通配符片段生成一个 {@code Resource}，并从中获取一个 {@code URL}。
+// 如果此 URL 不是“{@code jar:}”URL 或特定于容器的变体（例如，WebLogic 中的“{@code zip:}”，WebSphere 中的“{@code wsjar}”等），
+// 则会获取与该 URL 关联的文件系统的根目录，并通过遍历文件系统来解析通配符。
+// 如果是 jar URL，解析器要么从中获取一个 {@code java.net.JarURLConnection}，要么手动解析 jar URL，然后遍历 jar 文件的内容来解析通配符。
+//
+// <h3>对可移植性的影响</h3>
+//
+// <p>如果指定的路径已经是文件 URL（无论是显式的，还是由于基础 {@code ResourceLoader} 是文件系统 URL 而隐式的），则通配符可以完全移植。
+// <p>如果指定的路径是类路径位置，则解析器必须通过 {@code Classloader.getResource()} 调用获取最后一个非通配符路径段 URL。
+// 由于这只是路径的一个节点（而不是末尾的文件），因此在这种情况下返回的 URL 类型实际上是未定义的（在 ClassLoader Javadocs 中）。
+// 实际上，它通常是一个表示目录的 {@code java.io.File}，类路径资源在其中解析为文件系统位置，或者是一个某种 jar URL，类路径资源在其中解析为 jar 位置。然而，此操作仍存在可移植性问题。
+// <p>如果获取了最后一个非通配符段的 jar URL，解析器必须能够从中获取 {@code java.net.JarURLConnection}，或者手动解析 jar URL，才能遍历 jar 的内容并解析通配符。
+// 这在大多数环境中都有效，但在其他环境中会失败，强烈建议在依赖来自 jar 的资源的通配符解析之前，先在特定环境中彻底测试它。
+//
+// <h3>{@code classpath*:} 前缀</h3>
+//
+// <p>通过“{@code classpath*:}”前缀，可以检索具有相同名称的多个类路径资源。
+// 例如，“{@code classpath*:META-INF/beans.xml}”将查找类路径中的所有“META-INF/beans.xml”文件，无论是在“classes”目录中还是在 JAR 文件中。
+// 这对于自动检测每个 jar 文件中相同位置的同名配置文件尤其有用。在内部，这通过调用 {@code ClassLoader.getResources()} 实现，并且完全可移植。
+// <p>“{@code classpath*:}”前缀也可以与位置路径其余部分的 {@code PathMatcher} 模式结合使用，例如“{@code classpath*:META-INF/*-beans.xml"}”。
+// 在这种情况下，解析策略非常简单：在最后一个非通配符路径段上使用 {@code ClassLoader.getResources()} 调用来获取类加载器层次结构中所有匹配的资源，
+// 然后对每个资源使用与上述相同的 {@code PathMatcher} 解析策略来解析通配符子模式。
+//
+// <h3>其他注意事项</h3>
+//
+// <p>从 Spring Framework 6.0 开始，如果使用带有“{@code classpath*:}”前缀的位置模式调用 {@link #getResources(String)}，
+// 它将首先搜索 {@linkplain ModuleLayer#boot() 启动层} 中的所有模块，但不包括 {@linkplain ModuleFinder#ofSystem() 系统模块}。
+// 然后，它将使用前面描述的 {@link ClassLoader} API 搜索类路径，并返回组合结果。因此，当应用程序以模块形式部署时，类路径搜索的某些限制可能不再适用。
+//
+// <p><b>警告：</b>请注意，“{@code classpath*:}”与 Ant 风格的模式结合使用时，只有在模式启动前至少有一个根目录才能可靠地工作，除非实际的目标文件位于文件系统中。
+// 这意味着像“{@code classpath*:*.xml}”这样的模式<i>不会</i>从 jar 文件的根目录检索文件，而只会从扩展目录的根目录检索。
+// 这源于 JDK 的 {@code ClassLoader.getResources()} 方法的一个限制，该方法仅返回传入空字符串（表示要搜索的潜在根目录）的文件系统位置。
+// 此 {@code ResourcePatternResolver} 实现尝试通过 {@link URLClassLoader} 自检和“{@code java.class.path}”清单评估来缓解 jar 根目录查找限制；但是，它不提供可移植性保证。
+//
+// <p><b>警告：</b>如果要搜索的基础包在多个类路径位置可用，则带有“{@code classpath:}”资源的 Ant 样式模式无法保证找到匹配的资源。这是因为，类似以下类型的资源：
+// <pre class="code">
+// 		com/example/package1/service-context.xml
+// 	</pre>
+// 可能只存在于一个类路径位置中，但当使用类似以下类型的位置模式来解析时：
+// <pre class="code">
+// 		classpath:com/example/**&#47;service-context.xml
+// </pre>
+// ，解析器将根据 {@code getResource("com/example")} 返回的（第一个）URL 进行解析。
+// 如果 {@code com/example} 基础包节点存在于多个类路径位置中，则实际所需的资源可能不存在于第一个 URL 中的 {@code com/example} 基础包下。
+// 因此，在这种情况下，最好使用具有相同 Ant 样式模式的“{@code classpath*:}”，它将搜索包含该基础包的<i>所有</i>类路径位置。
 public class PathMatchingResourcePatternResolver implements ResourcePatternResolver {
 
 	private static final Resource[] EMPTY_RESOURCE_ARRAY = {};
@@ -270,6 +337,9 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * @param resourceLoader the {@code ResourceLoader} to load root directories
 	 * and actual resources with
 	 */
+	// 使用提供的 {@link ResourceLoader} 创建一个 {@code PathMatchingResourcePatternResolver}。
+	// <p>ClassLoader 的访问将通过线程上下文类加载器进行。
+	// @param resourceLoader 用于加载根目录和实际资源的 {@code ResourceLoader}
 	public PathMatchingResourcePatternResolver(ResourceLoader resourceLoader) {
 		Assert.notNull(resourceLoader, "ResourceLoader must not be null");
 		this.resourceLoader = resourceLoader;

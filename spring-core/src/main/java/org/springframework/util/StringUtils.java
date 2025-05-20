@@ -1269,6 +1269,9 @@ public abstract class StringUtils {
 	 * @param str the input {@code String} (potentially {@code null} or empty)
 	 * @return an array of strings, or the empty array in case of empty input
 	 */
+	// 将逗号分隔的列表（例如，CSV 文件中的一行）转换为字符串数组。
+	// @param str 输入的 {@code String}（可能为 {@code null} 或为空）
+	// @return 字符串数组，如果输入为空，则返回空数组
 	public static String[] commaDelimitedListToStringArray(@Nullable String str) {
 		return delimitedListToStringArray(str, ",");
 	}

@@ -52,6 +52,8 @@ public interface ApplicationEventMulticaster {
 	 * @see #removeApplicationListenerBean(String)
 	 * @see #removeApplicationListenerBeans(Predicate)
 	 */
+	// 添加一个监听器 Bean，用于接收所有事件的通知。
+	// @param listenerBeanName 要添加的监听器 Bean 的名称
 	void addApplicationListenerBean(String listenerBeanName);
 
 	/**
@@ -115,6 +117,10 @@ public interface ApplicationEventMulticaster {
 	 * @param event the event to multicast
 	 * @see ApplicationListener#supportsAsyncExecution()
 	 */
+	// 将给定的应用程序事件多播到适当的监听器。
+	// <p>如果可能，请考虑使用 {@link #multicastEvent(ApplicationEvent, ResolvableType)}，因为它可以为基于泛型的事件提供更好的支持。
+	// <p>如果匹配的 {@code ApplicationListener} 不支持异步执行，则必须在此多播调用的调用线程中运行。
+	// @param event 要多播的事件
 	void multicastEvent(ApplicationEvent event);
 
 	/**

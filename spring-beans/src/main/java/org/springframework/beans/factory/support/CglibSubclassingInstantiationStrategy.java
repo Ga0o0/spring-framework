@@ -52,6 +52,8 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 1.1
  */
+// BeanFactories 中使用的默认对象实例化策略。
+// <p>如果方法需要被容器重写以实现<em>方法注入</em>，则使用 CGLIB 动态生成子类。
 public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationStrategy {
 
 	/**

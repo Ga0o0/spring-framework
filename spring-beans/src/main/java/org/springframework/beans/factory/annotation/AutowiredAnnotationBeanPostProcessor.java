@@ -542,8 +542,10 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 	private InjectionMetadata findAutowiringMetadata(String beanName, Class<?> clazz, @Nullable PropertyValues pvs) {
 		// Fall back to class name as cache key, for backwards compatibility with custom callers.
+		// --> 译文：为了向后兼容自定义调用者，回退使用类名作为缓存键。
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
 		// Quick check on the concurrent map first, with minimal locking.
+		// --> 译文：首先快速检查并发映射，并使用最少的锁定。
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 			synchronized (this.injectionMetadataCache) {
@@ -765,6 +767,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				}
 			}
 			else {
+				// invoke
 				value = resolveFieldValue(field, bean, beanName);
 			}
 			if (value != null) {
@@ -782,6 +785,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			TypeConverter typeConverter = beanFactory.getTypeConverter();
 			Object value;
 			try {
+				// invoke
 				value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);
 			}
 			catch (BeansException ex) {

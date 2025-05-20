@@ -36,6 +36,14 @@ import org.springframework.lang.Nullable;
  * @author Brian Clozel
  * @since 5.3
  */
+// 步骤记录 {@link ApplicationStartup} 期间发生的特定阶段或操作的指标。
+// <p>{@code StartupStep} 的生命周期如下：
+// <ol>
+// <li>该步骤通过调用 {@link ApplicationStartup#start(String) 应用程序启动} 创建并启动，并分配一个唯一的 {@link StartupStep#getId() id}。
+// <li>然后我们可以在处理过程中使用 {@link Tags} 附加信息。
+// <li>然后我们需要标记步骤的 {@link #end()}。
+// </ol>
+// <p>实现可以跟踪步骤的“执行时间”或其他指标。
 public interface StartupStep {
 
 	/**
@@ -82,6 +90,8 @@ public interface StartupStep {
 	 * Record the state of the step and possibly other metrics like execution time.
 	 * <p>Once ended, changes on the step state are not allowed.
 	 */
+	// 记录步骤的状态以及可能的其他指标，例如执行时间。
+	// <p>一旦结束，不允许更改步骤状态。
 	void end();
 
 

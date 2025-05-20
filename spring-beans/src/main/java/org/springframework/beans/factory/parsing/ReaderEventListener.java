@@ -34,6 +34,8 @@ public interface ReaderEventListener extends EventListener {
 	 * @param defaultsDefinition a descriptor for the defaults
 	 * @see org.springframework.beans.factory.xml.DocumentDefaultsDefinition
 	 */
+	// 通知指定的默认值已注册。
+	// @param defaultsDefinition 默认值的描述符
 	void defaultsRegistered(DefaultsDefinition defaultsDefinition);
 
 	/**

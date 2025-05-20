@@ -60,6 +60,10 @@ public interface ConfigurableListableBeanFactory
 	 * @see org.springframework.beans.factory.BeanFactoryAware
 	 * @see org.springframework.context.ApplicationContextAware
 	 */
+	// 忽略自动装配时指定的依赖接口。
+	// <p>这通常由应用程序上下文用来注册以其他方式解析的依赖项，例如通过 BeanFactoryAware 解析 BeanFactory，或通过 ApplicationContextAware 解析 ApplicationContext。
+	// <p>默认情况下，仅忽略 BeanFactoryAware 接口。要忽略其他类型，请针对每种类型调用此方法。
+	// @param ifc 要忽略的依赖接口
 	void ignoreDependencyInterface(Class<?> ifc);
 
 	/**
@@ -78,6 +82,11 @@ public interface ConfigurableListableBeanFactory
 	 * implementation of the {@link org.springframework.beans.factory.ObjectFactory}
 	 * interface, which allows for lazy resolution of the actual target value.
 	 */
+	// 注册一个特殊的依赖类型及其对应的自动装配值。
+	// <p>这适用于那些应该可自动装配但未在工厂中定义为 Bean 的工厂/上下文引用：例如，将 ApplicationContext 类型的依赖项解析为 Bean 所在的 ApplicationContext 实例。
+	// <p>注意：普通的 BeanFactory 中没有注册此类默认类型，即使是 BeanFactory 接口本身也没有。
+	// @param dependencyType 要注册的依赖类型。这通常是诸如 BeanFactory 之类的基接口，如果声明为自动装配依赖项（例如 ListableBeanFactory），则只要给定的值实际实现了扩展接口，它的扩展接口也会被解析。
+	// @param autowiredValue 对应的自动装配值。这也可以是 {@link org.springframework.beans.factory.ObjectFactory} 接口的实现，该接口允许对实际目标值进行惰性解析。
 	void registerResolvableDependency(Class<?> dependencyType, @Nullable Object autowiredValue);
 
 	/**
@@ -142,6 +151,8 @@ public interface ConfigurableListableBeanFactory
 	 * @see #clearMetadataCache()
 	 * @see #isConfigurationFrozen()
 	 */
+	// 冻结所有 bean 定义，表示已注册的 bean 定义将不会被修改或进一步处理。
+	// <p>这允许工厂在清除初始临时元数据缓存后，积极地缓存 bean 定义元数据。
 	void freezeConfiguration();
 
 	/**
@@ -161,6 +172,9 @@ public interface ConfigurableListableBeanFactory
 	 * Call {@link #destroySingletons()} for full cleanup in this case.
 	 * @see #destroySingletons()
 	 */
+	// 确保所有非延迟初始化的单例都已实例化，同时考虑 {@link org.springframework.beans.factory.FactoryBean FactoryBeans}。如果需要，通常在工厂设置结束时调用。
+	// @throws BeansException 如果某个单例 bean 无法创建
+	// 注意：这可能会导致工厂中某些 bean 已经初始化！在这种情况下，请调用 {@link #destroySingletons()} 进行完全清理。
 	void preInstantiateSingletons() throws BeansException;
 
 }

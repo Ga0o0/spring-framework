@@ -45,6 +45,11 @@ public class ReaderContext {
 	 * @param eventListener the event listener in use
 	 * @param sourceExtractor the source extractor in use
 	 */
+	// 构造一个新的 {@code ReaderContext}。
+	// @param resource XML bean 定义资源
+	// @param problemReporter 正在使用的问题报告器
+	// @param eventListener 正在使用的事件监听器
+	// @param sourceExtractor 正在使用的源提取器
 	public ReaderContext(Resource resource, ProblemReporter problemReporter,
 			ReaderEventListener eventListener, SourceExtractor sourceExtractor) {
 
@@ -154,6 +159,7 @@ public class ReaderContext {
 	/**
 	 * Fire a defaults-registered event.
 	 */
+	// 触发默认注册事件。
 	public void fireDefaultsRegistered(DefaultsDefinition defaultsDefinition) {
 		this.eventListener.defaultsRegistered(defaultsDefinition);
 	}

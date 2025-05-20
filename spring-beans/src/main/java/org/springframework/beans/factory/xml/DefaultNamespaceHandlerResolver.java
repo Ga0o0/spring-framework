@@ -47,6 +47,9 @@ import org.springframework.util.CollectionUtils;
  * @see NamespaceHandler
  * @see DefaultBeanDefinitionDocumentReader
  */
+// {@link NamespaceHandlerResolver} 接口的默认实现。根据映射文件中包含的映射，将命名空间 URI 解析为实现类。
+// <p>默认情况下，此实现在 {@code META-INF/spring.handlers} 中查找映射文件，
+// 但可以使用 {@link #DefaultNamespaceHandlerResolver(ClassLoader, String)} 构造函数进行更改。
 public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver {
 
 	/**
@@ -112,9 +115,13 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	 * @param namespaceUri the relevant namespace URI
 	 * @return the located {@link NamespaceHandler}, or {@code null} if none found
 	 */
+	// 从已配置的映射中查找所提供命名空间 URI 的 {@link NamespaceHandler}。
+	// @param namespaceUri 相关的命名空间 URI
+	// @return 找到的 {@link NamespaceHandler}，如果未找到，则返回 {@code null}
 	@Override
 	@Nullable
 	public NamespaceHandler resolve(String namespaceUri) {
+		// 延迟加载指定的 NamespaceHandler 映射。
 		Map<String, Object> handlerMappings = getHandlerMappings();
 		Object handlerOrClassName = handlerMappings.get(namespaceUri);
 		if (handlerOrClassName == null) {
@@ -132,6 +139,8 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 							"] does not implement the [" + NamespaceHandler.class.getName() + "] interface");
 				}
 				NamespaceHandler namespaceHandler = (NamespaceHandler) BeanUtils.instantiateClass(handlerClass);
+				// 在构造之后但在解析任何自定义元素之前由 {@link DefaultBeanDefinitionDocumentReader} 调用。
+				// 例如：org.springframework.web.servlet.config.MvcNamespaceHandler.init() 初始化了一系列标签的解析器
 				namespaceHandler.init();
 				handlerMappings.put(namespaceUri, namespaceHandler);
 				return namespaceHandler;
@@ -150,6 +159,7 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	/**
 	 * Load the specified NamespaceHandler mappings lazily.
 	 */
+	// 延迟加载指定的 NamespaceHandler 映射。
 	private Map<String, Object> getHandlerMappings() {
 		Map<String, Object> handlerMappings = this.handlerMappings;
 		if (handlerMappings == null) {

@@ -25,6 +25,7 @@ import org.springframework.context.ApplicationContext;
  * @since 04.03.2003
  * @see ContextClosedEvent
  */
+// 当 {@code ApplicationContext} 初始化或刷新时引发事件。
 @SuppressWarnings("serial")
 public class ContextRefreshedEvent extends ApplicationContextEvent {
 
@@ -33,6 +34,8 @@ public class ContextRefreshedEvent extends ApplicationContextEvent {
 	 * @param source the {@code ApplicationContext} that has been initialized
 	 * or refreshed (must not be {@code null})
 	 */
+	// 创建一个新的 {@code ContextRefreshedEvent}。
+	// @param source 已初始化或刷新的 {@code ApplicationContext}（不能为 {@code null}）
 	public ContextRefreshedEvent(ApplicationContext source) {
 		super(source);
 	}

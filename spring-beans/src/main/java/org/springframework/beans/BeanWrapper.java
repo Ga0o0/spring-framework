@@ -46,6 +46,13 @@ import java.beans.PropertyDescriptor;
  * @see org.springframework.validation.BeanPropertyBindingResult
  * @see org.springframework.validation.DataBinder#initBeanPropertyAccess()
  */
+// Spring 底层 JavaBeans 基础架构的核心接口。
+// <p>通常不直接使用，而是通过 {@link org.springframework.beans.factory.BeanFactory}
+// 或 {@link org.springframework.validation.DataBinder} 隐式使用。
+// <p>提供分析和操作标准 JavaBean 的操作：获取和设置属性值（单个或批量）、获取属性描述符以及查询属性的可读性/可写性。
+// <p>此接口支持<b>嵌套属性</b>，从而可以设置无限深度的子属性。
+// <p>BeanWrapper 的 “extractOldValueForEditor” 默认设置为 “false”，以避免调用 getter 方法时产生的副作用。
+// 将其设置为 “true” 即可将当前属性值暴露给自定义编辑器。
 public interface BeanWrapper extends ConfigurablePropertyAccessor {
 
 	/**
@@ -53,6 +60,8 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	 * <p>Default is unlimited on a plain BeanWrapper.
 	 * @since 4.1
 	 */
+	// 指定数组和集合自动增长的限制。
+	// <p>对于普通的 BeanWrapper，默认值为无限制。
 	void setAutoGrowCollectionLimit(int autoGrowCollectionLimit);
 
 	/**
@@ -64,11 +73,13 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	/**
 	 * Return the bean instance wrapped by this object.
 	 */
+	// 返回数组和集合自动增长的限制。
 	Object getWrappedInstance();
 
 	/**
 	 * Return the type of the wrapped bean instance.
 	 */
+	// 返回此对象包装的 Bean 实例。
 	Class<?> getWrappedClass();
 
 	/**
@@ -76,6 +87,8 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	 * (as determined by standard JavaBeans introspection).
 	 * @return the PropertyDescriptors for the wrapped object
 	 */
+	// 获取被包装对象的 PropertyDescriptors（由标准 JavaBeans 自省确定）。
+	// @return 被包装对象的 PropertyDescriptors
 	PropertyDescriptor[] getPropertyDescriptors();
 
 	/**
@@ -86,6 +99,10 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	 * @return the property descriptor for the specified property
 	 * @throws InvalidPropertyException if there is no such property
 	 */
+	// 获取包装对象特定属性的属性描述符。
+	// @param propertyName 要获取描述符的属性（可以是嵌套路径，但不能是索引/映射属性）
+	// @return 指定属性的属性描述符
+	// @throws InvalidPropertyException（如果不存在该属性）
 	PropertyDescriptor getPropertyDescriptor(String propertyName) throws InvalidPropertyException;
 
 }
