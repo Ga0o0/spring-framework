@@ -8,8 +8,26 @@ description = "Spring Framework API Docs"
 apply from: "${rootDir}/gradle/publications.gradle"
 
 repositories {
+//	maven {
+//		url "https://repo.spring.io/release"
+//	}
 	maven {
-		url "https://repo.spring.io/release"
+		url "https://mirrors.huaweicloud.com/repository/maven/"
+	}
+	maven {
+		url 'https://maven.aliyun.com/repository/public/'
+	}
+	maven {
+		url 'https://maven.aliyun.com/repository/central'
+	}
+	maven {
+		url 'https://maven.aliyun.com/repository/google'
+	}
+	maven {
+		url "https://maven.aliyun.com/repository/gradle-plugin"
+	}
+	maven {
+		url "https://maven.aliyun.com/repository/spring-plugin"
 	}
 }
 

@@ -22,20 +22,38 @@ configure(allprojects) { project ->
 	apply plugin: "org.springframework.build.localdev"
 	group = "org.springframework"
 	repositories {
-		mavenCentral()
 		maven {
-			url "https://repo.spring.io/milestone"
-			content {
-				// Netty 5 optional support
-				includeGroup 'io.projectreactor.netty'
-			}
+			url "https://mirrors.huaweicloud.com/repository/maven/"
 		}
-		if (version.contains('-')) {
-			maven { url "https://repo.spring.io/milestone" }
+		maven {
+			url 'https://maven.aliyun.com/repository/public/'
 		}
-		if (version.endsWith('-SNAPSHOT')) {
-			maven { url "https://repo.spring.io/snapshot" }
+		maven {
+			url 'https://maven.aliyun.com/repository/central'
 		}
+		maven {
+			url 'https://maven.aliyun.com/repository/google'
+		}
+		maven {
+			url "https://maven.aliyun.com/repository/gradle-plugin"
+		}
+		maven {
+			url "https://maven.aliyun.com/repository/spring-plugin"
+		}
+//		mavenCentral()
+//		maven {
+//			url "https://repo.spring.io/milestone"
+//			content {
+//				// Netty 5 optional support
+//				includeGroup 'io.projectreactor.netty'
+//			}
+//		}
+//		if (version.contains('-')) {
+//			maven { url "https://repo.spring.io/milestone" }
+//		}
+//		if (version.endsWith('-SNAPSHOT')) {
+//			maven { url "https://repo.spring.io/snapshot" }
+//		}
 	}
 	configurations.all {
 		resolutionStrategy {
