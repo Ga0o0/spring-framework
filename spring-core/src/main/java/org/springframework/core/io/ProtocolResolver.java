@@ -29,6 +29,9 @@ import org.springframework.lang.Nullable;
  * @since 4.3
  * @see DefaultResourceLoader#addProtocolResolver
  */
+// 针对特定协议的资源句柄的解析策略。
+//
+// <p>用作 {@link DefaultResourceLoader} 的 SPI，允许处理自定义协议，而无需子类化加载器实现（或应用程序上下文实现）。
 @FunctionalInterface
 public interface ProtocolResolver {
 
@@ -40,6 +43,10 @@ public interface ProtocolResolver {
 	 * @return a corresponding {@code Resource} handle if the given location
 	 * matches this resolver's protocol, or {@code null} otherwise
 	 */
+	// 如果此实现的协议匹配，则根据给定的资源加载器解析给定的位置。
+	// @param location 用户指定的资源位置
+	// @param resourceLoader 关联的资源加载器
+	// 如果给定的位置与此解析器的协议匹配，则返回相应的 {@code Resource} 句柄，否则返回 {@code null}
 	@Nullable
 	Resource resolve(String location, ResourceLoader resourceLoader);
 

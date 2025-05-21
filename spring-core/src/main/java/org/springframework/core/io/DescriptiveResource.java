@@ -32,6 +32,8 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 1.2.6
  */
+// 简单的 {@link Resource} 实现，包含资源描述，但不指向实际可读的资源。
+// <p>如果 API 需要 {@code Resource} 参数，但实际读取时不一定使用，则用作占位符。
 public class DescriptiveResource extends AbstractResource {
 
 	private final String description;

@@ -38,6 +38,13 @@ import java.io.InputStream;
  * @see InputStreamResource
  * @see ByteArrayResource
  */
+// 一个简单的接口，用于作为 {@link InputStream} 源的对象。
+//
+// <p>这是 Spring 更强大的 {@link Resource} 接口的基础接口。
+//
+// <p>对于一次性使用的流，{@link InputStreamResource} 可用于任何给定的 {@code InputStream}。
+// Spring 的 {@link ByteArrayResource} 或任何基于文件的 {@code Resource} 实现都可以用作具体实例，
+// 允许多次读取底层内容流。这使得此接口可用作邮件附件等内容的抽象源。
 @FunctionalInterface
 public interface InputStreamSource {
 
@@ -54,6 +61,13 @@ public interface InputStreamSource {
 	 * @see Resource#isReadable()
 	 * @see Resource#isOpen()
 	 */
+	// 返回底层资源内容的 {@link InputStream}。
+	// <p>通常预期每次此类调用都会创建一个<i>新鲜的</i>流。
+	// <p>当考虑像 JavaMail 这样的 API 时，此要求尤为重要，因为它需要在创建邮件附件时多次读取该流。
+	// 对于这样的用例，<i>要求</i>每次 {@code getInputStream()} 调用都返回一个新鲜的流。
+	// @return 底层资源的输入流（不能为 {@code null}）
+	// @throws java.io.FileNotFoundException 如果底层资源不存在，则抛出 java.io.FileNotFoundException
+	// @throws java.io.IOException 如果无法打开内容流，则抛出 IOException
 	InputStream getInputStream() throws IOException;
 
 }

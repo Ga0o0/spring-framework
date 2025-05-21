@@ -45,6 +45,12 @@ import org.springframework.util.ResourceUtils;
  * @author Sam Brannen
  * @since 28.12.2003
  */
+// {@link Resource} 实现的便捷基类，预先实现了典型行为。
+//
+// <p>“exists” 方法将检查文件或输入流是否可以打开；
+// “isOpen” 方法始终返回 false；
+// “getURL” 和 “getFile” 方法将抛出异常；
+// “toString” 方法将返回描述信息。
 public abstract class AbstractResource implements Resource {
 
 	/**
@@ -52,9 +58,12 @@ public abstract class AbstractResource implements Resource {
 	 * falling back to whether an InputStream can be opened.
 	 * <p>This will cover both directories and content resources.
 	 */
+	// 此实现检查是否可以打开文件，并回退到是否可以打开输入流。
+	// <p>这将涵盖目录和内容资源。
 	@Override
 	public boolean exists() {
 		// Try file existence: can we find the file in the file system?
+		// --> 译文：测试文件是否存在：我们可以在文件系统中找到该文件吗？
 		if (isFile()) {
 			try {
 				return getFile().exists();
@@ -64,6 +73,7 @@ public abstract class AbstractResource implements Resource {
 			}
 		}
 		// Fall back to stream existence: can we open the stream?
+		// --> 译文：回到流存在：我们可以打开流吗？
 		try {
 			getInputStream().close();
 			return true;

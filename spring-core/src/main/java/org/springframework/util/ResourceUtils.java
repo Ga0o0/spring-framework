@@ -276,6 +276,9 @@ public abstract class ResourceUtils {
 	 * @return whether the URL has been identified as a file system URL
 	 * @see #isJarURL(URL)
 	 */
+	// 判断给定的 URL 是否指向文件系统中的资源，例如，是否使用协议 "file"、"vfsfile" 或 "vfs"。
+	// @param url 需要检查的 URL
+	// @return 判断该 URL 是否被识别为文件系统 URL
 	public static boolean isFileURL(URL url) {
 		String protocol = url.getProtocol();
 		return (URL_PROTOCOL_FILE.equals(protocol) || URL_PROTOCOL_VFSFILE.equals(protocol) ||
@@ -406,6 +409,10 @@ public abstract class ResourceUtils {
 	 * @see java.net.URI#toURL()
 	 * @see #toURI(String)
 	 */
+	// 根据给定的 location 字符串创建一个干净的 URL 实例，并进行 URI 构造和 URL 转换。
+	// @param location 要转换为 URL 实例的 location 字符串
+	// @return URL 实例
+	// @throws MalformedURLException 如果 location 不是有效的 URL
 	@SuppressWarnings("deprecation")  // on JDK 20 (deprecated URL constructor)
 	public static URL toURL(String location) throws MalformedURLException {
 		try {

@@ -124,6 +124,7 @@ public class DefaultResourceLoader implements ResourceLoader {
 	 * @since 4.3
 	 * @see #addProtocolResolver(ProtocolResolver)
 	 */
+	// 返回当前注册的协议解析器的集合，允许自省和修改。
 	public Collection<ProtocolResolver> getProtocolResolvers() {
 		return this.protocolResolvers;
 	}
@@ -154,7 +155,10 @@ public class DefaultResourceLoader implements ResourceLoader {
 	public Resource getResource(String location) {
 		Assert.notNull(location, "Location must not be null");
 
+		// 遍历注册的协议解析器的集合，并执行 ProtocolResolver#resolve() 方法进行解析。
+		// getProtocolResolvers() --> 返回当前注册的协议解析器的集合，允许自省和修改。
 		for (ProtocolResolver protocolResolver : getProtocolResolvers()) {
+			// 如果此实现的协议匹配，则根据给定的资源加载器解析给定的位置。
 			Resource resource = protocolResolver.resolve(location, this);
 			if (resource != null) {
 				return resource;
@@ -162,19 +166,22 @@ public class DefaultResourceLoader implements ResourceLoader {
 		}
 
 		if (location.startsWith("/")) {
+			// 返回给定路径下资源的资源句柄。
 			return getResourceByPath(location);
 		}
-		else if (location.startsWith(CLASSPATH_URL_PREFIX)) {
+		else if (location.startsWith(CLASSPATH_URL_PREFIX)) { // CLASSPATH_URL_PREFIX = "classpath:"
 			return new ClassPathResource(location.substring(CLASSPATH_URL_PREFIX.length()), getClassLoader());
 		}
 		else {
 			try {
-				// Try to parse the location as a URL...
+				// Try to parse the location as a URL... --> 译文：尝试将位置解析为 URL...
+				// 根据给定的 location 字符串创建一个干净的 URL 实例，并进行 URI 构造和 URL 转换。
 				URL url = ResourceUtils.toURL(location);
+				//  判断给定的 URL 是否指向文件系统中的资源，例如，是否使用协议 "file"、"vfsfile" 或 "vfs"。
 				return (ResourceUtils.isFileURL(url) ? new FileUrlResource(url) : new UrlResource(url));
 			}
 			catch (MalformedURLException ex) {
-				// No URL -> resolve as resource path.
+				// No URL -> resolve as resource path. --> 译文：没有 URL -> 解析为资源路径。
 				return getResourceByPath(location);
 			}
 		}
@@ -191,6 +198,10 @@ public class DefaultResourceLoader implements ResourceLoader {
 	 * @see org.springframework.context.support.FileSystemXmlApplicationContext#getResourceByPath
 	 * @see org.springframework.web.context.support.XmlWebApplicationContext#getResourceByPath
 	 */
+	// 返回给定路径下资源的资源句柄。
+	// <p>默认实现支持类路径位置。这适用于独立实现，但可以被覆盖，例如针对 Servlet 容器的实现。
+	// @param path 资源路径
+	// @return 相应的资源句柄
 	protected Resource getResourceByPath(String path) {
 		return new ClassPathContextResource(path, getClassLoader());
 	}

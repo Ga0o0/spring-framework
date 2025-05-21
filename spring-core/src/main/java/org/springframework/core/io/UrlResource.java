@@ -45,6 +45,8 @@ import org.springframework.util.StringUtils;
  * @since 28.12.2003
  * @see java.net.URL
  */
+// {@link Resource} 用于 {@code java.net.URL} 定位器的实现。
+// 支持解析为 {@code URL}，并且如果使用 {@code "file:"} 协议，还支持解析为 {@code File}。
 public class UrlResource extends AbstractFileResolvingResource {
 
 	private static final String AUTHORIZATION = "Authorization";
@@ -74,6 +76,8 @@ public class UrlResource extends AbstractFileResolvingResource {
 	 * @see #UrlResource(URI)
 	 * @see #UrlResource(String)
 	 */
+	// 根据给定的 URL 对象创建一个新的 {@code UrlResource}。
+	// @param url 一个 URL
 	public UrlResource(URL url) {
 		Assert.notNull(url, "URL must not be null");
 		this.uri = null;

@@ -43,6 +43,14 @@ import org.springframework.util.ResourceUtils;
  * @author Juergen Hoeller
  * @since 5.0.2
  */
+// {@link UrlResource} 的子类，它假设文件解析，并为其实现 {@link WritableResource} 接口。
+// 此资源变体还缓存从 {@link #getFile()} 解析的 {@link File} 句柄。
+//
+// <p>这是由 {@link DefaultResourceLoader} 为“file:...”URL 位置解析的类，
+// 允许将其向下转换为 {@link WritableResource}。
+//
+// <p>或者，如果要从 {@link java.io.File} 句柄或 NIO {@link java.nio.file.Path} 直接构造，
+// 请考虑使用 {@link FileSystemResource}。
 public class FileUrlResource extends UrlResource implements WritableResource {
 
 	@Nullable
@@ -57,6 +65,9 @@ public class FileUrlResource extends UrlResource implements WritableResource {
 	 * @see ResourceUtils#isFileURL(URL)
 	 * @see #getFile()
 	 */
+	// 根据给定的 URL 对象创建一个新的 {@code FileUrlResource}。
+	// <p>请注意，这并不强制使用“文件”作为 URL 协议。如果已知某个协议可以解析为文件，则可以用于此目的。
+	// @param url URL
 	public FileUrlResource(URL url) {
 		super(url);
 	}

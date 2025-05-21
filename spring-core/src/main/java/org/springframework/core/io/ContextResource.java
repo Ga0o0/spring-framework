@@ -27,6 +27,8 @@ package org.springframework.core.io;
  * @since 2.5
  * @see org.springframework.web.context.support.ServletContextResource
  */
+// 扩展接口，用于从封闭的 “上下文” 加载资源，例如从 {@link jakarta.servlet.ServletContext} 加载，
+// 也可以从普通的 Classpath 路径或相对文件系统路径（未指定显式前缀，因此相对于本地 {@link ResourceLoader} 上下文）加载。
 public interface ContextResource extends Resource {
 
 	/**
@@ -34,6 +36,8 @@ public interface ContextResource extends Resource {
 	 * <p>This is typically path relative to a context-specific root directory,
 	 * e.g. a ServletContext root or a PortletContext root.
 	 */
+	// 返回封闭 “上下文” 内的路径。
+	// <p>这通常是相对于上下文特定根目录的路径，例如 ServletContext 根目录或 PortletContext 根目录。
 	String getPathWithinContext();
 
 }

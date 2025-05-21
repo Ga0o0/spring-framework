@@ -41,6 +41,11 @@ import org.springframework.util.Assert;
  * @see InputStreamResource
  * @see org.springframework.mail.javamail.MimeMessageHelper#addAttachment(String, InputStreamSource)
  */
+// 为给定的字节数组创建 {@link Resource} 实现。
+// <p>为给定的字节数组创建一个 {@link ByteArrayInputStream}。
+//
+// <p>适用于从任何给定的字节数组加载内容，而无需使用一次性的 {@link InputStreamResource}。
+// 尤其适用于从本地内容创建邮件附件，因为 JavaMail 需要能够多次读取流。
 public class ByteArrayResource extends AbstractResource {
 
 	private final byte[] byteArray;

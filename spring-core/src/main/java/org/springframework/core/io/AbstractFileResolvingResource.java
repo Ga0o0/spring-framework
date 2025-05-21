@@ -42,6 +42,9 @@ import org.springframework.util.ResourceUtils;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 将 URL 解析为文件引用的资源的抽象基类，例如 {@link UrlResource} 或 {@link ClassPathResource}。
+//
+// <p>检测 URL 中的 “file” 协议以及 JBoss “vfs” 协议，并相应地解析文件系统引用。
 public abstract class AbstractFileResolvingResource extends AbstractResource {
 
 	@Override

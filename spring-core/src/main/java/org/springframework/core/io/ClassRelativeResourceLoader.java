@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
  * @see Class#getResource(String)
  * @see ClassPathResource#ClassPathResource(String, Class)
  */
+// {@link ResourceLoader} 实现将普通资源路径解释为相对于给定的 {@code java.lang.Class}。
 public class ClassRelativeResourceLoader extends DefaultResourceLoader {
 
 	private final Class<?> clazz;

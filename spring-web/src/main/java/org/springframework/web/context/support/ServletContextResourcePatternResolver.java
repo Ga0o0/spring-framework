@@ -43,6 +43,9 @@ import org.springframework.util.StringUtils;
  * @author Juergen Hoeller
  * @since 1.1.2
  */
+// ServletContext 感知的 {@link PathMatchingResourcePatternResolver} 子类，
+// 能够通过 {@link ServletContext#getResourcePaths} 在 Web 应用程序根目录下查找匹配的资源。
+// 对于其他资源，则返回到超类的文件系统进行检查。
 public class ServletContextResourcePatternResolver extends PathMatchingResourcePatternResolver {
 
 	private static final Log logger = LogFactory.getLog(ServletContextResourcePatternResolver.class);

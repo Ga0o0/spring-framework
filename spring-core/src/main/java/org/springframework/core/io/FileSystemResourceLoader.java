@@ -35,6 +35,13 @@ package org.springframework.core.io;
  * @see DefaultResourceLoader
  * @see org.springframework.context.support.FileSystemXmlApplicationContext
  */
+// {@link ResourceLoader} 实现将纯文本路径解析为文件系统资源，而不是类路径资源（后者是 {@link DefaultResourceLoader} 的默认策略）。
+//
+// <p><b>注意：</b>即使纯文本路径以斜杠开头，它们也始终会被解释为相对于当前虚拟机工作目录的路径。（这与 Servlet 容器中的语义一致。）
+// <b>使用显式的“file:”前缀强制使用绝对文件路径。</b>
+//
+// <p>{@link org.springframework.context.support.FileSystemXmlApplicationContext} 是一个功能齐全的 ApplicationContext 实现，
+// 它提供了相同的资源路径解析策略。
 public class FileSystemResourceLoader extends DefaultResourceLoader {
 
 	/**

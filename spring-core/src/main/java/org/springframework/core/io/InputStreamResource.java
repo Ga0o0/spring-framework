@@ -55,6 +55,20 @@ import org.springframework.util.Assert;
  * @see FileSystemResource
  * @see UrlResource
  */
+// 按需为给定的 {@link InputStream} 或给定的 {@link InputStreamSource}（可以通过 lambda 表达式提供）提供 {@link Resource} 实现，以实现惰性 {@link InputStream}。
+//
+// <p>仅在没有其他特定 {@code Resource} 实现适用时才应使用。
+// 具体而言，尽可能优先使用 {@link ByteArrayResource} 或任何基于文件的 {@code Resource} 实现。
+// 如果需要多次获取自定义流，请使用自定义 {@link AbstractResource} 子类及其相应的 {@code getInputStream()} 实现。
+//
+// <p>与其他 {@code Resource} 实现不同，这是一个<i>已打开</i>资源的描述符 - 因此 {@link #isOpen()} 返回 {@code true}。
+// 如果您需要将资源描述符保存在某处，或者需要多次从流中读取数据，请不要使用 {@code InputStreamResource}。
+// 这也适用于使用 {@code InputStreamSource} 构建的情况，该类会延迟获取流，但仅允许单次访问。
+//
+// <p><b>注意：此类不提供独立的 {@link #contentLength()} 实现：任何此类调用都将消耗给定的 {@code InputStream}！</b>
+// 如果可能，请考虑使用自定义实现覆盖 {@code #contentLength()}。
+// 出于任何其他目的，不建议从此类扩展；尤其是在与 Spring 的 Web 资源渲染一起使用时，
+// Spring 会专门跳过此类的 {@code #contentLength()}。
 public class InputStreamResource extends AbstractResource {
 
 	private final InputStreamSource inputStreamSource;

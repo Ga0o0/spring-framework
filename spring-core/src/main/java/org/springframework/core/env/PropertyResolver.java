@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @see Environment
  * @see PropertySourcesPropertyResolver
  */
+// 用于解析任何底层源的属性的接口。
 public interface PropertyResolver {
 
 	/**

@@ -33,6 +33,13 @@ import java.util.Map;
  * @since 1.2
  * @see AntPathMatcher
  */
+// 基于 {@code String} 的路径匹配策略接口。
+//
+// <p>由 {@link org.springframework.core.io.support.PathMatchingResourcePatternResolver}、
+// {@link org.springframework.web.servlet.handler.AbstractUrlHandlerMapping}
+// 和 {@link org.springframework.web.servlet.mvc.WebContentInterceptor} 使用。
+//
+// <p>默认实现是 {@link AntPathMatcher}，支持 Ant 风格的模式语法。
 public interface PathMatcher {
 
 	/**

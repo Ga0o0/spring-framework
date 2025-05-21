@@ -56,6 +56,15 @@ import org.springframework.util.Assert;
  * @see java.nio.file.Files
  * @see FileSystemResource
  */
+// {@link Resource} 是 {@link java.nio.file.Path} 句柄的实现，
+// 所有操作和转换均通过 {@code Path} API 执行。
+// 支持解析为 {@link File} 和 {@link URL}。实现了扩展的 {@link WritableResource} 接口。
+//
+// <p>注意：从 5.1 版本开始，{@link FileSystemResource#FileSystemResource(Path) FileSystemResource}
+// 也支持 {@link java.nio.file.Path}，它应用 Spring 标准的基于字符串的路径转换，
+// 但所有操作均通过 {@link java.nio.file.Files} API 执行。
+// 此 {@code PathResource} 实际上是纯基于 {@code java.nio.path.Path} 的替代方案，
+// 但具有不同的 {@code createRelative} 行为。
 public class PathResource extends AbstractResource implements WritableResource {
 
 	private final Path path;

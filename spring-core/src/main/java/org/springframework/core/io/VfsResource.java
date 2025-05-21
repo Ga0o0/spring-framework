@@ -39,6 +39,10 @@ import org.springframework.util.ResourceUtils;
  * @author Sam Brannen
  * @since 3.0
  */
+// 基于 JBoss VFS 的 {@link Resource} 实现。
+//
+// <p>从 Spring 4.0 开始，此类支持 JBoss AS 6+ 上的 VFS 3.x（包 {@code org.jboss.vfs}），
+// 并且特别兼容 JBoss AS 7 和 WildFly 8+。
 public class VfsResource extends AbstractResource {
 
 	private final Object resource;

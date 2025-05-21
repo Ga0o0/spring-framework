@@ -28,6 +28,9 @@ import org.springframework.lang.Nullable;
  * @author Chris Beams
  * @since 3.1
  */
+// 大多数（如果不是全部）{@link PropertyResolver} 类型都需要实现的配置接口。
+// 它提供访问和自定义 {@link org.springframework.core.convert.ConversionService ConversionService} 的功能，
+// 用于将属性值从一种类型转换为另一种类型。
 public interface ConfigurablePropertyResolver extends PropertyResolver {
 
 	/**

@@ -59,6 +59,13 @@ import org.springframework.util.StringUtils;
  * @see java.io.File
  * @see java.nio.file.Files
  */
+// {@link Resource} 实现，用于 {@code java.io.File} 和 {@code java.nio.file.Path} 句柄，
+// 并带有文件系统目标。支持解析为 {@code File} 和 {@code URL}。
+// 实现了扩展的 {@link WritableResource} 接口。
+//
+// <p>注意：从 Spring Framework 5.0 开始，此 {@link Resource} 实现使用 NIO.2 API 进行读/写交互。
+// 从 5.1 开始，它可以使用 {@link java.nio.file.Path} 句柄构建，在这种情况下，
+// 它将通过 NIO.2 执行所有文件系统交互，仅在 {@link #getFile()} 时调用 {@link File}。
 public class FileSystemResource extends AbstractResource implements WritableResource {
 
 	private final String path;

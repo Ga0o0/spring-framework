@@ -700,6 +700,11 @@ public abstract class StringUtils {
 	 * @param path the original path
 	 * @return the normalized path
 	 */
+	// 通过抑制 “path/..” 之类的序列和内部简单点来规范化路径。
+	// <p>此结果方便路径比较。对于其他用途，请注意 Windows 分隔符（“\”和“\\”）将被替换为简单斜杠。
+	// <p><strong>注意</strong>，在安全上下文中不应依赖 {@code cleanPath}。应使用其他机制来防止路径遍历问题。
+	// @param path 原始路径
+	// @return 规范化的路径
 	public static String cleanPath(String path) {
 		if (!hasLength(path)) {
 			return path;

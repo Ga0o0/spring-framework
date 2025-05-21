@@ -49,6 +49,9 @@ import org.springframework.web.util.WebUtils;
  * @see jakarta.servlet.ServletContext#getResource
  * @see jakarta.servlet.ServletContext#getRealPath
  */
+// {@link org.springframework.core.io.Resource} 是 {@link jakarta.servlet.ServletContext} 资源的实现，用于解析 Web 应用根目录内的相对路径。
+//
+// <p>始终支持流访问和 URL 访问，但仅在 Web 应用存档展开时才允许 {@code java.io.File} 访问。
 public class ServletContextResource extends AbstractFileResolvingResource implements ContextResource {
 
 	private final ServletContext servletContext;

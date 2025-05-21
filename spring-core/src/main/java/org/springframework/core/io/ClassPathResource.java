@@ -43,6 +43,11 @@ import org.springframework.util.StringUtils;
  * @see Class#getResourceAsStream(String)
  * @see Class#getResource(String)
  */
+// 类路径资源的 {@link Resource} 实现。
+// 使用给定的 {@link ClassLoader} 或给定的 {@link Class} 加载资源。
+//
+// <p>如果类路径资源位于文件系统中，则支持解析为 {@code java.io.File}，但 JAR 中的资源则不支持。
+// 始终支持解析为 {@code java.net.URL}。
 public class ClassPathResource extends AbstractFileResolvingResource {
 
 	/**
@@ -82,6 +87,11 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	 * @param classLoader the class loader to load the resource with
 	 * @see ClassUtils#getDefaultClassLoader()
 	 */
+	// 为 {@code ClassLoader} 创建一个新的 {@code ClassPathResource}。
+	// <p>由于 {@code ClassLoader} 资源访问方法不接受斜杠，因此前导斜杠将被移除。
+	// <p>如果提供的 {@code ClassLoader} 为 {@code null}，则将使用默认类加载器加载资源。
+	// @param path 类路径中的绝对路径
+	// @param classLoader 用于加载资源的类加载器
 	public ClassPathResource(String path, @Nullable ClassLoader classLoader) {
 		Assert.notNull(path, "Path must not be null");
 		String pathToUse = StringUtils.cleanPath(path);

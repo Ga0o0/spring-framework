@@ -43,6 +43,14 @@ import org.springframework.util.ReflectionUtils;
  * @author Juergen Hoeller
  * @since 3.0.3
  */
+// 用于在类路径中检测和访问 JBoss VFS 的实用程序。
+//
+// <p>从 Spring 4.0 开始，此类支持 JBoss AS 6+ 上的 VFS 3.x（包 {@code org.jboss.vfs}），
+// 并且尤其兼容 JBoss AS 7 和 WildFly 8+。
+//
+// <p>感谢 Marius Bogoevici 的初始实现。
+//
+// <p><b>注意：</b>这是一个内部类，不应在框架之外使用。
 public abstract class VfsUtils {
 
 	private static final String VFS3_PKG = "org.jboss.vfs.";

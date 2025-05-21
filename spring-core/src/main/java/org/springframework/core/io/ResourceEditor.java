@@ -47,6 +47,14 @@ import org.springframework.util.StringUtils;
  * @see DefaultResourceLoader
  * @see PropertyResolver#resolvePlaceholders
  */
+// {@link java.beans.PropertyEditor Editor} 用于 {@link Resource} 描述符，
+// 可自动将 {@code String} 位置（例如 {@code file:C:/myfile.txt}
+// 或 {@code classpath:myfile.txt}）转换为 {@code Resource} 属性，而无需使用 {@code String} 位置属性。
+//
+// <p>路径可能包含 {@code ${...}} 占位符，这些占位符将被解析为 {@link org.springframework.core.env.Environment} 属性：
+// 例如 {@code ${user.dir}}。默认情况下，无法解析的占位符将被忽略。
+//
+// <p>委托给 {@link ResourceLoader} 执行繁重工作，默认情况下使用 {@link DefaultResourceLoader}。
 public class ResourceEditor extends PropertyEditorSupport {
 
 	private final ResourceLoader resourceLoader;

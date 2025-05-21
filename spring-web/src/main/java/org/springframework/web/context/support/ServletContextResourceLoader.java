@@ -37,6 +37,10 @@ import org.springframework.core.io.Resource;
  * @see org.springframework.web.servlet.HttpServletBean
  * @see org.springframework.web.filter.GenericFilterBean
  */
+// ResourceLoader 实现将路径解析为 ServletContext 资源，
+// 以便在 WebApplicationContext 之外使用（例如，在 HttpServletBean 或 GenericFilterBean 子类中）。
+//
+// <p>在 WebApplicationContext 中，上下文实现会自动将资源路径解析为 ServletContext 资源。
 public class ServletContextResourceLoader extends DefaultResourceLoader {
 
 	private final ServletContext servletContext;

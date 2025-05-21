@@ -29,6 +29,8 @@ import java.nio.channels.WritableByteChannel;
  * @since 3.1
  * @see java.io.OutputStream
  */
+// 支持写入资源的扩展接口。
+// 提供 {@link #getOutputStream() OutputStream 访问器}。
 public interface WritableResource extends Resource {
 
 	/**
@@ -41,6 +43,9 @@ public interface WritableResource extends Resource {
 	 * @see #getOutputStream()
 	 * @see #isReadable()
 	 */
+	// 指示此资源的内容是否可以通过 {@link #getOutputStream()} 写入。
+	// <p>对于典型的资源描述符，该值为 {@code true}；请注意，实际内容写入尝试时仍可能失败。
+	// 但是，如果值为 {@code false}，则明确表明资源内容无法修改。
 	default boolean isWritable() {
 		return true;
 	}
@@ -51,6 +56,8 @@ public interface WritableResource extends Resource {
 	 * @throws IOException if the stream could not be opened
 	 * @see #getInputStream()
 	 */
+	// 返回底层资源的 {@link OutputStream}，允许（覆盖）写入其内容。
+	// @throws IOException 如果无法打开流，则抛出 IOException
 	OutputStream getOutputStream() throws IOException;
 
 	/**

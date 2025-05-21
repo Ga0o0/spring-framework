@@ -41,6 +41,13 @@ import org.springframework.util.StringUtils;
  * @see Module#getResourceAsStream
  * @see ClassPathResource
  */
+// {@link Resource} 实现，用于 {@link java.lang.Module} 解析，
+// 并通过 {@link Module#getResourceAsStream} 执行 {@link #getInputStream()} 访问。
+//
+// <p>或者，对于导出的资源，可以考虑通过 {@link ClassPathResource} 访问模块路径布局中的资源；
+// 对于特定类的包含模块中的本地解析，
+// 可以考虑通过 {@link ClassPathResource#ClassPathResource(String, Class)} 访问
+// 相对于 {@code Class} 的资源。在常见情况下，模块资源将作为类路径资源透明可见，因此无需任何特殊处理。
 public class ModuleResource extends AbstractResource {
 
 	private final Module module;
