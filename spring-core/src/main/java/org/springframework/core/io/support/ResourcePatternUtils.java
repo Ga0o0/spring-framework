@@ -30,6 +30,9 @@ import org.springframework.util.ResourceUtils;
  * @author Juergen Hoeller
  * @since 1.2.3
  */
+// 用于判断给定 URL 是否为可通过 {@link ResourcePatternResolver} 加载的资源位置的实用程序类。
+//
+// <p>如果 {@link #isUrl(String)} 方法返回 {@code false}，调用者通常会假定该位置为相对路径。
 public abstract class ResourcePatternUtils {
 
 	/**
@@ -42,6 +45,9 @@ public abstract class ResourcePatternUtils {
 	 * @see org.springframework.util.ResourceUtils#isUrl(String)
 	 * @see java.net.URL
 	 */
+	// 返回给定资源位置是否为 URL：可以是特殊的“classpath”或“classpath*”伪 URL，也可以是标准 URL。
+	// @param resourceLocation 要检查的位置字符串
+	// @return 该位置是否符合 URL 的条件
 	public static boolean isUrl(@Nullable String resourceLocation) {
 		return (resourceLocation != null &&
 				(resourceLocation.startsWith(ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX) ||
@@ -58,6 +64,12 @@ public abstract class ResourcePatternUtils {
 	 * @return the ResourcePatternResolver
 	 * @see PathMatchingResourcePatternResolver
 	 */
+	// 为给定的 {@link ResourceLoader} 返回一个默认的 {@link ResourcePatternResolver}。
+	// <p>如果 {@code ResourceLoader} 实现了 {@code ResourcePatternResolver} 扩展，则返回该 {@code ResourceLoader} 本身；
+	// 如果是，则返回基于给定 {@code ResourceLoader} 构建的默认 {@link PathMatchingResourcePatternResolver}。
+	// @param resourceLoader 用于构建模式解析器的 ResourceLoader
+	// （可以为 {@code null}，表示使用默认 ResourceLoader）
+	// @return ResourcePatternResolver
 	public static ResourcePatternResolver getResourcePatternResolver(@Nullable ResourceLoader resourceLoader) {
 		if (resourceLoader instanceof ResourcePatternResolver resolver) {
 			return resolver;

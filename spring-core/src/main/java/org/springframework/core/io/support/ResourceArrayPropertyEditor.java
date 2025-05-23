@@ -58,6 +58,14 @@ import org.springframework.util.StringUtils;
  * @see ResourcePatternResolver
  * @see PathMatchingResourcePatternResolver
  */
+// {@link org.springframework.core.io.Resource} 数组编辑器，
+// 用于自动将 {@code String} 位置模式（例如 {@code "file:C:/my*.txt"} 或 {@code "classpath*:myfile.txt"}）转换为 {@code Resource} 数组属性。
+// 还可以将位置模式的集合或数组转换为合并的 Resource 数组。
+//
+// <p>路径可能包含 {@code ${...}} 个占位符，这些占位符将被解析为 {@link org.springframework.core.env.Environment} 属性：
+// 例如 {@code ${user.dir}}。默认情况下，无法解析的占位符将被忽略。
+//
+// <p>委托给 {@link ResourcePatternResolver}，默认情况下使用 {@link PathMatchingResourcePatternResolver}。
 public class ResourceArrayPropertyEditor extends PropertyEditorSupport {
 
 	private static final Log logger = LogFactory.getLog(ResourceArrayPropertyEditor.class);

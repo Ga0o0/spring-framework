@@ -54,6 +54,9 @@ class PropertySourceRegistry {
 	 * @param propertySource metadata for the <code>@PropertySource</code> annotation found
 	 * @throws IOException if loading a property source failed
 	 */
+	// 处理给定的 <code>@PropertySource</code> 注解元数据。
+	// @param propertySource 找到 <code>@PropertySource</code> 注解的元数据
+	// 如果加载属性源失败，则抛出 @throws IOException
 	void processPropertySource(AnnotationAttributes propertySource) throws IOException {
 		String name = propertySource.getString("name");
 		if (!StringUtils.hasLength(name)) {
@@ -70,6 +73,7 @@ class PropertySourceRegistry {
 		Class<? extends PropertySourceFactory> factoryClass = propertySource.getClass("factory");
 		Class<? extends PropertySourceFactory> factoryClassToUse =
 				(factoryClass != PropertySourceFactory.class ? factoryClass : null);
+		// PropertySourceDescriptor：{@link org.springframework.core.env.PropertySource PropertySource} 的描述符。
 		PropertySourceDescriptor descriptor = new PropertySourceDescriptor(Arrays.asList(locations),
 				ignoreResourceNotFound, name, factoryClassToUse, encoding);
 		this.propertySourceProcessor.processPropertySource(descriptor);

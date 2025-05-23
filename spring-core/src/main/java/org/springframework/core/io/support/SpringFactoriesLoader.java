@@ -89,12 +89,33 @@ import org.springframework.util.StringUtils;
  * @author Phillip Webb
  * @since 3.2
  */
+// 框架内部使用的通用工厂加载机制。
+//
+// <p>{@code SpringFactoriesLoader} {@linkplain #loadFactories 加载}
+// 并实例化 {@value #FACTORIES_RESOURCE_LOCATION} 个文件中指定类型的工厂，这些文件可能存在于类路径中的多个 JAR 文件中。
+// {@code spring.factories} 文件必须采用 {@link Properties} 格式，其中键是接口或抽象类的完全限定名，值是以逗号分隔的实现类名列表。例如：
+//
+// <pre class="code">example.MyService=example.MyServiceImpl1,example.MyServiceImpl2</pre>
+//
+// 其中 {@code example.MyService} 是接口名称，{@code MyServiceImpl1} 和 {@code MyServiceImpl2} 是两个实现。
+//
+// <p>实现类<b>必须</b>具有一个用于创建实例的可解析构造函数，该构造函数可以是：
+// <ul>
+// <li>主构造函数或单个构造函数</li>
+// <li>单个公共构造函数</li>
+// <li>默认构造函数</li>
+// </ul>
+//
+// <p>如果可解析构造函数带有参数，则应提供合适的 {@link ArgumentResolver ArgumentResolver}。
+// 要自定义实例化失败的处理方式，请考虑提供 {@link FailureHandler FailureHandler}。
 public class SpringFactoriesLoader {
 
 	/**
 	 * The location to look for factories.
 	 * <p>Can be present in multiple JAR files.
 	 */
+	// 查找工厂的位置。
+	// <p>可以存在于多个 JAR 文件中。
 	public static final String FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories";
 
 	private static final FailureHandler THROWING_FAILURE_HANDLER = FailureHandler.throwing();

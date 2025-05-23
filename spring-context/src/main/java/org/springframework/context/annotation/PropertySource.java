@@ -162,6 +162,9 @@ import org.springframework.core.io.support.PropertySourceFactory;
  * @see org.springframework.core.env.ConfigurableEnvironment#getPropertySources()
  * @see org.springframework.core.env.MutablePropertySources
  */
+// 此注解提供了一种便捷的声明式机制，用于将 {@link org.springframework.core.env.PropertySource PropertySource} 添加
+// 到 Spring 的 {@link org.springframework.core.env.Environment Environment} 中。
+// 需与 @{@link Configuration} 类结合使用。
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -194,6 +197,18 @@ public @interface PropertySource {
 	 * @see org.springframework.core.env.PropertySource#getName()
 	 * @see org.springframework.core.io.Resource#getDescription()
 	 */
+	// 指示此属性源的唯一名称。
+	// <p>如果省略，{@link #factory} 将根据底层资源生成一个名称（对于 {@link org.springframework.core.io.support.DefaultPropertySourceFactory DefaultPropertySourceFactory}：
+	// 通过相应的无名 {@link org.springframework.core.io.support.ResourcePropertySource ResourcePropertySource} 构造函数从资源描述中派生）。
+	// <p>{@code PropertySource} 的名称有两个一般用途。
+	// <ul>
+	// <li>诊断：在日志记录和调试中确定属性的来源 -例如，在 Spring Boot 应用程序中，通过 Spring Boot 的 {@code PropertySourceOrigin} 进行设置。</li>
+	// <li>与 {@link org.springframework.core.env.MutablePropertySources MutablePropertySources} 进行编程交互：
+	// 该名称可用于从特定属性源检索属性（或确定特定命名的属性源是否已存在）。
+	// 该名称还可用于相对于现有属性源添加新的属性源（参见
+	// {@link org.springframework.core.env.MutablePropertySources#addBefore addBefore()} 和
+	// {@link org.springframework.core.env.MutablePropertySources#addAfter addAfter()}）。</li>
+	// </ul>
 	String name() default "";
 
 	/**
@@ -210,6 +225,13 @@ public @interface PropertySource {
 	 * property source, and in the order declared (or in the order in which resource
 	 * locations are resolved when location wildcards are used).
 	 */
+	// 指示要加载的属性文件的资源位置。
+	// <p>默认的 {@link #factory() factory} 支持传统和基于 XML 的属性文件格式，
+	// 例如 {@code "classpath:/com/myco/app.properties"} 或 {@code "file:/path/to/file.xml"}。
+	// <p>从 Spring Framework 6.1 开始，还支持资源位置通配符，
+	// 例如 {@code "classpath*:/config/*.properties"}。<p>{@code ${...}} 占位符将根据已在 {@code Environment} 中注册的属性源进行解析。
+	// 有关示例，请参阅上面的 {@linkplain PropertySource}。
+	// <p>每个位置都将作为其自己的属性源添加到封闭的 {@code Environment} 中，并按照声明的顺序（或按照使用位置通配符时资源位置解析的顺序）添加。
 	String[] value();
 
 	/**
@@ -219,12 +241,16 @@ public @interface PropertySource {
 	 * <p>Default is {@code false}.
 	 * @since 4.0
 	 */
+	// 指示是否应忽略找不到 {@link #value 属性资源} 的情况。
+	// <p>如果属性文件完全可选，则为 {@code true}。
+	// <p>默认值为 {@code false}。
 	boolean ignoreResourceNotFound() default false;
 
 	/**
 	 * A specific character encoding for the given resources, e.g. "UTF-8".
 	 * @since 4.3
 	 */
+	// 指定资源的特定字符编码，例如“UTF-8”。
 	String encoding() default "";
 
 	/**
@@ -236,6 +262,8 @@ public @interface PropertySource {
 	 * @see org.springframework.core.io.support.DefaultPropertySourceFactory
 	 * @see org.springframework.core.io.support.ResourcePropertySource
 	 */
+	// 指定自定义 {@link PropertySourceFactory}（如果有）。
+	// <p>默认情况下，将使用标准资源文件的默认工厂，该工厂支持 {@link java.util.Properties} 的 {@code *.properties} 和 {@code *.xml} 文件格式。
 	Class<? extends PropertySourceFactory> factory() default PropertySourceFactory.class;
 
 }

@@ -50,6 +50,9 @@ import org.springframework.util.ReflectionUtils;
  * @since 6.0
  * @see PropertySourceDescriptor
  */
+// 将 {@link PropertySource 属性源} 贡献给 {@link Environment}。
+//
+// <p>此类是有状态的，它会将同名的描述符合并到单个 {@link PropertySource} 中，而不是创建专用的描述符。
 public class PropertySourceProcessor {
 
 	private static final PropertySourceFactory defaultPropertySourceFactory = new DefaultPropertySourceFactory();
@@ -76,6 +79,9 @@ public class PropertySourceProcessor {
 	 * @param descriptor the descriptor to process
 	 * @throws IOException if loading the properties failed
 	 */
+	// 针对此实例管理的环境，处理指定的 {@link PropertySourceDescriptor}。
+	// @param descriptor 要处理的描述符
+	// @throws IOException，如果加载属性失败
 	public void processPropertySource(PropertySourceDescriptor descriptor) throws IOException {
 		String name = descriptor.name();
 		String encoding = descriptor.encoding();
@@ -107,19 +113,23 @@ public class PropertySourceProcessor {
 		}
 	}
 
+	// propertySource 已存在，使用 CompositePropertySource 替换；
+	// propertySource 不存在，并且没有任何 PropertySource，就进行 add last，否则 add before 到最后一个元素。
 	private void addPropertySource(PropertySource<?> propertySource) {
 		String name = propertySource.getName();
 		MutablePropertySources propertySources = this.environment.getPropertySources();
 
 		if (this.propertySourceNames.contains(name)) {
-			// We've already added a version, we need to extend it
+			// We've already added a version, we need to extend it --> 译文：我们已经添加了一个版本，我们需要扩展它
 			PropertySource<?> existing = propertySources.get(name);
 			if (existing != null) {
 				PropertySource<?> newSource = (propertySource instanceof ResourcePropertySource rps ?
 						rps.withResourceName() : propertySource);
+				// existing is CompositePropertySource, add first
 				if (existing instanceof CompositePropertySource cps) {
 					cps.addFirstPropertySource(newSource);
 				}
+				// existing is not CompositePropertySource,replace with CompositePropertySource
 				else {
 					if (existing instanceof ResourcePropertySource rps) {
 						existing = rps.withResourceName();

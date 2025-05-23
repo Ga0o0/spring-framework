@@ -43,6 +43,10 @@ import org.springframework.util.StringUtils;
  * @see AnnotationUtils#getAnnotationAttributes
  * @see AnnotatedElementUtils
  */
+// {@link LinkedHashMap} 子类，表示由 {@link AnnotationUtils}、{@link AnnotatedElementUtils}
+// 以及 Spring 的基于反射和 ASM 的 {@link org.springframework.core.type.AnnotationMetadata} 实现读取的注解属性 <em>键值</em> 对。
+//
+// <p>提供“伪具体化”以避免调用代码中出现混乱的 Map 泛型，并提供以类型安全的方式查找注解属性的便捷方法。
 @SuppressWarnings("serial")
 public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 

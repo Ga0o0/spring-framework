@@ -162,7 +162,7 @@ class ConfigurationClassParser {
 			try {
 				ConfigurationClass configClass;
 				if (bd instanceof AnnotatedBeanDefinition annotatedBeanDef) {
-					configClass = parse(annotatedBeanDef.getMetadata(), holder.getBeanName());
+					configClass = parse(annotatedBeanDef.getMetadata(), holder.getBeanName()); // invoke
 				}
 				else if (bd instanceof AbstractBeanDefinition abstractBeanDef && abstractBeanDef.hasBeanClass()) {
 					configClass = parse(abstractBeanDef.getBeanClass(), holder.getBeanName());
@@ -277,6 +277,10 @@ class ConfigurationClassParser {
 	 * @param sourceClass a source class
 	 * @return the superclass, or {@code null} if none found or previously processed
 	 */
+	// 通过读取源类中的注解、成员和方法，应用处理并构建完整的 {@link ConfigurationClass}。此方法可在发现相关源时多次调用。
+	// @param configClass 正在构建的配置类
+	// @param sourceClass 源类
+	// @return 父类，如果未找到或之前未处理过，则返回 {@code null}
 	@Nullable
 	protected final SourceClass doProcessConfigurationClass(
 			ConfigurationClass configClass, SourceClass sourceClass, Predicate<String> filter)

@@ -36,6 +36,13 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.core.env.PropertySource
  * @see org.springframework.context.annotation.PropertySource
  */
+// {@link org.springframework.core.env.PropertySource PropertySource} 的描述符。
+//
+// @param location 需要考虑的位置
+// @param ignoreResourceNotFound 是否忽略属性资源查找失败
+// @param name 属性源的名称，或 {@code null} 推断名称
+// @param propertySourceFactory 使用的 {@link PropertySourceFactory} 的类型，或 {@code null} 使用默认类型
+// @param encoding 编码方式，或 {@code null} 使用默认编码
 public record PropertySourceDescriptor(List<String> locations, boolean ignoreResourceNotFound,
 		@Nullable String name, @Nullable Class<? extends PropertySourceFactory> propertySourceFactory,
 		@Nullable String encoding) {
@@ -44,6 +51,8 @@ public record PropertySourceDescriptor(List<String> locations, boolean ignoreRes
 	 * Create a descriptor with the specified locations.
 	 * @param locations the locations to consider
 	 */
+	// 创建具有指定位置的描述符。
+	// @param location 要考虑的位置
 	public PropertySourceDescriptor(String... locations) {
 		this(Arrays.asList(locations), false, null, null, null);
 	}
