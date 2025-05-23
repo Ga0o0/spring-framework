@@ -39,6 +39,7 @@ import org.springframework.util.SystemPropertyUtils;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 用于解析任何底层源的属性的抽象基类。
 public abstract class AbstractPropertyResolver implements ConfigurablePropertyResolver {
 
 	protected final Log logger = LogFactory.getLog(getClass());

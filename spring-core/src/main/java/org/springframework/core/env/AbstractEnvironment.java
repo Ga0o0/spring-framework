@@ -52,6 +52,13 @@ import org.springframework.util.StringUtils;
  * @see ConfigurableEnvironment
  * @see StandardEnvironment
  */
+// {@link Environment} 实现的抽象基类。支持保留默认配置文件名称的概念，
+// 并允许通过 {@link #ACTIVE_PROFILES_PROPERTY_NAME} 和 {@link #DEFAULT_PROFILES_PROPERTY_NAME} 属性指定活动配置文件和默认配置文件。
+//
+// <p>具体子类的主要区别在于它们默认添加的 {@link PropertySource} 对象。{@code AbstractEnvironment} 不添加任何对象。
+// 子类应通过受保护的 {@link #customizePropertySources(MutablePropertySources)} 钩子提供属性源，
+// 而客户端应使用 {@link ConfigurableEnvironment#getPropertySources()} 并针对 {@link MutablePropertySources} API 进行自定义。
+// 有关使用示例，请参阅 {@link ConfigurableEnvironment} javadoc。
 public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 	/**
@@ -63,6 +70,9 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * log warnings from {@code getenv} calls coming from Spring.
 	 * @see #suppressGetenvAccess()
 	 */
+	// 系统属性，指示 Spring 忽略系统环境变量，即永远不会尝试通过 {@link System#getenv()} 检索此类变量。
+	// <p>默认值为“false”，如果 Spring 环境属性（例如，配置字符串中的占位符）无法解析，则回退到系统环境变量进行检查。
+	// 如果您遇到来自 Spring 的 {@code getenv} 调用的日志警告，请考虑将此标志切换为“true”。
 	public static final String IGNORE_GETENV_PROPERTY_NAME = "spring.getenv.ignore";
 
 	/**
@@ -74,6 +84,11 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * {@code SPRING_PROFILES_ACTIVE}.
 	 * @see ConfigurableEnvironment#setActiveProfiles
 	 */
+	// 用于设置以指定活动配置文件的属性名称：{@value}。
+	// <p>值可以用逗号分隔。
+	// <p>请注意，某些 Shell 环境（例如 Bash）不允许在变量名称中使用句点字符。
+	// 假设正在使用 Spring 的 {@link SystemEnvironmentPropertySource}，
+	// 则可以将此属性指定为名为 {@code SPRING_PROFILES_ACTIVE} 的环境变量。
 	public static final String ACTIVE_PROFILES_PROPERTY_NAME = "spring.profiles.active";
 
 	/**
@@ -85,6 +100,11 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * {@code SPRING_PROFILES_DEFAULT}.
 	 * @see ConfigurableEnvironment#setDefaultProfiles
 	 */
+	// 要设置的用于指定默认活动配置文件的属性名称：{@value}。
+	// <p>值可以用逗号分隔。
+	// <p>请注意，某些 Shell 环境（例如 Bash）不允许在变量名中使用句点字符。
+	// 假设正在使用 Spring 的 {@link SystemEnvironmentPropertySource}，
+	// 则可以将此属性指定为名为 {@code SPRING_PROFILES_DEFAULT} 的环境变量。
 	public static final String DEFAULT_PROFILES_PROPERTY_NAME = "spring.profiles.default";
 
 	/**
@@ -97,6 +117,8 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * @see AbstractEnvironment#DEFAULT_PROFILES_PROPERTY_NAME
 	 * @see AbstractEnvironment#ACTIVE_PROFILES_PROPERTY_NAME
 	 */
+	// 保留的默认配置文件名称：{@value}。
+	// <p>如果没有显式设置默认配置文件名称，并且也没有显式设置活动配置文件名称，则默认情况下将自动激活此配置文件。
 	public static final String RESERVED_DEFAULT_PROFILE_NAME = "default";
 
 
@@ -238,6 +260,66 @@ public abstract class AbstractEnvironment implements ConfigurableEnvironment {
 	 * @see PropertySourcesPropertyResolver
 	 * @see org.springframework.context.ApplicationContextInitializer
 	 */
+	// 自定义此 {@link PropertySource} 对象集合，以便在调用 {@link #getProperty(String)} 及相关方法时由此 {@code Environment} 搜索。
+	//
+	// <p>建议重写此方法的子类使用 {@link MutablePropertySources#addLast(PropertySource)} 添加属性源，
+	// 以便后续子类可以调用 {@code super.customizePropertySources()} 并获得可预测的结果。例如：
+	//
+	// <pre class="code">
+	// 		public class Level1Environment extends AbstractEnvironment {
+	// 			@Override
+	// 			protected void customizePropertySources(MutablePropertySources propertySources) {
+	// 				super.customizePropertySources(propertySources); // 来自基类的空操作
+	// 				propertySources.addLast(new PropertySourceA(...));
+	// 				propertySources.addLast(new PropertySourceB(...));
+	// 			}
+	// 		}
+	//
+	// 		public class Level2Environment extends Level1Environment {
+	// 			@Override
+	// 			protected void customizePropertySources(MutablePropertySources propertySources) {
+	// 				super.customizePropertySources(propertySources); // 从超类添加所有属性
+	// 				propertySources.addLast(new PropertySourceC(...));
+	// 				propertySources.addLast(new PropertySourceD(...));
+	// 			}
+	// 		}
+	// </pre>
+	//
+	// <p>在此排列中，属性将按源 A、B、C、D 的顺序进行解析。也就是说，属性源 “A” 优先于属性源 “D”。
+	// 如果 {@code Level2Environment} 子类希望赋予属性源 C 和 D 高于 A 和 B 的优先级，
+	// 它只需在添加自己的属性源之后调用 {@code super.customizePropertySources} 即可，而无需在添加之前调用：
+	//
+	// <pre class="code">
+	// 		public class Level2Environment extends Level1Environment {
+	// 			@Override
+	// 			protected void customizePropertySources(MutablePropertySources propertySources) {
+	// 				propertySources.addLast(new PropertySourceC(...));
+	// 				propertySources.addLast(new PropertySourceD(...));
+	// 				super.customizePropertySources(propertySources); // 从超类添加所有属性
+	// 			}
+	//		}
+	// </pre>
+	//
+	// <p>现在搜索顺序按预期为 C、D、A、B。
+	//
+	// <p>除了这些建议之外，子类还可以使用 {@link MutablePropertySources} 公开的任何 {@code add*}、{@code remove} 或 {@code replace} 方法来创建所需的属性源的精确排列。
+	//
+	// <p>基类实现未注册任何属性源。
+	//
+	// <p>请注意，任何 {@link ConfigurableEnvironment} 的客户端都可以通过 {@link #getPropertySources()} 访问器进一步自定义属性源，
+	// 通常在 {@link org.springframework.context.ApplicationContextInitializer ApplicationContextInitializer} 中。例如：
+	//
+	// <pre class="code">
+	// 		ConfigurableEnvironment env = new StandardEnvironment();
+	// 		env.getPropertySources().addLast(new PropertySourceX(...));
+	// </pre>
+	//
+	// <h2>关于实例变量访问的警告</h2>
+	// <p>在子类中声明且具有默认初始值的实例变量不应在此方法中访问。
+	// 由于 Java 对象创建生命周期的限制，当 {@link #AbstractEnvironment()} 构造函数调用此回调时，任何初始值都尚未赋值，
+	// 这可能会导致 {@code NullPointerException} 或其他问题。如果需要访问实例变量的默认值，请将此方法设置为空操作，
+	// 并直接在子类构造函数中执行属性源操作和实例变量访问。
+	// 请注意，为实例变量赋值本身没有问题；它只是尝试读取必须避免的默认值。
 	protected void customizePropertySources(MutablePropertySources propertySources) {
 	}
 

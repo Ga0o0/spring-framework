@@ -52,6 +52,23 @@ package org.springframework.core.env;
  * @see SystemEnvironmentPropertySource
  * @see org.springframework.web.context.support.StandardServletEnvironment
  */
+// {@link Environment} 实现适用于“标准”（即非 Web）应用程序。
+//
+// <p>除了 {@link ConfigurableEnvironment} 的常规功能（例如属性解析和与配置文件相关的操作）之外，此实现还配置了两个默认属性源，按以下顺序搜索：
+// <ul>
+// <li>{@linkplain AbstractEnvironment#getSystemProperties() 系统属性}
+// <li>{@linkplain AbstractEnvironment#getSystemEnvironment() 系统环境变量}
+// </ul>
+//
+// 也就是说，如果键“xyz”同时存在于 JVM 系统属性和当前进程的环境变量集合中
+// ，则调用 {@code environment.getProperty("xyz")} 将返回系统属性中键“xyz”的值。
+// 默认选择此顺序，因为系统属性是针对每个 JVM 的，而环境变量在给定系统上的多个 JVM 之间可能相同。
+// 赋予系统属性优先级允许基于每个 JVM 覆盖环境变量。
+//
+// <p>这些默认属性源可以被移除、重新排序或替换；可以使用 {@link #getPropertySources()} 提供的 {@link MutablePropertySources} 实例添加其他属性源。
+// 有关使用示例，请参阅 {@link ConfigurableEnvironment} Javadoc。
+//
+// <p>有关在 Shell 环境（例如 Bash）中禁止变量名使用句点字符的属性名特殊处理的详细信息，请参阅 {@link SystemEnvironmentPropertySource} Javadoc。
 public class StandardEnvironment extends AbstractEnvironment {
 
 	/** System environment property source name: {@value}. */

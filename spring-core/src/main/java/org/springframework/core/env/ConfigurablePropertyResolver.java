@@ -45,6 +45,12 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	 * @see PropertyResolver#getProperty(String, Class)
 	 * @see org.springframework.core.convert.converter.ConverterRegistry#addConverter
 	 */
+	// 返回对属性执行类型转换时使用的 {@link ConfigurableConversionService}。
+	// <p>返回的转换服务的可配置特性允许方便地添加和删除单个 {@code Converter} 实例：
+	// <pre class="code">
+	// 		ConfigurableConversionService cs = env.getConversionService();
+	// 		cs.addConverter(new FooConverter());
+	// </pre>
 	ConfigurableConversionService getConversionService();
 
 	/**
@@ -58,16 +64,22 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	 * @see #getConversionService()
 	 * @see org.springframework.core.convert.converter.ConverterRegistry#addConverter
 	 */
+	// 设置对属性执行类型转换时使用的 {@link ConfigurableConversionService}。
+	// <p><strong>注意：</strong>除了完全替换 {@code ConversionService}，
+	// 还可以考虑通过深入研究 {@link #getConversionService()}
+	// 并调用 {@code #addConverter} 等方法来添加或删除单个 {@code Converter} 实例。
 	void setConversionService(ConfigurableConversionService conversionService);
 
 	/**
 	 * Set the prefix that placeholders replaced by this resolver must begin with.
 	 */
+	// 设置此解析器替换的占位符必须以其开头的前缀。
 	void setPlaceholderPrefix(String placeholderPrefix);
 
 	/**
 	 * Set the suffix that placeholders replaced by this resolver must end with.
 	 */
+	// 设置此解析器替换的占位符必须以此后缀结尾。
 	void setPlaceholderSuffix(String placeholderSuffix);
 
 	/**
@@ -75,6 +87,7 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	 * resolver and their associated default value, or {@code null} if no such
 	 * special character should be processed as a value separator.
 	 */
+	// 指定此解析器替换的占位符与其关联的默认值之间的分隔符，如果不存在应作为值分隔符处理的特殊字符，则返回 {@code null}。
 	void setValueSeparator(@Nullable String valueSeparator);
 
 	/**
@@ -88,12 +101,16 @@ public interface ConfigurablePropertyResolver extends PropertyResolver {
 	 * unresolvable placeholders.
 	 * @since 3.2
 	 */
+	// 设置当给定属性的值中嵌套了无法解析的占位符时是否抛出异常。{@code false} 值表示严格解析，即会抛出异常。
+	// {@code true} 值表示无法解析的嵌套占位符应以其未解析的 ${...} 形式传递。
+	// <p>{@link #getProperty(String)} 及其变体的实现必须检查此处设置的值，以确定当属性值包含无法解析的占位符时是否采取正确的行为。
 	void setIgnoreUnresolvableNestedPlaceholders(boolean ignoreUnresolvableNestedPlaceholders);
 
 	/**
 	 * Specify which properties must be present, to be verified by
 	 * {@link #validateRequiredProperties()}.
 	 */
+	// 指定必须存在的属性，并通过 {@link #validateRequiredProperties()} 进行验证。
 	void setRequiredProperties(String... requiredProperties);
 
 	/**

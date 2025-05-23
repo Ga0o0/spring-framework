@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
  * @see DefaultPropertySourceFactory
  * @see ResourcePropertySource
  */
+// 用于创建基于资源的 {@link PropertySource} 包装器的策略接口。
 public interface PropertySourceFactory {
 
 	/**
@@ -48,6 +49,15 @@ public interface PropertySourceFactory {
 	 * @return the new {@link PropertySource} (never {@code null})
 	 * @throws IOException if resource resolution failed
 	 */
+	// 创建一个包装给定资源的 {@link PropertySource} 实例。
+	// <p>实现通常会创建 {@link ResourcePropertySource} 实例，
+	// {@link PropertySourceProcessor} 会在必要时通过 {@link ResourcePropertySource#withResourceName()} 自动调整属性源名称，
+	// 例如，将多个同名源组合成 {@link org.springframework.core.env.CompositePropertySource} 时。
+	// 自定义 {@link PropertySource} 类型的实现需要确保暴露足够独特的名称，并尽可能从 {@link ResourcePropertySource} 派生。 
+	// @param name 属性源的名称（可以为 {@code null}，此时工厂实现必须根据给定的资源生成名称）
+	// @param resource 要包装的资源（可能经过编码）
+	// @return 新的 {@link PropertySource}（永远不会为 {@code null}）
+	// @throws IOException（如果资源解析失败）
 	PropertySource<?> createPropertySource(@Nullable String name, EncodedResource resource) throws IOException;
 
 }

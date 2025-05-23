@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
  * @see PropertySources
  * @see AbstractEnvironment
  */
+// {@link PropertyResolver} 实现根据底层的 {@link PropertySources} 集解析属性值。
 public class PropertySourcesPropertyResolver extends AbstractPropertyResolver {
 
 	@Nullable

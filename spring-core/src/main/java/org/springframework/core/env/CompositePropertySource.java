@@ -43,6 +43,13 @@ import org.springframework.util.StringUtils;
  * @author Phillip Webb
  * @since 3.1.1
  */
+// 复合 {@link PropertySource} 实现，用于迭代一组 {@link PropertySource} 实例。
+// 在多个属性源共享同一名称的情况下（例如，向 {@code @PropertySource} 提供多个值时），此实现必不可少。
+//*
+//* <p>从 Spring 4.1.2 开始，此类扩展了 {@link EnumerablePropertySource} 而非普通的 {@link PropertySource}，
+// 并根据所有包含源中累积的属性名称公开 {@link #getPropertyNames()} -
+// 并且对于任何非 {@code EnumerablePropertySource} 类型的源，将抛出 {@code IllegalStateException}。
+// <b>当通过 {@code EnumerablePropertySource} 契约使用时，所有包含的源也应为 {@code EnumerablePropertySource} 类型。</b>
 public class CompositePropertySource extends EnumerablePropertySource<Object> {
 
 	private final Set<PropertySource<?>> propertySources = new LinkedHashSet<>();

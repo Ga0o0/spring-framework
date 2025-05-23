@@ -69,6 +69,41 @@ import java.util.Map;
  * @see StandardEnvironment
  * @see org.springframework.context.ConfigurableApplicationContext#getEnvironment
  */
+// 大多数（如果不是全部）{@link Environment} 类型都需要实现该配置接口。
+// 该接口提供设置活动配置文件和默认配置文件以及操作底层属性源的功能。
+// 允许客户端通过 {@link ConfigurablePropertyResolver} 超接口设置和验证所需属性、自定义转换服务等。
+//
+// <h2>操作属性源</h2>
+// <p>可以移除、重新排序或替换属性源；可以使用 {@link #getPropertySources()} 返回的 {@link MutablePropertySources} 实例添加其他属性源。
+// 以下示例针对的是 {@link StandardEnvironment} 的 {@code ConfigurableEnvironment} 实现，但通常适用于任何实现，尽管特定的默认属性源可能有所不同。
+//
+// <h4>示例：添加具有最高搜索优先级的新属性源</h4>
+// <pre class="code">
+// 		ConfigurableEnvironment environment = new StandardEnvironment();
+// 		MutablePropertySources propertySources = environment.getPropertySources();
+// 		Map<String, Object> myMap = new HashMap<>();
+// 		myMap.put("xyz", "myValue");
+// 		propertySources.addFirst(new MapPropertySource("MY_MAP", myMap));
+// </pre>
+//
+// <h4>示例：移除默认系统属性源</h4>
+// <pre class="code">
+// 		MutablePropertySources propertySources = environment.getPropertySources();
+//		propertySources.remove(StandardEnvironment.SYSTEM_PROPERTIES_PROPERTY_SOURCE_NAME)
+// </pre>
+//
+// <h4>示例：模拟系统环境以进行测试</h4>
+// <pre class="code">
+//		MutablePropertySources propertySources = environment.getPropertySources();
+//		MockPropertySource mockEnvVars = new MockPropertySource().withProperty("xyz", "myValue");
+//		propertySources.replace(StandardEnvironment.SYSTEM_ENVIRONMENT_PROPERTY_SOURCE_NAME, mockEnvVars);
+// </pre>
+//
+// 当 {@link Environment} 被 {@code ApplicationContext} 使用时，
+// 任何此类 {@code PropertySource} 操作都必须在上下文的
+// {@link org.springframework.context.support.AbstractApplicationContext#refresh() refresh()} 方法调用之前执行。
+// 这确保所有属性源在容器引导过程中都可用，
+// 包括 {@linkplain org.springframework.context.support.PropertySourcesPlaceholderConfigurer 属性占位符配置器} 的使用。
 public interface ConfigurableEnvironment extends Environment, ConfigurablePropertyResolver {
 
 	/**
@@ -84,6 +119,10 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * @see org.springframework.context.annotation.Profile
 	 * @see AbstractEnvironment#ACTIVE_PROFILES_PROPERTY_NAME
 	 */
+	// 指定此 {@code Environment} 的活动配置文件集。在容器引导期间，会评估配置文件，以确定是否应将 Bean 定义注册到容器中。
+	// <p>任何现有的活动配置文件都将被替换为给定的参数；调用时不传入任何参数将清除当前活动配置文件集。
+	// 使用 {@link #addActiveProfile} 可在保留现有配置文件集的同时添加配置文件。
+	// @throws IllegalArgumentException 如果任何配置文件为 null、为空或仅包含空格，则抛出 IllegalArgumentException
 	void setActiveProfiles(String... profiles);
 
 	/**
@@ -91,6 +130,8 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * @throws IllegalArgumentException if the profile is null, empty or whitespace-only
 	 * @see #setActiveProfiles
 	 */
+	// 将一个配置文件添加到当前活动配置文件集合。
+	// @throws IllegalArgumentException 如果配置文件为 null、为空或仅包含空格，则抛出 IllegalArgumentException
 	void addActiveProfile(String profile);
 
 	/**
@@ -99,6 +140,8 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * @throws IllegalArgumentException if any profile is null, empty or whitespace-only
 	 * @see AbstractEnvironment#DEFAULT_PROFILES_PROPERTY_NAME
 	 */
+	// 如果未通过 {@link #setActiveProfiles} 明确激活其他配置文件，则指定默认激活的配置文件集。
+	// 如果任何配置文件为 null、为空或仅包含空格，则抛出 IllegalArgumentException
 	void setDefaultProfiles(String... profiles);
 
 	/**
@@ -116,6 +159,12 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * variables.
 	 * @see AbstractEnvironment#customizePropertySources
 	 */
+	// 以可变形式返回此 {@code Environment} 的 {@link PropertySources}，
+	// 以便操作在解析此 {@code Environment} 对象的属性时应搜索的 {@link PropertySource} 对象集合。
+	// 各种 {@link MutablePropertySources} 方法，例如 {@link MutablePropertySources#addFirst addFirst}、
+	// {@link MutablePropertySources#addLast addLast}、{@link MutablePropertySources#addBefore addBefore}
+	// 和 {@link MutablePropertySources#addAfter addAfter}，允许对属性源排序进行细粒度控制。
+	// 例如，这在确保某些用户定义的属性源优先于默认属性源（例如系统属性集或系统环境变量集）的搜索优先级方面非常有用。
 	MutablePropertySources getPropertySources();
 
 	/**
@@ -125,6 +174,9 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * recommended that this method not be used directly unless bypassing other property
 	 * sources is expressly intended.
 	 */
+	// 返回 {@link System#getProperties()} 的值。
+	// <p>请注意，大多数 {@code Environment} 实现都会将此系统属性映射作为要搜索的默认 {@link PropertySource} 包含。
+	// 因此，建议不要直接使用此方法，除非明确需要绕过其他属性源。
 	Map<String, Object> getSystemProperties();
 
 	/**
@@ -134,6 +186,9 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * is recommended that this method not be used directly unless bypassing other
 	 * property sources is expressly intended.
 	 */
+	// 返回 {@link System#getenv()} 的值。
+	// <p>请注意，大多数 {@link Environment} 实现都会将此系统环境映射
+	// 作为要搜索的默认 {@link PropertySource}。因此，建议不要直接使用此方法，除非明确打算绕过其他属性源。
 	Map<String, Object> getSystemEnvironment();
 
 	/**
@@ -154,6 +209,13 @@ public interface ConfigurableEnvironment extends Environment, ConfigurableProper
 	 * @since 3.1.2
 	 * @see org.springframework.context.support.AbstractApplicationContext#setParent
 	 */
+	// 将给定父环境的活动配置文件、默认配置文件和属性源附加到此（子）环境各自的集合中。
+	// <p>对于父环境和子环境中存在的任何同名 {@code PropertySource} 实例，将保留子环境实例并丢弃父环境实例。
+	// 这样做的目的是允许子环境覆盖属性源，并避免对常见属性源类型（例如系统环境和系统属性）进行重复搜索。
+	// <p>活动配置文件和默认配置文件名称也会被过滤掉，以避免混淆和冗余存储。
+	// <p>父环境在任何情况下都保持不变。请注意，调用 {@code merge} 之后对父环境的任何更改都不会反映在子环境中。
+	// 因此，在调用 {@code merge} 之前，应仔细配置父环境的属性源和配置文件信息。
+	// @param parent 要合并的环境
 	void merge(ConfigurableEnvironment parent);
 
 }

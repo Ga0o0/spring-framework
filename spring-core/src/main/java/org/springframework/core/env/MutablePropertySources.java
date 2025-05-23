@@ -38,6 +38,10 @@ import org.springframework.lang.Nullable;
  * @since 3.1
  * @see PropertySourcesPropertyResolver
  */
+// {@link PropertySources} 接口的默认实现。允许操作包含的属性源，并提供用于复制现有 {@code PropertySources} 实例的构造函数。
+//
+// <p>在诸如 {@link #addFirst} 和 {@link #addLast}
+// 等方法中提到的<em>优先级</em>是指在使用 {@link PropertyResolver} 解析给定属性时搜索属性源的顺序。
 public class MutablePropertySources implements PropertySources {
 
 	private final List<PropertySource<?>> propertySourceList = new CopyOnWriteArrayList<>();
@@ -46,6 +50,7 @@ public class MutablePropertySources implements PropertySources {
 	/**
 	 * Create a new {@link MutablePropertySources} object.
 	 */
+	// 创建一个新的 {@link MutablePropertySources} 对象。
 	public MutablePropertySources() {
 	}
 
@@ -53,6 +58,8 @@ public class MutablePropertySources implements PropertySources {
 	 * Create a new {@code MutablePropertySources} from the given propertySources
 	 * object, preserving the original order of contained {@code PropertySource} objects.
 	 */
+	// 根据给定的 propertySources 对象创建一个新的 {@code MutablePropertySources}，
+	// 并保留其所包含的 {@code PropertySource} 对象的原始顺序。
 	public MutablePropertySources(PropertySources propertySources) {
 		this();
 		for (PropertySource<?> propertySource : propertySources) {

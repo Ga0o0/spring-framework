@@ -32,6 +32,8 @@ import org.springframework.lang.Nullable;
  * @since 3.1.2
  * @see ConfigurableWebApplicationContext#getEnvironment()
  */
+// 对 {@link ConfigurableEnvironment} 进行特化，允许在 {@link ServletContext} 和（可选）{@link ServletConfig}
+// 可用时尽早初始化与 servlet 相关的 {@link org.springframework.core.env.PropertySource} 对象。
 public interface ConfigurableWebEnvironment extends ConfigurableEnvironment {
 
 	/**
@@ -44,6 +46,10 @@ public interface ConfigurableWebEnvironment extends ConfigurableEnvironment {
 	 * @see org.springframework.web.context.support.WebApplicationContextUtils#initServletPropertySources(
 	 * org.springframework.core.env.MutablePropertySources, ServletContext, ServletConfig)
 	 */
+	// 使用给定的参数，将任何用作占位符的 {@linkplain org.springframework.core.env.PropertySource.StubPropertySource 存根属性源}
+	// 实例替换为真实的 servlet 上下文/配置属性源。
+	// @param servletContext {@link ServletContext}（可能不为 {@code null}）
+	// @param servletConfig {@link ServletConfig}（如果不可用，则为 {@code null}）
 	void initPropertySources(@Nullable ServletContext servletContext, @Nullable ServletConfig servletConfig);
 
 }
