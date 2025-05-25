@@ -235,6 +235,9 @@ public @interface Bean {
 	 * attribute if no other attributes are declared.
 	 * @see #value
 	 */
+	// 此 bean 的名称，如果有多个名称，则为主 bean 名称加上别名。
+	// <p>如果未指定，则 bean 的名称为被注解的方法名称。如果指定，则方法名称将被忽略。
+	// <p>如果未声明其他属性，也可以通过 {@link #value} 属性配置 bean 名称和别名。
 	@AliasFor("value")
 	String[] name() default {};
 

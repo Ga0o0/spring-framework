@@ -24,6 +24,7 @@ import org.springframework.beans.factory.config.BeanDefinition;
  * @author Juergen Hoeller
  * @since 2.0.3
  */
+// 用于为 bean 定义生成 bean 名称的策略接口。
 public interface BeanNameGenerator {
 
 	/**
@@ -33,6 +34,10 @@ public interface BeanNameGenerator {
 	 * is supposed to be registered with
 	 * @return the generated bean name
 	 */
+	// 为给定的 bean 定义生成 bean 名称。
+	// @param definition 需要生成名称的 bean 定义
+	// @param registry 指定 bean 定义需要注册到的 bean 定义注册表
+	// @return 生成的 bean 名称
 	String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry);
 
 }

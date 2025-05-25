@@ -177,6 +177,9 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * @see #register(Class...)
 	 * @see #refresh()
 	 */
+	// 在指定的基础包内执行扫描。
+	// <p>请注意，必须调用 {@link #refresh()} 才能使上下文完全处理新类。
+	// @param basePackages 指定要扫描组件类的包
 	@Override
 	public void scan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");

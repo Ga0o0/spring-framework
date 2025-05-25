@@ -249,12 +249,16 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @param basePackages the packages to check for annotated classes
 	 * @return number of beans registered
 	 */
+	// 在指定的基础包内执行扫描。
+	// @param basePackages 用于检查带注解类的包
+	// @return 已注册的 Bean 数量
 	public int scan(String... basePackages) {
 		int beanCountAtScanStart = this.registry.getBeanDefinitionCount();
 
+		// 在指定的基础包中执行扫描，返回已注册的 bean 定义。
 		doScan(basePackages);
 
-		// Register annotation config processors, if necessary.
+		// Register annotation config processors, if necessary. --> 译文：如果需要，注册注释配置处理器。
 		if (this.includeAnnotationConfig) {
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 		}
@@ -270,21 +274,30 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @param basePackages the packages to check for annotated classes
 	 * @return set of beans registered if any for tooling registration purposes (never {@code null})
 	 */
+	// 在指定的基础包中执行扫描，返回已注册的 bean 定义。
+	// <p>此方法<i>不</i>注册注解配置处理器，而是将其留给调用者处理。
+	// @param basePackages 用于检查注解类的包
+	// @return 为工具注册目的而注册的 bean 集合（如有）（永不为 {@code null}）
 	protected Set<BeanDefinitionHolder> doScan(String... basePackages) {
 		Assert.notEmpty(basePackages, "At least one base package must be specified");
 		Set<BeanDefinitionHolder> beanDefinitions = new LinkedHashSet<>();
 		for (String basePackage : basePackages) {
+			// 扫描组件索引或类路径以查找候选组件。
 			Set<BeanDefinition> candidates = findCandidateComponents(basePackage);
 			for (BeanDefinition candidate : candidates) {
 				ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(candidate);
 				candidate.setScope(scopeMetadata.getScopeName());
+				// 为给定的 bean 定义生成 bean 名称。
 				String beanName = this.beanNameGenerator.generateBeanName(candidate, this.registry);
 				if (candidate instanceof AbstractBeanDefinition abstractBeanDefinition) {
+					// 除了扫描组件类获取的内容之外，将更多设置应用于给定的 bean 定义。
 					postProcessBeanDefinition(abstractBeanDefinition, beanName);
 				}
 				if (candidate instanceof AnnotatedBeanDefinition annotatedBeanDefinition) {
+					// 处理注解 Lazy/Primary/DependsOn/Role/Description
 					AnnotationConfigUtils.processCommonDefinitionAnnotations(annotatedBeanDefinition);
 				}
+				// 检查给定候选 bean 的名称，确定相应的 bean 定义是否需要注册或是否与现有定义冲突。
 				if (checkCandidate(beanName, candidate)) {
 					BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(candidate, beanName);
 					definitionHolder =
@@ -303,6 +316,9 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @param beanDefinition the scanned bean definition
 	 * @param beanName the generated bean name for the given bean
 	 */
+	// 除了扫描组件类获取的内容之外，将更多设置应用于给定的 bean 定义。
+	// @param beanDefinition 扫描到的 bean 定义
+	// @param beanName 为给定 bean 生成的 bean 名称
 	protected void postProcessBeanDefinition(AbstractBeanDefinition beanDefinition, String beanName) {
 		beanDefinition.applyDefaults(this.beanDefinitionDefaults);
 		if (this.autowireCandidatePatterns != null) {
@@ -333,6 +349,12 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @throws IllegalStateException if an existing, incompatible bean definition
 	 * has been found for the specified name
 	 */
+	// 检查给定候选 bean 的名称，确定相应的 bean 定义是否需要注册或是否与现有定义冲突。
+	// @param beanName 建议的 bean 名称
+	// @param beanDefinition 相应的 bean 定义
+	// @return {@code true} 如果 bean 可以按原样注册；
+	// 如果由于存在与指定名称兼容的 bean 定义而应跳过此 bean，则返回 {@code false}
+	// 如果找到了与指定名称不兼容的 bean 定义，则抛出 IllegalStateException
 	protected boolean checkCandidate(String beanName, BeanDefinition beanDefinition) throws IllegalStateException {
 		if (!this.registry.containsBeanDefinition(beanName)) {
 			return true;
@@ -344,14 +366,14 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 			existingDef = originatingDef;
 		}
 
-		// Explicitly registered overriding bean?
+		// Explicitly registered overriding bean? --> 译文：明确注册覆盖 bean？
 		if (!(existingDef instanceof ScannedGenericBeanDefinition) &&
 				(this.registry.isBeanDefinitionOverridable(beanName) || ObjectUtils.nullSafeEquals(
 						beanDefinition.getBeanClassName(), existingDef.getBeanClassName()))) {
 			return false;
 		}
 
-		// Scanned same file or equivalent class twice?
+		// Scanned same file or equivalent class twice? --> 译文：扫描了同一个文件或同等类别两次？
 		if (isCompatible(beanDefinition, existingDef)) {
 			return false;
 		}

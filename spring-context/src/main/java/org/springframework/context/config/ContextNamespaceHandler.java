@@ -28,6 +28,7 @@ import org.springframework.context.annotation.ComponentScanBeanDefinitionParser;
  * @author Juergen Hoeller
  * @since 2.5
  */
+// {@link org.springframework.beans.factory.xml.NamespaceHandler} 用于‘{@code context}’命名空间。
 public class ContextNamespaceHandler extends NamespaceHandlerSupport {
 
 	@Override

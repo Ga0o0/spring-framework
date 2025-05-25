@@ -336,6 +336,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	/**
 	 * Return the MetadataReaderFactory used by this component provider.
 	 */
+	// 返回此组件提供者使用的 MetadataReaderFactory。
 	public final MetadataReaderFactory getMetadataReaderFactory() {
 		if (this.metadataReaderFactory == null) {
 			this.metadataReaderFactory = new CachingMetadataReaderFactory();
@@ -349,6 +350,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @param basePackage the package to check for annotated classes
 	 * @return a corresponding Set of autodetected bean definitions
 	 */
+	// 扫描组件索引或类路径以查找候选组件。
+	// @param basePackage 用于检查带注解类的包
+	// @return 一组相应的自动检测的 bean 定义
 	public Set<BeanDefinition> findCandidateComponents(String basePackage) {
 		if (this.componentsIndex != null && indexSupportsIncludeFilters()) {
 			return addCandidateComponentsFromIndex(this.componentsIndex, basePackage);
@@ -364,6 +368,8 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * instance is supported by it, {@code false} otherwise
 	 * @since 5.0
 	 */
+	// 判断组件索引是否可被该实例使用。
+	// @return {@code true} 如果索引可用且该实例的配置受其支持，{@code false} 否则
 	private boolean indexSupportsIncludeFilters() {
 		for (TypeFilter includeFilter : this.includeFilters) {
 			if (!indexSupportsIncludeFilter(includeFilter)) {
@@ -380,6 +386,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @since 5.0
 	 * @see #extractStereotype(TypeFilter)
 	 */
+	// 判断索引是否支持指定的包含类型 {@link TypeFilter}。
+	// @param filter 需要检查的过滤器
+	// @return 索引是否支持此包含过滤器
 	private boolean indexSupportsIncludeFilter(TypeFilter filter) {
 		if (filter instanceof AnnotationTypeFilter annotationTypeFilter) {
 			Class<? extends Annotation> annotationType = annotationTypeFilter.getAnnotationType();
@@ -542,6 +551,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @param metadataReader the ASM ClassReader for the class
 	 * @return whether the class qualifies as a candidate component
 	 */
+	// 判断给定的类是否不匹配任何排除过滤器，但至少匹配一个包含过滤器。
+	// @param metadataReader 该类的 ASM ClassReader
+	// @return 该类是否符合候选组件的条件
 	protected boolean isCandidateComponent(MetadataReader metadataReader) throws IOException {
 		for (TypeFilter tf : this.excludeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
@@ -550,6 +562,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
+				// 根据任何 {@code @Conditional} 注解判断给定类是否为候选组件。
 				return isConditionMatch(metadataReader);
 			}
 		}
@@ -562,6 +575,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @param metadataReader the ASM ClassReader for the class
 	 * @return whether the class qualifies as a candidate component
 	 */
+	// 根据任何 {@code @Conditional} 注解判断给定类是否为候选组件。
+	// @param metadataReader 该类的 ASM ClassReader
+	// @return 该类是否符合候选组件的条件
 	private boolean isConditionMatch(MetadataReader metadataReader) {
 		if (this.conditionEvaluator == null) {
 			this.conditionEvaluator =

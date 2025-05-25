@@ -29,6 +29,7 @@ import org.springframework.core.io.Resource;
  * @see SimpleMetadataReaderFactory
  * @see CachingMetadataReaderFactory
  */
+// {@link MetadataReader} 实例的工厂接口。允许为每个原始资源缓存一个 MetadataReader。
 public interface MetadataReaderFactory {
 
 	/**
@@ -38,6 +39,11 @@ public interface MetadataReaderFactory {
 	 * @throws ClassFormatException in case of an incompatible class format
 	 * @throws IOException in case of I/O failure
 	 */
+	// 获取给定类名的 MetadataReader。
+	// @param className 类名（将解析为“.class”文件）
+	// @return ClassReader 实例的持有者（永不返回 null）
+	// @throws ClassFormatException（如果类格式不兼容）
+	// @throws IOException（如果 I/O 失败）
 	MetadataReader getMetadataReader(String className) throws IOException;
 
 	/**
@@ -47,6 +53,11 @@ public interface MetadataReaderFactory {
 	 * @throws ClassFormatException in case of an incompatible class format
 	 * @throws IOException in case of I/O failure
 	 */
+	// 获取给定资源的 MetadataReader。
+	// @param resource 资源（指向“.class”文件）
+	// @return ClassReader 实例的持有者（永不返回 null）
+	// @throws ClassFormatException（如果类格式不兼容）
+	// @throws IOException（如果 I/O 失败）
 	MetadataReader getMetadataReader(Resource resource) throws IOException;
 
 }
