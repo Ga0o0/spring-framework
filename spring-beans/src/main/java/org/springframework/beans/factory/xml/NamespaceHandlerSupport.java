@@ -48,6 +48,7 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	 * Stores the {@link BeanDefinitionParser} implementations keyed by the
 	 * local name of the {@link Element Elements} they handle.
 	 */
+	// 存储由它们处理的 {@link Element Elements} 的本地名称键入的 {@link BeanDefinitionParser} 实现。
 	private final Map<String, BeanDefinitionParser> parsers = new HashMap<>();
 
 	/**
@@ -138,6 +139,7 @@ public abstract class NamespaceHandlerSupport implements NamespaceHandler {
 	 * handle the specified element. The element name is the local (non-namespace qualified)
 	 * name.
 	 */
+	// 子类可以调用此方法注册提供的 {@link BeanDefinitionParser} 来处理指定的元素。元素名称是本地（非命名空间限定）名称。
 	protected final void registerBeanDefinitionParser(String elementName, BeanDefinitionParser parser) {
 		this.parsers.put(elementName, parser);
 	}
