@@ -40,6 +40,12 @@ import org.springframework.util.Assert;
  * @see AnnotatedBeanDefinition#getMetadata()
  * @see org.springframework.core.type.StandardAnnotationMetadata
  */
+// 扩展了 {@link org.springframework.beans.factory.support.GenericBeanDefinition} 类，
+// 添加了对通过 {@link AnnotatedBeanDefinition} 接口公开的注解元数据的支持。
+//
+// <p>此 GenericBeanDefinition 变体主要用于测试需要操作 AnnotatedBeanDefinition 的代码，
+// 例如 Spring 组件扫描支持中的策略实现（其中默认定义类是 {@link org.springframework.context.annotation.ScannedGenericBeanDefinition}，
+// 它也实现了 AnnotatedBeanDefinition 接口）。
 @SuppressWarnings("serial")
 public class AnnotatedGenericBeanDefinition extends GenericBeanDefinition implements AnnotatedBeanDefinition {
 

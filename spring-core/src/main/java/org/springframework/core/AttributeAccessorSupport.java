@@ -36,10 +36,14 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 2.0
  */
+// 支持 {@link AttributeAccessor AttributeAccessors} 的类，提供所有方法的基类实现。可供子类扩展。
+//
+// <p>如果子类和所有属性值都可序列化，则为 {@link Serializable}。
 @SuppressWarnings("serial")
 public abstract class AttributeAccessorSupport implements AttributeAccessor, Serializable {
 
 	/** Map with String keys and Object values. */
+	// 具有字符串键和对象值的映射。
 	private final Map<String, Object> attributes = new LinkedHashMap<>();
 
 
@@ -95,6 +99,8 @@ public abstract class AttributeAccessorSupport implements AttributeAccessor, Ser
 	 * Copy the attributes from the supplied AttributeAccessor to this accessor.
 	 * @param source the AttributeAccessor to copy from
 	 */
+	// 将属性从提供的 AttributeAccessor 复制到此访问器。
+	// @param source 要从中复制的 AttributeAccessor
 	protected void copyAttributesFrom(AttributeAccessor source) {
 		Assert.notNull(source, "Source must not be null");
 		String[] attributeNames = source.attributeNames();

@@ -27,6 +27,8 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.5
  */
+// {@link org.springframework.core.AttributeAccessorSupport} 的扩展，
+// 将属性作为 {@link BeanMetadataAttribute} 对象保存，以便跟踪定义源。
 @SuppressWarnings("serial")
 public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport implements BeanMetadataElement {
 
@@ -38,6 +40,8 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport impl
 	 * Set the configuration source {@code Object} for this metadata element.
 	 * <p>The exact type of the object will depend on the configuration mechanism used.
 	 */
+	// 为此元数据元素设置配置源 {@code Object}。
+	// <p>对象的具体类型取决于所使用的配置机制。
 	public void setSource(@Nullable Object source) {
 		this.source = source;
 	}
@@ -53,6 +57,8 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport impl
 	 * Add the given BeanMetadataAttribute to this accessor's set of attributes.
 	 * @param attribute the BeanMetadataAttribute object to register
 	 */
+	// 将给定的 BeanMetadataAttribute 添加到此访问器的属性集中。
+	// @param attribute 要注册的 BeanMetadataAttribute 对象
 	public void addMetadataAttribute(BeanMetadataAttribute attribute) {
 		super.setAttribute(attribute.getName(), attribute);
 	}
@@ -63,6 +69,9 @@ public class BeanMetadataAttributeAccessor extends AttributeAccessorSupport impl
 	 * @return the corresponding BeanMetadataAttribute object,
 	 * or {@code null} if no such attribute defined
 	 */
+	// 在该访问器的属性集中查找给定的 BeanMetadataAttribute。
+	// @param name 属性的名称
+	// @return 相应的 BeanMetadataAttribute 对象，如果未定义此属性，则返回 {@code null}
 	@Nullable
 	public BeanMetadataAttribute getMetadataAttribute(String name) {
 		return (BeanMetadataAttribute) super.getAttribute(name);

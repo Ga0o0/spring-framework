@@ -59,6 +59,17 @@ import org.springframework.util.Assert;
  * @see GenericBeanDefinition
  * @see ChildBeanDefinition
  */
+// 根 Bean 定义表示<b>运行时合并的 Bean 定义</b>，它支持 Spring BeanFactory 中的特定 Bean。
+// 它可能由多个相互继承的原始 Bean 定义创建而成，例如，来自 XML 声明的 {@link GenericBeanDefinition GenericBeanDefinitions}。
+// 根 Bean 定义本质上是运行时“统一”的 Bean 定义视图。
+//
+// <p>根 Bean 定义也可用于<b>在配置阶段注册单个 Bean 定义</b>。
+// 这尤其适用于从工厂方法（例如 {@code @Bean} 方法）和实例提供者（例如 lambda 表达式）
+// 派生的带有额外类型元数据的编程式定义（参见 {@link #setTargetType(ResolvableType)}/{@link #setResolvedFactoryMethod(Method)}）。
+//
+// <p>注意：对于从声明式源（例如 XML 定义）派生的 Bean 定义，
+// 首选灵活的 {@link GenericBeanDefinition} 变体。GenericBeanDefinition 的优势在于它允许动态定义父级依赖关系，
+// 无需将角色“硬编码”为根 Bean 定义，甚至支持在 Bean 后处理阶段更改父级关系。
 @SuppressWarnings("serial")
 public class RootBeanDefinition extends AbstractBeanDefinition {
 

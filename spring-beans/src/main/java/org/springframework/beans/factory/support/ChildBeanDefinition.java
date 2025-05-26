@@ -43,6 +43,14 @@ import org.springframework.util.ObjectUtils;
  * @see GenericBeanDefinition
  * @see RootBeanDefinition
  */
+// 从父级继承设置的 Bean 定义。子 Bean 定义对父 Bean 定义具有固定的依赖关系。
+//
+// <p>子 Bean 定义将从父级继承构造函数参数值、属性值和方法重写，并可以选择添加新值。
+// 如果指定了 init 方法、destroy 方法和/或静态工厂方法，它们将覆盖相应的父级设置。
+// 其余设置将<i>始终</i>从子定义中获取：依赖、自动装配模式、依赖检查、单例、延迟初始化。
+//
+// <p><b>注意：</b>自 Spring 2.5 起，以编程方式注册 Bean 定义的首选方法是使用 {@link GenericBeanDefinition} 类，
+// 它允许通过 {@link GenericBeanDefinition#setParentName} 方法动态定义父级依赖关系。在大多数情况下，这实际上取代了 ChildBeanDefinition 类。
 @SuppressWarnings("serial")
 public class ChildBeanDefinition extends AbstractBeanDefinition {
 

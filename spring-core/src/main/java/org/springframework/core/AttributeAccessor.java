@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
  * @author Sam Brannen
  * @since 2.0
  */
+// 定义通用契约的接口，用于将元数据附加到任意对象并从任意对象访问元数据。
 public interface AttributeAccessor {
 
 	/**
@@ -40,6 +41,11 @@ public interface AttributeAccessor {
 	 * @param name the unique attribute key
 	 * @param value the attribute value to be attached
 	 */
+	// 将 {@code name} 定义的属性设置为提供的 {@code value}。
+	// <p>如果 {@code value} 为 {@code null}，则该属性被 {@link #removeAttribute 移除}。
+	// <p>通常，用户应注意避免与其他元数据属性重叠，请使用完全限定名称，例如使用类名或包名作为前缀。
+	// @param name 唯一属性键
+	// @param value 要附加的属性值
 	void setAttribute(String name, @Nullable Object value);
 
 	/**
@@ -48,6 +54,10 @@ public interface AttributeAccessor {
 	 * @param name the unique attribute key
 	 * @return the current value of the attribute, if any
 	 */
+	// 获取 {@code name} 标识的属性值。
+	// <p>如果属性不存在，则返回 {@code null}。
+	// @param name 唯一属性键
+	// @return 属性的当前值（如果有）
 	@Nullable
 	Object getAttribute(String name);
 
@@ -69,6 +79,13 @@ public interface AttributeAccessor {
 	 * @see #getAttribute(String)
 	 * @see #setAttribute(String, Object)
 	 */
+	// 如果需要，为 {@code name} 标识的属性计算新值，并 {@linkplain #setAttribute set} 此 {@code AttributeAccessor} 中的新值。
+	// <p>如果此 {@code AttributeAccessor} 中已存在 {@code name} 标识的属性值，则将返回现有值，而不应用提供的计算函数。
+	// <p>此方法的默认实现不是线程安全的，但可以被此接口的具体实现覆盖。
+	// @param <T> 属性值的类型
+	// @param name 唯一属性键
+	// @param computeFunction 为属性名称计算新值的函数；该函数不得返回 null 值
+	// @return 返回指定属性的现有值或新计算的值
 	@SuppressWarnings("unchecked")
 	default <T> T computeAttribute(String name, Function<String, T> computeFunction) {
 		Assert.notNull(name, "Name must not be null");
@@ -89,6 +106,10 @@ public interface AttributeAccessor {
 	 * @param name the unique attribute key
 	 * @return the last value of the attribute, if any
 	 */
+	// 移除由 {@code name} 标识的属性并返回其值。
+	// <p>如果 {@code name} 下未找到任何属性，则返回 {@code null}。
+	// @param name 唯一属性键
+	// @return 属性的最后一个值（如果有）
 	@Nullable
 	Object removeAttribute(String name);
 
@@ -97,11 +118,15 @@ public interface AttributeAccessor {
 	 * <p>Otherwise return {@code false}.
 	 * @param name the unique attribute key
 	 */
+	// 如果由 {@code name} 标识的属性存在，则返回 {@code true}。
+	// <p>否则返回 {@code false}。
+	// @param name 唯一属性键
 	boolean hasAttribute(String name);
 
 	/**
 	 * Return the names of all attributes.
 	 */
+	// 返回所有属性的名称。
 	String[] attributeNames();
 
 }

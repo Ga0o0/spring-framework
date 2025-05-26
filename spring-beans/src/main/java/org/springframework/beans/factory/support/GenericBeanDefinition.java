@@ -39,6 +39,12 @@ import org.springframework.util.ObjectUtils;
  * @see RootBeanDefinition
  * @see ChildBeanDefinition
  */
+// GenericBeanDefinition 是声明式 Bean 定义的一站式解决方案。与所有常见的 Bean 定义一样，
+// 它允许指定类以及可选的构造函数参数值和属性值。此外，可以通过“parentName”属性灵活地配置从父 Bean 定义派生。
+//
+// <p>通常，使用此 {@code GenericBeanDefinition} 类来注册声明式 Bean 定义（例如，Bean 后处理器可能对其进行操作的 XML 定义，
+// 甚至可能重新配置父级名称）。如果父/子关系是预先确定的，请使用 {@code RootBeanDefinition}/{@code ChildBeanDefinition}；
+// 对于从工厂方法/供应商派生的编程式定义，则优先使用 {@link RootBeanDefinition}。
 @SuppressWarnings("serial")
 public class GenericBeanDefinition extends AbstractBeanDefinition {
 
