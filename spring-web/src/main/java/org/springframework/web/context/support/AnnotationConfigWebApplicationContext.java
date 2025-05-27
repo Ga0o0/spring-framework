@@ -96,6 +96,36 @@ import org.springframework.web.context.ContextLoader;
  * @see org.springframework.context.annotation.AnnotationConfigApplicationContext
  * @see org.springframework.web.context.support.GenericWebApplicationContext
  */
+// {@link org.springframework.web.context.WebApplicationContext WebApplicationContext} 实现，接受<em>组件类</em>作为输入 &mdash;
+// 特别是 {@link org.springframework.context.annotation.Configuration @Configuration} 类，
+// 但也接受普通的 {@link org.springframework.stereotype.Component @Component} 类
+// 以及使用 {@code jakarta.inject} 注解的符合 JSR-330 标准的类。<p>允许逐个注册类（将类名指定为配置位置），以及通过类路径扫描（将基础包指定为配置位置）。
+//
+// <p>这本质上相当于 Web 环境中的 {@link org.springframework.context.annotation.AnnotationConfigApplicationContext AnnotationConfigApplicationContext}。
+// 然而，与 {@code AnnotationConfigApplicationContext} 不同，
+// 此类并未扩展 {@link org.springframework.context.support.GenericApplicationContext GenericApplicationContext}，
+// 因此不提供 {@code GenericApplicationContext} 中一些便捷的 {@code registerBean(...)} 方法。
+// 如果您希望在 Web 环境中使用 {@code GenericApplicationContext} 注册带注解的<em>组件类</em>，
+// 可以使用 {@code GenericWebApplicationContext} 和
+// {@link org.springframework.context.annotation.AnnotatedBeanDefinitionReader AnnotatedBeanDefinitionReader}。
+// 有关详细信息和示例，请参阅 {@link GenericWebApplicationContext} 的 Javadoc。
+//
+// <p>要使用此应用上下文，必须将 ContextLoader 的 {@linkplain ContextLoader#CONTEXT_CLASS_PARAM "contextClass"} 上下文参数
+// 和/或 FrameworkServlet 的 "contextClass" 初始化参数设置为此类的全限定名。
+//
+// <p>当使用 {@link org.springframework.web.WebApplicationInitializer WebApplicationInitializer} 基于代码的 {@code web.xml} 替代方案时，
+// 也可以直接实例化此类并将其注入 Spring 的 {@code DispatcherServlet} 或 {@code ContextLoaderListener} 中。有关详细信息和使用示例，请参阅其 Javadoc。
+//
+// <p>与 {@link XmlWebApplicationContext} 不同，没有默认配置类位置。
+// 相反，需要为 {@link ContextLoader} 设置 {@linkplain ContextLoader#CONFIG_LOCATION_PARAM "contextConfigLocation"} 上下文参数
+// 和/或为 FrameworkServlet 设置 "contextConfigLocation" 初始化参数。
+// 参数值可以包含完全限定类名和用于扫描组件的基础包。有关如何处理这些位置的详细信息，请参阅 {@link #loadBeanDefinitions}。
+//
+// <p>除了设置 "contextConfigLocation" 参数外，用户还可以实现 {@link org.springframework.context.ApplicationContextInitializer ApplicationContextInitializer}
+// 并设置 {@linkplain ContextLoader#CONTEXT_INITIALIZER_CLASSES_PARAM "contextInitializerClasses"} 上下文参数/初始化参数。
+// 在这种情况下，用户应该优先使用 {@link #refresh()} 和 {@link #scan(String...)} 方法，而不是 {@link #setConfigLocation(String)} 方法，
+// 后者主要供 {@code ContextLoader} 使用。<p>注意：如果有多个 {@code @Configuration} 类，后面的 {@code @Bean} 定义将覆盖之前加载的文件中定义的定义。
+// 可以利用这一点，通过额外的 {@code @Configuration} 类来故意覆盖某些 Bean 定义。
 public class AnnotationConfigWebApplicationContext extends AbstractRefreshableWebApplicationContext
 		implements AnnotationConfigRegistry {
 

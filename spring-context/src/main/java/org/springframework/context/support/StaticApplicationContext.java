@@ -38,6 +38,9 @@ import org.springframework.lang.Nullable;
  * @see #registerBeanDefinition
  * @see #refresh
  */
+// {@link org.springframework.context.ApplicationContext} 实现，
+// 支持以编程方式注册 bean 和消息，而无需从外部配置源读取 bean 定义。
+// 主要用于测试。
 public class StaticApplicationContext extends GenericApplicationContext {
 
 	private final StaticMessageSource staticMessageSource;

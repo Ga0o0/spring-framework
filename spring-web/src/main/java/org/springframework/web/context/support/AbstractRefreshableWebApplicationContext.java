@@ -78,23 +78,50 @@ import org.springframework.web.context.ServletContextAware;
  * @see org.springframework.web.context.ConfigurableWebApplicationContext#setConfigLocations
  * @see XmlWebApplicationContext
  */
+// {@link org.springframework.context.support.AbstractRefreshableApplicationContext} 子类，
+// 实现了用于 Web 环境的 {@link org.springframework.web.context.ConfigurableWebApplicationContext} 接口。
+// 它提供了一个“configLocations”属性，可在 Web 应用启动时通过 ConfigurableWebApplicationContext 接口进行填充。
+//
+// <p>此类的子类化与 AbstractRefreshableApplicationContext 一样简单：只需实现 {@link #loadBeanDefinitions} 方法即可；
+// 详情请参阅父类的 javadoc。请注意，实现应该从 {@link #getConfigLocations} 方法返回的位置指定的文件中加载 Bean 定义。
+//
+// <p>将资源路径解释为 Servlet 上下文资源，即 Web 应用根目录下的路径。
+// 绝对路径，例如：对于 Web 应用根目录之外的文件，可以通过“file:”URL 访问，
+// 正如 {@link org.springframework.core.io.DefaultResourceLoader} 所实现的那样。
+//
+// <p>除了 {@link org.springframework.context.support.AbstractApplicationContext} 检测到的特殊 bean 之外，
+// 此类还会在上下文中检测类型为 {@link org.springframework.ui.context.ThemeSource} 的 bean，其特殊 bean 名称为“themeSource”。
+// 主题支持自 6.0 起已弃用，且没有直接替代。
+//
+// <p><b>这是一个 Web 上下文，用于继承不同的 Bean 定义格式。
+// </b> 可以将此类上下文实现指定为 {@link org.springframework.web.context.ContextLoader} 的上下文参数“contextClass”，
+// 或 {@link org.springframework.web.servlet.FrameworkServlet} 的初始化参数“contextClass”，
+// 以替换默认的 {@link XmlWebApplicationContext}。之后，它将自动分别接收上下文参数“contextConfigLocation”或初始化参数。
+//
+// <p>请注意，WebApplicationContext 实现通常应该根据通过 {@link ConfigurableWebApplicationContext} 接口接收的配置进行自我配置。
+// 相比之下，独立的应用程序上下文可能允许在自定义启动代码中进行配置
+// （例如，{@link org.springframework.context.support.GenericApplicationContext}）。
 @SuppressWarnings("deprecation")
 public abstract class AbstractRefreshableWebApplicationContext extends AbstractRefreshableConfigApplicationContext
 		implements ConfigurableWebApplicationContext, ThemeSource {
 
 	/** Servlet context that this context runs in. */
+	// 此上下文运行的 Servlet 上下文。
 	@Nullable
 	private ServletContext servletContext;
 
 	/** Servlet config that this context runs in, if any. */
+	// 此上下文运行的 Servlet 配置（如果有）。
 	@Nullable
 	private ServletConfig servletConfig;
 
 	/** Namespace of this context, or {@code null} if root. */
+	// 此上下文的命名空间，如果是根，则为 {@code null}。
 	@Nullable
 	private String namespace;
 
 	/** the ThemeSource for this ApplicationContext. */
+	// 此 ApplicationContext 的 ThemeSource。
 	@Nullable
 	private ThemeSource themeSource;
 

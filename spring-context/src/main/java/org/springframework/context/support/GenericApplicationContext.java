@@ -103,6 +103,35 @@ import org.springframework.util.Assert;
  * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader
  * @see org.springframework.beans.factory.support.PropertiesBeanDefinitionReader
  */
+// 通用的 ApplicationContext 实现，包含单个内部 {@link org.springframework.beans.factory.support.DefaultListableBeanFactory} 实例，并且不采用特定的 bean 定义格式。
+// 实现 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 接口，以便允许任何 bean 定义读取器应用于它。
+//
+// <p>典型用法是通过 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 接口注册各种 bean 定义，
+// 然后调用 {@link #refresh()} 以应用上下文语义初始化这些 bean（处理 {@link org.springframework.context.ApplicationContextAware}、
+// 自动检测 {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors} 等）。
+//
+// <p>与其他 ApplicationContext 实现（每次刷新都会创建一个新的内部 BeanFactory 实例）不同，此上下文的内部 BeanFactory 从一开始就可用，
+// 以便能够在其上注册 Bean 定义。{@link #refresh()} 只能调用一次。
+//
+// <p>此 ApplicationContext 实现适用于提前处理，使用 {@link #refreshForAotProcessing} 替代常规的 {@link #refresh()}。
+//
+// <p>使用示例：
+//
+// <pre class="code">
+// GenericApplicationContext ctx = new GenericApplicationContext();
+// XmlBeanDefinitionReader xmlReader = new XmlBeanDefinitionReader(ctx);
+// xmlReader.loadBeanDefinitions(new ClassPathResource("applicationContext.xml"));
+// PropertiesBeanDefinitionReader propReader = new PropertiesBeanDefinitionReader(ctx);
+// propReader.loadBeanDefinitions(new ClassPathResource("otherBeans.properties"));
+// ctx.refresh();
+//
+// MyBean myBean = (MyBean) ctx.getBean("myBean");
+// ...</pre>
+//
+// 对于典型的 XML bean 定义，您也可以使用 {@link ClassPathXmlApplicationContext} 或 {@link FileSystemXmlApplicationContext}，
+// 它们更容易设置，但灵活性较差，因为您只能使用标准的资源位置来存储 XML bean 定义，
+// 而不能混合使用任意的 bean 定义格式。对于需要以可刷新方式读取特定 bean 定义格式的自定义应用程序上下文实现，
+// 可以考虑从 {@link AbstractRefreshableApplicationContext} 基类派生。
 public class GenericApplicationContext extends AbstractApplicationContext implements BeanDefinitionRegistry {
 
 	private final DefaultListableBeanFactory beanFactory;

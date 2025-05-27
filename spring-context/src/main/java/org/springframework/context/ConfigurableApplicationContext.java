@@ -42,6 +42,10 @@ import org.springframework.lang.Nullable;
  * @author Sam Brannen
  * @since 03.11.2003
  */
+// 大多数（如果不是全部）应用上下文都需要实现的 SPI 接口。
+// 除了 {@link org.springframework.context.ApplicationContext} 接口中的应用上下文客户端方法之外，还提供了配置应用上下文的功能。
+//
+// <p>配置和生命周期方法封装在此处，以避免对 ApplicationContext 客户端代码造成影响。现有方法仅供启动和关闭代码使用。
 public interface ConfigurableApplicationContext extends ApplicationContext, Lifecycle, Closeable {
 
 	/**
@@ -51,6 +55,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @see org.springframework.web.context.ContextLoader#CONFIG_LOCATION_PARAM
 	 * @see org.springframework.web.servlet.FrameworkServlet#setContextConfigLocation
 	 */
+	// 任意数量的这些字符都被视为单个字符串值中多个上下文配置路径之间的分隔符。
 	String CONFIG_LOCATION_DELIMITERS = ",; \t\n";
 
 	/**
@@ -59,6 +64,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @since 3.0
 	 * @see org.springframework.core.convert.ConversionService
 	 */
+	// 工厂中 ConversionService bean 的名称。如果没有提供，则应用默认转换规则。
 	String CONVERSION_SERVICE_BEAN_NAME = "conversionService";
 
 	/**
@@ -106,6 +112,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @since 5.2
 	 * @see #registerShutdownHook()
 	 */
+	// {@link Thread#getName() Name} 的 {@linkplain #registerShutdownHook() 关闭钩子} 线程：{@value}。
 	String SHUTDOWN_HOOK_THREAD_NAME = "SpringContextShutdownHook";
 
 
@@ -113,6 +120,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * Set the unique id of this application context.
 	 * @since 3.0
 	 */
+	// 设置此应用上下文的唯一 ID。
 	void setId(String id);
 
 	/**
@@ -123,6 +131,9 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @param parent the parent context
 	 * @see org.springframework.web.context.ConfigurableWebApplicationContext
 	 */
+	// 设置此应用上下文的父级。
+	// <p>请注意，父级不应更改：仅当创建此类的对象时父级不可用时，才应在构造函数外部设置，例如在设置 WebApplicationContext 的情况下。
+	// @param parent 父级上下文
 	void setParent(@Nullable ApplicationContext parent);
 
 	/**
@@ -130,6 +141,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @param environment the new environment
 	 * @since 3.1
 	 */
+	// 设置此应用上下文的 {@code Environment}。
+	// @param environment 新的环境
 	void setEnvironment(ConfigurableEnvironment environment);
 
 	/**
@@ -137,6 +150,7 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * form, allowing for further customization.
 	 * @since 3.1
 	 */
+	// 以可配置形式返回此应用上下文的 {@code Environment}，以便进一步自定义。
 	@Override
 	ConfigurableEnvironment getEnvironment();
 
@@ -147,12 +161,15 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @param applicationStartup the new context event factory
 	 * @since 5.3
 	 */
+	// 为该应用上下文设置 {@link ApplicationStartup}。
+	// <p>这允许应用上下文在启动期间记录指标。
 	void setApplicationStartup(ApplicationStartup applicationStartup);
 
 	/**
 	 * Return the {@link ApplicationStartup} for this application context.
 	 * @since 5.3
 	 */
+	// 返回该应用上下文的 {@link ApplicationStartup}。
 	ApplicationStartup getApplicationStartup();
 
 	/**
@@ -161,6 +178,9 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * bean definitions get evaluated. To be invoked during context configuration.
 	 * @param postProcessor the factory processor to register
 	 */
+	// 添加一个新的 BeanFactoryPostProcessor，该 BeanFactoryPostProcessor 将在刷新时应用于此应用上下文的内部 Bean 工厂，
+	// 在任何 Bean 定义被评估之前。在上下文配置期间调用。
+	// @param postProcessor 要注册的工厂处理器
 	void addBeanFactoryPostProcessor(BeanFactoryPostProcessor postProcessor);
 
 	/**
@@ -173,6 +193,9 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @see org.springframework.context.event.ContextRefreshedEvent
 	 * @see org.springframework.context.event.ContextClosedEvent
 	 */
+	// 添加一个新的 ApplicationListener，该监听器将在上下文事件（例如上下文刷新和上下文关闭）发生时收到通知。
+	// <p>请注意，如果上下文尚未激活，则此处注册的任何 ApplicationListener 将在刷新时应用；如果上下文已激活，则将与当前事件多播器一起动态应用。
+	// @param listener 要注册的 ApplicationListener
 	void addApplicationListener(ApplicationListener<?> listener);
 
 	/**
@@ -181,6 +204,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @param listener the ApplicationListener to deregister
 	 * @since 6.0
 	 */
+	// 从此上下文的监听器集合中移除指定的 ApplicationListener，假设它之前已通过 {@link #addApplicationListener} 注册。
+	// @param listener 要注销的 ApplicationListener
 	void removeApplicationListener(ApplicationListener<?> listener);
 
 	/**
@@ -190,6 +215,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @see org.springframework.core.io.DefaultResourceLoader#DefaultResourceLoader(ClassLoader)
 	 * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#setBeanClassLoader
 	 */
+	// 指定用于加载类路径资源和 bean 类的 ClassLoader。
+	// <p>此上下文类加载器将传递给内部 bean 工厂。
 	void setClassLoader(ClassLoader classLoader);
 
 	/**
@@ -199,6 +226,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * resolution rules. It may therefore also override any default rules.
 	 * @since 4.3
 	 */
+	// 将给定的协议解析器注册到此应用上下文，以便处理其他资源协议。
+	// <p>任何此类解析器都将在此上下文的标准解析规则之前调用。因此，它也可能覆盖任何默认规则。
 	void addProtocolResolver(ProtocolResolver resolver);
 
 	/**
@@ -212,6 +241,10 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @throws IllegalStateException if already initialized and multiple refresh
 	 * attempts are not supported
 	 */
+	// 加载或刷新配置的持久化表示，该表示可能来自基于 Java 的配置、XML 文件、属性文件、关系数据库模式或其他格式。
+	// <p>由于这是一个启动方法，因此如果失败，它应该销毁已创建的单例，以避免资源悬空。换句话说，调用此方法后，应该实例化所有单例，或者根本不实例化任何单例。
+	// @throws BeansException 如果 Bean 工厂无法初始化
+	// @throws IllegalStateException 如果已初始化且不支持多次刷新尝试
 	void refresh() throws BeansException, IllegalStateException;
 
 	/**
@@ -224,6 +257,9 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @see java.lang.Runtime#addShutdownHook
 	 * @see #close()
 	 */
+	// 向 JVM 运行时注册一个关闭钩子，在 JVM 关闭时关闭此上下文，除非当时它已经关闭。
+	// <p>此方法可以多次调用。每个上下文实例最多只能注册一个关闭钩子。
+	// <p>从 Spring Framework 5.2 开始，关闭钩子线程的 {@linkplain Thread#getName() name} 应为 {@link #SHUTDOWN_HOOK_THREAD_NAME}。
 	void registerShutdownHook();
 
 	/**
@@ -234,6 +270,9 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * <p>This method can be called multiple times without side effects: Subsequent
 	 * {@code close} calls on an already closed context will be ignored.
 	 */
+	// 关闭此应用上下文，释放实现可能持有的所有资源和锁。这包括销毁所有缓存的单例 bean。
+	// <p>注意：<i>不要</i>在父上下文上调用 {@code close}；父上下文有其独立的生命周期。
+	// <p>此方法可以多次调用而不会产生副作用：对已关闭的上下文再次调用 {@code close} 将被忽略。
 	@Override
 	void close();
 
@@ -245,6 +284,8 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @see #close()
 	 * @see #getBeanFactory()
 	 */
+	// 判断此应用上下文是否处于活动状态，即是否至少已刷新一次且尚未关闭。
+	// @return 上下文是否仍处于活动状态
 	boolean isActive();
 
 	/**
@@ -266,6 +307,13 @@ public interface ConfigurableApplicationContext extends ApplicationContext, Life
 	 * @see #close()
 	 * @see #addBeanFactoryPostProcessor
 	 */
+	// 返回此应用上下文的内部 Bean 工厂。可用于访问底层工厂的特定功能。
+	// <p>注意：请勿使用此方法对 Bean 工厂进行后处理；单例之前可能已经实例化。
+	// 请使用 BeanFactoryPostProcessor 在 Bean 被调用之前拦截 BeanFactory 的设置过程。
+	// <p>通常，此内部工厂仅在上下文处于活动状态时才可访问，即在 {@link #refresh()} 和 {@link #close()} 之间。
+	// 可以使用 {@link #isActive()} 标志检查上下文是否处于适当状态。
+	// @return 底层 Bean 工厂
+	// 如果上下文不包含内部 Bean 工厂（通常是在尚未调用 {@link #refresh()} 或已调用 {@link #close()} 的情况下），则抛出 IllegalStateException 异常。
 	ConfigurableListableBeanFactory getBeanFactory() throws IllegalStateException;
 
 }

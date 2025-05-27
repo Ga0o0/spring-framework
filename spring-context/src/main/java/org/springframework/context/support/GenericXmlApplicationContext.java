@@ -39,6 +39,12 @@ import org.springframework.core.io.Resource;
  * @see XmlBeanDefinitionReader
  * @see org.springframework.context.annotation.AnnotationConfigApplicationContext
  */
+// 便捷的应用上下文，内置 XML 支持。
+// 它是 {@link ClassPathXmlApplicationContext} 和 {@link FileSystemXmlApplicationContext} 的灵活替代方案，
+// 可通过 setter 进行配置，最终通过 {@link #refresh()} 调用激活上下文。
+//
+// <p>如果有多个配置文件，后面文件中的 Bean 定义将覆盖前面文件中的定义。
+// 您可以利用此功能，通过在列表中附加一个额外的配置文件来有意覆盖某些 Bean 定义。
 public class GenericXmlApplicationContext extends GenericApplicationContext {
 
 	private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);

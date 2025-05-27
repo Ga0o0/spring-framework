@@ -31,6 +31,11 @@ package org.springframework.beans.factory;
  * @see org.springframework.beans.factory.config.BeanDefinition#getPropertyValues()
  * @see org.springframework.beans.factory.support.AbstractBeanDefinition#getInitMethodName()
  */
+// 需要由 Bean 实现的接口，这些 Bean 需要在 {@link BeanFactory} 设置所有属性后做出响应：
+// 例如，执行自定义初始化，或仅检查所有必需属性是否已设置。
+//
+// <p>实现 {@code InitializingBean} 的另一种方法是指定自定义的 init 方法，例如在 XML Bean 定义中指定。
+// 有关所有 Bean 生命周期方法的列表，请参阅 {@link BeanFactory BeanFactory javadocs}。
 public interface InitializingBean {
 
 	/**
@@ -41,6 +46,10 @@ public interface InitializingBean {
 	 * @throws Exception in the event of misconfiguration (such as failure to set an
 	 * essential property) or if initialization fails for any other reason
 	 */
+	// 在设置所有 bean 属性并满足 {@link BeanFactoryAware}、{@code ApplicationContextAware} 等条件后，
+	// 由包含它的 {@code BeanFactory} 调用。
+	// <p>此方法允许 bean 实例在其所有 bean 属性均已设置后执行其整体配置的验证和最终初始化。
+	// @throws Exception 如果配置错误（例如未能设置必要属性）或由于其他原因初始化失败
 	void afterPropertiesSet() throws Exception;
 
 }

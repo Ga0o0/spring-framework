@@ -47,6 +47,10 @@ import org.springframework.util.Assert;
  * @see org.springframework.context.ApplicationEventPublisher
  * @see org.springframework.context.ApplicationContext
  */
+// {@link MethodInterceptor 拦截器} 在每次<i>成功</i>的方法调用后，
+// 向所有已通过 {@code ApplicationEventPublisher} 注册的 {@code ApplicationListeners} 发布一个 {@code ApplicationEvent}。
+//
+// <p>请注意，此拦截器只能发布通过 {@link #setApplicationEventClass "applicationEventClass"} 属性配置的<i>无状态</i>事件。
 public class EventPublicationInterceptor
 		implements MethodInterceptor, ApplicationEventPublisherAware, InitializingBean {
 

@@ -36,6 +36,11 @@ import org.springframework.lang.Nullable;
  * @author Stephane Nicoll
  * @see ApplicationListener
  */
+// 需要由对象实现的接口，该接口可以管理多个 {@link ApplicationListener} 对象并向其发布事件。
+//
+// <p>{@link org.springframework.context.ApplicationEventPublisher}
+// （通常是 Spring {@link org.springframework.context.ApplicationContext}）可以
+// 使用 {@code ApplicationEventMulticaster} 作为委托来实际发布事件。
 public interface ApplicationEventMulticaster {
 
 	/**
@@ -44,6 +49,8 @@ public interface ApplicationEventMulticaster {
 	 * @see #removeApplicationListener(ApplicationListener)
 	 * @see #removeApplicationListeners(Predicate)
 	 */
+	// 添加一个监听器，用于接收所有事件的通知。
+	// @param listener 要添加的监听器
 	void addApplicationListener(ApplicationListener<?> listener);
 
 	/**
@@ -62,6 +69,8 @@ public interface ApplicationEventMulticaster {
 	 * @see #addApplicationListener(ApplicationListener)
 	 * @see #removeApplicationListeners(Predicate)
 	 */
+	// 从通知列表中移除一个监听器。
+	// @param listener 要移除的监听器
 	void removeApplicationListener(ApplicationListener<?> listener);
 
 	/**
@@ -70,6 +79,8 @@ public interface ApplicationEventMulticaster {
 	 * @see #addApplicationListenerBean(String)
 	 * @see #removeApplicationListenerBeans(Predicate)
 	 */
+	// 从通知列表中移除一个监听器 bean。
+	// @param listenerBeanName 需要移除的监听器 bean 的名称
 	void removeApplicationListenerBean(String listenerBeanName);
 
 	/**
@@ -85,6 +96,10 @@ public interface ApplicationEventMulticaster {
 	 * @see #addApplicationListener(ApplicationListener)
 	 * @see #removeApplicationListener(ApplicationListener)
 	 */
+	// 从已注册的 {@code ApplicationListener} 实例集合（包括适配器类，例如 {@link ApplicationListenerMethodAdapter，
+	// 例如带注解的 {@link EventListener} 方法）中移除所有匹配的监听器。
+	// <p>注意：这仅适用于实例注册，不适用于通过 Bean 名称注册的监听器。
+	// @param predicate 用于标识要移除的监听器实例的谓词，例如检查 {@link SmartApplicationListener#getListenerId()}
 	void removeApplicationListeners(Predicate<ApplicationListener<?>> predicate);
 
 	/**
@@ -98,6 +113,9 @@ public interface ApplicationEventMulticaster {
 	 * @see #addApplicationListenerBean(String)
 	 * @see #removeApplicationListenerBean(String)
 	 */
+	// 从已注册的侦听器 Bean 名称集合（指直接实现 {@link ApplicationListener} 接口的 Bean 类）中移除所有匹配的侦听器 Bean。
+	// <p>注意：这仅适用于 Bean 名称注册，不适用于以编程方式注册的 {@code ApplicationListener} 实例。
+	// @param predicate 用于标识要移除的侦听器 Bean 名称的谓词
 	void removeApplicationListenerBeans(Predicate<String> predicate);
 
 	/**
@@ -106,6 +124,8 @@ public interface ApplicationEventMulticaster {
 	 * on event notification until new listeners are registered.
 	 * @see #removeApplicationListeners(Predicate)
 	 */
+	// 删除在此多播器上注册的所有监听器。
+	// <p>调用 remove 后，多播器将不会对事件通知执行任何操作，直到注册新的监听器为止。
 	void removeAllListeners();
 
 	/**
@@ -134,6 +154,11 @@ public interface ApplicationEventMulticaster {
 	 * @since 4.2
 	 * @see ApplicationListener#supportsAsyncExecution()
 	 */
+	// 将给定的应用程序事件多播到相应的监听器。
+	// <p>如果 {@code eventType} 为 {@code null}，则系统会根据 {@code event} 实例构建默认类型。
+	// <p>如果匹配的 {@code ApplicationListener} 不支持异步执行，则它必须在本次多播调用的调用线程中运行。
+	// @param event 要多播的事件
+	// @param eventType 事件类型（可以为 {@code null}）
 	void multicastEvent(ApplicationEvent event, @Nullable ResolvableType eventType);
 
 }

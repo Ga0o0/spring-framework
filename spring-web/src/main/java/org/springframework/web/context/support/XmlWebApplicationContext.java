@@ -59,15 +59,35 @@ import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
  * @see org.springframework.web.context.ContextLoader#initWebApplicationContext
  * @see org.springframework.web.servlet.FrameworkServlet#initWebApplicationContext
  */
+// {@link org.springframework.web.context.WebApplicationContext} 实现，其配置从 XML 文档中获取，
+// 并由 {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader} 读取。
+// 这本质上相当于 Web 环境中的 {@link org.springframework.context.support.GenericXmlApplicationContext}。
+//
+// <p>默认情况下，根上下文的配置将从“/WEB-INF/applicationContext.xml”获取，
+// 命名空间为“test-servlet”的上下文的配置将从“/WEB-INF/test-servlet.xml”获取（例如，servlet 名称为“test”的 DispatcherServlet 实例）。
+//
+// <p>可以通过 {@link org.springframework.web.context.ContextLoader} 的上下文参数“contextConfigLocation”
+// 和 {@link org.springframework.web.servlet.FrameworkServlet} 的 servlet 初始化参数覆盖配置位置的默认值。
+// 配置位置可以表示具体的文件，例如“/WEB-INF/context.xml”，也可以表示 Ant 风格的模式，
+// 例如“/WEB-INF/*-context.xml”（有关模式详细信息，请参阅 {@link org.springframework.util.PathMatcher} 的 javadoc）。
+//
+// <p>注意：如果有多个配置位置，后面加载的 bean 定义将覆盖前面加载的文件中定义的 bean。
+// 可以利用这一点，通过额外的 XML 文件故意覆盖某些 bean 定义。
+//
+// <p><b>对于以不同 bean 定义格式读取的 WebApplicationContext，请创建 {@link AbstractRefreshableWebApplicationContext} 的类似子类。
+// </b> 此类上下文实现可以指定为 ContextLoader 的“contextClass”上下文参数或 FrameworkServlet 的“contextClass”初始化参数。
 public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationContext {
 
 	/** Default config location for the root context. */
+	// 根上下文的默认配置位置。
 	public static final String DEFAULT_CONFIG_LOCATION = "/WEB-INF/applicationContext.xml";
 
 	/** Default prefix for building a config location for a namespace. */
+	// 用于构建命名空间配置位置的默认前缀。
 	public static final String DEFAULT_CONFIG_LOCATION_PREFIX = "/WEB-INF/";
 
 	/** Default suffix for building a config location for a namespace. */
+	// 用于构建命名空间配置位置的默认后缀。
 	public static final String DEFAULT_CONFIG_LOCATION_SUFFIX = ".xml";
 
 

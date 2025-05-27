@@ -36,6 +36,10 @@ import org.springframework.util.StringUtils;
  * @see #setConfigLocations
  * @see #getDefaultConfigLocations
  */
+// {@link AbstractRefreshableApplicationContext} 子类添加了对指定配置位置的通用处理。
+// 它可用作基于 XML 的应用程序上下文实现的基类，例如 {@link ClassPathXmlApplicationContext}
+// 和 {@link FileSystemXmlApplicationContext}，
+// 以及 {@link org.springframework.web.context.support.XmlWebApplicationContext}。
 public abstract class AbstractRefreshableConfigApplicationContext extends AbstractRefreshableApplicationContext
 		implements BeanNameAware, InitializingBean {
 

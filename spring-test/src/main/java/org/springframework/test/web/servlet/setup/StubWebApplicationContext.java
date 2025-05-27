@@ -66,6 +66,11 @@ import org.springframework.web.context.support.ServletContextResourcePatternReso
  * @author Juergen Hoeller
  * @since 3.2
  */
+// 一个接受对象实例注册的 WebApplicationContext 存根。
+//
+// <p>由于注册的对象实例在外部实例化和初始化，因此无需进行连接、bean 初始化、生命周期事件，
+// 也无需像通常由 {@link ApplicationContext} 管理的 bean 那样进行预处理和后处理钩子。
+// 只需简单地查找 {@link StaticListableBeanFactory} 即可。
 class StubWebApplicationContext implements WebApplicationContext {
 
 	private final ServletContext servletContext;

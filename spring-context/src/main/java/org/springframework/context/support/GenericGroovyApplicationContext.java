@@ -116,6 +116,80 @@ import org.springframework.lang.Nullable;
  * @since 4.0
  * @see org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader
  */
+// 一个 {@link org.springframework.context.ApplicationContext} 实现，
+// 它扩展了 {@link GenericApplicationContext} 并实现了 {@link GroovyObject}，
+// 这样就可以使用点引用语法来检索 bean，而不是使用 {@link #getBean}。
+//
+// <p>可以将其视为 Groovy bean 定义的 {@link GenericXmlApplicationContext} 的等效项，
+// 甚至可以将其视为升级版，因为它也可以无缝地理解 XML bean 定义文件。
+// 主要区别在于，在 Groovy 脚本中，上下文可以与内联 bean 定义闭包一起使用，如下所示：
+//
+// <pre class="code">
+// import org.hibernate.SessionFactory
+// import org.apache.commons.dbcp.BasicDataSource
+//
+// def context = new GenericGroovyApplicationContext()
+// context.reader.beans {
+//     dataSource(BasicDataSource) {                  // &lt;--- invokeMethod
+//         driverClassName = "org.hsqldb.jdbcDriver"
+//         url = "jdbc:hsqldb:mem:grailsDB"
+//         username = "sa"                            // &lt;-- setProperty
+//         password = ""
+//         settings = [mynew:"setting"]
+//     }
+//     sessionFactory(SessionFactory) {
+//         dataSource = dataSource                    // &lt;-- getProperty for retrieving references
+//     }
+//     myService(MyService) {
+//         nestedBean = { AnotherBean bean -&gt;         // &lt;-- setProperty with closure for nested bean
+//             dataSource = dataSource
+//         }
+//     }
+// }
+// context.refresh()
+// </pre>
+//
+// <p>或者，从外部资源（例如“applicationContext.groovy”文件）加载如下所示的 Groovy bean 定义脚本：
+//
+// <pre class="code">
+// import org.hibernate.SessionFactory
+// import org.apache.commons.dbcp.BasicDataSource
+//
+// beans {
+//     dataSource(BasicDataSource) {
+//         driverClassName = "org.hsqldb.jdbcDriver"
+//         url = "jdbc:hsqldb:mem:grailsDB"
+//         username = "sa"
+//         password = ""
+//         settings = [mynew:"setting"]
+//     }
+//     sessionFactory(SessionFactory) {
+//         dataSource = dataSource
+//     }
+//     myService(MyService) {
+//         nestedBean = { AnotherBean bean -&gt;
+//             dataSource = dataSource
+//         }
+//     }
+// }
+// </pre>
+//
+// <p>使用以下 Java 代码创建 {@code GenericGroovyApplicationContext}（可能使用 Ant 风格的 ''/'' 位置模式）：
+//
+// <pre class="code">
+// GenericGroovyApplicationContext context = new GenericGroovyApplicationContext();
+// context.load("org/myapp/applicationContext.groovy");
+// context.refresh();
+// </pre>
+//
+// <p>或者更简洁，只要不需要额外的配置：
+//
+// <pre class="code">
+// ApplicationContext context = new GenericGroovyApplicationContext("org/myapp/applicationContext.groovy");
+// </pre>
+	
+// <p><b>此应用程序上下文还可以理解 XML bean 定义文件，从而允许与 Groovy bean 定义文件无缝混合和匹配。</b>
+// “.xml”文件将被解析为 XML 内容；所有其他类型的资源都将被解析为 Groovy 脚本。
 public class GenericGroovyApplicationContext extends GenericApplicationContext implements GroovyObject {
 
 	private final GroovyBeanDefinitionReader reader = new GroovyBeanDefinitionReader(this);

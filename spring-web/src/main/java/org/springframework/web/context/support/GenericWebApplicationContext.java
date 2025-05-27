@@ -78,6 +78,34 @@ import org.springframework.web.context.ServletContextAware;
  * @author Sam Brannen
  * @since 1.2
  */
+// {@link GenericApplicationContext} 的子类，适用于 Web 环境。
+//
+// <p>实现了 {@link ConfigurableWebApplicationContext}，但不适用于在 {@code web.xml} 中进行声明式设置。
+// 相反，它旨在通过编程方式进行设置，例如构建嵌套上下文或在 {@link org.springframework.web.WebApplicationInitializer WebApplicationInitializers} 中使用。
+//
+// <p>将资源路径解释为 Servlet 上下文资源，即 Web 应用程序根目录下的路径。
+// 绝对路径（例如，Web 应用程序根目录之外的文件）可以通过 {@code file:} URL 访问，
+// 正如 {@code AbstractApplicationContext} 所实现的那样。
+//
+// <p>除了 {@link org.springframework.context.support.AbstractApplicationContext AbstractApplicationContext} 检测到的
+// 特殊 bean 之外，此类还会检测上下文中名为“themeSource”的 {@link ThemeSource} bean。
+// 从 6.0 开始，主题支持已弃用，并且没有直接替代品。
+//
+// <p>如果您希望使用 {@code GenericWebApplicationContext} 注册带注解的<em>组件类</em>，
+// 可以使用 {@link org.springframework.context.annotation.AnnotatedBeanDefinitionReader AnnotatedBeanDefinitionReader}，如下例所示。
+// 组件类尤其包括 {@link org.springframework.context.annotation.Configuration @Configuration} 类，
+// 但也包括普通的 {@link org.springframework.stereotype.Component @Component} 类
+// 以及使用 {@code jakarta.inject} 注解的符合 JSR-330 标准的类。
+//
+// <pre class="code">
+// GenericWebApplicationContext context = new GenericWebApplicationContext();
+// AnnotatedBeanDefinitionReader reader = new AnnotatedBeanDefinitionReader(context);
+// reader.register(AppConfig.class, UserController.class, UserRepository.class);
+// </pre>
+//
+// <p>如果您打算实现从配置文件读取 bean 定义的 {@code WebApplicationContext}，
+// 请考虑从 {@link AbstractRefreshableWebApplicationContext} 派生，
+// 并在 {@code loadBeanDefinitions} 方法的实现中读取 bean 定义。
 @SuppressWarnings("deprecation")
 public class GenericWebApplicationContext extends GenericApplicationContext
 		implements ConfigurableWebApplicationContext, ThemeSource {

@@ -56,6 +56,18 @@ import org.springframework.lang.Nullable;
  * @see HierarchicalBeanFactory
  * @see BeanFactoryUtils
  */
+// BeanFactory 接口的扩展，由能够枚举所有 Bean 实例的 Bean 工厂实现，而无需按照客户端的请求逐个按名称查找 Bean。
+// 预加载所有 Bean 定义的 BeanFactory 实现（例如基于 XML 的工厂）可以实现此接口。
+//
+// <p>如果这是一个 {@link HierarchicalBeanFactory}，则返回值将<i>不</i>考虑任何 BeanFactory 层次结构，而仅与当前工厂中定义的 Bean 相关。
+// 使用 {@link BeanFactoryUtils} 辅助类可以同时考虑祖先工厂中的 Bean。
+//
+// <p>此接口中的方法仅遵循此工厂的 Bean 定义。它们会忽略任何通过其他方式注册的单例 bean，
+// 例如 {@link org.springframework.beans.factory.config.ConfigurableBeanFactory} 的 {@code registerSingleton} 方法，
+// 但 {@code getBeanNamesForType} 和 {@code getBeansOfType} 方法除外，这两个方法也会检查这些手动注册的单例 bean。
+// 当然，BeanFactory 的 {@code getBean} 方法也允许透明访问这些特殊的 bean。然而，在典型情况下，所有 bean 都会由外部 bean 定义定义，因此大多数应用程序无需担心这种区分。
+//
+// <p><b>注意：</b> 除 {@code getBeanDefinitionCount} 和 {@code containsBeanDefinition} 外，此接口中的方法并非设计用于频繁调用。实现速度可能会很慢。
 public interface ListableBeanFactory extends BeanFactory {
 
 	/**

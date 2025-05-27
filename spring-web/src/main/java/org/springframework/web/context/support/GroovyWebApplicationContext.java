@@ -67,6 +67,24 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.context.ContextLoader#initWebApplicationContext
  * @see org.springframework.web.servlet.FrameworkServlet#initWebApplicationContext
  */
+// {@link org.springframework.web.context.WebApplicationContext} 实现，其配置从 Groovy bean 定义脚本和/或 XML 文件获取，
+// 并由 {@link org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader} 读取。
+// 这本质上相当于 Web 环境中的 {@link org.springframework.context.support.GenericGroovyApplicationContext}。
+//
+// <p>默认情况下，根上下文的配置将从“/WEB-INF/applicationContext.groovy”获取，
+// 命名空间为“test-servlet”的上下文的配置将从“/WEB-INF/test-servlet.groovy”获取（例如，servlet 名称为“test”的 DispatcherServlet 实例）。
+//
+// <p>可以通过 {@link org.springframework.web.context.ContextLoader} 的上下文参数“contextConfigLocation”
+// 和 {@link org.springframework.web.servlet.FrameworkServlet} 的 servlet 初始化参数覆盖配置位置的默认值。
+// 配置位置可以表示具体的文件，例如“/WEB-INF/context.groovy”，也可以表示 Ant 风格的模式，
+// 例如“/WEB-INF/*-context.groovy”（有关模式详细信息，请参阅 {@link org.springframework.util.PathMatcher} javadoc）。
+// 请注意，“.xml”文件将被解析为 XML 内容；所有其他类型的资源将被解析为 Groovy 脚本。
+//
+// <p>注意：如果有多个配置位置，后面的 Bean 定义将覆盖前面加载的文件中定义的 Bean 定义。
+// 可以利用这一点，通过额外的 Groovy 脚本故意覆盖某些 Bean 定义。
+//
+// <p><b>对于以不同 bean 定义格式读取的 WebApplicationContext，请创建 {@link AbstractRefreshableWebApplicationContext} 的类似子类。</b>
+// 此类上下文实现可以指定为 ContextLoader 的“contextClass”上下文参数或 FrameworkServlet 的“contextClass”初始化参数。
 public class GroovyWebApplicationContext extends AbstractRefreshableWebApplicationContext implements GroovyObject {
 
 	/** Default config location for the root context. */

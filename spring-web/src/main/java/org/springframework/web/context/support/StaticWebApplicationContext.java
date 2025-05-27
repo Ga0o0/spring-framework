@@ -56,6 +56,18 @@ import org.springframework.web.context.ServletContextAware;
  * @author Juergen Hoeller
  * @see org.springframework.ui.context.ThemeSource
  */
+// 用于测试的静态 {@link org.springframework.web.context.WebApplicationContext} 实现。不适用于生产环境应用。
+//
+// <p>实现 {@link org.springframework.web.context.ConfigurableWebApplicationContext} 接口，
+// 允许直接替换 {@link XmlWebApplicationContext}，尽管它实际上不支持外部配置文件。
+//
+// <p>将资源路径解释为 Servlet 上下文资源，即 Web 应用程序根目录下的路径。
+// 绝对路径（例如 Web 应用程序根目录之外的文件）可以通过“file:”URL 访问，
+// 正如 {@link org.springframework.core.io.DefaultResourceLoader} 实现的那样。
+//
+// <p>除了 {@link org.springframework.context.support.AbstractApplicationContext} 检测到的特殊 bean 之外，
+// 此类还会检测上下文中类型为 {@link org.springframework.ui.context.ThemeSource} 的 bean，
+// 其特殊 bean 名称为“themeSource”。从 6.0 开始，主题支持已弃用，并且没有直接替代品。
 @SuppressWarnings("deprecation")
 public class StaticWebApplicationContext extends StaticApplicationContext
 		implements ConfigurableWebApplicationContext, ThemeSource {

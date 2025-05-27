@@ -135,6 +135,21 @@ import org.springframework.util.ReflectionUtils;
  * @see org.springframework.context.ApplicationListener
  * @see org.springframework.context.MessageSource
  */
+// {@link org.springframework.context.ApplicationContext} 接口的抽象实现。
+// 不强制配置使用的存储类型；仅实现常见的上下文功能。使用模板方法设计模式，需要具体的子类实现抽象方法。
+//
+// <p>与普通的 BeanFactory 不同，ApplicationContext 应该能够检测其内部 Bean 工厂中定义的特殊 Bean：
+// 因此，此类会自动注册 {@link org.springframework.beans.factory.config.BeanFactoryPostProcessor BeanFactoryPostProcessors}、
+// {@link org.springframework.beans.factory.config.BeanPostProcessor BeanPostProcessors} 和
+// {@link org.springframework.context.ApplicationListener ApplicationListeners}，这些 Bean 已在上下文中定义为 Bean。
+//
+// <p>还可以将 {@link org.springframework.context.MessageSource} 作为 Bean 提供到上下文中，名称为“messageSource”；否则，消息解析将委托给父上下文。
+// 此外，应用程序事件的多播器可以在上下文中以类型为 {@link org.springframework.context.event.ApplicationEventMulticaster} 的“applicationEventMulticaster”bean 的形式提供；
+// 否则，将使用类型为 {@link org.springframework.context.event.SimpleApplicationEventMulticaster} 的默认多播器。
+//
+// <p>通过扩展 {@link org.springframework.core.io.DefaultResourceLoader} 实现资源加载。
+// 因此，将非 URL 资源路径视为类路径资源（支持包含包路径的完整类路径资源名称，例如“mypackage/myresource.dat”），
+// 除非在子类中重写了 {@link #getResourceByPath} 方法。
 public abstract class AbstractApplicationContext extends DefaultResourceLoader
 		implements ConfigurableApplicationContext {
 

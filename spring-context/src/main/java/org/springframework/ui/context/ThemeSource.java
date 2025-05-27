@@ -28,6 +28,7 @@ import org.springframework.lang.Nullable;
  * @see Theme
  * @deprecated as of 6.0 in favor of using CSS, without direct replacement
  */
+// 接口由能够解析 {@link Theme Themes} 的对象实现。这可以实现给定“主题”消息的参数化和国际化。
 @Deprecated(since = "6.0")
 public interface ThemeSource {
 
@@ -42,6 +43,12 @@ public interface ThemeSource {
 	 * return default Themes for other theme names.
 	 * @see org.springframework.web.servlet.theme.AbstractThemeResolver#ORIGINAL_DEFAULT_THEME_NAME
 	 */
+	// 返回指定主题名称的 Theme 实例。
+	// <p>返回的主题将解析特定于主题的消息、代码、文件路径等（例如，Web 环境中的 CSS 和图像文件）。
+	// @param themeName 主题名称
+	// @return 相应的主题，如果未定义则返回 {@code null}。
+	// 请注意，按照惯例，ThemeSource 至少应该能够为默认主题名称“theme”返回一个默认主题，
+	// 但也可以返回其他主题名称的默认主题。
 	@Nullable
 	Theme getTheme(String themeName);
 

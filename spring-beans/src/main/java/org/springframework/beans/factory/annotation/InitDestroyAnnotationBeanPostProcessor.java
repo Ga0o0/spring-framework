@@ -84,7 +84,7 @@ import org.springframework.util.ReflectionUtils;
  * @see #setDestroyAnnotationType
  */
 @SuppressWarnings("serial")
-public class InitDestroyAnnotationBeanPostProcessor implements DestructionAwareBeanPostProcessor,
+public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAwareBeanPostProcessor,
 		MergedBeanDefinitionPostProcessor, BeanRegistrationAotProcessor, PriorityOrdered, Serializable {
 
 	private final transient LifecycleMetadata emptyLifecycleMetadata =

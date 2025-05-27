@@ -32,6 +32,12 @@ package org.springframework.beans.factory;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 一个标记超接口，指示某个 bean 有资格通过回调方法接收 Spring 容器关于特定框架对象的通知。
+// 实际方法签名由各个子接口决定，但通常只包含一个接受单个参数且返回 void 的方法。
+//
+// <p>请注意，仅实现 {@link Aware} 接口不提供任何默认功能。
+// 相反，必须显式处理，例如在 {@link org.springframework.beans.factory.config.BeanPostProcessor} 中。
+// 有关处理特定 {@code Aware} 接口回调的示例，请参阅 {@link org.springframework.context.support.ApplicationContextAwareProcessor}。
 public interface Aware {
 
 }
