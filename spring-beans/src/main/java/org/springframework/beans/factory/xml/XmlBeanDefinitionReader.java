@@ -77,6 +77,13 @@ import org.springframework.util.xml.XmlValidationModeDetector;
  * @see org.springframework.beans.factory.support.DefaultListableBeanFactory
  * @see org.springframework.context.support.GenericApplicationContext
  */
+// 用于读取 XML Bean 定义的 Bean 定义。将实际的 XML 文档读取委托给 {@link BeanDefinitionDocumentReader} 接口的实现。
+//
+// <p>通常应用于 {@link org.springframework.beans.factory.support.DefaultListableBeanFactory}
+// 或 {@link org.springframework.context.support.GenericApplicationContext}。
+//
+// <p>该类加载 DOM 文档并将 BeanDefinitionDocumentReader 应用于该文档。文档读取器会将每个 Bean 定义注册到指定的 Bean 工厂，
+// 并与后者的 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 接口实现进行通信。
 public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
 	/**

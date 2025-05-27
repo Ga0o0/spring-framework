@@ -131,18 +131,78 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.context.support.GenericApplicationContext
  * @see org.springframework.context.support.GenericGroovyApplicationContext
  */
+// 一个基于 Groovy 的 Spring Bean 定义读取器：类似于 Groovy 构建器，但更像是 Spring 配置的 DSL。
+//
+// <p>此 Bean 定义读取器还能理解 XML Bean 定义文件，从而可以与 Groovy Bean 定义文件无缝混合和匹配。
+//
+// <p>通常应用于 {@link org.springframework.beans.factory.support.DefaultListableBeanFactory} 
+// 或 {@link org.springframework.context.support.GenericApplicationContext}，
+// 但可以用于任何 {@link BeanDefinitionRegistry} 实现。
+//
+// <h3>示例语法</h3>
+// <pre class="code">
+// import org.hibernate.SessionFactory
+// import org.apache.commons.dbcp.BasicDataSource
+//
+// def reader = new GroovyBeanDefinitionReader(myApplicationContext)
+// reader.beans {
+// 		dataSource(BasicDataSource) { 			// &lt;--- 调用方法
+// 			driverClassName = "org.hsqldb.jdbcDriver"
+// 			url = "jdbc:hsqldb:mem:grailsDB"
+// 			username = "sa" 					// &lt;-- 设置属性
+// 			password = ""
+// 			settings = [mynew:"setting"]
+// 		}
+// 		sessionFactory(SessionFactory) {
+// 			dataSource = dataSource 			// &lt;-- 获取属性用于获取引用
+// 		}
+// 		myService(MyService) {
+// 			nestedBean = { AnotherBean bean -> // &lt;-- 使用闭包为嵌套 bean 设置属性
+// 				dataSource = dataSource
+// 			}
+//		}
+// }
+// </pre>
+//
+// <p>您还可以使用 {@link #loadBeanDefinitions(Resource...)}
+// 或 {@link #loadBeanDefinitions(String...)} 方法加载包含在 Groovy 脚本中定义的 bean 的资源，脚本类似于以下内容。
+//
+// <pre class="code">
+// import org.hibernate.SessionFactory
+// import org.apache.commons.dbcp.BasicDataSource
+//
+// beans {
+// 		dataSource(BasicDataSource) {
+// 			driverClassName = "org.hsqldb.jdbcDriver"
+// 			url = "jdbc:hsqldb:mem:grailsDB"
+// 			username = "sa"
+// 			password = ""
+// 			settings = [mynew:"setting"]
+// 		}
+// 		sessionFactory(SessionFactory) {
+// 			dataSource = dataSource
+// 		}
+// 		myService(MyService) {
+// 			nestedBean = { AnotherBean bean ->
+// 				dataSource = dataSource
+// 			}
+// 		}
+// }
+// </pre>
 public class GroovyBeanDefinitionReader extends AbstractBeanDefinitionReader implements GroovyObject {
 
 	/**
 	 * Standard {@code XmlBeanDefinitionReader} created with default
 	 * settings for loading bean definitions from XML files.
 	 */
+	// 使用默认设置创建的标准 {@code XmlBeanDefinitionReader}，用于从 XML 文件加载 Bean 定义。
 	private final XmlBeanDefinitionReader standardXmlBeanDefinitionReader;
 
 	/**
 	 * Groovy DSL {@code XmlBeanDefinitionReader} for loading bean definitions
 	 * via the Groovy DSL, typically configured with XML validation disabled.
 	 */
+	// Groovy DSL {@code XmlBeanDefinitionReader} 用于通过 Groovy DSL 加载 Bean 定义，通常配置为禁用 XML 验证。
 	private final XmlBeanDefinitionReader groovyDslXmlBeanDefinitionReader;
 
 	private final Map<String, String> namespaces = new HashMap<>();

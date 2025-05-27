@@ -77,6 +77,33 @@ import org.springframework.util.StringUtils;
  * @deprecated as of 5.3, in favor of Spring's common bean definition formats
  * and/or custom reader implementations
  */
+// 用于简单属性格式的 Bean 定义读取器。
+//
+// <p>为 Map/Properties 和 ResourceBundle 提供 Bean 定义注册方法。通常应用于 DefaultListableBeanFactory。
+//
+// <p><b>示例：</b>
+//
+// <pre class="code">
+// employee.(class)=MyClass      // bean 属于 MyClass 类
+// employee.(abstract)=true      // 此 bean 无法直接实例化
+// employee.group=Insurance      // 真实属性
+// employee.usesDialUp=false     // 真实属性（可能被覆盖）
+//
+// salesrep.(parent)=employee    // 派生自“employee”bean 定义
+// salesrep.(lazy-init)=true     // 延迟初始化此单例 bean
+// salesrep.manager(ref)=tony    // 引用另一个 bean
+// salesrep.department=Sales     // 真实属性
+//
+// techie.(parent)=employee      // 派生自“employee”bean 定义
+// techie.(scope)=prototype      // bean 是原型（不是共享实例）
+// techie.manager(ref)=jeff      // 引用另一个 bean
+// techie.department=Engineering // 真实属性
+// techie.usesDialUp=true        // 真实属性（覆盖父级值）
+//
+// ceo.$0(ref)=secretary // 将“secretary”bean 作为第 0 个构造函数参数注入
+// ceo.$1=1000000 // 在第一个构造函数参数处注入值“1000000”
+// </pre>
+// * @deprecated 自 5.3 起，支持 Spring 的通用 bean 定义格式和/或自定义读取器实现
 @Deprecated
 public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader {
 
@@ -90,11 +117,13 @@ public class PropertiesBeanDefinitionReader extends AbstractBeanDefinitionReader
 	 * Separator between bean name and property name.
 	 * We follow normal Java conventions.
 	 */
+	// Bean 名称和属性名称之间的分隔符。我们遵循正常的 Java 约定。
 	public static final String SEPARATOR = ".";
 
 	/**
 	 * Special key to distinguish {@code owner.(class)=com.myapp.MyClass}.
 	 */
+	// 用于区分 owner.(class)=com.myapp.MyClass 的特殊键。
 	public static final String CLASS_KEY = "(class)";
 
 	/**

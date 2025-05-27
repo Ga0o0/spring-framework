@@ -147,6 +147,8 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	 * with the corresponding Classes to be resolved later (or never).
 	 * @see Thread#getContextClassLoader()
 	 */
+	// 设置用于 bean 类的 ClassLoader。
+	// <p>默认值为 {@code null}，表示不要急于加载 bean 类，而是仅使用类名注册 bean 定义，相应的类稍后再解析（或从不解析）。
 	public void setBeanClassLoader(@Nullable ClassLoader beanClassLoader) {
 		this.beanClassLoader = beanClassLoader;
 	}
@@ -178,6 +180,8 @@ public abstract class AbstractBeanDefinitionReader implements BeanDefinitionRead
 	 * (without explicit bean name specified).
 	 * <p>Default is a {@link DefaultBeanNameGenerator}.
 	 */
+	// 设置用于匿名 bean 的 BeanNameGenerator（无需指定显式 bean 名称）。
+	// <p>默认为 {@link DefaultBeanNameGenerator}。
 	public void setBeanNameGenerator(@Nullable BeanNameGenerator beanNameGenerator) {
 		this.beanNameGenerator = (beanNameGenerator != null ? beanNameGenerator : DefaultBeanNameGenerator.INSTANCE);
 	}
