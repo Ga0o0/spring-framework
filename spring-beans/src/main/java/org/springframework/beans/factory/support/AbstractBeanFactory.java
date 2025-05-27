@@ -130,61 +130,78 @@ import org.springframework.util.StringValueResolver;
 public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport implements ConfigurableBeanFactory {
 
 	/** Parent bean factory, for bean inheritance support. */
+	// 父 Bean 工厂，用于支持 Bean 继承。
 	@Nullable
 	private BeanFactory parentBeanFactory;
 
 	/** ClassLoader to resolve bean class names with, if necessary. */
+	// 如果需要，用于解析 Bean 类名的 ClassLoader。
 	@Nullable
 	private ClassLoader beanClassLoader = ClassUtils.getDefaultClassLoader();
 
 	/** ClassLoader to temporarily resolve bean class names with, if necessary. */
+	// 如果需要，用于临时解析 Bean 类名的 ClassLoader。
 	@Nullable
 	private ClassLoader tempClassLoader;
 
 	/** Whether to cache bean metadata or rather reobtain it for every access. */
+	// 是否缓存 Bean 元数据，还是每次访问时都重新获取。
 	private boolean cacheBeanMetadata = true;
 
 	/** Resolution strategy for expressions in bean definition values. */
+	// Bean 定义值中表达式的解析策略。
 	@Nullable
 	private BeanExpressionResolver beanExpressionResolver;
 
 	/** Spring ConversionService to use instead of PropertyEditors. */
+	// 用于替代 PropertyEditors 的 Spring ConversionService。
 	@Nullable
 	private ConversionService conversionService;
 
 	/** Custom PropertyEditorRegistrars to apply to the beans of this factory. */
+	// 自定义 PropertyEditorRegistrars，应用于此工厂的 bean。
 	private final Set<PropertyEditorRegistrar> propertyEditorRegistrars = new LinkedHashSet<>(4);
 
 	/** Custom PropertyEditors to apply to the beans of this factory. */
+	// 自定义 PropertyEditors，应用于此工厂的 bean。
 	private final Map<Class<?>, Class<? extends PropertyEditor>> customEditors = new HashMap<>(4);
 
 	/** A custom TypeConverter to use, overriding the default PropertyEditor mechanism. */
+	// 自定义 TypeConverter，用于覆盖默认的 PropertyEditor 机制。
 	@Nullable
 	private TypeConverter typeConverter;
 
 	/** String resolvers to apply e.g. to annotation attribute values. */
+	// 字符串解析器，应用于注解属性值等
 	private final List<StringValueResolver> embeddedValueResolvers = new CopyOnWriteArrayList<>();
 
 	/** BeanPostProcessors to apply. */
+	// BeanPostProcessors，应用于此工厂的 bean。
 	private final List<BeanPostProcessor> beanPostProcessors = new BeanPostProcessorCacheAwareList();
 
 	/** Cache of pre-filtered post-processors. */
+	// 预过滤后处理器的缓存。
 	@Nullable
 	private BeanPostProcessorCache beanPostProcessorCache;
 
 	/** Map from scope identifier String to corresponding Scope. */
+	// 从作用域标识符字符串映射到相应的作用域。
 	private final Map<String, Scope> scopes = new LinkedHashMap<>(8);
 
 	/** Application startup metrics. **/
+	// 应用程序启动指标。
 	private ApplicationStartup applicationStartup = ApplicationStartup.DEFAULT;
 
 	/** Map from bean name to merged RootBeanDefinition. */
+	// 从 Bean 名称映射到合并的 RootBeanDefinition。
 	private final Map<String, RootBeanDefinition> mergedBeanDefinitions = new ConcurrentHashMap<>(256);
 
 	/** Names of beans that have already been created at least once. */
+	// 已至少创建一次的 Bean 名称。
 	private final Set<String> alreadyCreated = Collections.newSetFromMap(new ConcurrentHashMap<>(256));
 
 	/** Names of beans that are currently in creation. */
+	// 当前正在创建的 Bean 名称。
 	private final ThreadLocal<Object> prototypesCurrentlyInCreation =
 			new NamedThreadLocal<>("Prototype beans currently in creation");
 
@@ -201,6 +218,8 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 * @param parentBeanFactory parent bean factory, or {@code null} if none
 	 * @see #getBean
 	 */
+	// 使用给定的父级创建一个新的 AbstractBeanFactory。
+	// @param parentBeanFactory 父 bean 工厂，如果没有则为 {@code null}
 	public AbstractBeanFactory(@Nullable BeanFactory parentBeanFactory) {
 		this.parentBeanFactory = parentBeanFactory;
 	}

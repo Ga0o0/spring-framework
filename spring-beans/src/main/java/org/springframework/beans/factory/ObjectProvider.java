@@ -38,6 +38,10 @@ import org.springframework.lang.Nullable;
  * @see BeanFactory#getBeanProvider
  * @see org.springframework.beans.factory.annotation.Autowired
  */
+// {@link ObjectFactory} 的一个变体，专为注入点设计，允许通过编程实现可选性，并允许宽松的非唯一性处理。
+//
+// <p>从 5.1 版本开始，此接口扩展了 {@link Iterable} 并提供 {@link Stream} 支持。
+// 因此，它可以在 {@code for} 循环中使用，提供 {@link #forEach} 迭代，并允许集合样式的 {@link #stream} 访问。
 public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 
 	/**
@@ -50,6 +54,11 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @throws BeansException in case of creation errors
 	 * @see #getObject()
 	 */
+	// 返回此工厂管理的对象的实例（可能是共享的，也可能是独立的）。
+	// <p>允许指定显式的构造参数，类似于 {@link BeanFactory#getBean(String, Object...)}。
+	// @param args 创建相应实例时使用的参数
+	// @return Bean 的实例
+	// @throws BeansException（如果创建错误）
 	T getObject(Object... args) throws BeansException;
 
 	/**
@@ -59,6 +68,9 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @throws BeansException in case of creation errors
 	 * @see #getObject()
 	 */
+	// 返回此工厂管理的对象的实例（可能是共享的，也可能是独立的）。
+	// @return Bean 的实例，如果不可用，则返回 {@code null}
+	// @throws BeansException（如果创建错误）
 	@Nullable
 	T getIfAvailable() throws BeansException;
 
@@ -73,6 +85,10 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @since 5.0
 	 * @see #getIfAvailable()
 	 */
+	// 返回此工厂管理的对象的一个实例（可能是共享的，也可能是独立的）。
+	// @param defaultSupplier 如果工厂中不存在默认对象，则返回一个回调函数。
+	// @return 一个 bean 实例，如果不存在可用的 bean，则返回提供的默认对象。
+	// @throws BeansException 如果创建错误
 	default T getIfAvailable(Supplier<T> defaultSupplier) throws BeansException {
 		T dependency = getIfAvailable();
 		return (dependency != null ? dependency : defaultSupplier.get());
@@ -87,6 +103,9 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @since 5.0
 	 * @see #getIfAvailable()
 	 */
+	// 如果可用，则使用此工厂管理的对象的一个实例（可能是共享的，也可能是独立的）。
+	// @param dependencyConsumer 用于处理目标对象的回调（如果可用）（否则不调用）
+	// @throws BeansException 如果创建错误
 	default void ifAvailable(Consumer<T> dependencyConsumer) throws BeansException {
 		T dependency = getIfAvailable();
 		if (dependency != null) {
@@ -102,6 +121,9 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @throws BeansException in case of creation errors
 	 * @see #getObject()
 	 */
+	// 返回此工厂管理的对象的实例（可能是共享的，也可能是独立的）。
+	// @return 一个 bean 实例，如果不可用或不唯一（例如，找到多个候选对象，但没有一个被标记为主 bean），则返回 {@code null}。
+	// @throws 如果创建错误，则抛出 BeansException
 	@Nullable
 	T getIfUnique() throws BeansException;
 
@@ -117,6 +139,10 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @since 5.0
 	 * @see #getIfUnique()
 	 */
+	// 返回此工厂管理的对象的实例（可能是共享的，也可能是独立的）。
+	// @param defaultSupplier 如果工厂中不存在唯一候选对象，则返回一个回调函数，用于提供默认对象。
+	// @return 一个 bean 实例；如果不存在此类 bean 或该 bean 在工厂中不唯一（例如，找到多个候选对象，但没有一个被标记为主 bean），则返回提供的默认对象。
+	// @throws 如果创建错误，则抛出 BeansException
 	default T getIfUnique(Supplier<T> defaultSupplier) throws BeansException {
 		T dependency = getIfUnique();
 		return (dependency != null ? dependency : defaultSupplier.get());
@@ -131,6 +157,9 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @since 5.0
 	 * @see #getIfAvailable()
 	 */
+	// 如果此工厂管理的对象唯一，则使用该对象的实例（可能是共享的或独立的）。
+	// @param dependencyConsumer 如果目标对象唯一，则回调函数用于处理目标对象（否则不调用）
+	// @throws BeansException 如果创建错误
 	default void ifUnique(Consumer<T> dependencyConsumer) throws BeansException {
 		T dependency = getIfUnique();
 		if (dependency != null) {
@@ -144,6 +173,7 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @since 5.1
 	 * @see #stream()
 	 */
+	// 返回一个覆盖所有匹配对象实例的 {@link Iterator}，不保证特定的顺序（但通常按注册顺序）。
 	@Override
 	default Iterator<T> iterator() {
 		return stream().iterator();
@@ -156,6 +186,7 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @see #iterator()
 	 * @see #orderedStream()
 	 */
+	// 返回一个覆盖所有匹配对象实例的顺序 {@link Stream}，不保证特定的顺序（但通常按注册顺序）。
 	default Stream<T> stream() {
 		throw new UnsupportedOperationException("Multi element access not supported");
 	}
@@ -172,6 +203,9 @@ public interface ObjectProvider<T> extends ObjectFactory<T>, Iterable<T> {
 	 * @see #stream()
 	 * @see org.springframework.core.OrderComparator
 	 */
+	// 返回一个包含所有匹配对象实例的顺序 {@link Stream}，该 Stream 根据工厂函数的通用顺序比较器进行预排序。
+	// <p>在标准的 Spring 应用上下文中，该 Stream 将根据 {@link org.springframework.core.Ordered} 约定进行排序，
+	// 如果是基于注解的配置，还会考虑 {@link org.springframework.core.annotation.Order} 注解，类似于列表/数组类型的多元素注入点。
 	default Stream<T> orderedStream() {
 		throw new UnsupportedOperationException("Ordered element access not supported");
 	}

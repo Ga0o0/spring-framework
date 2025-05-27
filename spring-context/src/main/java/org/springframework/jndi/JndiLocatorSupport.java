@@ -38,6 +38,11 @@ import org.springframework.util.Assert;
  * @see #setJndiEnvironment
  * @see #setResourceRef
  */
+// 方便的超类，用于定位任意数量的 JNDI 对象。派生自 JndiAccessor，以继承“jndiTemplate”和“jndiEnvironment”bean 属性。
+//
+// <p>JNDI 名称可能包含或不包含 Jakarta EE 应用程序在访问本地映射（ENC - 环境命名上下文）资源时所需的“java:comp/env/”前缀。
+// 如果不包含，则在“resourceRef”属性为 true（默认值为 <strong>false</strong>）
+// 且未指定其他方案（例如“java:”）的情况下，将添加“java:comp/env/”前缀。
 public abstract class JndiLocatorSupport extends JndiAccessor {
 
 	/** JNDI prefix used in a Jakarta EE container. */

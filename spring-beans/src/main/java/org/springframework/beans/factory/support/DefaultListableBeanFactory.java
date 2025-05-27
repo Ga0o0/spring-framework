@@ -120,10 +120,13 @@ import org.springframework.util.StringUtils;
  */
 // Spring 默认实现了 {@link ConfigurableListableBeanFactory} 和 {@link BeanDefinitionRegistry} 接口：
 // 一个基于 bean 定义元数据的完整 bean 工厂，可通过后处理器进行扩展。
+//
 // <p>典型用法是先注册所有 bean 定义（可能从 bean 定义文件中读取），然后再访问 bean。
 // 因此，在本地 bean 定义表中按名称查找 bean 是一种低成本的操作，操作对象是预先解析的 bean 定义元数据对象。
+//
 // <p>请注意，特定 bean 定义格式的读取器通常是单独实现的，而不是作为 bean 工厂的子类：
 // 例如，参见 {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader}。
+//
 // <p>有关 {@link org.springframework.beans.factory.ListableBeanFactory} 接口的替代实现，
 // 请查看 {@link StaticListableBeanFactory}，它管理现有的 bean 实例，而不是根据 bean 定义创建新的 bean 实例。
 @SuppressWarnings("serial")
@@ -213,6 +216,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/**
 	 * Create a new DefaultListableBeanFactory.
 	 */
+	// 创建一个新的 DefaultListableBeanFactory。
 	public DefaultListableBeanFactory() {
 		super();
 	}
@@ -248,6 +252,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * to be deserialized from this id back into the BeanFactory object, if needed.
 	 * @since 4.1.2
 	 */
+	// 如果指定，则返回一个用于序列化的 id，以便根据需要将此 BeanFactory 从此 id 反序列化回 BeanFactory 对象。
 	@Nullable
 	public String getSerializationId() {
 		return this.serializationId;
@@ -260,6 +265,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * <p>Default is "true".
 	 * @see #registerBeanDefinition
 	 */
+	// 设置是否允许通过注册同名的其他定义来覆盖 Bean 定义，从而自动替换前者。如果不允许，则会抛出异常。这也适用于覆盖别名。
+	//* <p>默认值为“true”。
 	public void setAllowBeanDefinitionOverriding(boolean allowBeanDefinitionOverriding) {
 		this.allowBeanDefinitionOverriding = allowBeanDefinitionOverriding;
 	}
@@ -269,6 +276,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * a different definition with the same name, automatically replacing the former.
 	 * @since 4.1.2
 	 */
+	// 返回是否允许通过注册一个同名的不同定义来覆盖 bean 定义，并自动替换前一个定义。
 	public boolean isAllowBeanDefinitionOverriding() {
 		return this.allowBeanDefinitionOverriding;
 	}
@@ -283,6 +291,9 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * demand just to perform a type check.
 	 * @see AbstractBeanDefinition#setLazyInit
 	 */
+	// 设置工厂是否允许即时加载 bean 类，即使 bean 定义标记为“lazy-init”。
+	//* <p>默认值为“true”。关闭此标志可抑制延迟初始化 bean 的类加载，除非明确请求此类 bean。
+	// 具体而言，按类型查找将直接忽略未解析类名的 bean 定义，而不是仅出于类型检查的目的按需加载 bean 类。
 	public void setAllowEagerClassLoading(boolean allowEagerClassLoading) {
 		this.allowEagerClassLoading = allowEagerClassLoading;
 	}
@@ -292,6 +303,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * even for bean definitions that are marked as "lazy-init".
 	 * @since 4.1.2
 	 */
+	// 返回工厂是否允许即时加载 bean 类，即使 bean 定义标记为“lazy-init”。
 	public boolean isAllowEagerClassLoading() {
 		return this.allowEagerClassLoading;
 	}
@@ -302,6 +314,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @see org.springframework.core.OrderComparator
 	 * @see org.springframework.core.annotation.AnnotationAwareOrderComparator
 	 */
+	// 为依赖列表和数组设置一个 {@link java.util.Comparator}。
 	public void setDependencyComparator(@Nullable Comparator<Object> dependencyComparator) {
 		this.dependencyComparator = dependencyComparator;
 	}
@@ -310,6 +323,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Return the dependency comparator for this BeanFactory (may be {@code null}).
 	 * @since 4.0
 	 */
+	// 返回此 BeanFactory 的依赖比较器（可能为 {@code null}）。
 	@Nullable
 	public Comparator<Object> getDependencyComparator() {
 		return this.dependencyComparator;
@@ -320,6 +334,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * when deciding whether a bean definition should be considered as a
 	 * candidate for autowiring.
 	 */
+	// 为该 BeanFactory 设置一个自定义的自动装配候选解析器，用于决定某个 Bean 定义是否应作为自动装配的候选对象。
 	public void setAutowireCandidateResolver(AutowireCandidateResolver autowireCandidateResolver) {
 		Assert.notNull(autowireCandidateResolver, "AutowireCandidateResolver must not be null");
 		if (autowireCandidateResolver instanceof BeanFactoryAware beanFactoryAware) {
@@ -331,6 +346,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	/**
 	 * Return the autowire candidate resolver for this BeanFactory (never {@code null}).
 	 */
+	// 返回此 BeanFactory 的自动装配候选解析器（永不为 null）。
 	public AutowireCandidateResolver getAutowireCandidateResolver() {
 		return this.autowireCandidateResolver;
 	}

@@ -39,6 +39,13 @@ import org.springframework.lang.Nullable;
  * @since 03.11.2003
  * @see org.springframework.context.support.AbstractApplicationContext#getBeanFactory()
  */
+// 大多数可列出 Bean 工厂都需要实现的配置接口。
+// 除了 {@link ConfigurableBeanFactory} 之外，它还提供分析和修改 Bean 定义以及预实例化单例的功能。
+//
+// <p>{@link org.springframework.beans.factory.BeanFactory} 的这个子接口不适用于普通的应用程序代码：
+// 在典型用例中，请坚持使用 {@link org.springframework.beans.factory.BeanFactory} 或
+// {@link org.springframework.beans.factory.ListableBeanFactory}。
+// 此接口仅用于允许框架内部的即插即用，即使需要访问 Bean 工厂的配置方法。
 public interface ConfigurableListableBeanFactory
 		extends ListableBeanFactory, AutowireCapableBeanFactory, ConfigurableBeanFactory {
 
@@ -47,6 +54,8 @@ public interface ConfigurableListableBeanFactory
 	 * for example, String. Default is none.
 	 * @param type the dependency type to ignore
 	 */
+	// 忽略自动装配时指定的依赖类型：例如 String。默认值为 None。
+	// @param type 忽略的依赖类型
 	void ignoreDependencyType(Class<?> type);
 
 	/**
@@ -98,6 +107,12 @@ public interface ConfigurableListableBeanFactory
 	 * @return whether the bean should be considered as autowire candidate
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
 	 */
+	// 确定指定的 bean 是否符合自动装配候选条件，以便将其注入到声明了匹配类型依赖项的其他 bean 中。
+	// <p>此方法还会检查祖先工厂。
+	// @param beanName 需要检查的 bean 的名称
+	// @param descriptor 需要解析的依赖项的描述符
+	// @return 是否应将此 bean 视为自动装配候选
+	// @throws NoSuchBeanDefinitionException（如果不存在具有给定名称的 bean）
 	boolean isAutowireCandidate(String beanName, DependencyDescriptor descriptor)
 			throws NoSuchBeanDefinitionException;
 
@@ -115,6 +130,12 @@ public interface ConfigurableListableBeanFactory
 	 * @throws NoSuchBeanDefinitionException if there is no bean with the given name
 	 * defined in this factory
 	 */
+	// 返回指定 bean 的已注册 BeanDefinition，允许访问其属性值和构造函数参数值（可在 bean 工厂后处理期间修改）。
+	// <p>返回的 BeanDefinition 对象不应是副本，而应是工厂中注册的原始定义对象。这意味着，如有必要，它应该可转换为更具体的实现类型。
+	// <p><b>注意：</b>此方法<i>不</i>考虑祖先工厂。它仅用于访问此工厂的本地 bean 定义。
+	// @param beanName bean 的名称
+	// @return 注册的 BeanDefinition
+	// @throws NoSuchBeanDefinitionException（如果此工厂中未定义具有给定名称的 bean）
 	BeanDefinition getBeanDefinition(String beanName) throws NoSuchBeanDefinitionException;
 
 	/**
@@ -129,6 +150,9 @@ public interface ConfigurableListableBeanFactory
 	 * @see #getBeanNamesForType
 	 * @see #getBeanNamesForAnnotation
 	 */
+	// 返回此工厂管理的所有 Bean 名称的统一视图。
+	// <p>包含 Bean 定义名称以及手动注册的单例实例名称，其中 Bean 定义名称始终排在第一位，类似于特定于类型/注解的 Bean 名称检索方式。
+	// @return Bean 名称视图的复合迭代器
 	Iterator<String> getBeanNamesIterator();
 
 	/**
@@ -141,6 +165,8 @@ public interface ConfigurableListableBeanFactory
 	 * @see #getBeanDefinition
 	 * @see #getMergedBeanDefinition
 	 */
+	// 清除合并的 Bean 定义缓存，移除尚未获得完整元数据缓存的 Bean 条目。<p>通常在原始 Bean 定义发生更改后触发，
+	// 例如，在应用 {@link BeanFactoryPostProcessor} 后。请注意，此时已创建的 Bean 的元数据将保留。
 	void clearMetadataCache();
 
 	/**
@@ -161,6 +187,7 @@ public interface ConfigurableListableBeanFactory
 	 * @return {@code true} if the factory's configuration is considered frozen
 	 * @see #freezeConfiguration()
 	 */
+	// 返回此工厂的 bean 定义是否被冻结，即不应再进行修改或后处理。如果工厂的配置被视为冻结，则返回 {@code true}
 	boolean isConfigurationFrozen();
 
 	/**

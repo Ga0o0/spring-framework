@@ -416,6 +416,8 @@ class StubWebApplicationContext implements WebApplicationContext {
 	 * AutowireCapableBeanFactory in order to allow bean initialization of
 	 * {@link ApplicationContextAware} singletons.
 	 */
+	// StaticListableBeanFactory 的扩展，它实现 AutowireCapableBeanFactory，
+	// 以允许 {@link ApplicationContextAware} 单例的 bean 初始化。
 	private class StubBeanFactory extends StaticListableBeanFactory implements AutowireCapableBeanFactory {
 
 		@Override

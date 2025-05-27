@@ -42,6 +42,8 @@ import org.springframework.util.StringValueResolver;
  * @author Sam Brannen
  * @since 2.5.2
  */
+// {@link AliasRegistry} 接口的简单实现。
+// <p>作为 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 实现的基类。
 public class SimpleAliasRegistry implements AliasRegistry {
 
 	/** Logger available to subclasses. */

@@ -32,6 +32,7 @@ import org.springframework.lang.Nullable;
  * @see #setJndiTemplate
  * @see #setJndiEnvironment
  */
+// JNDI 访问器的便捷超类，提供 “jndiTemplate” 和 “jndiEnvironment” bean 属性。
 public class JndiAccessor {
 
 	/**

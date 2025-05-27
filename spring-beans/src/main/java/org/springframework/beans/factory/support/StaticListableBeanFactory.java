@@ -66,9 +66,19 @@ import org.springframework.util.StringUtils;
  * @since 06.01.2003
  * @see DefaultListableBeanFactory
  */
+// 静态 {@link org.springframework.beans.factory.BeanFactory} 实现，允许以编程方式注册现有单例实例。
+//
+// <p>不支持原型 bean 或别名。
+//
+// <p>此示例为 {@link org.springframework.beans.factory.ListableBeanFactory} 接口的简单实现，
+// 管理现有 bean 实例，而不是根据 bean 定义创建新实例，并且未实现任何扩展 SPI 接口
+// （例如 {@link org.springframework.beans.factory.config.ConfigurableBeanFactory}）。
+//
+// <p>如需基于 bean 定义的完整工厂，请参阅 {@link DefaultListableBeanFactory}。
 public class StaticListableBeanFactory implements ListableBeanFactory {
 
 	/** Map from bean name to bean instance. */
+	// 从 bean 名称映射到 bean 实例。
 	private final Map<String, Object> beans;
 
 
@@ -76,6 +86,7 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 	 * Create a regular {@code StaticListableBeanFactory}, to be populated
 	 * with singleton bean instances through {@link #addBean} calls.
 	 */
+	// 创建一个常规的 {@code StaticListableBeanFactory}，通过 {@link #addBean} 调用填充单例 bean 实例。
 	public StaticListableBeanFactory() {
 		this.beans = new LinkedHashMap<>();
 	}
@@ -90,6 +101,10 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 	 * bean name as key and the corresponding singleton object as value
 	 * @since 4.3
 	 */
+	// 创建一个 {@code StaticListableBeanFactory} 并包装给定的 {@code Map}。
+	// <p>请注意，给定的 {@code Map} 可以是预先填充了 bean 的；也可以是新的，但仍然允许通过 {@link #addBean} 注册 bean；或者，
+	// 使用 {@link java.util.Collections#emptyMap()} 创建一个虚拟工厂，强制针对空 bean 集进行操作。
+	// @param beans 一个 {@code Map}，用于保存此工厂的 bean，以 bean 名称为键，对应的单例对象为值
 	public StaticListableBeanFactory(Map<String, Object> beans) {
 		Assert.notNull(beans, "Beans Map must not be null");
 		this.beans = beans;
@@ -102,6 +117,10 @@ public class StaticListableBeanFactory implements ListableBeanFactory {
 	 * @param name the name of the bean
 	 * @param bean the bean instance
 	 */
+	// 添加一个新的单例 bean。
+	// <p>将覆盖给定名称的任何现有实例。
+	// @param name bean 的名称
+	// @param bean bean 实例
 	public void addBean(String name, Object bean) {
 		this.beans.put(name, bean);
 	}

@@ -117,29 +117,48 @@ import org.springframework.util.function.ThrowingSupplier;
  * @see DefaultListableBeanFactory
  * @see BeanDefinitionRegistry
  */
+// 抽象 Bean 工厂超类，实现默认 Bean 创建方法，并具备 {@link RootBeanDefinition} 类指定的全部功能。
+// 除了 AbstractBeanFactory 的 {@link #createBean} 方法外，
+// 还实现了 {@link org.springframework.beans.factory.config.AutowireCapableBeanFactory} 接口。
+//
+// <p>提供 Bean 创建（包含构造函数解析）、属性填充、装配（包括自动装配）和初始化功能。
+// 处理运行时 Bean 引用、解析托管集合、调用初始化方法等。支持自动装配构造函数、按名称装配属性以及按类型装配属性。
+//
+// <p>子类需要实现的主要模板方法是 {@link #resolveDependency(DependencyDescriptor, String, Set, TypeConverter)}，用于自动装配。
+// 如果 {@link org.springframework.beans.factory.ListableBeanFactory} 能够搜索其自身的 bean 定义，
+// 则通常会通过此类搜索来实现匹配 bean。否则，可以实现简化的匹配。
+//
+// <p>请注意，此类 <i>不</i> 假设或实现 bean 定义注册表功能。请参阅 {@link DefaultListableBeanFactory}，
+// 了解 {@link org.springframework.beans.factory.ListableBeanFactory} 和 {@link BeanDefinitionRegistry} 接口的实现，
+// 这两个接口分别代表此类工厂的 API 和 SPI 视图。
 public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFactory
 		implements AutowireCapableBeanFactory {
 
 	/** Strategy for creating bean instances. */
+	// 创建 bean 实例的策略。
 	private InstantiationStrategy instantiationStrategy;
 
 	/** Resolver strategy for method parameter names. */
+	// 方法参数名称的解析器策略。
 	@Nullable
 	private ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();
 
 	/** Whether to automatically try to resolve circular references between beans. */
+	// 是否自动尝试解决 bean 之间的循环引用。
 	private boolean allowCircularReferences = true;
 
 	/**
 	 * Whether to resort to injecting a raw bean instance in case of circular reference,
 	 * even if the injected bean eventually got wrapped.
 	 */
+	// 如果存在循环引用，即使注入的 bean 最终被包装，是否仍需注入原始 bean 实例。
 	private boolean allowRawInjectionDespiteWrapping = false;
 
 	/**
 	 * Dependency types to ignore on dependency check and autowire, as Set of
 	 * Class objects: for example, String. Default is none.
 	 */
+	// 依赖项检查和自动装配时忽略的依赖类型，以 Class 对象的 Set 形式表示：例如，String。默认值为 none。
 	private final Set<Class<?>> ignoredDependencyTypes = new HashSet<>();
 
 	/**
@@ -153,15 +172,19 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * The name of the currently created bean, for implicit dependency registration
 	 * on getBean etc invocations triggered from a user-specified Supplier callback.
 	 */
+	// 当前创建的 bean 的名称，用于从用户指定的供应商回调触发的 getBean 等调用上的隐式依赖注册。
 	private final NamedThreadLocal<String> currentlyCreatedBean = new NamedThreadLocal<>("Currently created bean");
 
 	/** Cache of unfinished FactoryBean instances: FactoryBean name to BeanWrapper. */
+	// 未完成的 FactoryBean 实例的缓存：FactoryBean 名称为 BeanWrapper。
 	private final ConcurrentMap<String, BeanWrapper> factoryBeanInstanceCache = new ConcurrentHashMap<>();
 
 	/** Cache of candidate factory methods per factory class. */
+	// 每个工厂类的候选工厂方法缓存。
 	private final ConcurrentMap<Class<?>, Method[]> factoryMethodCandidateCache = new ConcurrentHashMap<>();
 
 	/** Cache of filtered PropertyDescriptors: bean Class to PropertyDescriptor array. */
+	// 已筛选 PropertyDescriptors 的缓存：将 bean 类缓存到 PropertyDescriptor 数组中。
 	private final ConcurrentMap<Class<?>, PropertyDescriptor[]> filteredPropertyDescriptorsCache =
 			new ConcurrentHashMap<>();
 
@@ -195,6 +218,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Default is CglibSubclassingInstantiationStrategy.
 	 * @see CglibSubclassingInstantiationStrategy
 	 */
+	// 设置用于创建 bean 实例的实例化策略。默认为 CglibSubclassingInstantiationStrategy。
 	public void setInstantiationStrategy(InstantiationStrategy instantiationStrategy) {
 		this.instantiationStrategy = instantiationStrategy;
 	}
@@ -202,6 +226,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	/**
 	 * Return the instantiation strategy to use for creating bean instances.
 	 */
+	// 返回用于创建 bean 实例的实例化策略。
 	public InstantiationStrategy getInstantiationStrategy() {
 		return this.instantiationStrategy;
 	}
@@ -211,6 +236,8 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * names if needed (e.g. for constructor names).
 	 * <p>Default is a {@link DefaultParameterNameDiscoverer}.
 	 */
+	// 设置用于解析方法参数名称的 ParameterNameDiscoverer（如果需要）（例如，构造函数名称）。
+	// <p>默认为 {@link DefaultParameterNameDiscoverer}。
 	public void setParameterNameDiscoverer(@Nullable ParameterNameDiscoverer parameterNameDiscoverer) {
 		this.parameterNameDiscoverer = parameterNameDiscoverer;
 	}
@@ -219,6 +246,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Return the ParameterNameDiscoverer to use for resolving method parameter
 	 * names if needed.
 	 */
+	// 如果需要，返回用于解析方法参数名称的 ParameterNameDiscoverer。
 	@Nullable
 	public ParameterNameDiscoverer getParameterNameDiscoverer() {
 		return this.parameterNameDiscoverer;
@@ -237,6 +265,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * between your beans. Refactor your application logic to have the two beans
 	 * involved delegate to a third bean that encapsulates their common logic.
 	 */
+	// 设置是否允许 Bean 之间循环引用 - 并自动尝试解决它们。
+	// <p>请注意，循环引用解析意味着其中一个涉及的 Bean 将收到对另一个尚未完全初始化的 Bean 的引用。
+	// 这可能会对初始化产生一些微妙或不太微妙的副作用；不过，在很多情况下，它都能正常工作。
+	// <p>默认值为“true”。关闭此选项会在遇到循环引用时抛出异常，从而完全禁止循环引用。
+	// <p><b>注意：</b>通常建议不要依赖 Bean 之间的循环引用。重构您的应用程序逻辑，
+	// 让涉及的两个 Bean 委托给第三个 Bean，该 Bean 封装了它们的公共逻辑。
 	public void setAllowCircularReferences(boolean allowCircularReferences) {
 		this.allowCircularReferences = allowCircularReferences;
 	}
@@ -246,6 +280,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @since 5.3.10
 	 * @see #setAllowCircularReferences
 	 */
+	// 返回是否允许 bean 之间的循环引用。
 	public boolean isAllowCircularReferences() {
 		return this.allowCircularReferences;
 	}
@@ -264,6 +299,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * between your beans, in particular with auto-proxying involved.
 	 * @see #setAllowCircularReferences
 	 */
+	// 设置是否允许将一个 bean 实例直接注入到其他 bean 的属性中，
+	// 即使注入的 bean 最终会被包装（例如，通过 AOP 自动代理）。
+	// <p>此选项仅在出现无法通过其他方式解决的循环引用时作为最后的手段：本质上，优先注入原始实例，
+	// 而不是整个 bean 装配过程失败。<p>从 Spring 2.0 开始，默认值为“false”。
+	// 启用此选项可允许将未包装的原始 bean 注入到某些引用中，这是 Spring 1.2（可能不太干净）的默认行为。
+	// <p><b>注意：</b>通常建议不要依赖 bean 之间的循环引用，尤其是在涉及自动代理的情况下。
 	public void setAllowRawInjectionDespiteWrapping(boolean allowRawInjectionDespiteWrapping) {
 		this.allowRawInjectionDespiteWrapping = allowRawInjectionDespiteWrapping;
 	}
@@ -273,6 +314,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @since 5.3.10
 	 * @see #setAllowRawInjectionDespiteWrapping
 	 */
+	// 返回是否允许 Bean 实例的原始注入。
 	public boolean isAllowRawInjectionDespiteWrapping() {
 		return this.allowRawInjectionDespiteWrapping;
 	}
@@ -281,6 +323,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * Ignore the given dependency type for autowiring:
 	 * for example, String. Default is none.
 	 */
+	// 忽略自动装配时指定的依赖类型：例如 String。默认值为 None。
 	public void ignoreDependencyType(Class<?> type) {
 		this.ignoredDependencyTypes.add(type);
 	}
@@ -699,6 +742,11 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * (also signals that the returned {@code Class} will never be exposed to application code)
 	 * @return the type for the bean if determinable, or {@code null} otherwise
 	 */
+	// 确定给定 bean 定义的目标类型。
+	// @param beanName bean 的名称（用于错误处理目的）
+	// @param mbd bean 的合并 bean 定义
+	// @param typesToMatch 在内部类型匹配目的的情况下要匹配的类型（也表示返回的 {@code Class} 永远不会暴露给应用程序代码）
+	// @return 如果可确定，则返回 bean 的类型，否则返回 {@code null}
 	@Nullable
 	protected Class<?> determineTargetType(String beanName, RootBeanDefinition mbd, Class<?>... typesToMatch) {
 		Class<?> targetType = mbd.getTargetType();
@@ -733,6 +781,12 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @return the type for the bean if determinable, or {@code null} otherwise
 	 * @see #createBean
 	 */
+	// 基于工厂方法确定给定 bean 定义的目标类型。仅当目标 bean 尚未注册单例实例时调用。
+	// <p>此实现确定与 {@link #createBean} 不同创建策略匹配的类型。我们将尽可能执行静态类型检查以避免创建目标 bean。
+	// @param beanName bean 的名称（用于错误处理）
+	// @param mbd bean 的合并 bean 定义
+	// @param typesToMatch 在内部类型匹配的情况下要匹配的类型（也表示返回的 {@code Class} 永远不会暴露给应用程序代码）
+	// @return 如果可确定，则返回 bean 的类型，否则返回 {@code null}
 	@Nullable
 	protected Class<?> getTypeForFactoryMethod(String beanName, RootBeanDefinition mbd, Class<?>... typesToMatch) {
 		ResolvableType cachedReturnType = mbd.factoryMethodReturnType;
@@ -866,6 +920,13 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * FactoryBean. If the FactoryBean instance itself is not kept as singleton,
 	 * it will be fully created to check the type of its exposed object.
 	 */
+	// 此实现会尝试查询 FactoryBean 的泛型参数元数据（如果存在）以确定对象类型。
+	// 如果不存在，即 FactoryBean 被声明为原始类型，则会在 FactoryBean 的普通实例上检查 FactoryBean
+	// 的 {@code getObjectType} 方法（尚未应用 bean 属性）。
+	// 如果该方法尚未返回类型且 {@code allowInit} 为 {@code true}，
+	// 则会尝试完整创建 FactoryBean 作为后备方案（通过委托给超类实现）。
+	// <p>FactoryBean 的快捷检查仅适用于单例 FactoryBean 的情况。
+	// 如果 FactoryBean 实例本身未保持为单例，则会完整创建该实例以检查其暴露对象的类型。
 	@Override
 	protected ResolvableType getTypeForFactoryBean(String beanName, RootBeanDefinition mbd, boolean allowInit) {
 		ResolvableType result;
@@ -974,6 +1035,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @param factoryMethodName the name of the factory method
 	 * @return the common {@code FactoryBean} object type, or {@code null} if none
 	 */
+	// 检查给定 bean 类上的工厂方法签名，尝试找到在那里声明的通用 {@code FactoryBean} 对象类型。
+	// @param beanClass 是要在其上查找工厂方法的 bean 类
+	// @param factoryMethodName 是工厂方法的名称
+	// @return 通用 {@code FactoryBean} 对象类型，如果没有则返回 {@code null}
 	private ResolvableType getTypeForFactoryBeanFromMethod(Class<?> beanClass, String factoryMethodName) {
 		// CGLIB subclass methods hide generic parameters; look at the original user class.
 		Class<?> factoryBeanClass = ClassUtils.getUserClass(beanClass);
@@ -1018,6 +1083,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @return the FactoryBean instance, or {@code null} to indicate
 	 * that we couldn't obtain a shortcut FactoryBean instance
 	 */
+	// 获取用于 {@code getObjectType()} 调用的“快捷方式”单例 FactoryBean 实例，而无需完全初始化 FactoryBean。
+	// @param beanName bean 的名称
+	// @param mbd bean 的定义
+	// @return FactoryBean 实例，或 {@code null} 表示我们无法获取快捷方式 FactoryBean 实例
 	@Nullable
 	private FactoryBean<?> getSingletonFactoryBeanForTypeCheck(String beanName, RootBeanDefinition mbd) {
 		synchronized (getSingletonMutex()) {
@@ -1083,6 +1152,10 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @return the FactoryBean instance, or {@code null} to indicate
 	 * that we couldn't obtain a shortcut FactoryBean instance
 	 */
+	// 获取用于 {@code getObjectType()} 调用的“快捷方式”非单例 FactoryBean 实例，而无需完全初始化 FactoryBean。
+	// @param beanName bean 的名称
+	// @param mbd bean 的定义
+	// @return FactoryBean 实例，或 {@code null} 表示我们无法获取快捷方式 FactoryBean 实例
 	@Nullable
 	private FactoryBean<?> getNonSingletonFactoryBeanForTypeCheck(String beanName, RootBeanDefinition mbd) {
 		if (isPrototypeCurrentlyInCreation(beanName)) {

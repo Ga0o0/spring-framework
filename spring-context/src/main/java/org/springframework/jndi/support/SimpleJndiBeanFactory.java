@@ -61,15 +61,27 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.support.DefaultListableBeanFactory
  * @see org.springframework.context.annotation.CommonAnnotationBeanPostProcessor
  */
+// Spring {@link org.springframework.beans.factory.BeanFactory} 接口基于 JNDI 的简单实现。
+// 由于不支持枚举 bean 定义，因此未实现 {@link org.springframework.beans.factory.ListableBeanFactory} 接口。
+//
+// <p>此工厂将给定的 bean 名称解析为 Jakarta EE 应用程序“java:comp/env/”命名空间内的 JNDI 名称。
+// 它会缓存所有获取对象的解析类型，并可选择缓存可共享对象（如果它们被明确标记为 {@link #addShareableResource 可共享资源}）。
+//
+// <p>此工厂的主要用途是与 Spring 的 {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor} 结合使用，
+// 并将其配置为“resourceFactory”，以便将 {@code @Resource} 注解解析为 JNDI 对象，而无需中间 bean 定义。
+// 当然，它也可以用于类似的查找场景，特别是如果需要 BeanFactory 风格的类型检查。
 public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFactory {
 
 	/** JNDI names of resources that are known to be shareable, i.e. can be cached */
+	// 已知可共享（即可缓存）资源的 JNDI 名称。
 	private final Set<String> shareableResources = new HashSet<>();
 
 	/** Cache of shareable singleton objects: bean name to bean instance. */
+	// 可共享单例对象的缓存：从 bean 名称到 bean 实例。
 	private final Map<String, Object> singletonObjects = new HashMap<>();
 
 	/** Cache of the types of nonshareable resources: bean name to bean type. */
+	// 不可共享资源类型的缓存：从 bean 名称到 bean 类型。
 	private final Map<String, Class<?>> resourceTypes = new HashMap<>();
 
 
@@ -84,6 +96,8 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 	 * @param shareableResource the JNDI name
 	 * (typically within the "java:comp/env/" namespace)
 	 */
+	// 添加可共享 JNDI 资源的名称，此工厂在获取该资源后可以缓存这些资源。
+	// @param shareableResource JNDI 名称（通常在 "java:comp/env/" 命名空间内）
 	public void addShareableResource(String shareableResource) {
 		this.shareableResources.add(shareableResource);
 	}
@@ -94,6 +108,8 @@ public class SimpleJndiBeanFactory extends JndiLocatorSupport implements BeanFac
 	 * @param shareableResources the JNDI names
 	 * (typically within the "java:comp/env/" namespace)
 	 */
+	// 设置可共享 JNDI 资源的名称列表，此工厂在获取该资源后可以缓存这些资源。
+	// @param shareableResources JNDI 名称（通常在 "java:comp/env/" 命名空间内）
 	public void setShareableResources(String... shareableResources) {
 		Collections.addAll(this.shareableResources, shareableResources);
 	}
