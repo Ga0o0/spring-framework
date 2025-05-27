@@ -33,6 +33,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 1.1
  */
+// 负责创建与根 bean 定义对应的实例的接口。
+//
+// <p>由于有多种方法可用，因此将其提取到策略中，包括使用 CGLIB 动态创建子类以支持方法注入。
 public interface InstantiationStrategy {
 
 	/**
@@ -45,6 +48,12 @@ public interface InstantiationStrategy {
 	 * @return a bean instance for this bean definition
 	 * @throws BeansException if the instantiation attempt failed
 	 */
+	// 返回此工厂中指定名称的 Bean 实例。
+	// @param bd Bean 定义
+	// @param beanName Bean 在当前上下文中创建时的名称。如果自动装配的 Bean 不属于此工厂，则名称可以为 {@code null}。
+	// @param owner 所属 BeanFactory
+	// @return 此 Bean 定义的 Bean 实例
+	// @throws BeansException 如果实例化尝试失败
 	Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner)
 			throws BeansException;
 
@@ -61,6 +70,14 @@ public interface InstantiationStrategy {
 	 * @return a bean instance for this bean definition
 	 * @throws BeansException if the instantiation attempt failed
 	 */
+	// 返回此工厂中指定名称的 bean 实例，并通过指定的构造函数创建。
+	// @param bd bean 定义
+	// @param beanName bean 在此上下文中创建时的名称。如果我们自动装配的 bean 不属于此工厂，则名称可以为 {@code null}。
+	// @param owner 所属的 BeanFactory
+	// @param ctor 要使用的构造函数
+	// @param args 要应用的构造函数参数
+	// @return 此 bean 定义的 bean 实例
+	// @throws BeansException 如果实例化尝试失败
 	Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 			Constructor<?> ctor, Object... args) throws BeansException;
 
@@ -79,6 +96,15 @@ public interface InstantiationStrategy {
 	 * @return a bean instance for this bean definition
 	 * @throws BeansException if the instantiation attempt failed
 	 */
+	// 返回此工厂中指定名称的 Bean 实例，并通过指定的工厂方法创建该 Bean。
+	// @param bd Bean 定义
+	// @param beanName 在该上下文中创建 Bean 时的名称。如果要自动装配不属于此工厂的 Bean，则名称可以为 {@code null}。
+	// @param owner 所属 BeanFactory
+	// @param factoryBean 调用工厂方法的工厂 Bean 实例，如果是静态工厂方法，则为 {@code null}。
+	// @param factoryMethod 要使用的工厂方法
+	// @param args 要应用的工厂方法参数
+	// @return 此 Bean 定义的 Bean 实例
+	// 如果实例化尝试失败，则抛出 BeansException
 	Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner,
 			@Nullable Object factoryBean, Method factoryMethod, Object... args)
 			throws BeansException;
@@ -87,6 +113,7 @@ public interface InstantiationStrategy {
 	 * Determine the actual class for the given bean definition, as instantiated at runtime.
 	 * @since 6.0
 	 */
+	// 确定给定 bean 定义的实际类（在运行时实例化）。
 	default Class<?> getActualBeanClass(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
 		return bd.getBeanClass();
 	}
