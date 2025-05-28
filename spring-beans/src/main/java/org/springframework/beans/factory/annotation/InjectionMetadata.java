@@ -44,6 +44,14 @@ import org.springframework.util.ReflectionUtils;
  * @author Juergen Hoeller
  * @since 2.5
  */
+// 用于管理注入元数据的内部类。
+//
+// <p>不适用于在应用程序中直接使用。
+//
+// <p>由 {@link AutowiredAnnotationBeanPostProcessor}、
+// {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor}
+// 和 {@link org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor} 使用。
+//
 public class InjectionMetadata {
 
 	/**
@@ -83,6 +91,10 @@ public class InjectionMetadata {
 	 * @param elements the associated elements to inject
 	 * @see #forElements
 	 */
+	// 创建一个新的 {@code InjectionMetadata 实例}。
+	// <p>如果不存在元素，最好使用 {@link #forElements} 来复用 {@link #EMPTY} 实例。
+	// @param targetClass 目标类
+	// @param elements 要注入的关联元素
 	public InjectionMetadata(Class<?> targetClass, Collection<InjectedElement> elements) {
 		this.targetClass = targetClass;
 		this.injectedElements = elements;
@@ -127,7 +139,9 @@ public class InjectionMetadata {
 			Set<InjectedElement> checkedElements = new LinkedHashSet<>((this.injectedElements.size() * 4 / 3) + 1);
 			for (InjectedElement element : this.injectedElements) {
 				Member member = element.getMember();
+				// 确定给定的方法或字段是否是外部管理的配置成员。
 				if (!beanDefinition.isExternallyManagedConfigMember(member)) {
+					// 注册外部管理的配置方法或字段。
 					beanDefinition.registerExternallyManagedConfigMember(member);
 					checkedElements.add(element);
 				}
@@ -142,7 +156,7 @@ public class InjectionMetadata {
 				(checkedElements != null ? checkedElements : this.injectedElements);
 		if (!elementsToIterate.isEmpty()) {
 			for (InjectedElement element : elementsToIterate) {
-				// invoke org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor.AutowiredFieldElement#inject()
+				// org.springframework.beans.factory.annotation.InjectionMetadata.InjectedElement.inject()
 				element.inject(target, beanName, pvs);
 			}
 		}
@@ -171,6 +185,10 @@ public class InjectionMetadata {
 	 * @return a new {@link #InjectionMetadata(Class, Collection)} instance
 	 * @since 5.2
 	 */
+	// 返回一个 {@code InjectionMetadata} 实例，可能为空元素。
+	// @param elements 待注入元素（可能为空）
+	// @param clazz 目标类
+	// @return 一个新的 {@link #InjectionMetadata(Class, Collection)} 实例
 	public static InjectionMetadata forElements(Collection<InjectedElement> elements, Class<?> clazz) {
 		return (elements.isEmpty() ? new InjectionMetadata(clazz, Collections.emptyList()) :
 				new InjectionMetadata(clazz, elements));
@@ -191,6 +209,7 @@ public class InjectionMetadata {
 	/**
 	 * A single injected element.
 	 */
+	// 单个注入元素。
 	public abstract static class InjectedElement {
 
 		protected final Member member;
@@ -228,6 +247,7 @@ public class InjectionMetadata {
 		protected final void checkResourceType(Class<?> resourceType) {
 			if (this.isField) {
 				Class<?> fieldType = ((Field) this.member).getType();
+				// 指定的字段类型 “fieldType” 与资源类型 “resourceType.getName()” 不兼容
 				if (!(resourceType.isAssignableFrom(fieldType) || fieldType.isAssignableFrom(resourceType))) {
 					throw new IllegalStateException("Specified field type [" + fieldType +
 							"] is incompatible with resource type [" + resourceType.getName() + "]");
@@ -236,6 +256,7 @@ public class InjectionMetadata {
 			else {
 				Class<?> paramType =
 						(this.pd != null ? this.pd.getPropertyType() : ((Method) this.member).getParameterTypes()[0]);
+				// 指定的参数类型 “fieldType” 与资源类型 “resourceType.getName()” 不兼容
 				if (!(resourceType.isAssignableFrom(paramType) || paramType.isAssignableFrom(resourceType))) {
 					throw new IllegalStateException("Specified parameter type [" + paramType +
 							"] is incompatible with resource type [" + resourceType.getName() + "]");
@@ -249,6 +270,9 @@ public class InjectionMetadata {
 		 * @return whether the property values should be injected
 		 * @since 6.0.10
 		 */
+		// 是否应注入属性值。
+		// @param pvs 待检查的属性值
+		// @return 是否应注入属性值
 		protected boolean shouldInject(@Nullable PropertyValues pvs) {
 			if (this.isField) {
 				return true;
@@ -259,6 +283,7 @@ public class InjectionMetadata {
 		/**
 		 * Either this or {@link #getResourceToInject} needs to be overridden.
 		 */
+		// 需要覆盖这个或 {@link #getResourceToInject}。
 		protected void inject(Object target, @Nullable String requestingBeanName, @Nullable PropertyValues pvs)
 				throws Throwable {
 
@@ -287,6 +312,7 @@ public class InjectionMetadata {
 		 * an explicit property value having been specified. Also marks the
 		 * affected property as processed for other processors to ignore it.
 		 */
+		// 检查此注入器的属性是否由于已指定显式属性值而需要跳过。同时将受影响的属性标记为已处理，以便其他处理器忽略它。
 		protected boolean checkPropertySkipping(@Nullable PropertyValues pvs) {
 			Boolean skip = this.skip;
 			if (skip != null) {
@@ -320,6 +346,7 @@ public class InjectionMetadata {
 		 * Clear property skipping for this element.
 		 * @since 3.2.13
 		 */
+		// 清除此元素的属性跳过。
 		protected void clearPropertySkipping(@Nullable PropertyValues pvs) {
 			if (pvs == null) {
 				return;
@@ -334,6 +361,7 @@ public class InjectionMetadata {
 		/**
 		 * Either this or {@link #inject} needs to be overridden.
 		 */
+		// 需要覆盖这个或 {@link #inject}。
 		@Nullable
 		protected Object getResourceToInject(Object target, @Nullable String requestingBeanName) {
 			return null;

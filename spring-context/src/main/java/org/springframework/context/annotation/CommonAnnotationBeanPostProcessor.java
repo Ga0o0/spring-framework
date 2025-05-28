@@ -144,7 +144,7 @@ import org.springframework.util.StringValueResolver;
 public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBeanPostProcessor
 		implements InstantiationAwareBeanPostProcessor, BeanFactoryAware, Serializable {
 
-	// Defensive reference to JNDI API for JDK 9+ (optional java.naming module)
+	// Defensive reference to JNDI API for JDK 9+ (optional java.naming module) --> 译文：对 JDK 9+ 的 JNDI API 的防御性引用（可选的 java.naming 模块）
 	private static final boolean jndiPresent = ClassUtils.isPresent(
 			"javax.naming.InitialContext", CommonAnnotationBeanPostProcessor.class.getClassLoader());
 
@@ -204,6 +204,9 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * {@link jakarta.annotation.PostConstruct} and {@link jakarta.annotation.PreDestroy},
 	 * respectively.
 	 */
+	// 创建一个新的 CommonAnnotationBeanPostProcessor，
+	// 并将 init 和 destroy 注释类型分别设置为 {@link jakarta.annotation.PostConstruct}
+	// 和 {@link jakarta.annotation.PreDestroy}。
 	public CommonAnnotationBeanPostProcessor() {
 		setOrder(Ordered.LOWEST_PRECEDENCE - 3);
 
@@ -398,9 +401,9 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 
 
 	private InjectionMetadata findResourceMetadata(String beanName, Class<?> clazz, @Nullable PropertyValues pvs) {
-		// Fall back to class name as cache key, for backwards compatibility with custom callers.
+		// Fall back to class name as cache key, for backwards compatibility with custom callers. --> 译文：回退到类名作为缓存键，以便与自定义调用者向后兼容。
 		String cacheKey = (StringUtils.hasLength(beanName) ? beanName : clazz.getName());
-		// Quick check on the concurrent map first, with minimal locking.
+		// Quick check on the concurrent map first, with minimal locking. --> 译文：首先快速检查并发映射，并使用最少的锁定。
 		InjectionMetadata metadata = this.injectionMetadataCache.get(cacheKey);
 		if (InjectionMetadata.needsRefresh(metadata, clazz)) {
 			synchronized (this.injectionMetadataCache) {
@@ -409,7 +412,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 					if (metadata != null) {
 						metadata.clear(pvs);
 					}
-					metadata = buildResourceMetadata(clazz);
+					metadata = buildResourceMetadata(clazz); // go
 					this.injectionMetadataCache.put(cacheKey, metadata);
 				}
 			}
@@ -418,6 +421,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	}
 
 	private InjectionMetadata buildResourceMetadata(Class<?> clazz) {
+		// 确定给定类是否适合携带指定注解之一（在类型、方法或字段级别）。
 		if (!AnnotationUtils.isCandidateClass(clazz, resourceAnnotationTypes)) {
 			return InjectionMetadata.EMPTY;
 		}
@@ -428,31 +432,39 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		do {
 			final List<InjectionMetadata.InjectedElement> currElements = new ArrayList<>();
 
+			// 在给定类中所有本地声明的字段上调用给定的回调函数。
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
+				// 静态字段不支持 @EJB（jakarta.ejb.EJB） 注释；
 				if (ejbAnnotationType != null && field.isAnnotationPresent(ejbAnnotationType)) {
 					if (Modifier.isStatic(field.getModifiers())) {
 						throw new IllegalStateException("@EJB annotation is not supported on static fields");
 					}
+					// jakarta.ejb.EJB --> EjbRefElement
 					currElements.add(new EjbRefElement(field, field, null));
 				}
+				// 静态字段不支持 @Resource（jakarta.annotation.Resource） 注释；
 				else if (jakartaResourceType != null && field.isAnnotationPresent(jakartaResourceType)) {
 					if (Modifier.isStatic(field.getModifiers())) {
 						throw new IllegalStateException("@Resource annotation is not supported on static fields");
 					}
 					if (!this.ignoredResourceTypes.contains(field.getType().getName())) {
+						// jakarta.annotation.Resource --> ResourceElement
 						currElements.add(new ResourceElement(field, field, null));
 					}
 				}
+				// 静态字段不支持 @Resource（javax.annotation.Resource） 注释；
 				else if (javaxResourceType != null && field.isAnnotationPresent(javaxResourceType)) {
 					if (Modifier.isStatic(field.getModifiers())) {
 						throw new IllegalStateException("@Resource annotation is not supported on static fields");
 					}
+					// javax.annotation.Resource --> LegacyResourceElement
 					if (!this.ignoredResourceTypes.contains(field.getType().getName())) {
 						currElements.add(new LegacyResourceElement(field, field, null));
 					}
 				}
 			});
 
+			// 对给定类的所有匹配方法执行给定的回调操作，这些方法可以是本地声明的或等效的（例如，给定类实现的基于 Java 8 的接口上的默认方法）。
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
 				Method bridgedMethod = BridgeMethodResolver.findBridgedMethod(method);
 				if (!BridgeMethodResolver.isVisibilityBridgeMethodPair(method, bridgedMethod)) {
@@ -460,42 +472,51 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 				}
 				if (ejbAnnotationType != null && bridgedMethod.isAnnotationPresent(ejbAnnotationType)) {
 					if (method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) {
+						// 静态方法不支持 @EJB 注释
 						if (Modifier.isStatic(method.getModifiers())) {
 							throw new IllegalStateException("@EJB annotation is not supported on static methods");
 						}
+						// @EJB 注释需要单参数方法
 						if (method.getParameterCount() != 1) {
 							throw new IllegalStateException("@EJB annotation requires a single-arg method: " + method);
 						}
 						PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);
+						// jakarta.ejb.EJB --> EjbRefElement
 						currElements.add(new EjbRefElement(method, bridgedMethod, pd));
 					}
 				}
 				else if (jakartaResourceType != null && bridgedMethod.isAnnotationPresent(jakartaResourceType)) {
 					if (method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) {
+						// 静态方法不支持 @Resource 注释
 						if (Modifier.isStatic(method.getModifiers())) {
 							throw new IllegalStateException("@Resource annotation is not supported on static methods");
 						}
+						// @Resource 注释需要单参数方法
 						Class<?>[] paramTypes = method.getParameterTypes();
 						if (paramTypes.length != 1) {
 							throw new IllegalStateException("@Resource annotation requires a single-arg method: " + method);
 						}
 						if (!this.ignoredResourceTypes.contains(paramTypes[0].getName())) {
 							PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);
+							// jakarta.annotation.Resource --> ResourceElement
 							currElements.add(new ResourceElement(method, bridgedMethod, pd));
 						}
 					}
 				}
 				else if (javaxResourceType != null && bridgedMethod.isAnnotationPresent(javaxResourceType)) {
 					if (method.equals(ClassUtils.getMostSpecificMethod(method, clazz))) {
+						// 静态方法不支持 @Resource 注释
 						if (Modifier.isStatic(method.getModifiers())) {
 							throw new IllegalStateException("@Resource annotation is not supported on static methods");
 						}
+						// @Resource 注释需要单参数方法
 						Class<?>[] paramTypes = method.getParameterTypes();
 						if (paramTypes.length != 1) {
 							throw new IllegalStateException("@Resource annotation requires a single-arg method: " + method);
 						}
 						if (!this.ignoredResourceTypes.contains(paramTypes[0].getName())) {
 							PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);
+							// javax.annotation.Resource --> LegacyResourceElement
 							currElements.add(new LegacyResourceElement(method, bridgedMethod, pd));
 						}
 					}
@@ -507,6 +528,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		}
 		while (targetClass != null && targetClass != Object.class);
 
+		// 返回一个 InjectionMetadata 实例，可能为空元素。
 		return InjectionMetadata.forElements(elements, clazz);
 	}
 
@@ -549,10 +571,15 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * @return the resource object (never {@code null})
 	 * @throws NoSuchBeanDefinitionException if no corresponding target resource found
 	 */
+	// 获取指定名称和类型的资源对象。
+	// @param element 被注解的字段/方法的描述符
+	// @param requestingBeanName 请求 Bean 的名称
+	// @return 资源对象（永不返回 null）
+	// 如果未找到相应的目标资源，则抛出 NoSuchBeanDefinitionException
 	protected Object getResource(LookupElement element, @Nullable String requestingBeanName)
 			throws NoSuchBeanDefinitionException {
 
-		// JNDI lookup to perform?
+		// JNDI lookup to perform? --> 译文：要执行 JNDI 查找吗？
 		String jndiName = null;
 		if (StringUtils.hasLength(element.mappedName)) {
 			jndiName = element.mappedName;
@@ -562,18 +589,20 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		}
 		if (jndiName != null) {
 			if (this.jndiFactory == null) {
+				// 未配置 JNDI 工厂 - 指 定“jndiFactory” 属性
 				throw new NoSuchBeanDefinitionException(element.lookupType,
 						"No JNDI factory configured - specify the 'jndiFactory' property");
 			}
 			return this.jndiFactory.getBean(jndiName, element.lookupType);
 		}
 
-		// Regular resource autowiring
+		// Regular resource autowiring --> 译文：常规资源自动装配
 		if (this.resourceFactory == null) {
+			// 未配置资源工厂 - 指定 “resourceFactory” 属性
 			throw new NoSuchBeanDefinitionException(element.lookupType,
 					"No resource factory configured - specify the 'resourceFactory' property");
 		}
-		return autowireResource(this.resourceFactory, element, requestingBeanName);
+		return autowireResource(this.resourceFactory, element, requestingBeanName); // go
 	}
 
 	/**
@@ -585,6 +614,12 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * @return the resource object (never {@code null})
 	 * @throws NoSuchBeanDefinitionException if no corresponding target resource found
 	 */
+	// 通过基于给定工厂的自动装配，获取给定名称和类型的资源对象。
+	// @param factory 要自动装配的工厂
+	// @param element 被注解的字段/方法的描述符
+	// @param requestingBeanName 请求 Bean 的名称
+	// @return 资源对象（永不返回 {@code null}）
+	// 如果未找到相应的目标资源，则抛出 NoSuchBeanDefinitionException
 	protected Object autowireResource(BeanFactory factory, LookupElement element, @Nullable String requestingBeanName)
 			throws NoSuchBeanDefinitionException {
 
@@ -593,15 +628,20 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		String name = element.name;
 
 		if (factory instanceof AutowireCapableBeanFactory autowireCapableBeanFactory) {
+			// 是否支持回退到默认类型匹配 && @Resource.name 无值 && factory 不包含名称为 name 的 bean
 			if (this.fallbackToDefaultTypeMatch && element.isDefaultName && !factory.containsBean(name)) {
 				autowiredBeanNames = new LinkedHashSet<>();
+				// 解析此工厂中定义的 bean 的指定依赖关系。
 				resource = autowireCapableBeanFactory.resolveDependency(
-						element.getDependencyDescriptor(), requestingBeanName, autowiredBeanNames, null);
+						element.getDependencyDescriptor(), requestingBeanName, autowiredBeanNames, null); // go
 				if (resource == null) {
+					// 没有可解析的资源对象
 					throw new NoSuchBeanDefinitionException(element.getLookupType(), "No resolvable resource object");
 				}
 			}
 			else {
+				// 根据给定的 bean 名称解析一个 bean 实例，并提供一个依赖描述符，用于暴露给目标工厂方法。
+				// 最终执行 AbstractBeanFactory.getBean(java.lang.String, java.lang.Class<T>) 方法
 				resource = autowireCapableBeanFactory.resolveBeanByName(name, element.getDependencyDescriptor());
 				autowiredBeanNames = Collections.singleton(name);
 			}
@@ -614,6 +654,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		if (factory instanceof ConfigurableBeanFactory configurableBeanFactory) {
 			for (String autowiredBeanName : autowiredBeanNames) {
 				if (requestingBeanName != null && configurableBeanFactory.containsBean(autowiredBeanName)) {
+					// 为给定的 Bean 注册一个依赖 Bean，并在给定 Bean 被销毁之前销毁。
 					configurableBeanFactory.registerDependentBean(autowiredBeanName, requestingBeanName);
 				}
 			}
@@ -640,6 +681,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * Class representing generic injection information about an annotated field
 	 * or setter method, supporting @Resource and related annotations.
 	 */
+	// 表示有关注释字段或 setter 方法的通用注入信息的类，支持 @Resource 和相关注释。
 	protected abstract static class LookupElement extends InjectionMetadata.InjectedElement {
 
 		protected String name = "";
@@ -658,6 +700,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		/**
 		 * Return the resource name for the lookup.
 		 */
+		// 返回要查找的资源名称。
 		public final String getName() {
 			return this.name;
 		}
@@ -665,6 +708,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		/**
 		 * Return the desired type for the lookup.
 		 */
+		// 返回要查找的类型。
 		public final Class<?> getLookupType() {
 			return this.lookupType;
 		}
@@ -672,6 +716,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		/**
 		 * Build a DependencyDescriptor for the underlying field/method.
 		 */
+		// 为底层字段/方法构建 DependencyDescriptor。
 		public final DependencyDescriptor getDependencyDescriptor() {
 			if (this.isField) {
 				return new ResourceElementResolver.LookupDependencyDescriptor(
@@ -688,6 +733,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		 * The default is {@code false}.
 		 * @since 6.1.2
 		 */
+		// 确定此依赖项是否标记为延迟查找。默认值为 {@code false}。
 		boolean isLazyLookup() {
 			return false;
 		}
@@ -698,6 +744,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * Class representing injection information about an annotated field
 	 * or setter method, supporting the @Resource annotation.
 	 */
+	// 表示有关注释字段或 setter 方法的注入信息的类，支持 @Resource 注释。
 	private class ResourceElement extends LookupElement {
 
 		private final boolean lazyLookup;
@@ -707,21 +754,27 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			jakarta.annotation.Resource resource = ae.getAnnotation(jakarta.annotation.Resource.class);
 			String resourceName = resource.name();
 			Class<?> resourceType = resource.type();
+			// resourceName 为空；采用默认名称
 			this.isDefaultName = !StringUtils.hasLength(resourceName);
 			if (this.isDefaultName) {
+				// 从字段名获取 resourceName
 				resourceName = this.member.getName();
+				// 从 setter 方法名获取 resourceName
 				if (this.member instanceof Method && resourceName.startsWith("set") && resourceName.length() > 3) {
 					resourceName = StringUtils.uncapitalizeAsProperty(resourceName.substring(3));
 				}
 			}
 			else if (embeddedValueResolver != null) {
+				// 解析给定的字符串值，例如解析占位符。
 				resourceName = embeddedValueResolver.resolveStringValue(resourceName);
 			}
 			if (Object.class != resourceType) {
+				// 检查 resourceType
 				checkResourceType(resourceType);
 			}
 			else {
-				// No resource type specified... check field/method.
+				// No resource type specified... check field/method. --> 译文：未指定资源类型...检查字段/方法。
+				// 获取 resourceType
 				resourceType = getResourceType();
 			}
 			this.name = (resourceName != null ? resourceName : "");
@@ -749,6 +802,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * Class representing injection information about an annotated field
 	 * or setter method, supporting the @Resource annotation.
 	 */
+	// 表示有关注释字段或 setter 方法的注入信息的类，支持 @Resource 注释。
 	private class LegacyResourceElement extends LookupElement {
 
 		private final boolean lazyLookup;
@@ -800,6 +854,7 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 	 * Class representing injection information about an annotated field
 	 * or setter method, supporting the @EJB annotation.
 	 */
+	// 表示有关注释字段或 setter 方法的注入信息的类，支持 @EJB 注释。
 	private class EjbRefElement extends LookupElement {
 
 		private final String beanName;
@@ -809,19 +864,24 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 			jakarta.ejb.EJB resource = ae.getAnnotation(jakarta.ejb.EJB.class);
 			String resourceBeanName = resource.beanName();
 			String resourceName = resource.name();
+			// resourceName 为空；采用默认名称
 			this.isDefaultName = !StringUtils.hasLength(resourceName);
 			if (this.isDefaultName) {
+				// 从字段名获取 resourceName
 				resourceName = this.member.getName();
+				// 从 setter 方法名获取 resourceName
 				if (this.member instanceof Method && resourceName.startsWith("set") && resourceName.length() > 3) {
 					resourceName = StringUtils.uncapitalizeAsProperty(resourceName.substring(3));
 				}
 			}
 			Class<?> resourceType = resource.beanInterface();
 			if (Object.class != resourceType) {
+				// 检查 resourceType
 				checkResourceType(resourceType);
 			}
 			else {
-				// No resource type specified... check field/method.
+				// No resource type specified... check field/method. --> 译文：未指定资源类型...检查字段/方法。
+				// 获取 resourceType
 				resourceType = getResourceType();
 			}
 			this.beanName = resourceBeanName;
@@ -834,13 +894,14 @@ public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBean
 		protected Object getResourceToInject(Object target, @Nullable String requestingBeanName) {
 			if (StringUtils.hasLength(this.beanName)) {
 				if (beanFactory != null && beanFactory.containsBean(this.beanName)) {
-					// Local match found for explicitly specified local bean name.
+					// Local match found for explicitly specified local bean name. --> 译文：找到明确指定的本地 bean 名称的本地匹配。
 					Object bean = beanFactory.getBean(this.beanName, this.lookupType);
 					if (requestingBeanName != null && beanFactory instanceof ConfigurableBeanFactory configurableBeanFactory) {
 						configurableBeanFactory.registerDependentBean(this.beanName, requestingBeanName);
 					}
 					return bean;
 				}
+				// 无法解析本地 BeanFactory 中的 “beanName”。请考虑指定一个通用的 “name” 值。
 				else if (this.isDefaultName && !StringUtils.hasLength(this.mappedName)) {
 					throw new NoSuchBeanDefinitionException(this.beanName,
 							"Cannot resolve 'beanName' in local BeanFactory. Consider specifying a general 'name' value instead.");

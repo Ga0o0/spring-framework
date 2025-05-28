@@ -34,6 +34,7 @@ import org.springframework.lang.Nullable;
  * @since 13 May 2001
  * @see PropertyValue
  */
+// 包含一个或多个 {@link PropertyValue} 对象的持有者，通常包含针对特定目标 bean 的一个更新。
 public interface PropertyValues extends Iterable<PropertyValue> {
 
 	/**

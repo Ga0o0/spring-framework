@@ -67,6 +67,11 @@ public final class BridgeMethodResolver {
 	 * if no more specific one could be found)
 	 * @see #getMostSpecificMethod(Method, Class)
 	 */
+	// 查找提供的 {@link Method bridge Method} 的本地原始方法。
+	// <p>传入非桥接 {@link Method} 实例调用此方法是安全的。在这种情况下，提供的 {@link Method} 实例将直接返回给调用者。
+	// 调用者在调用此方法之前<strong>无需</strong>检查桥接。
+	// @param bridgeMethod 用于自省其声明类的方法
+	// @return 原始方法（桥接方法或传入的方法，如果找不到更具体的方法）
 	public static Method findBridgedMethod(Method bridgeMethod) {
 		return resolveBridgeMethod(bridgeMethod, bridgeMethod.getDeclaringClass());
 	}
@@ -274,13 +279,18 @@ public final class BridgeMethodResolver {
 	 * JDK-6342411</a>.
 	 * @return whether signatures match as described
 	 */
+	// 比较桥接方法和它所桥接的方法的签名。如果参数和返回类型相同，则它是 Java 6 中引入的“可见性”桥接方法，
+	// 用于修复 <a href="https://bugs.openjdk.org/browse/JDK-6342411"> JDK-6342411</a>。
+	// @return 签名是否与描述一致
 	public static boolean isVisibilityBridgeMethodPair(Method bridgeMethod, Method bridgedMethod) {
 		if (bridgeMethod == bridgedMethod) {
 			// Same method: for common purposes, return true to proceed as if it was a visibility bridge.
+			// --> 译文：相同的方法：出于共同目的，返回 true 以继续进行，就像可见性桥梁一样。
 			return true;
 		}
 		if (ClassUtils.getUserClass(bridgeMethod.getDeclaringClass()) != bridgeMethod.getDeclaringClass()) {
 			// Method on generated subclass: return false to consistently ignore it for visibility purposes.
+			// --> 译文：生成的子类上的方法：返回 false 以出于可见性目的始终忽略它。
 			return false;
 		}
 		return (bridgeMethod.getReturnType().equals(bridgedMethod.getReturnType()) &&

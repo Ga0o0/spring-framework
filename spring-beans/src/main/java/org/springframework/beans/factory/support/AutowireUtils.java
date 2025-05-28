@@ -127,6 +127,10 @@ abstract class AutowireUtils {
 	 * @param requiredType the type to assign the result to
 	 * @return the resolved value
 	 */
+	// 根据给定的所需类型解析给定的自动装配值，例如将 {@link ObjectFactory} 值解析为其实际的对象结果。
+	// @param autowiringValue 需要解析的值
+	// @param requiredType 需要将结果赋给的类型
+	// @return 解析后的值
 	public static Object resolveAutowiringValue(Object autowiringValue, Class<?> requiredType) {
 		if (autowiringValue instanceof ObjectFactory<?> factory && !requiredType.isInstance(autowiringValue)) {
 			if (autowiringValue instanceof Serializable && requiredType.isInterface()) {

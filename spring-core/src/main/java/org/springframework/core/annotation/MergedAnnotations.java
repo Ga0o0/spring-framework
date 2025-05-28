@@ -303,6 +303,11 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 * annotations
 	 * @see #search(SearchStrategy)
 	 */
+	// 创建一个新的 {@link MergedAnnotations} 实例，其中包含指定元素的所有注释和元注释。
+	// <p>生成的实例将不包含任何继承的注释。如果您也想包含这些注释，
+	// 则应使用 {@link #from(AnnotatedElement, SearchStrategy)} 和相应的 {@link SearchStrategy}。
+	// @param element 源元素
+	// @return 一个包含元素注释的 {@code MergedAnnotations} 实例
 	static MergedAnnotations from(AnnotatedElement element) {
 		return from(element, SearchStrategy.DIRECT);
 	}

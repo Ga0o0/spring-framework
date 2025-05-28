@@ -253,6 +253,15 @@ public abstract class BeanFactoryUtils {
 	 * @return the array of matching bean names, or an empty array if none
 	 * @see ListableBeanFactory#getBeanNamesForType(Class, boolean, boolean)
 	 */
+	// 获取给定类型的所有 Bean 名称，包括在祖先工厂中定义的 Bean 名称。如果 Bean 定义被覆盖，则返回唯一名称。
+	// <p>如果设置了“allowEagerInit”标志，则考虑 FactoryBeans 创建的对象，这意味着 FactoryBeans 将被初始化。
+	// 如果 FactoryBean 创建的对象不匹配，则原始 FactoryBean 本身将与类型匹配。
+	// 如果未设置“allowEagerInit”，则仅检查原始 FactoryBeans（这不需要初始化每个 FactoryBean）。
+	// @param lbf Bean 工厂
+	// @param includeNonSingletons 是否同时包含原型 Bean、作用域 Bean 或仅包含单例 Bean（也适用于 FactoryBeans）
+	// @param allowEagerInit 是否初始化 <i>lazy-init 单例 </i> 和 <i>FactoryBeans</i> 创建的对象（或通过带有“factory-bean”引用的工厂方法创建的对象）
+	// 以进行类型检查。请注意，FactoryBeans 需要立即初始化以确定其类型：因此请注意，传入此标志的“true”将初始化 FactoryBeans 和“factory-bean”引用。
+	// @param type bean 必须匹配的类型 @return 匹配 bean 名称的数组，如果没有则返回空数组
 	public static String[] beanNamesForTypeIncludingAncestors(
 			ListableBeanFactory lbf, Class<?> type, boolean includeNonSingletons, boolean allowEagerInit) {
 
@@ -262,6 +271,7 @@ public abstract class BeanFactoryUtils {
 			if (hbf.getParentBeanFactory() instanceof ListableBeanFactory pbf) {
 				String[] parentResult = beanNamesForTypeIncludingAncestors(
 						pbf, type, includeNonSingletons, allowEagerInit);
+				// 将给定的 bean 名称 result 与给定的父 bean 名称 result 合并。
 				result = mergeNamesWithParent(result, parentResult, hbf);
 			}
 		}
@@ -513,6 +523,11 @@ public abstract class BeanFactoryUtils {
 	 * @return the merged result (possibly the local result as-is)
 	 * @since 4.3.15
 	 */
+	// 将给定的 bean 名称 result 与给定的父 bean 名称 result 合并。
+	// @param result 本地 bean 名称 result
+	// @param parentResult 父 bean 名称 result（可能为空）
+	// @param hbf 本地 bean 工厂
+	// @return 合并后的结果（可能为本地结果）
 	private static String[] mergeNamesWithParent(String[] result, String[] parentResult, HierarchicalBeanFactory hbf) {
 		if (parentResult.length == 0) {
 			return result;

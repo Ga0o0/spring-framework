@@ -695,6 +695,8 @@ public class MethodParameter {
 	 * this point; it just allows discovery to happen when the application calls
 	 * {@link #getParameterName()} (if ever).
 	 */
+	// 初始化此方法参数的参数名称发现功能。
+	// <p>此方法此时实际上并不尝试检索参数名称；它只是允许在应用程序调用 {@link #getParameterName()} 时（如果有）进行发现。
 	public void initParameterNameDiscovery(@Nullable ParameterNameDiscoverer parameterNameDiscoverer) {
 		this.parameterNameDiscoverer = parameterNameDiscoverer;
 	}

@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.config.ConfigurableBeanFactory#resolveAliases
  * @see org.springframework.beans.factory.config.BeanDefinitionVisitor#BeanDefinitionVisitor(StringValueResolver)
  */
+// 用于解析字符串值的简单策略接口。由 {@link org.springframework.beans.factory.config.ConfigurableBeanFactory} 使用。
 @FunctionalInterface
 public interface StringValueResolver {
 
@@ -38,6 +39,10 @@ public interface StringValueResolver {
 	 * to resolve or when ignoring unresolvable placeholders)
 	 * @throws IllegalArgumentException in case of an unresolvable String value
 	 */
+	// 解析给定的字符串值，例如解析占位符。
+	// @param strVal 原始字符串值（从不为 {@code null}）
+	// @return 解析后的字符串值（解析为空值时可能为 {@code null}），可能是原始字符串值本身（在没有要解析的占位符或忽略无法解析的占位符的情况下）
+	// @throws IllegalArgumentException 如果字符串值无法解析
 	@Nullable
 	String resolveStringValue(String strVal);
 

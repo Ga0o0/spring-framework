@@ -633,6 +633,10 @@ public abstract class ClassUtils {
 	 * @param value the value that should be assigned to the type
 	 * @return if the type is assignable from the value
 	 */
+	// 判断给定类型是否可以通过给定值进行赋值（假设通过反射设置）。将原始包装类视为可赋值给相应的原始类型。
+	// @param type 目标类型
+	// @param value 应赋给该类型的值
+	// @return 如果该类型可以通过值进行赋值
 	public static boolean isAssignableValue(Class<?> type, @Nullable Object value) {
 		Assert.notNull(type, "Type must not be null");
 		return (value != null ? isAssignable(type, value.getClass()) : !type.isPrimitive());
@@ -1360,6 +1364,16 @@ public abstract class ClassUtils {
 	 * {@code targetClass} does not implement it
 	 * @see #getInterfaceMethodIfPossible(Method, Class)
 	 */
+	// 给定一个可能来自接口的方法，以及当前反射调用中使用的目标类，如果存在则查找相应的目标方法 &mdash;
+	// 例如，该方法可能是 {@code IFoo.bar()}，目标类可能是 {@code DefaultFoo}。
+	// 在这种情况下，该方法可能是 {@code DefaultFoo.bar()}。这使得可以找到该方法上的属性。
+	// <p><b>注意：</b>与 {@link org.springframework.aop.support.AopUtils#getMostSpecificMethod} 相比，
+	// 此方法<i>不会</i>自动解析桥接方法。如果需要桥接方法解析，
+	// 请调用 {@link org.springframework.core.BridgeMethodResolver#findBridgedMethod} &mdash; 例如，从原始方法定义中获取元数据。
+	// <p><b>注意：</b>如果 Java 安全设置不允许反射访问 &mdash;例如，调用 {@code Class#getDeclaredMethods} 等 - 此实现将回退到返回最初提供的方法。
+	// @param method 要调用的方法，可能来自接口
+	// @param targetClass 当前调用的目标类（可以为 {@code null} 或甚至可能未实现该方法）
+	// @return 具体的目标方法，或者如果 {@code targetClass} 未实现它，则返回原始方法
 	public static Method getMostSpecificMethod(Method method, @Nullable Class<?> targetClass) {
 		if (targetClass != null && targetClass != method.getDeclaringClass() &&
 				(isOverridable(method, targetClass) || !method.getDeclaringClass().isAssignableFrom(targetClass))) {

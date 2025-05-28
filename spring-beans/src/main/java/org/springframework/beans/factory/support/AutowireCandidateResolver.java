@@ -96,6 +96,10 @@ public interface AutowireCandidateResolver {
 	 * or {@code null} if straight resolution is to be performed
 	 * @since 4.0
 	 */
+	// 如果注入点需要，则构建一个代理，用于延迟解析实际依赖目标。<p>默认实现仅返回 {@code null}。
+	// @param descriptor 目标方法参数或字段的描述符
+	// @param beanName 包含注入点的 Bean 的名称
+	// @return 实际依赖目标的延迟解析代理，或者如果要执行直接解析，则返回 {@code null}
 	@Nullable
 	default Object getLazyResolutionProxyIfNecessary(DependencyDescriptor descriptor, @Nullable String beanName) {
 		return null;

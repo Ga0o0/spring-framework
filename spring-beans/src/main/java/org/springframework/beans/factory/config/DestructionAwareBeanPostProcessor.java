@@ -27,6 +27,9 @@ import org.springframework.beans.BeansException;
  * @author Juergen Hoeller
  * @since 1.0.1
  */
+// {@link BeanPostProcessor} 的子接口，添加了一个析构前回调。
+//
+// <p>典型用法是在特定 bean 类型上调用自定义析构回调，并匹配相应的初始化回调。
 public interface DestructionAwareBeanPostProcessor extends BeanPostProcessor {
 
 	/**

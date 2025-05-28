@@ -316,6 +316,10 @@ public abstract class ReflectionUtils {
 	 * @since 4.2
 	 * @see #doWithMethods
 	 */
+	// 对给定类的所有匹配方法执行给定的回调操作，这些方法可以是本地声明的或等效的（例如，给定类实现的基于 Java 8 的接口上的默认方法）。
+	// @param clazz 要自省的类
+	// @param mc 为每个方法调用的回调
+	// @throws IllegalStateException（如果自省失败）
 	public static void doWithLocalMethods(Class<?> clazz, MethodCallback mc) {
 		Method[] methods = getDeclaredMethods(clazz, false);
 		for (Method method : methods) {
@@ -685,7 +689,12 @@ public abstract class ReflectionUtils {
 	 * @since 4.2
 	 * @see #doWithFields
 	 */
+	// 在给定类中所有本地声明的字段上调用给定的回调函数。
+	// @param clazz 要分析的目标类
+	// @param fc 为每个字段调用的回调函数
+	// 如果自省失败，则抛出 IllegalStateException
 	public static void doWithLocalFields(Class<?> clazz, FieldCallback fc) {
+		// getDeclaredFields(clazz) --> 此变体从本地缓存中检索 {@link Class#getDeclaredFields()}，以避免防御性数组复制。
 		for (Field field : getDeclaredFields(clazz)) {
 			try {
 				fc.doWith(field);
@@ -744,6 +753,10 @@ public abstract class ReflectionUtils {
 	 * @throws IllegalStateException if introspection fails
 	 * @see Class#getDeclaredFields()
 	 */
+	// 此变体从本地缓存中检索 {@link Class#getDeclaredFields()}，以避免防御性数组复制。
+	// @param clazz 需要自省的类
+	// @return 缓存的字段数组
+	// @throws IllegalStateException 如果自省失败
 	private static Field[] getDeclaredFields(Class<?> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
 		Field[] result = declaredFieldsCache.get(clazz);
@@ -862,6 +875,7 @@ public abstract class ReflectionUtils {
 	/**
 	 * Callback interface invoked on each field in the hierarchy.
 	 */
+	// 在层次结构中的每个字段上调用回调接口。
 	@FunctionalInterface
 	public interface FieldCallback {
 
@@ -869,6 +883,8 @@ public abstract class ReflectionUtils {
 		 * Perform an operation using the given field.
 		 * @param field the field to operate on
 		 */
+		// 使用给定字段执行操作。
+		// @param field 要操作的字段
 		void doWith(Field field) throws IllegalArgumentException, IllegalAccessException;
 	}
 

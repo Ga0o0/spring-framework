@@ -144,6 +144,10 @@ public final class CachedIntrospectionResults {
 	 * @return the corresponding CachedIntrospectionResults
 	 * @throws BeansException in case of introspection failure
 	 */
+	// 为给定的 bean 类创建 CachedIntrospectionResults。
+	// @param beanClass 要分析的 bean 类
+	// @return 相应的 CachedIntrospectionResults
+	// @throws BeansException，如果自检失败
 	static CachedIntrospectionResults forClass(Class<?> beanClass) throws BeansException {
 		CachedIntrospectionResults results = strongClassCache.get(beanClass);
 		if (results != null) {

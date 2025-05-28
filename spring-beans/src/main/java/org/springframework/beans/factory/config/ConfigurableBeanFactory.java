@@ -462,8 +462,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * @param dependentBeanName the name of the dependent bean
 	 * @since 2.5
 	 */
-	// 为给定的 Bean 注册一个依赖 Bean，
-	// 并在给定 Bean 被销毁之前销毁。
+	// 为给定的 Bean 注册一个依赖 Bean，并在给定 Bean 被销毁之前销毁。
 	// @param beanName Bean 的名称
 	// @param dependentBeanName 依赖 Bean 的名称
 	void registerDependentBean(String beanName, String dependentBeanName);

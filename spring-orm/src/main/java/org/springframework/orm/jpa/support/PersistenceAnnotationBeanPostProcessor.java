@@ -643,6 +643,7 @@ public class PersistenceAnnotationBeanPostProcessor implements InstantiationAwar
 	 * Class representing injection information about an annotated field
 	 * or setter method.
 	 */
+	// 表示有关注释字段或 setter 方法的注入信息的类。
 	private class PersistenceElement extends InjectionMetadata.InjectedElement {
 
 		private final String unitName;

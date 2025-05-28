@@ -484,7 +484,12 @@ public abstract class BeanUtils {
 	 * @return an array of {@code PropertyDescriptors} for the given class
 	 * @throws BeansException if PropertyDescriptor look fails
 	 */
+	// 检索指定类的 JavaBeans {@code PropertyDescriptor}。
+	// @param clazz 要检索其 PropertyDescriptors 的类
+	// @return 指定类的 {@code PropertyDescriptors} 数组
+	// @throws BeansException 如果 PropertyDescriptor 查找失败
 	public static PropertyDescriptor[] getPropertyDescriptors(Class<?> clazz) throws BeansException {
+		// CachedIntrospectionResults.forClass(clazz) --> 为给定的 bean 类创建 CachedIntrospectionResults。
 		return CachedIntrospectionResults.forClass(clazz).getPropertyDescriptors();
 	}
 
@@ -524,11 +529,19 @@ public abstract class BeanUtils {
 	 * @throws BeansException if PropertyDescriptor lookup fails
 	 * @since 3.2.13
 	 */
+	// 为给定方法查找 JavaBean {@code PropertyDescriptor}，该方法可以是该 bean 属性的读取方法或写入方法。
+	// @param method 查找对应 PropertyDescriptor 的方法
+	// @param clazz 用于自省描述符的（最具体的）类
+	// @return 相应的 PropertyDescriptor，如果没有则返回 {@code null}
+	// 如果 PropertyDescriptor 查找失败，则抛出 BeansException
 	@Nullable
 	public static PropertyDescriptor findPropertyForMethod(Method method, Class<?> clazz) throws BeansException {
 		Assert.notNull(method, "Method must not be null");
+		// 检索指定类的 JavaBeans {@code PropertyDescriptor}。
 		PropertyDescriptor[] pds = getPropertyDescriptors(clazz);
 		for (PropertyDescriptor pd : pds) {
+			// pd.getReadMethod() --> 获取应该用于读取属性值的方法。
+			// pd.getWriteMethod() --> 获取应该用于写入属性值的方法。
 			if (method.equals(pd.getReadMethod()) || method.equals(pd.getWriteMethod())) {
 				return pd;
 			}

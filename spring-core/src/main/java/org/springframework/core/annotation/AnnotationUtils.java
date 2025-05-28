@@ -129,6 +129,11 @@ public abstract class AnnotationUtils {
 	 * @see #isCandidateClass(Class, Class)
 	 * @see #isCandidateClass(Class, String)
 	 */
+	// 确定给定类是否适合携带指定注解之一（在类型、方法或字段级别）。
+	// @param clazz 指示要自省的类
+	// @param commentTypes 指示可搜索的注解类型
+	// @return 如果已知该类在任何级别均不存在此类注解，则返回 {@code false}；否则返回 {@code true}。
+	// 如果此处返回 {@code true}，调用者通常会执行完整的方法/字段自省。
 	public static boolean isCandidateClass(Class<?> clazz, Collection<Class<? extends Annotation>> annotationTypes) {
 		for (Class<? extends Annotation> annotationType : annotationTypes) {
 			if (isCandidateClass(clazz, annotationType)) {

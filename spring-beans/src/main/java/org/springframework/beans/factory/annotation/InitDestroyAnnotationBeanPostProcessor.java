@@ -136,6 +136,7 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 	 * @since 6.0.11
 	 * @see #setInitAnnotationType
 	 */
+	// 添加一个 init 注释来检查，指示在配置 bean 后调用的初始化方法。
 	public void addInitAnnotationType(@Nullable Class<? extends Annotation> initAnnotationType) {
 		if (initAnnotationType != null) {
 			this.initAnnotationTypes.add(initAnnotationType);
@@ -150,6 +151,9 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 	 * is the {@link jakarta.annotation.PreDestroy} annotation.
 	 * @see #addDestroyAnnotationType
 	 */
+	// 指定要检查的 destroy 注解，指示在上下文关闭时要调用的销毁方法。
+	// <p>可以使用任何自定义注解，因为没有必需的注解属性。
+	// 没有默认注解，但典型的选择是 {@link jakarta.annotation.PreDestroy} 注解。
 	public void setDestroyAnnotationType(Class<? extends Annotation> destroyAnnotationType) {
 		this.destroyAnnotationTypes.clear();
 		this.destroyAnnotationTypes.add(destroyAnnotationType);
@@ -340,6 +344,7 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 	/**
 	 * Class representing information about annotated init and destroy methods.
 	 */
+	// 表示有关注释的 init 和 destroy 方法的信息的类。
 	private class LifecycleMetadata {
 
 		private final Class<?> beanClass;

@@ -389,6 +389,9 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * @return an optional value or {@link Optional#empty()} if there is no
 	 * matching attribute
 	 */
+	// 从注解中获取可选属性值。
+	// @param attributeName 属性名称
+	// @return 可选值，若无匹配属性则返回 {@link Optional#empty()}
 	Optional<Object> getValue(String attributeName);
 
 	/**

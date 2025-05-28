@@ -47,6 +47,7 @@ import org.springframework.util.ObjectUtils;
  * @author Juergen Hoeller
  * @since 2.5
  */
+// 即将注入的特定依赖项的描述符。包装构造函数参数、方法参数或字段，以便统一访问它们的元数据。
 @SuppressWarnings("serial")
 public class DependencyDescriptor extends InjectionPoint implements Serializable {
 
@@ -116,6 +117,10 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * @param field the field to wrap
 	 * @param required whether the dependency is required
 	 */
+	// 为字段创建新的描述符。
+	// 将依赖项视为“eager”。
+	// @param field 要包装的字段
+	// @param required 依赖项是否为必需
 	public DependencyDescriptor(Field field, boolean required) {
 		this(field, required, true);
 	}
@@ -127,6 +132,10 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * @param eager whether this dependency is 'eager' in the sense of
 	 * eagerly resolving potential target beans for type matching
 	 */
+	// 为字段创建新的描述符。
+	// @param field 要包装的字段
+	// @param required 依赖项是否必需
+	// @param eager 依赖项是否“eager”，即是否积极地解析潜在目标 bean 以进行类型匹配
 	public DependencyDescriptor(Field field, boolean required, boolean eager) {
 		super(field);
 
@@ -230,6 +239,12 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * @throws BeansException if the shortcut could not be obtained
 	 * @since 4.3.1
 	 */
+	// 根据给定的工厂解析此依赖项的快捷方式，例如，考虑一些预先解析的信息。
+	// <p>解析算法将首先尝试通过此方法解析快捷方式，然后再进入所有 bean 的常规类型匹配算法。
+	// 子类可以重写此方法，以基于预缓存信息提高解析性能，同时仍接收 {@link InjectionPoint} 暴露等。
+	// @param beanFactory 关联的工厂
+	// @return 快捷方式结果（如果有），或 {@code null}（如果没有）
+	// @throws BeansException（如果无法获取快捷方式）
 	@Nullable
 	public Object resolveShortcut(BeanFactory beanFactory) throws BeansException {
 		return null;
@@ -248,6 +263,13 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * @since 4.3.2
 	 * @see BeanFactory#getBean(String)
 	 */
+	// 将指定的 bean 名称（作为此依赖项的匹配算法的候选结果）解析为来自给定工厂的 bean 实例。
+	// <p>默认实现调用 {@link BeanFactory#getBean(String)}。子类可以提供其他参数或其他自定义设置。
+	// @param beanName bean 名称，作为此依赖项的候选结果
+	// @param requiredType bean 的预期类型（作为断言）
+	// @param beanFactory 关联的工厂
+	// @return bean 实例（永不返回 {@code null}）
+	// 如果无法获取 bean，则抛出 BeansException
 	public Object resolveCandidate(String beanName, Class<?> requiredType, BeanFactory beanFactory)
 			throws BeansException {
 
@@ -272,6 +294,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * it may be a subclass thereof, potentially substituting type variables.
 	 * @since 4.0
 	 */
+	// 可选地设置包含此依赖项的具体类。这可能与声明参数/字段的类不同，因为它可能是其子类，可能会替换类型变量。
 	public void setContainingClass(Class<?> containingClass) {
 		this.containingClass = containingClass;
 		this.resolvableType = null;
@@ -341,8 +364,11 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * this point; it just allows discovery to happen when the application calls
 	 * {@link #getDependencyName()} (if ever).
 	 */
+	// 初始化底层方法参数的参数名称发现（如果有）。
+	// <p>此方法此时实际上并不尝试检索参数名称；它只是允许在应用程序调用 {@link #getDependencyName()}（如果有）时进行发现。
 	public void initParameterNameDiscovery(@Nullable ParameterNameDiscoverer parameterNameDiscoverer) {
 		if (this.methodParameter != null) {
+			// 初始化此方法参数的参数名称发现功能。
 			this.methodParameter.initParameterNameDiscovery(parameterNameDiscoverer);
 		}
 	}
@@ -360,6 +386,8 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * Determine the declared (non-generic) type of the wrapped parameter/field.
 	 * @return the declared type (never {@code null})
 	 */
+	// 确定包装参数/字段的声明（非泛型）类型。
+	// @return 声明的类型（永不为 {@code null}）
 	public Class<?> getDependencyType() {
 		if (this.field != null) {
 			if (this.nestingLevel > 1) {
@@ -381,6 +409,7 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * @since 6.1.2
 	 * @see org.springframework.beans.factory.support.AutowireCandidateResolver#getLazyResolutionProxyIfNecessary
 	 */
+	// 确定此依赖项是否支持延迟解析，例如通过额外代理。默认值为 {@code true}。
 	public boolean supportsLazyResolution() {
 		return true;
 	}
