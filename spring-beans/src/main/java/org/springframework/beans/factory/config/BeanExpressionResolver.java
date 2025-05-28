@@ -31,6 +31,10 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 策略接口，用于通过将值求值作为表达式来解析（如果适用）。
+//
+// <p>原始的 {@link org.springframework.beans.factory.BeanFactory} 不包含此策略的默认实现。
+// 但是，{@link org.springframework.context.ApplicationContext} 实现将提供开箱即用的表达式支持。
 public interface BeanExpressionResolver {
 
 	/**
@@ -42,6 +46,11 @@ public interface BeanExpressionResolver {
 	 * @return the resolved value (potentially the given value as-is)
 	 * @throws BeansException if evaluation failed
 	 */
+	// 如果适用，则将给定值作为表达式求值；否则，按原样返回该值。
+	// @param value 要作为表达式求值的值
+	// @param beanExpressionContext 求值时使用的 Bean 表达式上下文
+	// @return 解析后的值（可能为给定值的原样）
+	// @throws BeansException 如果求值失败，则抛出 BeansException
 	@Nullable
 	Object evaluate(@Nullable String value, BeanExpressionContext beanExpressionContext) throws BeansException;
 

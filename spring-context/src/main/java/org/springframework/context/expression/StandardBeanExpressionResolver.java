@@ -55,6 +55,11 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.expression.spel.standard.SpelExpressionParser
  * @see org.springframework.expression.spel.support.StandardEvaluationContext
  */
+// {@link org.springframework.beans.factory.config.BeanExpressionResolver} 接口的标准实现，
+// 使用 Spring 的表达式模块解析和执行 Spring EL。
+//
+// <p>包含 {@code BeanFactory} 的所有 bean 都以其通用 bean 名称作为预定义变量提供，
+// 包括标准上下文 bean，例如“environment”、“systemProperties”和“systemEnvironment”。
 public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 
 	/**
@@ -63,6 +68,8 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 	 * @since 6.1.3
 	 * @see SpelParserConfiguration#getMaximumExpressionLength()
 	 */
+	// 用于配置 SpEL 表达式最大长度的系统属性：{@value}。
+	// <p>也可以通过 {@link SpringProperties} 机制进行配置。
 	public static final String MAX_SPEL_EXPRESSION_LENGTH_PROPERTY_NAME = "spring.context.expression.maxLength";
 
 	/** Default expression prefix: "#{". */
@@ -192,7 +199,7 @@ public class StandardBeanExpressionResolver implements BeanExpressionResolver {
 
 	/**
 	 * Template method for customizing the expression evaluation context.
-	 * <p>The default implementation is empty.
+	 * <p>The default implementation is empty.SpelExpressionParser
 	 */
 	protected void customizeEvaluationContext(StandardEvaluationContext evalContext) {
 	}

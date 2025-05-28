@@ -31,6 +31,7 @@ import org.springframework.util.Assert;
  * @author Sam Brannen
  * @since 3.0
  */
+// SpEL解析器。实例是可重用和线程安全的。
 public class SpelExpressionParser extends TemplateAwareExpressionParser {
 
 	private final SpelParserConfiguration configuration;
