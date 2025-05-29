@@ -39,7 +39,8 @@ class AutowiredAnnotationBeanPostProcessorTests {
 
         // register bean
         AnnotatedBeanDefinitionReader beanDefinitionReader = new AnnotatedBeanDefinitionReader(factory);
-        beanDefinitionReader.registerBean(Dao.class);
+        beanDefinitionReader.registerBean(Dao.class,"dao");
+        beanDefinitionReader.registerBean(Dao.class, "dao1");
         beanDefinitionReader.registerBean(AutowiredService.class);
 
         // get bean

@@ -1829,10 +1829,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 		// Fallback: pick directly registered dependency or qualified bean name match
 		// --> 译文：回退：选择直接注册的依赖项或合格的 bean 名称匹配
+		// 最后，选择给定的候选名称与 bean 名称相同的
 		for (Map.Entry<String, Object> entry : candidates.entrySet()) {
 			String candidateName = entry.getKey();
 			Object beanInstance = entry.getValue();
 			if ((beanInstance != null && this.resolvableDependencies.containsValue(beanInstance)) ||
+					// 确定给定的候选名称是否与 bean 名称或存储在此 bean 定义中的别名匹配。
 					matchesBeanName(candidateName, descriptor.getDependencyName())) {
 				return candidateName;
 			}
@@ -1982,6 +1984,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Determine whether the given candidate name matches the bean name or the aliases
 	 * stored in this bean definition.
 	 */
+	// 确定给定的候选名称是否与 bean 名称或存储在此 bean 定义中的别名匹配。
 	protected boolean matchesBeanName(String beanName, @Nullable String candidateName) {
 		return (candidateName != null &&
 				(candidateName.equals(beanName) || ObjectUtils.containsElement(getAliases(beanName), candidateName)));
