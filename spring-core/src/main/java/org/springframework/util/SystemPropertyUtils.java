@@ -90,6 +90,7 @@ public abstract class SystemPropertyUtils {
 	 * PlaceholderResolver implementation that resolves against system properties
 	 * and system environment variables.
 	 */
+	// PlaceholderResolver 实现针对系统属性和系统环境变量进行解析。
 	private static class SystemPropertyPlaceholderResolver implements PropertyPlaceholderHelper.PlaceholderResolver {
 
 		private final String text;

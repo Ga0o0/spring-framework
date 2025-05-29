@@ -55,6 +55,14 @@ import org.springframework.util.StringValueResolver;
  * instead which is more flexible through taking advantage of the {@link org.springframework.core.env.Environment}
  * and {@link org.springframework.core.env.PropertySource} mechanisms.
  */
+// {@link PlaceholderConfigurerSupport} 子类，用于根据 {@link #setLocation local} {@link #setProperties properties} 和/或系统属性和环境变量解析 ${...} 占位符。
+//
+// <p>{@link PropertyPlaceholderConfigurer} 仍然适用于以下情况：
+// <ul>
+// <li>{@code spring-context} 模块不可用（即，正在使用 Spring 的 {@code BeanFactory} API，而不是 {@code ApplicationContext}）。
+// <li>现有配置使用 {@link #setSystemPropertiesMode(int) "systemPropertiesMode"} 和/或 {@link #setSystemPropertiesModeName(String) "systemPropertiesModeName"} 属性。
+// 建议用户不要使用这些设置，而是通过容器的 {@code Environment} 配置属性源搜索顺序；但是，继续使用 {@code PropertyPlaceholderConfigurer} 可以保持功能的精确保留。
+// </ul>
 @Deprecated
 public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport {
 
@@ -153,6 +161,14 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 	 * @see System#getProperty
 	 * @see #resolvePlaceholder(String, java.util.Properties)
 	 */
+	// 使用给定的属性解析给定的占位符，并根据给定的模式执行系统属性检查。
+	// <p>默认实现在系统属性检查之前/之后委托给 {@code resolvePlaceholder (placeholder, props)}。
+	// <p>子类可以重写此方法以实现自定义解析策略，包括自定义系统属性检查点。
+	// @param placeholder 要解析的占位符
+	// @param props 此配置器的合并属性
+	// @param systemPropertiesMode 系统属性模式，
+	// 根据此类中的常量
+	// @return 解析后的值，如果没有则返回 null
 	@Nullable
 	protected String resolvePlaceholder(String placeholder, Properties props, int systemPropertiesMode) {
 		String propVal = null;
@@ -217,6 +233,7 @@ public class PropertyPlaceholderConfigurer extends PlaceholderConfigurerSupport 
 	 * Visit each bean definition in the given bean factory and attempt to replace ${...} property
 	 * placeholders with values from the given properties.
 	 */
+	// 访问给定 bean 工厂中的每个 bean 定义，并尝试用给定属性的值替换 ${...} 属性占位符。
 	@Override
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties props)
 			throws BeansException {
