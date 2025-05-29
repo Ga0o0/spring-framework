@@ -140,6 +140,40 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.beans.factory.annotation.InitDestroyAnnotationBeanPostProcessor
  * @see org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor
  */
+// {@link org.springframework.beans.factory.config.BeanPostProcessor} 实现
+// 支持开箱即用的常见 Java 注解，特别是 {@code jakarta.annotation} 包中的常见注解。
+// 许多 Jakarta EE 技术（例如 JSF 和 JAX-RS）都支持这些常见的 Java 注解。
+//
+// <p>此后处理器通过从 {@link InitDestroyAnnotationBeanPostProcessor} 继承并预配置注解类型，
+// 支持 {@link jakarta.annotation.PostConstruct} 和 {@link jakarta.annotation.PreDestroy} 注解（分别用作 init 注解和 destroy 注解）。
+//
+// <p>其核心元素是 {@link jakarta.annotation.Resource} 注解，用于注解驱动的命名 Bean 注入，
+// 默认情况下，它来自包含它的 Spring BeanFactory，并且仅在 JNDI 中解析 {@code mappedName} 引用。
+// {@link #setAlwaysUseJndiLookup “alwaysUseJndiLookup” 标志} 强制执行与标准 Jakarta EE 资源注入等效的 JNDI 查找，
+// 适用于 {@code name} 引用和默认名称。目标 bean 可以是简单的 POJO，除了类型必须匹配之外没有其他特殊要求。
+//
+// <p>此外，JSR-250 规范（Java EE 5-8，也包含在 JDK 6-8 中）中原始的 {@code javax.annotation} 注解变体仍然受支持。
+// 请注意，这主要是为了平滑升级路径，而不是为了在新应用程序中采用。
+//
+// <p>此后处理器还支持 EJB {@link jakarta.ejb.EJB} 注解，类似于 {@link jakarta.annotation.Resource}，
+// 能够指定本地 bean 名称和全局 JNDI 名称以进行回退检索。在这种情况下，目标 bean 可以是普通的 POJO，也可以是 EJB 会话 Bean。
+//
+// <p>对于默认用法，将资源名称解析为 Spring bean 名称，只需在应用程序上下文中定义以下内容：
+// <pre class="code"> <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/></pre>
+//
+// 对于直接 JNDI 访问，将资源名称解析为 Jakarta EE 应用程序的“java:comp/env/”命名空间中的 JNDI 资源引用，使用以下内容：
+// <pre class="code">
+// <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor">
+// 		<property name="alwaysUseJndiLookup" value="true"/>
+// </bean></pre>
+//
+// {@code mappedName} 引用将始终在 JNDI 中解析，从而允许使用全局 JNDI 名称（包括“java:”前缀）。
+// “alwaysUseJndiLookup”标志仅影响 {@code name} 引用和默认名称（根据字段名称/属性名称推断）。
+//
+// <p><b>注意：</b>默认的 CommonAnnotationBeanPostProcessor 将通过 “context:annotation-config” 和 “context:component-scan” XML 标签注册。
+// 如果您打算指定自定义的 CommonAnnotationBeanPostProcessor Bean 定义，请移除或关闭这两个标签中的默认注解配置！
+//
+// <p><b>注意：</b>注解注入将在 XML 注入<i>之前</i>执行；因此，对于通过这两种方式连接的属性，后者的配置将覆盖前者。
 @SuppressWarnings("serial")
 public class CommonAnnotationBeanPostProcessor extends InitDestroyAnnotationBeanPostProcessor
 		implements InstantiationAwareBeanPostProcessor, BeanFactoryAware, Serializable {

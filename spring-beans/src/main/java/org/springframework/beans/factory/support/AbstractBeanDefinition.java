@@ -762,6 +762,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/**
 	 * Return whether this bean is a primary autowire candidate.
 	 */
+	// 返回该 bean 是否是主要自动装配候选者。
 	@Override
 	public boolean isPrimary() {
 		return this.primary;

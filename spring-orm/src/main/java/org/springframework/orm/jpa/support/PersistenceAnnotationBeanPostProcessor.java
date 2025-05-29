@@ -186,8 +186,74 @@ import org.springframework.util.StringUtils;
  * @see jakarta.persistence.PersistenceUnit
  * @see jakarta.persistence.PersistenceContext
  */
+// BeanPostProcessor 处理 {@link jakarta.persistence.PersistenceUnit} 和 {@link jakarta.persistence.PersistenceContext} 注解，
+// 用于注入相应的 JPA 资源 {@link jakarta.persistence.EntityManagerFactory} 和 {@link jakarta.persistence.EntityManager}。
+// 任何 Spring 管理的对象中带有此类注解的字段或方法都将自动注入。
+//
+// <p>如果注解的字段或方法声明为 {@code EntityManagerFactory} 和 {@code EntityManager} 的子接口，则此后处理器将注入这些子接口。
+// 实际类型将在早期进行验证，但共享（“事务性”）{@code EntityManager} 引用除外，因为类型不匹配可能会在第一次实际调用时才检测到。
+//
+// <p>注意：在当前实现中，PersistenceAnnotationBeanPostProcessor 仅支持带有 “unitName” 属性的 {@code @PersistenceUnit}
+// 和 {@code @PersistenceContext}，或者完全不带任何属性（对于默认单元）。
+// 如果这些注解在类级别带有 “name” 属性，则它们将被忽略，因为它们仅用作部署提示（根据 Jakarta EE 规范）。
+//
+// <p>此后处理器可以获取 Spring 应用程序上下文中定义的 EntityManagerFactory bean（默认），
+// 也可以从 JNDI 获取 EntityManagerFactory 引用（“持久性单元引用”）。
+// 对于 bean，持久性单元名称将与实际部署的单元进行匹配，如果未找到部署名称，则将 bean 名称用作后备单元名称。
+// 通常，Spring 的 {@link org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean} 将用于
+// 设置此类 EntityManagerFactory bean。或者，也可以从 JNDI 获取此类 bean，
+// 例如使用 {@code jee:jndi-lookup} XML 配置元素（bean 名称与请求的单元名称匹配）。在这两种情况下，后处理器定义都非常简单：
+
+// <pre class="code"> <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/></pre>
+//
+// 在使用 JNDI 的情况下，在此后处理器的 {@link #setPersistenceUnits "persistenceUnits" map} 中指定相应的 JNDI 名称，
+// 通常与 Jakarta EE 部署描述符中的 {@code persistence-unit-ref} 条目匹配。
+// 默认情况下，这些名称被视为资源引用（根据 Jakarta EE 资源引用约定），位于“java:comp/env/”命名空间下。例如：
+//
+// <pre class="code">
+// <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor">
+// 		<property name="persistenceUnits">
+// 			<map>
+// 				<entry key="unit1" value="persistence/unit1"/>
+// 				<entry key="unit2" value="persistence/unit2"/>
+// 			</map>
+// 		</property>
+// </bean>
+// </pre>
+//
+// 在这种情况下，指定的持久化单元将始终在 JNDI 中解析，而不是作为 Spring 定义的 bean。
+// 整个持久化单元的部署，包括持久化类的织入，都由 Jakarta EE 服务器负责。
+// 持久性上下文（即 EntityManager 引用）将基于服务器提供的 EntityManagerFactory 引用构建，
+// 使用 Spring 自己的事务同步功能进行事务性 EntityManager 处理（通常使用 Spring 的
+// {@code @Transactional} 注释进行划分并使用 {@link org.springframework.transaction.jta.JtaTransactionManager} 作为后端）。
+//
+// <p>如果您更喜欢 Jakarta EE 服务器自己的 EntityManager 处理，请在此后处理器的 {@link #setPersistenceContexts "persistenceContexts" map}
+// （或 {@link #setExtendedPersistenceContexts "extendedPersistenceContexts" map}）中指定条目，
+// 通常与 Jakarta EE 部署描述符中的 {@code persistence-context-ref} 条目匹配。例如：
+//
+// <pre class="code">
+// <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor">
+// 		<property name="persistenceContexts">
+// 			<map>
+// 				<entry key="unit1" value="persistence/context1"/>
+// 				<entry key="unit2" value="persistence/context2"/>
+// 			</map>
+// 		</property>
+// </bean>
+// </pre>
+//
+// 如果应用程序首先仅获取 EntityManager 引用，那么这就是您需要指定的全部内容。
+// 如果您也需要 EntityManagerFactory 引用，指定“persistenceUnits”和“persistenceContexts”的条目，指向匹配的 JNDI 位置。
+//
+// <p><b>注意：通常，不要将 EXTENDED EntityManager 注入到无状态 bean 中，即不要在范围定义为“singleton”
+// （Spring 的默认范围）的 Spring bean 中使用类型为 {@code EXTENDED} 的 {@code @PersistenceContext}。</b>
+// 扩展 EntityManager<i>不是</i>线程安全的，因此它们不能在并发访问的 bean 中使用（Spring 管理的单例通常是并发访问的）。
+//
+// <p>注意：默认的 PersistenceAnnotationBeanPostProcessor 将由“context:annotation-config”和“context:component-scan”XML 标签注册。
+// @see jakarta.persistence.PersistenceUnit
+// @see jakarta.persistence.PersistenceContext
 @SuppressWarnings("serial")
-public class PersistenceAnnotationBeanPostProcessor implements InstantiationAwareBeanPostProcessor,
+class PersistenceAnnotationBeanPostProcessor implements InstantiationAwareBeanPostProcessor,
 		DestructionAwareBeanPostProcessor, MergedBeanDefinitionPostProcessor, BeanRegistrationAotProcessor,
 		PriorityOrdered, BeanFactoryAware, Serializable {
 

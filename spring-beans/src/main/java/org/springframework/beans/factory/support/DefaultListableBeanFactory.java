@@ -1498,6 +1498,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			// Step 4: determine single candidate
 			// --> 译文：步骤 4：确定单一候选人
 			if (matchingBeans.size() > 1) {
+				// 在给定的 bean 集合中确定自动装配候选对象。
 				autowiredBeanName = determineAutowireCandidate(matchingBeans, descriptor);
 				if (autowiredBeanName == null) {
 					if (isRequired(descriptor) || !indicatesArrayCollectionOrMap(type)) {
@@ -1808,18 +1809,26 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @param descriptor the target dependency to match against
 	 * @return the name of the autowire candidate, or {@code null} if none found
 	 */
+	// 在给定的 bean 集合中确定自动装配候选对象。
+	// <p>按顺序查找 {@code @Primary} 和 {@code @Priority}。
+	// @param candidates 一个包含候选名称和与所需类型匹配的候选实例的 Map，由 {@link #findAutowireCandidates} 返回。
+	// @param descriptor 要匹配的目标依赖项。
+	// @return 自动装配候选对象的名称，如果未找到，则返回 {@code null}。
 	@Nullable
 	protected String determineAutowireCandidate(Map<String, Object> candidates, DependencyDescriptor descriptor) {
 		Class<?> requiredType = descriptor.getDependencyType();
+		// 判断给定 bean 名称的 bean 定义是否已被 @Primary 标记
 		String primaryCandidate = determinePrimaryCandidate(candidates, requiredType);
 		if (primaryCandidate != null) {
 			return primaryCandidate;
 		}
+		// 判断给定 bean 名称的 bean 定义是否已被 @Priority 标记，并且如果有多个要返回 order 值最靠前的那个 beanName
 		String priorityCandidate = determineHighestPriorityCandidate(candidates, requiredType);
 		if (priorityCandidate != null) {
 			return priorityCandidate;
 		}
 		// Fallback: pick directly registered dependency or qualified bean name match
+		// --> 译文：回退：选择直接注册的依赖项或合格的 bean 名称匹配
 		for (Map.Entry<String, Object> entry : candidates.entrySet()) {
 			String candidateName = entry.getKey();
 			Object beanInstance = entry.getValue();
@@ -1839,6 +1848,11 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @return the name of the primary candidate, or {@code null} if none found
 	 * @see #isPrimary(String, Object)
 	 */
+	// 在给定的 bean 集合中确定主要候选对象。
+	// @param candidates 一个包含候选名称和候选实例（如果尚未创建，则为候选类）的 Map，这些实例与所需类型匹配。
+	// @param requiredType 要匹配的目标依赖项类型。
+	// @return 主要候选对象的名称，如果未找到，则返回 {@code null}。
+	// @see #isPrimary(String, Object)
 	@Nullable
 	protected String determinePrimaryCandidate(Map<String, Object> candidates, Class<?> requiredType) {
 		String primaryBeanName = null;
@@ -1879,6 +1893,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * the same highest priority value
 	 * @see #getPriority(Object)
 	 */
+	// 在给定的 bean 集合中确定优先级最高的候选对象。
+	// <p>基于 {@code @jakarta.annotation.Priority}。如相关 {@link org.springframework.core.Ordered} 接口所定义，值最低的具有最高优先级。
+	// @param candidates 一个包含候选名称和候选实例（如果尚未创建，则为候选类）的 Map，这些实例必须与所需类型匹配。
+	// @param requiredType 要匹配的目标依赖类型。
+	// @return 优先级最高的候选对象的名称，如果未找到，则返回 {@code null}。
+	// 如果检测到多个具有相同最高优先级值的 bean，则抛出 NoUniqueBeanDefinitionException。
 	@Nullable
 	protected String determineHighestPriorityCandidate(Map<String, Object> candidates, Class<?> requiredType) {
 		String highestPriorityBeanName = null;
@@ -1924,6 +1944,10 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @param beanInstance the corresponding bean instance (can be {@code null})
 	 * @return whether the given bean qualifies as primary
 	 */
+	// 返回指定 Bean 名称的 Bean 定义是否已被标记为主 Bean。
+	// @param beanName Bean 的名称
+	// @param beanInstance 对应的 Bean 实例（可以为 {@code null}）
+	// @return 指定 Bean 是否符合主 Bean 的条件
 	protected boolean isPrimary(String beanName, Object beanInstance) {
 		String transformedBeanName = transformedBeanName(beanName);
 		if (containsBeanDefinition(transformedBeanName)) {
