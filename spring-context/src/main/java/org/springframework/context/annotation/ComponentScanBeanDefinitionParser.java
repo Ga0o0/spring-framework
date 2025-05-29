@@ -52,6 +52,7 @@ import org.springframework.util.StringUtils;
  * @author Juergen Hoeller
  * @since 2.5
  */
+// {@code <context:component-scan/>} 元素的解析器。
 public class ComponentScanBeanDefinitionParser implements BeanDefinitionParser {
 
 	private static final String BASE_PACKAGE_ATTRIBUTE = "base-package";

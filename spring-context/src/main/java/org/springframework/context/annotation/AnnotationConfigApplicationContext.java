@@ -74,6 +74,7 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * Create a new AnnotationConfigApplicationContext that needs to be populated
 	 * through {@link #register} calls and then manually {@linkplain #refresh refreshed}.
 	 */
+	// 创建一个新的 AnnotationConfigApplicationContext，需要通过 {@link #register} 调用进行填充，然后手动 {@linkplain #refresh 刷新}。
 	public AnnotationConfigApplicationContext() {
 		StartupStep createAnnotatedBeanDefReader = getApplicationStartup().start("spring.context.annotated-bean-reader.create");
 		this.reader = new AnnotatedBeanDefinitionReader(this);
@@ -85,6 +86,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * Create a new AnnotationConfigApplicationContext with the given DefaultListableBeanFactory.
 	 * @param beanFactory the DefaultListableBeanFactory instance to use for this context
 	 */
+	// 使用给定的 DefaultListableBeanFactory 创建一个新的 AnnotationConfigApplicationContext。
+	// @param beanFactory 用于此上下文的 DefaultListableBeanFactory 实例
 	public AnnotationConfigApplicationContext(DefaultListableBeanFactory beanFactory) {
 		super(beanFactory);
 		this.reader = new AnnotatedBeanDefinitionReader(this);
@@ -97,6 +100,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * @param componentClasses one or more component classes &mdash; for example,
 	 * {@link Configuration @Configuration} classes
 	 */
+	// 创建一个新的 AnnotationConfigApplicationContext，从给定的组件类派生 bean 定义并自动刷新上下文。
+	// @param componentClasses 一个或多个组件类 - 例如，{@link Configuration @Configuration} 类
 	public AnnotationConfigApplicationContext(Class<?>... componentClasses) {
 		this();
 		register(componentClasses);
@@ -109,6 +114,8 @@ public class AnnotationConfigApplicationContext extends GenericApplicationContex
 	 * and automatically refreshing the context.
 	 * @param basePackages the packages to scan for component classes
 	 */
+	// 创建一个新的 AnnotationConfigApplicationContext，扫描给定包中的组件，为这些组件注册 bean 定义，并自动刷新上下文。
+	// @param basePackages 指定要扫描组件类的包
 	public AnnotationConfigApplicationContext(String... basePackages) {
 		this();
 		scan(basePackages);

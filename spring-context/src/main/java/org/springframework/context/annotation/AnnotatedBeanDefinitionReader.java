@@ -67,6 +67,10 @@ public class AnnotatedBeanDefinitionReader {
 	 * @see #AnnotatedBeanDefinitionReader(BeanDefinitionRegistry, Environment)
 	 * @see #setEnvironment(Environment)
 	 */
+	// 为给定的注册表创建一个新的 {@code AnnotatedBeanDefinitionReader}。
+	// <p>如果注册表是 {@link EnvironmentCapable}，例如，是一个 {@code ApplicationContext}，
+	// 则将继承 {@link Environment}；否则，将创建并使用一个新的 {@link StandardEnvironment}。
+	// @param registry 以 {@code BeanDefinitionRegistry} 的形式加载 bean 定义的 {@code BeanFactory}
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry) {
 		this(registry, getOrCreateEnvironment(registry));
 	}
@@ -80,6 +84,9 @@ public class AnnotatedBeanDefinitionReader {
 	 * profiles.
 	 * @since 3.1
 	 */
+	// 使用给定的 {@link Environment}，为给定的注册表创建一个新的 {@code AnnotatedBeanDefinitionReader}。
+	// @param registry 以 {@code BeanDefinitionRegistry} 的形式加载 bean 定义的 {@code BeanFactory}。
+	// @param environment 评估 bean 定义配置文件时使用的 {@code Environment}。
 	public AnnotatedBeanDefinitionReader(BeanDefinitionRegistry registry, Environment environment) {
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 		Assert.notNull(environment, "Environment must not be null");
