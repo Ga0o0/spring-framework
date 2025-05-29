@@ -30,6 +30,7 @@ import org.springframework.util.StringUtils;
  * @author Arjen Poutsma
  * @since 3.0.3
  */
+// Bean 工厂后处理器，为 {@link Deprecated @Deprecated} beans 记录警告。
 public class DeprecatedBeanWarner implements BeanFactoryPostProcessor {
 
 	/**

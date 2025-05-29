@@ -44,6 +44,11 @@ import org.springframework.lang.Nullable;
  * @see java.util.prefs.Preferences
  * @deprecated as of 5.2, along with {@link PropertyPlaceholderConfigurer}
  */
+// PropertyPlaceholderConfigurer 的子类，支持 JDK 1.4 的 Preferences API ({@code java.util.prefs})。
+//
+// <p>首先尝试将用户首选项中的占位符解析为键，然后是系统首选项，最后是此配置器属性中的占位符。因此，如果未定义相应的首选项，则其行为与 PropertyPlaceholderConfigurer 相同。
+//
+// <p>支持系统和用户首选项树的自定义路径。也支持在占位符中指定的自定义路径（“myPath/myPlaceholderKey”）。如果未指定，则使用相应的根节点。
 @Deprecated
 public class PreferencesPlaceholderConfigurer extends PropertyPlaceholderConfigurer implements InitializingBean {
 

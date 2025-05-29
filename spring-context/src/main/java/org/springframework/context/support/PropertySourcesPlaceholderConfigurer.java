@@ -65,6 +65,16 @@ import org.springframework.util.StringValueResolver;
  * @see org.springframework.beans.factory.config.PlaceholderConfigurerSupport
  * @see org.springframework.beans.factory.config.PropertyPlaceholderConfigurer
  */
+// {@link PlaceholderConfigurerSupport} 的特化，用于根据当前 Spring {@link Environment} 及
+// 其 {@link PropertySources} 集合解析 Bean 定义属性值和 {@code @Value} 注解中的 ${...} 占位符。
+//
+// <p>此类旨在替代 {@code PropertyPlaceholderConfigurer}。默认情况下，它支持在 spring-context-3.1 或更高版本的 XSD 中使用 {@code property-placeholder} 元素；
+// 而 spring-context 版本 &lt;= 3.0 默认使用 {@code PropertyPlaceholderConfigurer} 以确保向后兼容。有关完整详细信息，请参阅 spring-context XSD 文档。
+//
+// <p>任何本地属性（例如通过 {@link #setProperties}、{@link #setLocations} 等添加的属性）都将作为 {@code PropertySource} 添加。
+// 本地属性的搜索优先级取决于 {@link #setLocalOverride localOverride} 属性的值，默认值为 {@code false}，表示本地属性将在所有环境属性源之后最后搜索。
+//
+// <p>有关操作环境属性源的详细信息，请参阅 {@link org.springframework.core.env.ConfigurableEnvironment} 和相关 javadoc。
 public class PropertySourcesPlaceholderConfigurer extends PlaceholderConfigurerSupport implements EnvironmentAware {
 
 	/**

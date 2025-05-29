@@ -127,6 +127,13 @@ import org.springframework.util.CollectionUtils;
  * @author Sam Brannen
  * @since 3.0
  */
+// {@link BeanFactoryPostProcessor} 用于引导 {@link Configuration @Configuration} 类的处理。
+//
+// <p>使用 {@code <context:annotation-config/>} 或 {@code <context:component-scan/>} 时默认注册。
+// 否则，可以像任何其他 {@link BeanFactoryPostProcessor} 一样手动声明。
+//
+// <p>此后处理器按优先级排序，因为在 {@code @Configuration} 类中声明的任何 {@link Bean @Bean} 方法
+// 都必须在任何其他 {@code BeanFactoryPostProcessor} 执行之前注册其对应的 bean 定义，这一点非常重要。
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		BeanRegistrationAotProcessor, BeanFactoryInitializationAotProcessor, PriorityOrdered,
 		ResourceLoaderAware, ApplicationStartupAware, BeanClassLoaderAware, EnvironmentAware {
@@ -195,6 +202,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * Set the {@link SourceExtractor} to use for generated bean definitions
 	 * that correspond to {@link Bean} factory methods.
 	 */
+	// 设置要用于生成的与 {@link Bean} 工厂方法对应的 Bean 定义的 {@link SourceExtractor}。
 	public void setSourceExtractor(@Nullable SourceExtractor sourceExtractor) {
 		this.sourceExtractor = (sourceExtractor != null ? sourceExtractor : new PassThroughSourceExtractor());
 	}
@@ -205,6 +213,9 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * declarations. For instance, an @Bean method marked as {@code final} is illegal
 	 * and would be reported as a problem. Defaults to {@link FailFastProblemReporter}.
 	 */
+	// 设置要使用的 {@link ProblemReporter}。
+	// <p>用于注册任何通过 {@link Configuration} 或 {@link Bean} 声明检测到的问题。
+	// 例如，标记为 {@code final} 的 @Bean 方法是非法的，会被报告为问题。默认为 {@link FailFastProblemReporter}。
 	public void setProblemReporter(@Nullable ProblemReporter problemReporter) {
 		this.problemReporter = (problemReporter != null ? problemReporter : new FailFastProblemReporter());
 	}
@@ -214,6 +225,8 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * <p>Default is a {@link CachingMetadataReaderFactory} for the specified
 	 * {@linkplain #setBeanClassLoader bean class loader}.
 	 */
+	// 设置要使用的 {@link MetadataReaderFactory}。
+	// <p>默认为 {@link CachingMetadataReaderFactory}，用于指定的 {@linkplain #setBeanClassLoader bean 类加载器}。
 	public void setMetadataReaderFactory(MetadataReaderFactory metadataReaderFactory) {
 		Assert.notNull(metadataReaderFactory, "MetadataReaderFactory must not be null");
 		this.metadataReaderFactory = metadataReaderFactory;
@@ -236,6 +249,15 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * @see AnnotationConfigApplicationContext#setBeanNameGenerator(BeanNameGenerator)
 	 * @see AnnotationConfigUtils#CONFIGURATION_BEAN_NAME_GENERATOR
 	 */
+	// 设置在从 {@link Configuration} 类触发组件扫描以及注册 {@link Import} 配置类时使用的 {@link BeanNameGenerator}。
+	// 对于扫描的组件，默认值为标准 {@link AnnotationBeanNameGenerator（与 {@link ClassPathBeanDefinitionScanner} 中的默认值兼容），
+	// 对于导入的配置类，默认值为其变体（使用唯一的完全限定类名，而不是标准组件覆盖）。
+	//
+	// <p>请注意，此策略<em>不</em>适用于 {@link Bean} 方法。
+	//
+	// <p>此设置器通常仅适用于将后处理器配置为 XML 中的独立 bean 定义的情况，
+	// 例如，不使用专用的 {@code AnnotationConfig} 应用程序上下文或 {@code <context:annotation-config>} 元素。
+	// 针对应用程序上下文指定的任何 bean 名称生成器都将优先于此处设置的任何 bean 名称生成器。
 	public void setBeanNameGenerator(BeanNameGenerator beanNameGenerator) {
 		Assert.notNull(beanNameGenerator, "BeanNameGenerator must not be null");
 		this.localBeanNameGeneratorSet = true;
@@ -295,6 +317,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 	 * Prepare the Configuration classes for servicing bean requests at runtime
 	 * by replacing them with CGLIB-enhanced subclasses.
 	 */
+	// 通过使用 CGLIB 增强子类替换配置类，准备在运行时为 Bean 请求提供服务。
 	@Override
 	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
 		int factoryId = System.identityHashCode(beanFactory);

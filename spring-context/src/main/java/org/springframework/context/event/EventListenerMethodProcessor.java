@@ -63,6 +63,8 @@ import org.springframework.util.CollectionUtils;
  * @see EventListenerFactory
  * @see DefaultEventListenerFactory
  */
+// 将 {@link EventListener} 方法注册为单独的 {@link ApplicationListener} 实例。
+// 实现 {@link BeanFactoryPostProcessor}（自 5.1 起）主要用于早期检索，避免对此处理器 bean 及其 {@link EventListenerFactory} 委托进行 AOP 检查。
 public class EventListenerMethodProcessor
 		implements SmartInitializingSingleton, ApplicationContextAware, BeanFactoryPostProcessor {
 
@@ -212,6 +214,8 @@ public class EventListenerMethodProcessor
 	 * which indicates that there is no {@link EventListener} to be found there.
 	 * @since 5.1
 	 */
+	// 确定给定的类是否是未注释为用户或测试 {@link Component} 的 {@code org.springframework} bean 类...
+	// 这表明在那里找不到 {@link EventListener}。
 	private static boolean isSpringContainerClass(Class<?> clazz) {
 		return (clazz.getName().startsWith("org.springframework.") &&
 				!AnnotatedElementUtils.isAnnotated(ClassUtils.getUserClass(clazz), Component.class));

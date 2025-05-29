@@ -180,6 +180,9 @@ public abstract class WebApplicationContextUtils {
 	 * @param beanFactory the BeanFactory to configure
 	 * @param sc the ServletContext that we're running within
 	 */
+	// 使用给定的 BeanFactory 注册 Web 特定作用域（“request”、“session”、“globalSession”、“application”），供 WebApplicationContext 使用。
+	// @param beanFactory 需要配置的 BeanFactory
+	// @param sc 我们正在其中运行的 ServletContext
 	public static void registerWebApplicationScopes(ConfigurableListableBeanFactory beanFactory,
 			@Nullable ServletContext sc) {
 
@@ -218,6 +221,10 @@ public abstract class WebApplicationContextUtils {
 	 * @param servletContext the ServletContext that we're running within
 	 * @param servletConfig the ServletConfig
 	 */
+	// 使用给定的 BeanFactory 注册 Web 特定的环境 bean（“contextParameters”、“contextAttributes”），供 WebApplicationContext 使用。
+	// @param bf 要配置的 BeanFactory
+	// @param servletContext 我们正在运行的 ServletContext
+	// @param servletConfig ServletConfig
 	public static void registerEnvironmentBeans(ConfigurableListableBeanFactory bf,
 			@Nullable ServletContext servletContext, @Nullable ServletConfig servletConfig) {
 

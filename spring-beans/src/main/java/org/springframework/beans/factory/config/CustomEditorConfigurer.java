@@ -93,6 +93,43 @@ import org.springframework.util.ClassUtils;
  * @see ConfigurableBeanFactory#registerCustomEditor
  * @see org.springframework.validation.DataBinder#registerCustomEditor
  */
+// {@link BeanFactoryPostProcessor} 实现允许方便地注册自定义 {@link PropertyEditor 属性编辑器}。
+//
+// <p>如果您想注册 {@link PropertyEditor} 实例，从 Spring 2.0 开始，建议使用自定义 {@link PropertyEditorRegistrar} 实现，
+// 该实现会在给定的 {@link org.springframework.beans.PropertyEditorRegistry 注册表} 上注册任何所需的编辑器实例。
+// 每个 PropertyEditorRegistrar 可以注册任意数量的自定义编辑器。
+//
+// <pre class="code">
+// <bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+// 		<property name="propertyEditorRegistrars">
+// 			<list>
+// 				<bean class="mypackage.MyCustomDateEditorRegistrar"/>
+// 				<bean class="mypackage.MyObjectEditorRegistrar"/>
+// 			</list>
+// 		</property>
+// </bean>
+// </pre>
+//
+// <p>通过 {@code customEditors} 属性注册 {@link PropertyEditor} <em>类</em> 是完全没问题的。 Spring 会在每次编辑尝试后创建它们的新实例：
+// <pre class="code">
+// <bean id="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+// 		<property name="customEditors">
+// 			<map>
+// 				<entry key="java.util.Date" value="mypackage.MyCustomDateEditor"/>
+// 				<entry key="mypackage.MyObject" value="mypackage.MyObjectEditor"/>
+//			</map>
+//		</property>
+// </bean>
+// </pre>
+//
+// <p>请注意，您不应通过 {@code customEditors} 属性注册 {@link PropertyEditor} bean 实例，因为 {@link PropertyEditor PropertyEditors} 是有状态的，
+// 并且实例在每次编辑尝试后都必须同步。如果您需要控制 {@link PropertyEditor PropertyEditors} 的实例化过程，请使用 {@link PropertyEditorRegistrar} 来注册它们。
+//
+// <p> 还支持“java.lang.String[]”样式的数组类名和原始类名（例如“boolean”）。委托给 {@link ClassUtils} 进行实际的类名解析。
+//
+// <p><b>注意：</b>
+// 使用此配置器注册的自定义属性编辑器<i>不</i>适用于数据绑定。用于数据绑定的自定义编辑器需要在 {@link org.springframework.validation.DataBinder} 上注册：
+// 使用通用基类或委托给通用的 PropertyEditorRegistrar 实现，以便在该处复用编辑器注册。
 public class CustomEditorConfigurer implements BeanFactoryPostProcessor, Ordered {
 
 	protected final Log logger = LogFactory.getLog(getClass());

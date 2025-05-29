@@ -44,6 +44,13 @@ import org.springframework.util.ClassUtils;
  * @since 2.0
  * @see ConfigurableBeanFactory#registerScope
  */
+// 简单的 {@link BeanFactoryPostProcessor} 实现，用于将自定义 {@link Scope Scope(s)} 注册到包含它的 {@link ConfigurableBeanFactory}。
+//
+// <p>它将使用传递给 {@link #postProcessBeanFactory(ConfigurableListableBeanFactory)} 方法的 {@link ConfigurableListableBeanFactory} 注册
+// 所有提供的 {@link #setScopes(java.util.Map) 作用域}。
+//
+// <p>此类允许以<i>声明式</i>方式注册自定义作用域。
+// 或者，您也可以考虑实现一个自定义 {@link BeanFactoryPostProcessor}，并以编程方式调用 {@link ConfigurableBeanFactory#registerScope}。
 public class CustomScopeConfigurer implements BeanFactoryPostProcessor, BeanClassLoaderAware, Ordered {
 
 	@Nullable
@@ -61,6 +68,8 @@ public class CustomScopeConfigurer implements BeanFactoryPostProcessor, BeanClas
 	 * is expected to be the corresponding custom {@link Scope} instance
 	 * or class name.
 	 */
+	// 指定要注册的自定义作用域。
+	// <p>键表示作用域名称（字符串类型）；每个值应为相应的自定义 {@link Scope} 实例或类名。
 	public void setScopes(Map<String, Object> scopes) {
 		this.scopes = scopes;
 	}
@@ -71,6 +80,9 @@ public class CustomScopeConfigurer implements BeanFactoryPostProcessor, BeanClas
 	 * @param scope the scope implementation
 	 * @since 4.1.1
 	 */
+	// 将给定的作用域添加到此配置器的作用域映射中。
+	// @param scopeName 作用域的名称
+	// @param scope 作用域的实现
 	public void addScope(String scopeName, Scope scope) {
 		if (this.scopes == null) {
 			this.scopes = new LinkedHashMap<>(1);

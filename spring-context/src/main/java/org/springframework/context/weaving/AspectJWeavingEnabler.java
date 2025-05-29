@@ -41,12 +41,15 @@ import org.springframework.lang.Nullable;
  * @author Ramnivas Laddad
  * @since 2.5
  */
+// 使用 Spring 应用程序上下文的默认 {@link org.springframework.instrument.classloading.LoadTimeWeaver}
+// 注册 AspectJ 的 {@link org.aspectj.weaver.loadtime.ClassPreProcessorAgentAdapter} 的后处理器。
 public class AspectJWeavingEnabler
 		implements BeanFactoryPostProcessor, BeanClassLoaderAware, LoadTimeWeaverAware, Ordered {
 
 	/**
 	 * The {@code aop.xml} resource location.
 	 */
+	// {@code aop.xml} 资源位置。
 	public static final String ASPECTJ_AOP_XML_RESOURCE = "META-INF/aop.xml";
 
 

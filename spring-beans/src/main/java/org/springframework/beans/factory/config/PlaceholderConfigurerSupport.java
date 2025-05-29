@@ -88,6 +88,45 @@ import org.springframework.util.StringValueResolver;
  * @see PropertyPlaceholderConfigurer
  * @see org.springframework.context.support.PropertySourcesPlaceholderConfigurer
  */
+// 属性资源配置器的抽象基类，用于解析 Bean 定义属性值中的占位符。
+// 实现<em>从属性文件或其他 {@linkplain org.springframework.core.env.PropertySource 属性源} 中提取值到 Bean 定义中。
+//
+// <p>默认占位符语法遵循 Ant / Log4J / JSP EL 样式：
+// <pre class="code">${...} </pre>
+//
+// XML Bean 定义示例：
+// <pre class="code">
+// <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+// 		<property name="driverClassName" value="${driver}" />
+// 		<property name="url" value="jdbc:${dbname}" />
+// </bean>
+// </pre>
+//
+// 示例属性文件：
+// <pre class="code">
+// driver=com.mysql.jdbc.Driver
+// dbname=mysql:mydb
+// </pre>
+//
+// 带注解的 bean 定义可以利用 {@link org.springframework.beans.factory.annotation.Value @Value} 注解进行属性替换：
+// <pre class="code">@Value("${person.age}")</pre>
+//
+// 实现会检查 bean 引用中的简单属性值、列表、映射、props 和 bean 名称。此外，占位符值还可以交叉引用其他占位符，例如：
+// <pre class="code">
+// rootPath=myrootdir
+// subPath=${rootPath}/subdir
+// </pre>
+// 与 {@link PropertyOverrideConfigurer} 不同，此类型的子类允许在 bean 定义中填写显式占位符。
+//
+// <p>如果配置器无法解析占位符，则会抛出 {@link BeanDefinitionStoreException} 异常。
+// 如果您想对照多个属性文件进行检查，请通过 {@link #setLocations location} 属性指定多个资源。
+// 您还可以定义多个配置器，每个配置器都使用其<em>自己的</em>占位符语法。
+// 使用 {@link #ignoreUnresolvablePlaceholders} 可以在占位符无法解析时故意抑制抛出异常。
+//
+// <p>可以通过 {@link #setProperties properties} 属性为每个配置器实例全局定义默认属性值，
+// 也可以使用值分隔符逐个属性地定义默认属性值，值分隔符默认为 {@code ":"}，可通过 {@link #setValueSeparator(String)} 自定义。
+//
+// <p>具有默认值的 XML 属性示例：<pre class="code"> &lt;property name="url" value="jdbc:${dbname:defaultdb}" /&gt; </pre>
 public abstract class PlaceholderConfigurerSupport extends PropertyResourceConfigurer
 		implements BeanNameAware, BeanFactoryAware {
 
