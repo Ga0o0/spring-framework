@@ -41,6 +41,13 @@ import org.springframework.util.Assert;
  * @see AnnotationBeanNameGenerator
  * @see ConfigurationClassPostProcessor#IMPORT_BEAN_NAME_GENERATOR
  */
+// 如果未通过受支持的类型级注释（例如 {@code @Component}）提供显式 bean 名称，
+// 则将类名作为默认 bean 名称（有关受支持的注释的详细信息，请参阅 {@link AnnotationBeanNameGenerator}）。
+//
+// <p>如果由于多个自动检测到的组件具有相同的非限定类名（即，具有相同名称但位于不同包中的类）而遇到命名冲突，
+// 则应优先使用此 bean 命名策略而不是 {@code AnnotationBeanNameGenerator}。
+//
+// <p>请注意，默认情况下，此类的实例用于配置级导入目的；而组件扫描目的的默认值是普通的 {@code AnnotationBeanNameGenerator}。
 public class FullyQualifiedAnnotationBeanNameGenerator extends AnnotationBeanNameGenerator {
 
 	/**
@@ -48,6 +55,7 @@ public class FullyQualifiedAnnotationBeanNameGenerator extends AnnotationBeanNam
 	 * instance, as used for configuration-level import purposes.
 	 * @since 5.2.11
 	 */
+	// 默认 {@code FullyQualifiedAnnotationBeanNameGenerator} 实例的便捷常量，用于配置级别导入目的。
 	public static final FullyQualifiedAnnotationBeanNameGenerator INSTANCE =
 			new FullyQualifiedAnnotationBeanNameGenerator();
 

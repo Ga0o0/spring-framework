@@ -78,6 +78,18 @@ import org.springframework.util.StringUtils;
  * @see jakarta.inject.Named#value()
  * @see FullyQualifiedAnnotationBeanNameGenerator
  */
+// {@link BeanNameGenerator} 实现，适用于使用 {@link org.springframework.stereotype.Component @Component} 注解
+// 或其他本身已使用 {@code @Component} 作为元注解的注解的 bean 类。
+// 例如，Spring 的构造型注解（例如 {@link org.springframework.stereotype.Repository @Repository}）本身就使用 {@code @Component} 注解。
+//
+// <p>如果可用，也支持 Jakarta EE 的 {@link jakarta.annotation.ManagedBean} 和 JSR-330 的 {@link jakarta.inject.Named} 注解
+// （以及 Jakarta 之前的 {@code javax.annotation.ManagedBean} 和 {@code javax.inject.Named} 等效注解）。请注意，Spring 组件注解始终会覆盖此类标准注解。
+//
+// <p>如果注解的值未指定 Bean 名称，则将根据类的简称（首字母小写）构建合适的名称，除非前两个字母大写。
+// 例如：
+//
+// <pre class="code">com.xyz.FooServiceImpl -> fooServiceImpl</pre>
+// <pre class="code">com.xyz.URLFooServiceImpl -> URLFooServiceImpl</pre>
 public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 
 	/**
@@ -85,6 +97,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * as used for component scanning purposes.
 	 * @since 5.2
 	 */
+	// 默认 {@code AnnotationBeanNameGenerator} 实例的便捷常量，用于组件扫描目的。
 	public static final AnnotationBeanNameGenerator INSTANCE = new AnnotationBeanNameGenerator();
 
 	private static final String COMPONENT_ANNOTATION_CLASSNAME = "org.springframework.stereotype.Component";
@@ -101,6 +114,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * @since 6.1
 	 * @see #determineBeanNameFromAnnotation(AnnotatedBeanDefinition)
 	 */
+	// 设置用于跟踪哪些构造型注释已经被检查过，以查看它们是否对 {@code @Component} 中的 {@code value} 属性使用基于约定的覆盖。
 	private static final Set<String> conventionBasedStereotypeCheckCache = ConcurrentHashMap.newKeySet();
 
 	private final Map<String, Set<String>> metaAnnotationTypesCache = new ConcurrentHashMap<>();
@@ -125,6 +139,9 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * @param annotatedDef the annotation-aware bean definition
 	 * @return the bean name, or {@code null} if none is found
 	 */
+	// 从类上的某个注解中获取 bean 的名称。
+	// @param annotatedDef 支持注解的 bean 定义
+	// @return bean 的名称，如果未找到，则返回 {@code null}
 	@Nullable
 	protected String determineBeanNameFromAnnotation(AnnotatedBeanDefinition annotatedDef) {
 		AnnotationMetadata metadata = annotatedDef.getMetadata();
@@ -201,6 +218,11 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * @since 6.1
 	 * @see org.springframework.stereotype.Component#value()
 	 */
+	// 获取底层类的显式 bean 名称，通过 {@link org.springframework.stereotype.Component @Component} 配置，
+	// 并考虑 {@link org.springframework.core.annotation.AliasFor @AliasFor} 语义，
+	// 用于注释属性覆盖 {@code @Component} 的 {@code value} 属性。
+	// @param metadata 底层类的 {@link AnnotationMetadata}
+	// @return 显式 bean 名称，如果未找到，则返回 {@code null}
 	@Nullable
 	private String getExplicitBeanName(AnnotationMetadata metadata) {
 		List<String> names = metadata.getAnnotations().stream(COMPONENT_ANNOTATION_CLASSNAME)
@@ -228,6 +250,11 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * @param attributes the map of attributes for the given annotation
 	 * @return whether the annotation qualifies as a stereotype with component name
 	 */
+	// 检查给定注解是否为允许通过其 {@code value()} 属性建议组件名称的构造型。
+	// @param commentType 要检查的注解类的名称
+	// @param metaAnnotationTypes 给定注解上的元注解名称
+	// @param attribute 给定注解的属性映射
+	// @return 该注解是否符合具有组件名称的构造型
 	protected boolean isStereotypeWithNameValue(String annotationType,
 			Set<String> metaAnnotationTypes, Map<String, Object> attributes) {
 
@@ -247,6 +274,11 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * @param registry the registry that the given bean definition is being registered with
 	 * @return the default bean name (never {@code null})
 	 */
+	// 从给定的 bean 定义中获取一个默认的 bean 名称。
+	// <p>默认实现委托给 {@link #buildDefaultBeanName(BeanDefinition)}。
+	// @param definition 需要为其构建 bean 名称的 bean 定义
+	// @param registry 指定 bean 定义正在注册的注册表
+	// @return 默认 bean 名称（永不为 {@code null}）
 	protected String buildDefaultBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
 		return buildDefaultBeanName(definition);
 	}
@@ -261,6 +293,12 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * @param definition the bean definition to build a bean name for
 	 * @return the default bean name (never {@code null})
 	 */
+	// 从给定的 bean 定义中获取一个默认的 bean 名称。
+	// <p>默认实现只是构建一个首字母大写的短类名：例如 “mypackage.MyJdbcDao”→“myJdbcDao”。
+	// <p>请注意，内部类的名称将采用 “outerClassName.InnerClassName” 的形式，
+	// 如果您通过名称自动装配，由于名称中含有句点，这可能会出现问题。
+	// @param definition 要为其构建 bean 名称的 bean 定义
+	// @return 默认 bean 名称（永不返回 {@code null}）
 	protected String buildDefaultBeanName(BeanDefinition definition) {
 		String beanClassName = definition.getBeanClassName();
 		Assert.state(beanClassName != null, "No bean class name set");
@@ -273,6 +311,7 @@ public class AnnotationBeanNameGenerator implements BeanNameGenerator {
 	 * with an explicit alias configured via {@link AliasFor @AliasFor}.
 	 * @since 6.2.3
 	 */
+	// 确定所提供的注释类型是否声明了通过 {@link AliasFor @AliasFor} 配置的明确别名的 {@code value()} 属性。
 	private static boolean hasExplicitlyAliasedValueAttribute(Class<? extends Annotation> annotationType) {
 		Method valueAttribute = ReflectionUtils.findMethod(annotationType, MergedAnnotation.VALUE);
 		return (valueAttribute != null && valueAttribute.isAnnotationPresent(AliasFor.class));
