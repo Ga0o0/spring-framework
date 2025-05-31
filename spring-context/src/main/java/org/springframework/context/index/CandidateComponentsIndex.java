@@ -47,6 +47,15 @@ import org.springframework.util.MultiValueMap;
  * @since 5.0
  * @deprecated as of 6.1, in favor of the AOT engine.
  */
+// 提供对 {@code META-INF/spring.components} 中定义的候选对象的访问。
+//
+// <p>索引中可以注册（和查询）任意数量的构造型：一个典型的例子是用于标记特定用例的类的注解的完全限定名。
+// 以下调用返回 {@code com.example} 包（及其子包）的所有 {@code @Component} <b>候选</b> 类型：
+// <pre class="code">
+// Set<String> candidates = index.getCandidateTypes( "com.example", "org.springframework.stereotype.Component");
+// </pre>
+//
+// <p>{@code type} 通常是类的完全限定名，但这不是规则。同样，{@code stereotype} 通常是目标类型的完全限定名，但它实际上可以是任何标记。
 @Deprecated(since = "6.1", forRemoval = true)
 public class CandidateComponentsIndex {
 

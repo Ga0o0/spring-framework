@@ -103,6 +103,31 @@ import org.springframework.util.StringUtils;
  * @see java.lang.reflect.AnnotatedElement#getAnnotation(Class)
  * @see java.lang.reflect.AnnotatedElement#getDeclaredAnnotations()
  */
+// 用于处理注解、元注解、桥接方法（编译器为泛型声明生成）以及父方法（用于可选的<em>注解继承</em>）的通用实用方法。
+//
+// <p>请注意，此类的大多数功能并非由 JDK 的内省功能本身提供。
+//
+// <p>作为运行时保留的应用程序注解（例如，用于事务控制、授权或服务公开）的一般规则，
+// 请始终使用此类的查找方法（例如 {@link #findAnnotation(Method, Class)} 或 {@link #getAnnotation(Method, Class)}），而不是 JDK 中的普通注解查找方法。
+// 您仍然可以明确选择仅在给定类级别进行 <em>get</em> 查找 ({@link #getAnnotation(Method, Class)})
+// 还是在给定方法的整个继承层次结构中进行 <em>find</em> 查找 ({@link #findAnnotation(Method, Class)})。
+//
+// <h3>术语</h3>
+// 术语 <em>直接存在</em>、<em>间接存在</em> 和 <em>存在</em> 与 {@link AnnotatedElement}（在 Java 8 中）的类级 javadoc 中定义的含义相同。
+//
+// <p>如果某个注解被声明为某个其他注解的元注解，而该其他注解又<em>存在</em>于该元素上，则该注解在该元素上为 <em>元存在</em>。
+// 如果 {@code A} 在另一个注解上 <em>直接存在</em> 或 <em>以元方式存在</em>，则注解 {@code A} 在另一个注解上 <em>以元方式存在</em>。
+//
+// <h3>元注解支持</h3>
+// <p>此类中的大多数 {@code find()} 方法和一些 {@code get()} 方法都支持查找用作元注解的注解。有关详情，请参阅此类中每个方法的 javadoc。
+// 为了在 <em>组合注解</em> 中使用 <em>属性覆盖</em> 来获得对元注解的细粒度支持，请考虑使用 {@link AnnotatedElementUtils} 的更具体方法。
+//
+// <h3>属性别名</h3>
+// <p>此类中所有返回注解、注解数组或 {@link AnnotationAttributes} 的公共方法都透明地支持通过 {@link AliasFor @AliasFor} 配置的属性别名。
+// 有关详细信息，请参阅各种 {@code synthesizeAnnotation(..)} 方法。
+//
+// <h3>搜索范围</h3>
+// <p>此类中方法使用的搜索算法一旦找到指定类型的第一个注释，就会停止搜索注释。因此，其他指定类型的注释将被默默忽略。
 public abstract class AnnotationUtils {
 
 	/**
@@ -768,7 +793,13 @@ public abstract class AnnotationUtils {
 	 * @see Class#getAnnotations()
 	 * @see #getAnnotationAttributes(Annotation)
 	 */
+	// 检查给定注解的声明属性，尤其要考虑 Google App Engine 中 {@code TypeNotPresentExceptionProxy} 的延迟获取（而非早期的 {@code Class.getAnnotations() 失败）。
+	// <p>此方法未失败表明 {@link #getAnnotationAttributes(Annotation)} 也不会失败（稍后尝试时）。
+	// @param comment 要验证的注解
+	// @throws IllegalStateException 如果无法读取声明的 {@code Class} 属性
 	public static void validateAnnotation(Annotation annotation) {
+		// AttributeMethods.forAnnotationType() --> 获取指定注解类型的属性方法。
+		// validate(...) --> 检查给定注解的值是否可以安全访问，而不会引发任何 {@link TypeNotPresentException TypeNotPresentExceptions}。
 		AttributeMethods.forAnnotationType(annotation.annotationType()).validate(annotation);
 	}
 

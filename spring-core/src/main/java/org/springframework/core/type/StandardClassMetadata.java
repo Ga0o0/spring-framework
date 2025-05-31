@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 2.5
  */
+// {@link ClassMetadata} 实现使用标准反射来反省给定的 {@code Class}。
 public class StandardClassMetadata implements ClassMetadata {
 
 	private final Class<?> introspectedClass;
@@ -41,6 +42,9 @@ public class StandardClassMetadata implements ClassMetadata {
 	 * @param introspectedClass the Class to introspect
 	 * @deprecated since 5.2 in favor of {@link StandardAnnotationMetadata}
 	 */
+	// 为给定的类创建一个新的 StandardClassMetadata 包装器。
+	// @param introspectedClass 要自省的类
+	// @deprecated since 5.2，建议使用 {@link StandardAnnotationMetadata}
 	@Deprecated
 	public StandardClassMetadata(Class<?> introspectedClass) {
 		Assert.notNull(introspectedClass, "Class must not be null");
@@ -50,6 +54,7 @@ public class StandardClassMetadata implements ClassMetadata {
 	/**
 	 * Return the underlying Class.
 	 */
+	// 返回底层类。
 	public final Class<?> getIntrospectedClass() {
 		return this.introspectedClass;
 	}

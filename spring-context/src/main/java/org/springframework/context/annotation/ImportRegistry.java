@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @author Phillip Webb
  */
+// 导入类 {@link AnnotationMetadata} 的注册表。
 interface ImportRegistry {
 
 	@Nullable

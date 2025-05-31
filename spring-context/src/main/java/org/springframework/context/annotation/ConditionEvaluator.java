@@ -45,6 +45,7 @@ import org.springframework.util.MultiValueMap;
  * @author Juergen Hoeller
  * @since 4.0
  */
+// 用于评估 {@link Conditional} 注释的内部类。
 class ConditionEvaluator {
 
 	private final ConditionContextImpl context;
@@ -53,6 +54,7 @@ class ConditionEvaluator {
 	/**
 	 * Create a new {@link ConditionEvaluator} instance.
 	 */
+	// 创建一个新的 {@link ConditionEvaluator} 实例。
 	public ConditionEvaluator(@Nullable BeanDefinitionRegistry registry,
 			@Nullable Environment environment, @Nullable ResourceLoader resourceLoader) {
 
@@ -67,6 +69,10 @@ class ConditionEvaluator {
 	 * @param metadata the meta data
 	 * @return if the item should be skipped
 	 */
+	// 根据 {@code @Conditional} 注解确定是否应跳过某项。{@link ConfigurationPhase} 将根据项的类型推断出来
+	// （例如，{@code @Configuration} 类将是 {@link ConfigurationPhase#PARSE_CONFIGURATION}）
+	// @param metadata 元数据
+	// @return 是否应跳过该项
 	public boolean shouldSkip(AnnotatedTypeMetadata metadata) {
 		return shouldSkip(metadata, null);
 	}
@@ -77,6 +83,10 @@ class ConditionEvaluator {
 	 * @param phase the phase of the call
 	 * @return if the item should be skipped
 	 */
+	// 根据 {@code @Conditional} 注解确定是否应跳过某项。
+	// @param metadata 元数据
+	// @param phase 调用阶段
+	// @return 是否应跳过该项
 	public boolean shouldSkip(@Nullable AnnotatedTypeMetadata metadata, @Nullable ConfigurationPhase phase) {
 		if (metadata == null || !metadata.isAnnotated(Conditional.class.getName())) {
 			return false;
@@ -90,21 +100,25 @@ class ConditionEvaluator {
 			return shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN);
 		}
 
+		// 处理 @Conditional
 		List<Condition> conditions = new ArrayList<>();
+		// 获取 @Conditional 注解的属性 value 中的存储的 Class<? extends Condition>[]
 		for (String[] conditionClasses : getConditionClasses(metadata)) {
 			for (String conditionClass : conditionClasses) {
+				// 将给定的类名，使用类的 “主” 构造函数（对于 Kotlin 类，可能声明了默认参数）或其默认构造函数（对于常规 Java 类，需要标准的无参数设置）来实例化该类。
 				Condition condition = getCondition(conditionClass, this.context.getClassLoader());
 				conditions.add(condition);
 			}
 		}
 
-		AnnotationAwareOrderComparator.sort(conditions);
+		AnnotationAwareOrderComparator.sort(conditions); // 排序
 
 		for (Condition condition : conditions) {
 			ConfigurationPhase requiredPhase = null;
 			if (condition instanceof ConfigurationCondition configurationCondition) {
 				requiredPhase = configurationCondition.getConfigurationPhase();
 			}
+			// invoke Condition#matches()
 			if ((requiredPhase == null || requiredPhase == phase) && !condition.matches(this.context, metadata)) {
 				return true;
 			}
@@ -115,13 +129,16 @@ class ConditionEvaluator {
 
 	@SuppressWarnings("unchecked")
 	private List<String[]> getConditionClasses(AnnotatedTypeMetadata metadata) {
+		// 检索给定类型的所有注解的所有属性（如果有）（即，如果在底层元素上定义，则为直接注解或元注解）。
 		MultiValueMap<String, Object> attributes = metadata.getAllAnnotationAttributes(Conditional.class.getName(), true);
 		Object values = (attributes != null ? attributes.get("value") : null);
 		return (List<String[]>) (values != null ? values : Collections.emptyList());
 	}
 
 	private Condition getCondition(String conditionClassName, @Nullable ClassLoader classloader) {
+		// 将给定的类名解析为 Class 实例。
 		Class<?> conditionClass = ClassUtils.resolveClassName(conditionClassName, classloader);
+		// 使用类的 “主” 构造函数（对于 Kotlin 类，可能声明了默认参数）或其默认构造函数（对于常规 Java 类，需要标准的无参数设置）来实例化该类。
 		return (Condition) BeanUtils.instantiateClass(conditionClass);
 	}
 
@@ -129,6 +146,7 @@ class ConditionEvaluator {
 	/**
 	 * Implementation of a {@link ConditionContext}.
 	 */
+	// {@link ConditionContext} 的实现。
 	private static class ConditionContextImpl implements ConditionContext {
 
 		@Nullable

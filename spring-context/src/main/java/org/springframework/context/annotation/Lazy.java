@@ -61,6 +61,24 @@ import java.lang.annotation.Target;
  * @see Configuration
  * @see org.springframework.stereotype.Component
  */
+// 指示 Bean 是否延迟初始化。<
+//
+// p>可用于任何直接或间接使用 {@link org.springframework.stereotype.Component @Component} 注解的类，或使用 {@link Bean @Bean} 注解的方法。
+//
+// <p>如果 {@code @Component} 或 {@code @Bean} 定义中不存在此注解，则将进行即时初始化。如果存在且设置为 {@code true}，
+// 则 {@code @Bean} 或 {@code @Component} 将不会初始化，直到被其他 Bean 引用或从其所在的
+// {@link org.springframework.beans.factory.BeanFactory BeanFactory} 中显式获取。如果存在且设置为 {@code false}，
+// 则 Bean 将在启动时由执行单例即时初始化的 Bean 工厂实例化。
+//
+// <p>如果 {@link Configuration @Configuration} 类中存在 Lazy 属性，则表示该 {@code @Configuration} 类中的所有 {@code @Bean} 方法都应延迟初始化。
+// 如果在带有 {@code @Lazy} 注解的 {@code @Configuration} 类中的 {@code @Bean} 方法上存在 {@code @Lazy} 属性，且值为 {@code false}，
+// 则表示覆盖“默认延迟”行为，并表示该 Bean 应立即初始化。
+//
+// <p>除了用于组件初始化之外，此注解还可以放置在标有 {@link org.springframework.beans.factory.annotation.Autowired}
+// 或 {@link jakarta.inject.Inject} 的注入点上：在这种情况下，它将为所有受影响的依赖项创建延迟解析代理，
+// 作为使用 {@link org.springframework.beans.factory.ObjectFactory} 或 {@link jakarta.inject.Provider} 的替代方案。
+// 请注意，此类惰性解析代理始终会被注入；如果目标依赖项不存在，您只能通过调用异常来发现。
+// 因此，此类注入点会导致可选依赖项的行为不直观。如果您希望以编程方式实现更复杂的惰性引用，请考虑 {@link org.springframework.beans.factory.ObjectProvider}。
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -69,6 +87,7 @@ public @interface Lazy {
 	/**
 	 * Whether lazy initialization should occur.
 	 */
+	// 是否应该发生延迟初始化。
 	boolean value() default true;
 
 }

@@ -36,6 +36,7 @@ import org.springframework.util.StringUtils;
  * @since 6.0
  * @see PropertySourceDescriptor
  */
+// 在配置类上处理的 {@link PropertySource} 注册表。
 class PropertySourceRegistry {
 
 	private final PropertySourceProcessor propertySourceProcessor;
@@ -56,7 +57,7 @@ class PropertySourceRegistry {
 	 */
 	// 处理给定的 <code>@PropertySource</code> 注解元数据。
 	// @param propertySource 找到 <code>@PropertySource</code> 注解的元数据
-	// 如果加载属性源失败，则抛出 @throws IOException
+	// @throws IOException 如果加载属性源失败
 	void processPropertySource(AnnotationAttributes propertySource) throws IOException {
 		String name = propertySource.getString("name");
 		if (!StringUtils.hasLength(name)) {
@@ -67,7 +68,7 @@ class PropertySourceRegistry {
 			encoding = null;
 		}
 		String[] locations = propertySource.getStringArray("value");
-		Assert.isTrue(locations.length > 0, "At least one @PropertySource(value) location is required");
+		Assert.isTrue(locations.length > 0, "At least one @PropertySource(value) location is required"); // 至少需要一个 @PropertySource(value) 位置
 		boolean ignoreResourceNotFound = propertySource.getBoolean("ignoreResourceNotFound");
 
 		Class<? extends PropertySourceFactory> factoryClass = propertySource.getClass("factory");
@@ -76,6 +77,7 @@ class PropertySourceRegistry {
 		// PropertySourceDescriptor：{@link org.springframework.core.env.PropertySource PropertySource} 的描述符。
 		PropertySourceDescriptor descriptor = new PropertySourceDescriptor(Arrays.asList(locations),
 				ignoreResourceNotFound, name, factoryClassToUse, encoding);
+		// 针对此实例管理的环境，处理指定的 {@link PropertySourceDescriptor}。
 		this.propertySourceProcessor.processPropertySource(descriptor);
 		this.descriptors.add(descriptor);
 	}

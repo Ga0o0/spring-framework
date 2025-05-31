@@ -41,6 +41,7 @@ import org.springframework.util.Assert;
  * @author Phillip Webb
  * @since 4.3.3
  */
+// 用于处理解析器策略的通用委托代码，例如 {@code TypeFilter}、{@code ImportSelector}、{@code ImportBeanDefinitionRegistrar}
 abstract class ParserStrategyUtils {
 
 	/**
@@ -51,6 +52,9 @@ abstract class ParserStrategyUtils {
 	 * invoked if they are implemented by the given object.
 	 * @since 5.2
 	 */
+	// 使用适当的构造函数实例化一个类，并将新实例作为指定的可赋值类型返回。
+	// 如果给定对象实现了 {@link BeanClassLoaderAware}、{@link BeanFactoryAware}、
+	// {@link EnvironmentAware} 和 {@link ResourceLoaderAware} 契约，则返回的实例将调用这些契约。
 	@SuppressWarnings("unchecked")
 	static <T> T instantiateClass(Class<?> clazz, Class<T> assignableTo, Environment environment,
 			ResourceLoader resourceLoader, BeanDefinitionRegistry registry) {

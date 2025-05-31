@@ -33,6 +33,7 @@ import org.springframework.lang.Nullable;
  * @see ConfigurationClassParser
  * @see ConfigurationClassBeanDefinitionReader
  */
+// 表示用 {@link Bean @Bean} 注释的 {@link Configuration @Configuration} 类方法。
 final class BeanMethod extends ConfigurationMethod {
 
 	BeanMethod(MethodMetadata metadata, ConfigurationClass configurationClass) {

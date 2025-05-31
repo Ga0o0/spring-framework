@@ -28,11 +28,14 @@ import org.springframework.core.type.AnnotationMetadata;
  * @author Chris Beams
  * @since 3.1
  */
+// 任何 @{@link Configuration} 类都需要实现此接口，以便将其与导入它的 @{@code Configuration} 类的 {@link AnnotationMetadata} 进行注入。
+// 与使用 @{@link Import} 作为元注解的注解配合使用时非常有用。
 public interface ImportAware extends Aware {
 
 	/**
 	 * Set the annotation metadata of the importing @{@code Configuration} class.
 	 */
+	// 设置导入 @{@code Configuration} 类的注解元数据。
 	void setImportMetadata(AnnotationMetadata importMetadata);
 
 }

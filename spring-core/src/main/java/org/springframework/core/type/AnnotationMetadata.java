@@ -37,6 +37,7 @@ import org.springframework.core.annotation.MergedAnnotations;
  * @see org.springframework.core.type.classreading.MetadataReader#getAnnotationMetadata()
  * @see AnnotatedTypeMetadata
  */
+// 以不需要加载该类的形式定义对特定类的注释的抽象访问的接口。
 public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata {
 
 	/**
@@ -44,6 +45,9 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * <em>directly present</em> on the underlying class.
 	 * @return the annotation type names
 	 */
+	// 获取底层类中给定注解类型上所有<em>存在</em>的元注解类型的完全限定类名。
+	// @param commentName 要查找元注解的注解类型的完全限定类名
+	// @return 元注解类型名称，如果未找到则返回空集。
 	default Set<String> getAnnotationTypes() {
 		return getAnnotations().stream()
 				.filter(MergedAnnotation::isDirectlyPresent)
@@ -75,6 +79,9 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * type to look for
 	 * @return {@code true} if a matching annotation is directly present
 	 */
+	// 判断给定类型的注解是否<em>直接</em>存在于底层类中。
+	// @param commentName 要查找的注解类型的完全限定类名
+	// @return {@code true} 如果匹配的注解直接存在
 	default boolean hasAnnotation(String annotationName) {
 		return getAnnotations().isDirectlyPresent(annotationName);
 	}
@@ -86,6 +93,9 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * meta-annotation type to look for
 	 * @return {@code true} if a matching meta-annotation is present
 	 */
+	// 判断底层类是否具有一个注解，该注解本身也使用了给定类型的元注解。
+	// @param metaAnnotationName 要查找的元注解类型的完全限定类名
+	// @return {@code true} 如果存在匹配的元注解
 	default boolean hasMetaAnnotation(String metaAnnotationName) {
 		return getAnnotations().get(metaAnnotationName,
 				MergedAnnotation::isMetaPresent).isPresent();
@@ -97,6 +107,8 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * @param annotationName the fully-qualified class name of the annotation
 	 * type to look for
 	 */
+	// 确定底层类是否具有任何使用给定注解类型注解（或元注解）的方法。
+	// @param commentName 要查找的注解类型的完全限定类名
 	default boolean hasAnnotatedMethods(String annotationName) {
 		return !getAnnotatedMethods(annotationName).isEmpty();
 	}
@@ -112,6 +124,10 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * annotation. The return value will be an empty set if no methods match
 	 * the annotation type.
 	 */
+	// 检索所有使用指定注解类型注解（或元注解）的方法的元数据。
+	// <p>对于任何返回的方法，{@link MethodMetadata#isAnnotated} 将针对给定的注解类型返回 {@code true}。
+	// @param commentName 要查找的注解类型的完全限定类名
+	// @return 具有匹配注解的方法的 {@link MethodMetadata} 集合。如果没有方法与注解类型匹配，则返回值为空集。
 	Set<MethodMetadata> getAnnotatedMethods(String annotationName);
 
 	/**
@@ -120,6 +136,8 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * @return a set of {@link MethodMetadata}
 	 * @since 6.0
 	 */
+	// 检索底层类中所有用户声明的方法的元数据，尽可能保留声明顺序。
+	// @return 一组 {@link MethodMetadata}
 	Set<MethodMetadata> getDeclaredMethods();
 
 
@@ -130,6 +148,9 @@ public interface AnnotationMetadata extends ClassMetadata, AnnotatedTypeMetadata
 	 * @return a new {@link AnnotationMetadata} instance
 	 * @since 5.2
 	 */
+	// 工厂方法，使用标准反射为给定类创建新的 {@link AnnotationMetadata} 实例。
+	// @param type 需要自省的类
+	// @return 一个新的 {@link AnnotationMetadata} 实例
 	static AnnotationMetadata introspect(Class<?> type) {
 		return StandardAnnotationMetadata.from(type);
 	}

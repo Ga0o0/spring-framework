@@ -56,6 +56,22 @@ import java.lang.annotation.Target;
  * @since 4.0
  * @see Condition
  */
+// 表示组件仅在所有 {@linkplain #value 指定的条件} 均满足时才有资格注册。
+//
+// <p><em>条件</em> 是指在 Bean 定义注册之前可以通过编程方式确定的任何状态（详情请参阅 {@link Condition}）。
+//
+// <p>{@code @Conditional} 批注可以按以下任一方式使用：
+// <ul>
+// <li>作为直接或间接使用 {@code @Component} 批注的任何类上的类型级别批注，包括 {@link Configuration @Configuration} 类</li>
+// <li>作为元批注，用于组成自定义构造型批注</li> <li>作为任何 {@link Bean @Bean} 方法上的方法级别批注</li>
+// </ul>
+//
+// <p>如果 {@code @Configuration} 类标有 {@code @Conditional}，
+// 则与该类关联的所有 {@code @Bean} 方法、{@link Import @Import} 批注和 {@link ComponentScan @ComponentScan} 批注都将受条件约束。
+//
+// <p><strong>注意</strong>：不支持继承 {@code @Conditional} 批注；不会考虑来自超类或重写方法的任何条件。
+// 为了强制执行这些语义，{@code @Conditional} 本身未声明为 {@link java.lang.annotation.Inherited @Inherited}；
+// 此外，任何使用 {@code @Conditional} 进行元注释的自定义<em>组合注释</em>都不能声明为 {@code @Inherited}。
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -65,6 +81,7 @@ public @interface Conditional {
 	 * All {@link Condition} classes that must {@linkplain Condition#matches match}
 	 * in order for the component to be registered.
 	 */
+	// 所有 {@link Condition} 类必须 {@linkplain Condition#matches match} 才能注册该组件。
 	Class<? extends Condition>[] value();
 
 }

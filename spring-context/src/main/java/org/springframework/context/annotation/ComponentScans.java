@@ -34,6 +34,10 @@ import java.lang.annotation.Target;
  * @since 4.3
  * @see ComponentScan
  */
+// 聚合多个 {@link ComponentScan} 注解的容器注解。
+//
+// <p>可原生使用，声明多个嵌套的 {@link ComponentScan} 注解。也可与 Java 8 对可重复注解的支持结合使用，
+// 只需在同一方法上声明多次 {@link ComponentScan}，即可隐式生成此容器注解。
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented

@@ -338,6 +338,14 @@ public abstract class ClassUtils {
 	 * for a superclass or interface implemented by the class to be loaded here)
 	 * @see #forName(String, ClassLoader)
 	 */
+	// 将给定的类名解析为 Class 实例。支持原语（例如“int”）和数组类名（例如“String[]”）。
+	// <p>这实际上等同于具有相同参数的 {@code forName} 方法，唯一的区别是类加载失败时会抛出异常。
+	// @param className 类的名称
+	// @param classLoader 使用的类加载器（可以为 {@code null}，表示使用默认类加载器）
+	// @return 返回指定名称的类实例
+	// @throws IllegalArgumentException 如果类名不可解析（即找不到该类或无法加载类文件）
+	// @throws IllegalStateException 如果对应的类可解析，但类的继承层次结构存在可读性不匹配的情况（通常是 Jigsaw 模块定义中缺少要在此处加载的类实现的超类或接口的依赖声明）
+	// @see #forName(String, ClassLoader)
 	public static Class<?> resolveClassName(String className, @Nullable ClassLoader classLoader)
 			throws IllegalArgumentException {
 
@@ -987,6 +995,9 @@ public abstract class ClassUtils {
 	 * @param instance the instance to check
 	 * @return the user-defined class
 	 */
+	// 返回给定实例的用户定义类：通常只是给定实例的类，但如果是 CGLIB 生成的子类，则返回原始类。
+	// @param 实例 要检查的实例
+	// @return 用户定义类
 	public static Class<?> getUserClass(Object instance) {
 		Assert.notNull(instance, "Instance must not be null");
 		return getUserClass(instance.getClass());
@@ -1297,6 +1308,10 @@ public abstract class ClassUtils {
 	 * @param methodName the name of the method
 	 * @return the number of methods with the given name
 	 */
+	// 返回给定类及其父类中具有给定名称（参数类型任意）的方法数量。包含非公共方法。
+	// @param clazz 要检查的 clazz
+	// @param methodName 方法的名称
+	// @return 具有给定名称的方法数量
 	public static int getMethodCountForName(Class<?> clazz, String methodName) {
 		Assert.notNull(clazz, "Class must not be null");
 		Assert.notNull(methodName, "Method name must not be null");

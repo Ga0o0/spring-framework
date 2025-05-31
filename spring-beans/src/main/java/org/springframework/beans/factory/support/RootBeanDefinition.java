@@ -303,6 +303,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	/**
 	 * Register a target definition that is being decorated by this bean definition.
 	 */
+	// 注册一个被这个 bean 定义装饰的目标定义。
 	public void setDecoratedDefinition(@Nullable BeanDefinitionHolder decoratedDefinition) {
 		this.decoratedDefinition = decoratedDefinition;
 	}
@@ -423,6 +424,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	/**
 	 * Specify a factory method name that refers to a non-overloaded method.
 	 */
+	// 指定引用非重载方法的工厂方法名称。
 	public void setUniqueFactoryMethodName(String name) {
 		Assert.hasText(name, "Factory method name must not be empty");
 		setFactoryMethodName(name);
@@ -451,6 +453,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	 * @param method the resolved factory method, or {@code null} to reset it
 	 * @since 5.2
 	 */
+	// 为该 bean 定义中的工厂方法设置一个已解析的 Java 方法。
+	// @param method 已解析的工厂方法，或 {@code null} 重置它
 	public void setResolvedFactoryMethod(@Nullable Method method) {
 		this.factoryMethodToIntrospect = method;
 		if (method != null) {

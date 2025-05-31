@@ -93,16 +93,20 @@ public class PropertySourceProcessor {
 
 		for (String location : locations) {
 			try {
+				// 解析给定文本中的 ${...} 占位符，并将其替换为通过 {@link #getProperty} 解析的相应属性值。
 				String resolvedLocation = this.environment.resolveRequiredPlaceholders(location);
+				// 将给定的位置模式解析为 {@code Resource} 对象。
 				for (Resource resource : this.resourcePatternResolver.getResources(resolvedLocation)) {
 					addPropertySource(factory.createPropertySource(name, new EncodedResource(resource, encoding)));
 				}
 			}
 			catch (RuntimeException | IOException ex) {
 				// Placeholders not resolvable (IllegalArgumentException) or resource not found when trying to open it
+				// --> 译文：占位符无法解析（IllegalArgumentException）或尝试打开时未找到资源
 				if (ignoreResourceNotFound && (ex instanceof IllegalArgumentException || isIgnorableException(ex) ||
 						isIgnorableException(ex.getCause()))) {
 					if (logger.isInfoEnabled()) {
+						// 属性位置 “location” 无法解析
 						logger.info("Properties location [" + location + "] not resolvable: " + ex.getMessage());
 					}
 				}

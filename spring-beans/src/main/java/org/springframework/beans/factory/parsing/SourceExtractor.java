@@ -34,6 +34,10 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.BeanMetadataElement#getSource()
  * @see org.springframework.beans.factory.config.BeanDefinition
  */
+// 简单的策略允许工具控制如何将源元数据附加到 Bean 定义元数据。
+//
+// <p>配置解析器<strong>可能</strong>提供在解析阶段附加源元数据的功能。它们将以通用格式提供此元数据，
+// 该格式可在附加到 Bean 定义元数据之前由 {@link SourceExtractor} 进一步修改。
 @FunctionalInterface
 public interface SourceExtractor {
 
@@ -45,6 +49,10 @@ public interface SourceExtractor {
 	 * (may be {@code null})
 	 * @return the source metadata object to store (may be {@code null})
 	 */
+	// 从配置解析器提供的候选对象中提取源元数据。
+	// @param sourceCandidate 原始源元数据（永不为 null）
+	// @param definingResource 定义给定源对象的资源（可能为 null）
+	// @return 要存储的源元数据对象（可能为 null）
 	@Nullable
 	Object extractSource(Object sourceCandidate, @Nullable Resource definingResource);
 

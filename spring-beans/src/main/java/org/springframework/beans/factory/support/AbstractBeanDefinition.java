@@ -506,6 +506,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #setBeanClass(Class)
 	 * @see #resolveBeanClass(ClassLoader)
 	 */
+	// 返回此定义是否指定了一个 bean 类。
 	public boolean hasBeanClass() {
 		return (this.beanClass instanceof Class);
 	}
@@ -549,6 +550,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #SCOPE_SINGLETON
 	 * @see #SCOPE_PROTOTYPE
 	 */
+	// 设置 Bean 的目标作用域名称。
+	// <p>默认为单例状态，但这仅在 Bean 定义在包含工厂中处于活动状态时才会应用。
+	// Bean 定义最终可能会从父 Bean 定义继承其作用域。因此，默认作用域名称为空字符串（即 {@code ""}），在设置已解析的作用域之前，将假定其为单例状态。
 	@Override
 	public void setScope(@Nullable String scope) {
 		this.scope = scope;
@@ -650,6 +654,9 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #AUTOWIRE_CONSTRUCTOR
 	 * @see #AUTOWIRE_AUTODETECT
 	 */
+	// 设置自动装配模式。这决定了是否会对 bean 引用进行任何自动检测和设置。
+	// 默认值为 AUTOWIRE_NO，这意味着不会进行基于约定的名称或类型的自动装配（但是，仍然可以进行显式的注解驱动的自动装配）。
+	// @param autowireMode 要设置的自动装配模式。必须是此类中定义的常量之一。
 	public void setAutowireMode(int autowireMode) {
 		this.autowireMode = autowireMode;
 	}
@@ -804,6 +811,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Copy the qualifiers from the supplied AbstractBeanDefinition to this bean definition.
 	 * @param source the AbstractBeanDefinition to copy from
 	 */
+	// 将限定符从提供的 AbstractBeanDefinition 复制到此 Bean 定义。
+	// @param source 要从中复制的 AbstractBeanDefinition
 	public void copyQualifiersFrom(AbstractBeanDefinition source) {
 		Assert.notNull(source, "Source must not be null");
 		this.qualifiers.putAll(source.qualifiers);
@@ -906,6 +915,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/**
 	 * Return a factory method, if any.
 	 */
+	// 如果有的话，返回工厂方法。
 	@Override
 	@Nullable
 	public String getFactoryMethodName() {
@@ -981,6 +991,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * container. This will be empty if there are no method overrides.
 	 * <p>Never returns {@code null}.
 	 */
+	// 返回 IoC 容器将要重写的方法的信息。如果没有方法重写，则返回空。
+	// <p>永不返回 {@code null}。
 	public MethodOverrides getMethodOverrides() {
 		return this.methodOverrides;
 	}
@@ -989,6 +1001,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Return if there are method overrides defined for this bean.
 	 * @since 5.0.2
 	 */
+	// 如果此 bean 定义了方法覆盖，则返回。
 	public boolean hasMethodOverrides() {
 		return !this.methodOverrides.isEmpty();
 	}
@@ -1165,6 +1178,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Set the resource that this bean definition came from
 	 * (for the purpose of showing context in case of errors).
 	 */
+	// 设置此 bean 定义来自的资源（用于在出现错误时显示上下文）。
 	public void setResource(@Nullable Resource resource) {
 		this.resource = resource;
 	}
@@ -1198,6 +1212,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/**
 	 * Set the originating (e.g. decorated) BeanDefinition, if any.
 	 */
+	// 如果有的话，设置原始（例如装饰）BeanDefinition。
 	public void setOriginatingBeanDefinition(BeanDefinition originatingBd) {
 		this.resource = new BeanDefinitionResource(originatingBd);
 	}
@@ -1218,14 +1233,17 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Validate this bean definition.
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
+	// 验证此 bean 定义。
+	// 如果验证失败，则抛出 BeanDefinitionValidationException
 	public void validate() throws BeanDefinitionValidationException {
 		if (hasMethodOverrides() && getFactoryMethodName() != null) {
+			// 不能将工厂方法与容器生成的方法覆盖相结合：工厂方法必须创建具体的 bean 实例。
 			throw new BeanDefinitionValidationException(
 					"Cannot combine factory method with container-generated method overrides: " +
 					"the factory method must create the concrete bean instance.");
 		}
-		if (hasBeanClass()) {
-			prepareMethodOverrides();
+		if (hasBeanClass()) { // 返回此定义是否指定了一个 bean 类。
+			prepareMethodOverrides(); // 验证并准备为此 bean 定义的方法覆盖。检查是否存在具有指定名称的方法。
 		}
 	}
 
@@ -1234,8 +1252,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Checks for existence of a method with the specified name.
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
+	// 验证并准备为此 bean 定义的方法覆盖。检查是否存在具有指定名称的方法。
+	// 如果验证失败，则抛出 BeanDefinitionValidationException
 	public void prepareMethodOverrides() throws BeanDefinitionValidationException {
 		// Check that lookup methods exist and determine their overloaded status.
+		// --> 译文：检查查找方法是否存在并确定其重载状态。
 		if (hasMethodOverrides()) {
 			getMethodOverrides().getOverrides().forEach(this::prepareMethodOverride);
 		}
@@ -1248,15 +1269,20 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @param mo the MethodOverride object to validate
 	 * @throws BeanDefinitionValidationException in case of validation failure
 	 */
+	// 验证并准备给定的方法重写。检查是否存在指定名称的方法，如果未找到，则将其标记为未重载。
+	// @param mo 待验证的 MethodOverride 对象
+	// @throws BeanDefinitionValidationException 如果验证失败
 	protected void prepareMethodOverride(MethodOverride mo) throws BeanDefinitionValidationException {
 		int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
 		if (count == 0) {
+			// 无效的方法覆盖：没有同名的方法
 			throw new BeanDefinitionValidationException(
 					"Invalid method override: no method with name '" + mo.getMethodName() +
 					"' on class [" + getBeanClassName() + "]");
 		}
 		else if (count == 1) {
 			// Mark override as not overloaded, to avoid the overhead of arg type checking.
+			// --> 译文：将覆盖标记为未重载，以避免参数类型检查的开销。
 			mo.setOverloaded(false);
 		}
 	}

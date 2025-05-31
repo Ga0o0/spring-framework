@@ -50,6 +50,18 @@ import java.lang.annotation.Target;
  * @see ImportBeanDefinitionRegistrar
  * @see ImportResource
  */
+// 指示要导入的一个或多个<em>组件类</em> - 通常是 {@link Configuration @Configuration} 类。
+//
+// <p>提供与 Spring XML 中的 {@code <import/>} 元素等效的功能。
+// 允许导入 {@code @Configuration} 类、{@link ImportSelector} 和 {@link ImportBeanDefinitionRegistrar} 实现，
+// 以及常规组件类（从 4.2 开始；类似于 {@link AnnotationConfigApplicationContext#register}）。
+//
+// <p>在导入的 {@code @Configuration} 类中声明的 {@code @Bean} 定义应通过 {@link org.springframework.beans.factory.annotation.Autowired @Autowired} 注入来访问。
+// Bean 本身可以自动装配，也可以声明该 Bean 的配置类实例可以自动装配。后一种方法允许在 {@code @Configuration} 类方法之间进行显式的、IDE 友好的导航。
+//
+// <p>可以在类级别声明，也可以作为元注解声明。
+//
+// <p>如果需要导入 XML 或其他非 {@code @Configuration} bean 定义资源，请改用 {@link ImportResource @ImportResource} 注解。
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -59,6 +71,7 @@ public @interface Import {
 	 * {@link Configuration @Configuration}, {@link ImportSelector},
 	 * {@link ImportBeanDefinitionRegistrar}, or regular component classes to import.
 	 */
+	// {@link Configuration @Configuration}、{@link ImportSelector}、{@link ImportBeanDefinitionRegistrar} 或要导入的常规组件类。
 	Class<?>[] value();
 
 }

@@ -46,6 +46,9 @@ import org.springframework.util.Assert;
  * @since 3.0
  * @see AnnotationConfigApplicationContext#register
  */
+// 便捷的适配器，用于以编程方式注册 Bean 类。
+//
+// <p>这是 {@link ClassPathBeanDefinitionScanner} 的替代方案，应用相同的注解解析，但仅适用于显式注册的类。
 public class AnnotatedBeanDefinitionReader {
 
 	private final BeanDefinitionRegistry registry;

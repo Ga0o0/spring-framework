@@ -47,6 +47,8 @@ import org.springframework.util.ClassUtils;
  * @see BeanMethod
  * @see ConfigurationClassParser
  */
+// 表示用户定义的 {@link Configuration @Configuration} 类。
+// <p>以“扁平化”的方式包含一组 {@link Bean} 方法，其中包括在该类的祖先中定义的所有此类方法。
 final class ConfigurationClass {
 
 	private final AnnotationMetadata metadata;
@@ -74,6 +76,9 @@ final class ConfigurationClass {
 	 * @param metadataReader reader used to parse the underlying {@link Class}
 	 * @param beanName must not be {@code null}
 	 */
+	// 使用给定名称创建一个新的 {@link ConfigurationClass}。
+	// @param metadataReader 用于解析底层 {@link Class} 的读取器
+	// @param beanName 不能为 {@code null}
 	ConfigurationClass(MetadataReader metadataReader, String beanName) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		this.metadata = metadataReader.getAnnotationMetadata();
@@ -126,6 +131,9 @@ final class ConfigurationClass {
 	 * @param metadata the metadata for the underlying class to represent
 	 * @param beanName name of the {@code @Configuration} class bean
 	 */
+	// 使用给定名称创建一个新的 {@link ConfigurationClass}。
+	// @param metadata 表示底层类的元数据
+	// @param beanName {@code @Configuration} 类 bean 的名称
 	ConfigurationClass(AnnotationMetadata metadata, String beanName) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		this.metadata = metadata;
@@ -161,6 +169,7 @@ final class ConfigurationClass {
 	 * @since 3.1.1
 	 * @see #getImportedBy()
 	 */
+	// 返回此配置类是通过 @{@link Import} 注册的还是由于嵌套在另一个配置类中而自动注册的。
 	boolean isImported() {
 		return !this.importedBy.isEmpty();
 	}
@@ -169,6 +178,7 @@ final class ConfigurationClass {
 	 * Merge the imported-by declarations from the given configuration class into this one.
 	 * @since 4.0.5
 	 */
+	// 将给定配置类中的导入声明合并到此配置类中。
 	void mergeImportedBy(ConfigurationClass otherConfigClass) {
 		this.importedBy.addAll(otherConfigClass.importedBy);
 	}
@@ -220,6 +230,7 @@ final class ConfigurationClass {
 		Map<String, Object> attributes = this.metadata.getAnnotationAttributes(Configuration.class.getName());
 
 		// A configuration class may not be final (CGLIB limitation) unless it declares proxyBeanMethods=false
+		// --> 译文：配置类可能不是最终的（CGLIB 限制），除非它声明 proxyBeanMethods=false
 		if (attributes != null && (Boolean) attributes.get("proxyBeanMethods")) {
 			if (hasNonStaticBeanMethods() && this.metadata.isFinal()) {
 				problemReporter.error(new FinalConfigurationProblem());
@@ -230,6 +241,7 @@ final class ConfigurationClass {
 		}
 
 		// A configuration class may not contain overloaded bean methods unless it declares enforceUniqueMethods=false
+		// --> 译文：配置类不能包含重载的 bean 方法，除非它声明了 enforceUniqueMethods=false
 		if (attributes != null && (Boolean) attributes.get("enforceUniqueMethods")) {
 			Map<String, MethodMetadata> beanMethodsByName = new LinkedHashMap<>();
 			for (BeanMethod beanMethod : this.beanMethods) {

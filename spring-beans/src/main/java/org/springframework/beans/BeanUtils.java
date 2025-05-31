@@ -129,6 +129,11 @@ public abstract class BeanUtils {
 	 * from the constructor invocation itself.
 	 * @see Constructor#newInstance
 	 */
+	// 使用类的 “主” 构造函数（对于 Kotlin 类，可能声明了默认参数）或其默认构造函数（对于常规 Java 类，需要标准的无参数设置）来实例化该类。
+	// <p>请注意，如果给定了不可访问（即非公共）的构造函数，则此方法会尝试将构造函数设置为可访问。
+	// @param clazz 要实例化的类@return 新实例
+	// @throws BeanInstantiationException 如果无法实例化该 Bean。原因可能特别表明如果未找到主/默认构造函数则为 {@link NoSuchMethodException}，
+	// 如果类定义无法解析（例如由于运行时缺少依赖项），则为 {@link NoClassDefFoundError} 或其他 {@link LinkageError}，或者从构造函数调用本身抛出异常。
 	public static <T> T instantiateClass(Class<T> clazz) throws BeanInstantiationException {
 		Assert.notNull(clazz, "Class must not be null");
 		if (clazz.isInterface()) {

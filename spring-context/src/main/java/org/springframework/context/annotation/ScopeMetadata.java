@@ -32,6 +32,9 @@ import org.springframework.util.Assert;
  * @see ScopeMetadataResolver
  * @see ScopedProxyMode
  */
+// 描述 Spring 管理的 Bean 的作用域特征，包括作用域名称和作用域代理行为。
+//
+// <p>默认作用域为“单例”，并且默认<i>不</i>创建作用域代理。
 public class ScopeMetadata {
 
 	private String scopeName = BeanDefinition.SCOPE_SINGLETON;
@@ -42,6 +45,7 @@ public class ScopeMetadata {
 	/**
 	 * Set the name of the scope.
 	 */
+	// 设置作用域的名称。
 	public void setScopeName(String scopeName) {
 		Assert.notNull(scopeName, "'scopeName' must not be null");
 		this.scopeName = scopeName;
@@ -50,6 +54,7 @@ public class ScopeMetadata {
 	/**
 	 * Get the name of the scope.
 	 */
+	// 获取作用域的名称。
 	public String getScopeName() {
 		return this.scopeName;
 	}
@@ -57,6 +62,7 @@ public class ScopeMetadata {
 	/**
 	 * Set the proxy-mode to be applied to the scoped instance.
 	 */
+	// 设置要应用于作用域实例的代理模式。
 	public void setScopedProxyMode(ScopedProxyMode scopedProxyMode) {
 		Assert.notNull(scopedProxyMode, "'scopedProxyMode' must not be null");
 		this.scopedProxyMode = scopedProxyMode;
@@ -65,6 +71,7 @@ public class ScopeMetadata {
 	/**
 	 * Get the proxy-mode to be applied to the scoped instance.
 	 */
+	// 获取要应用于作用域实例的代理模式。
 	public ScopedProxyMode getScopedProxyMode() {
 		return this.scopedProxyMode;
 	}

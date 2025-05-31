@@ -236,6 +236,10 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 	 * @throws IllegalArgumentException if the attribute does not exist or
 	 * if it is not of the expected type
 	 */
+	// 获取指定 {@code attributeName} 下存储的值，以枚举形式呈现。
+	// @param attributeName 要获取的属性名称；不能为 {@code null} 或空
+	// @return 属性值
+	// @throws IllegalArgumentException 如果属性不存在或类型不符合预期
 	@SuppressWarnings("unchecked")
 	public <E extends Enum<?>> E getEnum(String attributeName) {
 		return (E) getRequiredAttribute(attributeName, Enum.class);
@@ -416,6 +420,10 @@ public class AnnotationAttributes extends LinkedHashMap<String, Object> {
 	 * to the {@link #AnnotationAttributes(Map)} constructor.
 	 * @param map original source of annotation attribute <em>key-value</em> pairs
 	 */
+	// 根据给定的映射返回一个 {@link AnnotationAttributes} 实例。
+	// <p>如果该映射已经是一个 {@code AnnotationAttributes} 实例，则会立即强制转换并返回，而不会创建新实例。
+	// 否则，将通过将提供的映射传递给 {@link #AnnotationAttributes(Map)} 构造函数来创建一个新实例。
+	// @param map 注释属性 <em>键值</em> 对的原始来源
 	@Nullable
 	public static AnnotationAttributes fromMap(@Nullable Map<String, Object> map) {
 		if (map == null) {

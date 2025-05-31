@@ -34,9 +34,11 @@ import org.springframework.util.StringUtils;
  * @author Juergen Hoeller
  * @since 2.5.2
  */
+// {@link BeanDefinitionRegistry} 接口的简单实现。仅提供注册功能，不内置工厂功能。例如，可用于测试 Bean 定义读取器。
 public class SimpleBeanDefinitionRegistry extends SimpleAliasRegistry implements BeanDefinitionRegistry {
 
 	/** Map of bean definition objects, keyed by bean name. */
+	// Bean 定义对象的映射，以 Bean 名称为键。
 	private final Map<String, BeanDefinition> beanDefinitionMap = new ConcurrentHashMap<>(64);
 
 

@@ -35,6 +35,7 @@ import org.springframework.lang.Nullable;
  * @author Costin Leau
  * @since 2.5
  */
+// 缓存 {@link MetadataReaderFactory} 接口的实现，为每个 Spring {@link Resource} 句柄（即每个“.class”文件）缓存一个 {@link MetadataReader} 实例。
 public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 
 	/** Default maximum number of entries for a local MetadataReader cache: 256. */
@@ -71,6 +72,8 @@ public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 	 * (also determines the ClassLoader to use)
 	 * @see DefaultResourceLoader#getResourceCache
 	 */
+	// 为给定的 {@link ResourceLoader} 创建一个新的 CachingMetadataReaderFactory，如果支持则使用共享资源缓存，否则使用本地资源缓存。
+	// @param resourceLoader 要使用的 Spring ResourceLoader（也决定要使用的 ClassLoader）
 	public CachingMetadataReaderFactory(@Nullable ResourceLoader resourceLoader) {
 		super(resourceLoader);
 		if (resourceLoader instanceof DefaultResourceLoader defaultResourceLoader) {
@@ -142,6 +145,7 @@ public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 	/**
 	 * Clear the local MetadataReader cache, if any, removing all cached class metadata.
 	 */
+	// 清除本地 MetadataReader 缓存（如果有），删除所有缓存的类元数据。
 	public void clearCache() {
 		if (this.metadataReaderCache instanceof LocalResourceCache) {
 			synchronized (this.metadataReaderCache) {

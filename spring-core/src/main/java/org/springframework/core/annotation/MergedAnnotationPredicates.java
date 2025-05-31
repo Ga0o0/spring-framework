@@ -108,6 +108,10 @@ public abstract class MergedAnnotationPredicates {
 	 * @return a {@link Predicate} that matches a unique annotation based on the
 	 * extracted key
 	 */
+	// 创建一个新的有状态的、一次性使用的 {@link Predicate}，用于匹配基于提取的键唯一性的注解。
+	// 例如，{@code MergedAnnotationPredicates.unique(MergedAnnotation::getType)} 将在第一次遇到唯一类型时匹配。
+	// @param keyExtractor 函数用于提取用于测试唯一性的键
+	// @return 一个 {@link Predicate}，用于匹配基于提取的键唯一性的注解
 	public static <A extends Annotation, K> Predicate<MergedAnnotation<A>> unique(
 			Function<? super MergedAnnotation<A>, K> keyExtractor) {
 

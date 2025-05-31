@@ -33,6 +33,7 @@ import org.springframework.lang.Nullable;
  * @author Costin Leau
  * @since 2.5
  */
+// 基于 ASM {@link org.springframework.asm.ClassReader} 的 {@link MetadataReader} 实现。
 final class SimpleMetadataReader implements MetadataReader {
 
 	private static final int PARSING_OPTIONS =

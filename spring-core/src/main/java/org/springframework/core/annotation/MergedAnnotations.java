@@ -160,6 +160,10 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 * to check
 	 * @return {@code true} if the annotation is present
 	 */
+	// 确定指定的注解类型是直接存在还是元存在。
+	// <p>相当于调用 {@code get(annotationType).isPresent()}。
+	// @param commentType 要检查的注解类型的完全限定类名
+	// @return {@code true} 如果注解存在
 	boolean isPresent(String annotationType);
 
 	/**

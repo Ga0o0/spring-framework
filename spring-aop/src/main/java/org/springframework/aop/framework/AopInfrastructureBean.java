@@ -26,6 +26,7 @@ package org.springframework.aop.framework;
  * @see org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator
  * @see org.springframework.aop.scope.ScopedProxyFactoryBean
  */
+// 标记接口，指示某个 bean 是 Spring AOP 基础结构的一部分。具体而言，这意味着任何此类 bean 都不受自动代理的约束，即使切入点匹配也是如此。
 public interface AopInfrastructureBean {
 
 }

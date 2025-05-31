@@ -124,6 +124,10 @@ final class AttributeMethods {
 	 * @throws IllegalStateException if a declared {@code Class} attribute could not be read
 	 * @see #canLoad(Annotation)
 	 */
+	// 检查给定注解的值是否可以安全访问，而不会引发任何 {@link TypeNotPresentException TypeNotPresentExceptions}。
+	// <p>此方法旨在解决 Google App Engine 中 {@code Class} 值延迟到达导致的此类异常（而不是常规 JVM 上更常见的早期 {@code Class.getAnnotations() 失败}）。
+	// @param comment 要验证的注解
+	// @throws IllegalStateException 如果无法读取声明的 {@code Class} 属性
 	void validate(Annotation annotation) {
 		assertAnnotation(annotation);
 		for (int i = 0; i < size(); i++) {
@@ -244,6 +248,9 @@ final class AttributeMethods {
 	 * @param annotationType the annotation type
 	 * @return the attribute methods for the annotation type
 	 */
+	// 获取指定注解类型的属性方法。
+	// @param commentType 注解类型
+	// @return 注解类型的属性方法
 	static AttributeMethods forAnnotationType(@Nullable Class<? extends Annotation> annotationType) {
 		if (annotationType == null) {
 			return NONE;

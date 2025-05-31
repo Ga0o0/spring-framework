@@ -44,6 +44,7 @@ import org.springframework.util.StringUtils;
  * @see ClassPathBeanDefinitionScanner#scan(String...)
  * @see ComponentScanBeanDefinitionParser
  */
+// @{@link ComponentScan} 注释的解析器。
 class ComponentScanAnnotationParser {
 
 	private final Environment environment;

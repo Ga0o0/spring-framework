@@ -244,6 +244,8 @@ public final class Conventions {
 	 * For example the attribute name '{@code foo}' qualified by {@link Class}
 	 * '{@code com.myapp.SomeClass}' would be '{@code com.myapp.SomeClass.foo}'
 	 */
+	// 返回由给定封闭 {@link Class} 限定的属性名称。
+	// 例如，由 {@link Class} “{@code com.myapp.SomeClass}” 限定的属性名称 “{@code foo}” 将返回 “{@code com.myapp.SomeClass.foo}”。
 	public static String getQualifiedAttributeName(Class<?> enclosingClass, String attributeName) {
 		Assert.notNull(enclosingClass, "'enclosingClass' must not be null");
 		Assert.notNull(attributeName, "'attributeName' must not be null");

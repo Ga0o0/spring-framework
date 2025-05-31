@@ -58,6 +58,14 @@ import org.springframework.lang.Nullable;
  * @see MergedAnnotations
  * @see MergedAnnotationPredicates
  */
+// 从 {@link MergedAnnotations} 集合返回的单个合并注释。呈现注释视图，其中的属性值可能已从不同的源值“合并”。
+//
+// <p>可以使用各种 {@code get} 方法访问属性值。例如，要访问 {@code int} 属性，可以使用 {@link #getInt(String)} 方法。
+//
+// <p>请注意，访问属性值时<b>不会</b>进行转换。例如，如果底层属性是 {@code int}，则无法调用 {@link #getString(String)}。
+// 此规则的唯一例外是 {@code Class} 和 {@code Class[]} 值，它们可以分别作为 {@code String} 和 {@code String[]} 进行访问，以防止潜在的过早类初始化。
+//
+// <p>如有必要，可以将 {@code MergedAnnotation} {@linkplain #synthesize() 合成} 回实际的 {@link java.lang.annotation.Annotation}。
 public interface MergedAnnotation<A extends Annotation> {
 
 	/**
@@ -450,6 +458,9 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * not be applied.
 	 * @return a non-merged view of the annotation
 	 */
+	// 创建注释的新视图，用于公开未合并的属性值。
+	// <p>此视图中的方法将返回仅应用别名镜像规则的属性值。{@link #getMetaSource() meta-source} 属性的别名将不被应用。
+	// @return 注释的未合并视图
 	MergedAnnotation<A> withNonMergedAttributes();
 
 	/**
@@ -621,17 +632,21 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * {@linkplain MergedAnnotation#asMap(Adapt...) Maps} or
 	 * {@link MergedAnnotation#asAnnotationAttributes(Adapt...) AnnotationAttributes}.
 	 */
+	// 创建 {@linkplain MergedAnnotation#asMap(Adapt...) Maps} 或
+	// {@link MergedAnnotation#asAnnotationAttributes(Adapt...) AnnotationAttributes} 时可应用于属性值的调整。
 	enum Adapt {
 
 		/**
 		 * Adapt class or class array attributes to strings.
 		 */
+		// 将类或类数组的属性适配为字符串。
 		CLASS_TO_STRING,
 
 		/**
 		 * Adapt nested annotation or annotation arrays to maps rather
 		 * than synthesizing the values.
 		 */
+		// 将嵌套注释或注释数组适配为映射，而不是合成值。
 		ANNOTATION_TO_MAP;
 
 		protected final boolean isIn(Adapt... adaptations) {
@@ -649,6 +664,10 @@ public interface MergedAnnotation<A extends Annotation> {
 		 * @param annotationsToMap if {@link Adapt#ANNOTATION_TO_MAP} is included
 		 * @return a new {@link Adapt} array
 		 */
+		// 工厂方法，用于根据一组布尔值标志创建 {@link Adapt} 数组。
+		// @param classToString（如果包含 {@link Adapt#CLASS_TO_STRING}）
+		// @param commentsToMap（如果包含 {@link Adapt#ANNOTATION_TO_MAP}）
+		// @return 一个新的 {@link Adapt} 数组
 		public static Adapt[] values(boolean classToString, boolean annotationsToMap) {
 			EnumSet<Adapt> result = EnumSet.noneOf(Adapt.class);
 			addIfTrue(result, Adapt.CLASS_TO_STRING, classToString);

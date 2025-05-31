@@ -229,6 +229,11 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	// （以及 Jakarta 之前的 {@code javax.annotation.ManagedBean} 和 {@code javax.inject.Named} 等效注解）（如果可用）。
 	@SuppressWarnings("unchecked")
 	protected void registerDefaultFilters() {
+		// org.springframework.stereotype.Component
+		// jakarta.annotation.ManagedBean
+		// javax.annotation.ManagedBean
+		// jakarta.inject.Named
+		// javax.inject.Named
 		this.includeFilters.add(new AnnotationTypeFilter(Component.class));
 		ClassLoader cl = ClassPathScanningCandidateComponentProvider.class.getClassLoader();
 		try {
@@ -271,6 +276,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * <p>The default is a {@link StandardEnvironment}.
 	 * @param environment the Environment to use
 	 */
+	// 设置解析占位符和评估带有 {@link Conditional @Conditional} 注解的组件类时要使用的环境。
+	// <p>默认值为 {@link StandardEnvironment}。
+	// @param environment 要使用的环境
 	public void setEnvironment(Environment environment) {
 		Assert.notNull(environment, "Environment must not be null");
 		this.environment = environment;
@@ -301,10 +309,16 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @see org.springframework.core.io.support.ResourcePatternResolver
 	 * @see org.springframework.core.io.support.PathMatchingResourcePatternResolver
 	 */
+	// 设置用于资源位置的 {@link ResourceLoader}。
+	// 这通常是 {@link ResourcePatternResolver} 的实现。
+	// <p>默认是 {@code PathMatchingResourcePatternResolver}，也能够通过 {@code ResourcePatternResolver} 接口进行资源模式解析。
 	@Override
 	public void setResourceLoader(@Nullable ResourceLoader resourceLoader) {
+		// 为给定的 {@link ResourceLoader} 返回一个默认的 {@link ResourcePatternResolver}。
 		this.resourcePatternResolver = ResourcePatternUtils.getResourcePatternResolver(resourceLoader);
+		// 为给定的 {@link ResourceLoader} 创建一个新的 CachingMetadataReaderFactory，如果支持则使用共享资源缓存，否则使用本地资源缓存。
 		this.metadataReaderFactory = new CachingMetadataReaderFactory(resourceLoader);
+		// 使用指定的类加载器从 {@value #COMPONENTS_RESOURCE_LOCATION} 加载并实例化 {@link CandidateComponentsIndex}。如果没有可用的索引，则返回 {@code null}。
 		this.componentsIndex = CandidateComponentsIndexLoader.loadIndex(this.resourcePatternResolver.getClassLoader());
 	}
 
@@ -595,6 +609,11 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @param beanDefinition the bean definition to check
 	 * @return whether the bean definition qualifies as a candidate component
 	 */
+	// 确定给定的 bean 定义是否符合候选组件的条件。
+	// <p>默认实现会检查该类是否不依赖于外部类，以及该类是否是具体的（因此不是接口）或是否具有 {@link Lookup @Lookup} 方法。
+	// <p>可在子类中重写。
+	// @param beanDefinition 要检查的 bean 定义
+	// @return 该 bean 定义是否符合候选组件的条件
 	protected boolean isCandidateComponent(AnnotatedBeanDefinition beanDefinition) {
 		AnnotationMetadata metadata = beanDefinition.getMetadata();
 		return (metadata.isIndependent() && (metadata.isConcrete() ||

@@ -30,6 +30,9 @@ import org.springframework.util.Assert;
  * @since 2.0
  * @see ProblemReporter
  */
+// 表示 Bean 定义配置存在问题。主要用作传递给 {@link ProblemReporter} 的通用参数。
+//
+// <p>可能表示潜在的致命问题（错误）或仅仅是警告。
 public class Problem {
 
 	private final String message;

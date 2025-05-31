@@ -45,6 +45,16 @@ import org.springframework.core.type.AnnotatedTypeMetadata;
  * @see Conditional
  * @see ConditionContext
  */
+// 组件注册时必须满足的单个条件必须{@linkplain #matches 匹配}。
+//
+// <p>在 bean 定义即将注册之前，会立即检查条件，并且可以根据当时确定的任何条件否决注册。
+//
+// <p>条件必须遵循与 {@link BeanFactoryPostProcessor} 相同的限制，并且注意切勿与 bean 实例交互。
+// 为了对与 {@code @Configuration} bean 交互的条件进行更细粒度的控制，请考虑实现 {@link ConfigurationCondition} 接口。
+//
+// <p>给定类或给定方法上的多个条件将根据 Spring 的 {@link org.springframework.core.Ordered} 接口
+// 和 {@link org.springframework.core.annotation.Order @Order} 注解的语义进行排序。
+// 详情请参阅 {@link org.springframework.core.annotation.AnnotationAwareOrderComparator}。
 @FunctionalInterface
 public interface Condition {
 
@@ -56,6 +66,11 @@ public interface Condition {
 	 * @return {@code true} if the condition matches and the component can be registered,
 	 * or {@code false} to veto the annotated component's registration
 	 */
+	// 判断条件是否匹配。
+	// @param context 条件上下文
+	// @param metadata 被检查的 {@link org.springframework.core.type.AnnotationMetadata 类}
+	// 或 {@link org.springframework.core.type.MethodMetadata 方法} 的元数据
+	// @return {@code true} 如果条件匹配且组件可以注册，则返回 {@code false} 否决被注解组件的注册
 	boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata);
 
 }

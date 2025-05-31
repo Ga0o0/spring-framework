@@ -28,6 +28,7 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
  * @since 3.0
  * @see org.springframework.aop.scope.ScopedProxyUtils#createScopedProxy
  */
+// 委托工厂类过去在实际创建作用域代理时仅引入 AOP 框架依赖项。
 final class ScopedProxyCreator {
 
 	private ScopedProxyCreator() {
@@ -36,7 +37,7 @@ final class ScopedProxyCreator {
 
 	public static BeanDefinitionHolder createScopedProxy(
 			BeanDefinitionHolder definitionHolder, BeanDefinitionRegistry registry, boolean proxyTargetClass) {
-
+		// 为提供的目标 bean 生成一个作用域代理，使用内部名称注册目标 bean，并在作用域代理上设置 'targetBeanName'。
 		return ScopedProxyUtils.createScopedProxy(definitionHolder, registry, proxyTargetClass);
 	}
 
