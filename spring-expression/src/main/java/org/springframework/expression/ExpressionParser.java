@@ -25,6 +25,9 @@ package org.springframework.expression;
  * @author Andy Clement
  * @since 3.0
  */
+// 将表达式字符串解析为可求值的编译表达式。
+//
+// <p>支持解析模板表达式以及标准表达式字符串。
 public interface ExpressionParser {
 
 	/**
@@ -39,6 +42,15 @@ public interface ExpressionParser {
 	 * @return an {@code Expression} for the parsed expression
 	 * @throws ParseException if an exception occurred during parsing
 	 */
+	// 解析表达式字符串并返回一个可用于重复求值的 {@link Expression} 对象。
+	// <p>示例：
+	// <pre class="code">
+	// 		3 + 4
+	// 		name.firstName
+	// </pre>
+	// @param ExpressionString 待解析的原始表达式字符串
+	// @return 解析后的表达式的 {@code Expression}
+	// @throws ParseException 如果解析过程中发生异常
 	Expression parseExpression(String expressionString) throws ParseException;
 
 	/**
@@ -54,6 +66,16 @@ public interface ExpressionParser {
 	 * @return an {@code Expression} for the parsed expression
 	 * @throws ParseException if an exception occurred during parsing
 	 */
+	// 解析表达式字符串并返回一个可用于重复求值的 {@link Expression} 对象。
+	// <p>示例：
+	// <pre class="code">
+	// 		3 + 4
+	// 		name.firstName
+	// </pre>
+	// @param ExpressionString 待解析的原始表达式字符串
+	// @param context 影响表达式解析过程的上下文
+	// @return 已解析表达式的 {@code Expression}
+	// @throws ParseException 如果解析过程中发生异常
 	Expression parseExpression(String expressionString, ParserContext context) throws ParseException;
 
 }

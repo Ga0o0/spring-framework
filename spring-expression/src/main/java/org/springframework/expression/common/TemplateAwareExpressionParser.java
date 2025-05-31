@@ -41,6 +41,9 @@ import org.springframework.util.Assert;
  * @author Sam Brannen
  * @since 3.0
  */
+// 支持模板的 {@linkplain ExpressionParser 表达式解析器} 的抽象基类。
+//
+// <p>可由提供模板一级支持的表达式解析器进行子类化。
 public abstract class TemplateAwareExpressionParser implements ExpressionParser {
 
 	@Override
@@ -93,6 +96,15 @@ public abstract class TemplateAwareExpressionParser implements ExpressionParser 
 	 * @return the parsed expressions
 	 * @throws ParseException if the expressions cannot be parsed
 	 */
+	// 使用已配置的解析器解析给定表达式字符串的辅助程序。表达式字符串可以包含任意数量的表达式，所有表达式都包含在“${...}”标记中。
+	// 例如：“foo${expr0}bar${expr1}”。静态文本片段也将作为仅返回该静态文本片段的表达式返回。
+	// 因此，对所有返回的表达式进行求值并将结果连接起来将生成完整的求值字符串。
+	// 解包仅针对找到的最外层分隔符进行，因此字符串“hello ${foo${abc}}”将分解为“hello”和“foo${abc}”两个部分。
+	// 这意味着使用 ${..} 作为其功能一部分的表达式语言将毫无问题地得到支持。解析过程能够识别嵌入表达式的结构。
+	// 它假定括号“（”、方括号“[”和花括号“}”在表达式中必须成对出现，除非它们在字符串文字中，并且字符串文字以单引号“开头和结尾”。
+	// @param expressionString 表达式字符串
+	// @return 已解析的表达式
+	// @throws ParseException 如果无法解析表达式
 	private Expression[] parseExpressions(String expressionString, ParserContext context) throws ParseException {
 		List<Expression> expressions = new ArrayList<>();
 		String prefix = context.getExpressionPrefix();
