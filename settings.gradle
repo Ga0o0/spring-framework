@@ -54,4 +54,5 @@ settings.gradle.projectsLoaded {
 	}
 }
 include 'sample-spring'
+include 'sample-spring-webmvc'
 
