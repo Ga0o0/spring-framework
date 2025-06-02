@@ -36,6 +36,10 @@ import org.springframework.web.servlet.ModelAndView;
  * @see Controller
  * @see HttpRequestHandlerAdapter
  */
+// 适配器将普通的 {@link Controller} 工作流接口与通用的 {@link org.springframework.web.servlet.DispatcherServlet}
+// 接口结合使用。支持实现 {@link LastModified} 接口的处理程序。
+//
+// <p>这是一个 SPI 类，应用程序代码不直接使用。
 public class SimpleControllerHandlerAdapter implements HandlerAdapter {
 
 	@Override

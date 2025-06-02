@@ -85,6 +85,29 @@ import org.springframework.web.servlet.View;
  * @see InternalResourceView
  * @see org.springframework.web.servlet.view.freemarker.FreeMarkerView
  */
+// 简单实现 {@link org.springframework.web.servlet.ViewResolver} 接口，允许将符号视图名称直接解析为 URL，无需显式定义映射。
+// 如果您的符号名称与视图资源名称直接匹配（即符号名称是资源文件名的唯一部分），则此功能非常有用，无需为每个视图定义专门的映射。
+//
+// <p>支持 {@link AbstractUrlBasedView} 子类，例如 {@link InternalResourceView} 和
+// {@link org.springframework.web.servlet.view.freemarker.FreeMarkerView}。
+// 此解析器生成的所有视图的视图类都可以通过“viewClass”属性指定。
+//
+// <p>视图名称可以是资源 URL 本身，也可以通过指定的前缀和/或后缀进行扩展。
+// 明确支持将包含 RequestContext 的属性导出到所有视图。
+//
+// <p>示例：prefix="/WEB-INF/jsp/", suffix=".jsp", viewname="test" -> "/WEB-INF/jsp/test.jsp"
+//
+// <p>作为一项特殊功能，可以通过“redirect:”前缀指定重定向 URL。例如：“redirect:myAction”将触发重定向到给定 URL，而不是解析为标准视图名称。
+// 这通常用于在完成表单工作流后重定向到控制器 URL。
+//
+// <p>此外，可以通过“forward:”前缀指定转发 URL。例如：“forward:myAction”将触发转发到给定 URL，而不是解析为标准视图名称。
+// 这通常用于控制器 URL；不应将其用于 JSP URL - 请使用逻辑视图名称。
+//
+// <p>注意：此类不支持本地化解析，即根据当前语言环境将符号视图名称解析为不同的资源。
+//
+// <p><b>注意：</b> 链接 ViewResolver 时，UrlBasedViewResolver 会检查 {@linkplain AbstractUrlBasedView#checkResource 指定的资源是否实际存在}。
+// 然而，使用 {@link InternalResourceView} 时，通常无法预先确定目标资源是否存在。
+// 在这种情况下，UrlBasedViewResolver 始终会为任何给定的视图名称返回一个视图；因此，它应该配置为链接中的最后一个 ViewResolver。
 public class UrlBasedViewResolver extends AbstractCachingViewResolver implements Ordered {
 
 	/**
@@ -93,6 +116,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 * Such view names will not be resolved in the configured default
 	 * way but rather be treated as special shortcut.
 	 */
+	// 指定重定向 URL（通常是表单提交并处理后重定向到控制器）的特殊视图名称的前缀。此类视图名称不会按照配置的默认方式解析，而是会被视为特殊的快捷方式。
 	public static final String REDIRECT_URL_PREFIX = "redirect:";
 
 	/**
@@ -101,6 +125,7 @@ public class UrlBasedViewResolver extends AbstractCachingViewResolver implements
 	 * Such view names will not be resolved in the configured default
 	 * way but rather be treated as special shortcut.
 	 */
+	// 指定转发 URL（通常在表单提交并处理后转发到控制器）的特殊视图名称的前缀。此类视图名称不会按照配置的默认方式解析，而是被视为特殊的快捷方式。
 	public static final String FORWARD_URL_PREFIX = "forward:";
 
 

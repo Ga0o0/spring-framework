@@ -59,6 +59,11 @@ import org.springframework.web.servlet.support.RequestContext;
  * @see #setAttributesMap
  * @see #renderMergedOutputModel
  */
+// {@link org.springframework.web.servlet.View} 实现的抽象基类。子类应为 JavaBean，以便方便地配置为 Spring 管理的 Bean 实例。
+//
+// <p>提供对静态属性的支持，这些属性可供视图使用，并提供多种指定方式。静态属性将与给定的动态属性（控制器返回的模型）在每次渲染操作中合并。
+//
+// <p>扩展 {@link WebApplicationObjectSupport}，这将对某些视图有所帮助。子类只需实现实际的渲染功能。
 public abstract class AbstractView extends WebApplicationObjectSupport implements View, BeanNameAware {
 
 	/** Default content type. Overridable as bean property. */

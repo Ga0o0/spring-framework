@@ -154,6 +154,10 @@ import org.springframework.web.util.WebUtils;
  * @since 3.0
  * @see org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
  */
+// {@link org.springframework.web.servlet.HandlerExceptionResolver} 接口的默认实现，
+// 用于解析标准 Spring MVC 异常并将其转换为相应的 HTTP 状态码。
+//
+// <p>此异常解析器在通用 Spring {@link org.springframework.web.servlet.DispatcherServlet} 中默认启用。
 public class DefaultHandlerExceptionResolver extends AbstractHandlerExceptionResolver {
 
 	/**

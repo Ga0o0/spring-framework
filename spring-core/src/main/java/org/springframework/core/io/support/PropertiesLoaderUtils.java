@@ -118,6 +118,10 @@ public abstract class PropertiesLoaderUtils {
 	 * @throws IOException if loading failed
 	 * @see #fillProperties(java.util.Properties, Resource)
 	 */
+	// 从指定资源加载属性（采用 ISO-8859-1 编码）。
+	// @param resource 要加载的资源
+	// @return 已填充的 Properties 实例
+	// @throws IOException（如果加载失败）
 	public static Properties loadProperties(Resource resource) throws IOException {
 		Properties props = new Properties();
 		fillProperties(props, resource);
@@ -130,6 +134,10 @@ public abstract class PropertiesLoaderUtils {
 	 * @param resource the resource to load from
 	 * @throws IOException if loading failed
 	 */
+	// 从给定资源（采用 ISO-8859-1 编码）填充给定属性。
+	// @param props 需要填充的 Properties 实例
+	// @param resource 需要加载的资源
+	// @throws IOException（如果加载失败）
 	public static void fillProperties(Properties props, Resource resource) throws IOException {
 		try (InputStream is = resource.getInputStream()) {
 			String filename = resource.getFilename();

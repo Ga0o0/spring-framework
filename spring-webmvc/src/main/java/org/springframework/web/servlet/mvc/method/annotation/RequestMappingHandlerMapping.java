@@ -81,6 +81,12 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @author Olga Maciaszek-Sharma
  * @since 3.1
  */
+// 从 {@link Controller @Controller} 类中的类型级和方法级 {@link RequestMapping @RequestMapping}
+// 和 {@link HttpExchange @HttpExchange} 注释创建 {@link RequestMappingInfo} 实例。
+//
+// <p><strong>弃用说明：</strong></p>在 5.2.4 中，{@link #setUseSuffixPatternMatch(boolean) useSuffixPatternMatch} 和
+// {@link #setUseRegisteredSuffixPatternMatch(boolean) useRegisteredSuffixPatternMatch} 已被弃用，以阻止使用路径扩展进行请求映射和内容协商
+// （在 {@link org.springframework.web.accept.ContentNegotiationManagerFactoryBean ContentNegotiationManagerFactoryBean} 中也有类似的弃用）。有关更多背景信息，请阅读问题 <a href="https://github.com/spring-projects/spring-framework/issues/24179">#24179</a>。
 public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMapping
 		implements MatchableHandlerMapping, EmbeddedValueResolverAware {
 

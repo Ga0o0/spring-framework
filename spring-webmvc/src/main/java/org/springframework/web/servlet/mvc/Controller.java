@@ -108,6 +108,46 @@ import org.springframework.web.servlet.ModelAndView;
  * @see org.springframework.web.context.ServletContextAware
  * @see org.springframework.web.context.support.WebApplicationObjectSupport
  */
+// 基本 Controller 接口，表示一个接收 {@code HttpServletRequest} 和 {@code HttpServletResponse} 实例的组件，
+// 就像 {@code HttpServlet} 一样，但能够参与 MVC 工作流。控制器与 Struts {@code Action} 的概念类似。
+//
+// <p>任何 Controller 接口的实现都应该是<i>可重用、线程安全的</i>类，能够在应用程序的整个生命周期内处理多个 HTTP 请求。
+// 为了能够轻松配置 Controller，建议（通常也是）将 Controller 实现为 JavaBean。
+//
+// <h3><a name="workflow">Workflow</a></h3>
+//
+// <p>在 {@code DispatcherServlet} 收到请求并完成解析语言环境、主题等工作后，它会尝试使用
+// {@link org.springframework.web.servlet.HandlerMapping HandlerMapping} 解析 Controller。
+// 当找到一个控制器来处理请求时，将调用该控制器的 {@link #handleRequest(HttpServletRequest, HttpServletResponse) handleRequest} 方法；
+// 该控制器负责处理实际请求，并且如果适用，返回相应的 {@link org.springframework.web.servlet.ModelAndView ModelAndView}。
+// 因此，实际上，此方法是 {@link org.springframework.web.servlet.DispatcherServlet DispatcherServlet} 的主要入口点，它将请求委托给控制器。
+//
+// <p>因此，基本上任何 <i>直接</i> 实现 {@code Controller} 接口的类都只处理 HttpServletRequests，并应返回一个 ModelAndView，以便由 DispatcherServlet 进一步解释。
+// 任何其他功能（例如可选验证、表单处理等）都应通过扩展 {@link org.springframework.web.servlet.mvc.AbstractController AbstractController} 或其子类之一来获取。
+//
+// <h3>设计和测试注意事项</h3>
+//
+// <p>Controller 接口明确设计为操作 HttpServletRequest 和 HttpServletResponse 对象，就像 HttpServlet 一样。
+// 它并非旨在与 Servlet API 解耦，这与 WebWork、JSF 或 Tapestry 等不同。相反，它充分利用了 Servlet API 的全部功能，
+// 使 Controller 具有通用性：Controller 不仅能够处理 Web 用户界面请求，还能处理远程协议或按需生成报告。
+//
+// <p>通过将 HttpServletRequest 和 HttpServletResponse 对象的模拟对象作为参数传递给
+// {@link #handleRequest(HttpServletRequest, HttpServletResponse) handleRequest} 方法，可以轻松测试 Controller。
+// 为方便起见，Spring 附带了一组 Servlet API 模拟对象，适用于测试任何类型的 Web 组件，但尤其适合测试 Spring Web 控制器。
+// 与 Struts Action 不同，无需模拟 ActionServlet 或任何其他基础结构；模拟 HttpServletRequest 和 HttpServletResponse 就足够了。
+//
+// <p>如果控制器需要了解特定的环境引用，它们可以选择实现特定的感知接口，就像 Spring（web）应用程序上下文中的任何其他 Bean 一样，例如：
+// <ul>
+// <li>{@code org.springframework.context.ApplicationContextAware}
+// <li>{@code org.springframework.context.ResourceLoaderAware}
+// <li>{@code org.springframework.web.context.ServletContextAware} </li>
+// </ul>
+//
+// <p>此类环境引用可以通过相应感知接口中定义的相应设置器轻松地在测试环境中传递。
+// 通常，建议尽可能减少依赖关系：例如，如果您只需要资源加载，则仅实现 ResourceLoaderAware。
+// 或者，从 WebApplicationObjectSupport 基类派生，该基类通过便捷的访问器为您提供所有这些引用，但在初始化时需要 ApplicationContext 引用。
+//
+// <p>控制器可以使用 {@link org.springframework.web.context.request.WebRequest} 上的 {@code checkNotModified} 方法来获得 HTTP 缓存支持。
 @FunctionalInterface
 public interface Controller {
 
@@ -121,6 +161,12 @@ public interface Controller {
 	 * @return a ModelAndView to render, or {@code null} if handled directly
 	 * @throws Exception in case of errors
 	 */
+	// 处理请求并返回一个 ModelAndView 对象，DispatcherServlet 将渲染该对象。
+	// 返回值为 {@code null} 并非错误：它表示此对象已自行完成请求处理，因此没有 ModelAndView 可供渲染。
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
+	// @return 一个 ModelAndView 对象，如果直接处理则返回 {@code null}
+	// @throws Exception（如果发生错误）
 	@Nullable
 	ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception;
 

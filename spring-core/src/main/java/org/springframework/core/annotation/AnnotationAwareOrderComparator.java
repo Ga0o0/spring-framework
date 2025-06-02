@@ -44,6 +44,11 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.core.annotation.Order
  * @see jakarta.annotation.Priority
  */
+// {@code AnnotationAwareOrderComparator} 是 {@link OrderComparator} 的扩展，
+// 它支持 Spring 的 {@link org.springframework.core.Ordered} 接口以及 {@link Order @Order} 和
+// {@link jakarta.annotation.Priority @Priority} 注解，其由 {@code Ordered} 实例提供的顺序值将覆盖静态定义的注解值（如果有）。
+//
+// <p>有关无序对象的排序语义的详细信息，请参阅 {@link OrderComparator} 的 Javadoc。
 public class AnnotationAwareOrderComparator extends OrderComparator {
 
 	/**
@@ -106,6 +111,9 @@ public class AnnotationAwareOrderComparator extends OrderComparator {
 	 * @param list the List to sort
 	 * @see java.util.List#sort(java.util.Comparator)
 	 */
+	// 使用默认的 {@link AnnotationAwareOrderComparator} 对给定列表进行排序。
+	// <p>优化为跳过大小为 0 或 1 的列表的排序，以避免不必要的数组提取。
+	// @param list 要排序的列表
 	public static void sort(List<?> list) {
 		if (list.size() > 1) {
 			list.sort(INSTANCE);

@@ -27,12 +27,14 @@ import org.springframework.web.servlet.ThemeResolver;
  * @since 17.06.2003
  * @deprecated as of 6.0 in favor of using CSS, without direct replacement
  */
+// {@link ThemeResolver} 实现的抽象基类。为默认主题名称提供支持。
 @Deprecated(since = "6.0")
 public abstract class AbstractThemeResolver implements ThemeResolver {
 
 	/**
 	 * Out-of-the-box value for the default theme name: "theme".
 	 */
+	// 默认主题名称的开箱即用值：“theme”。
 	public static final String ORIGINAL_DEFAULT_THEME_NAME = "theme";
 
 	private String defaultThemeName = ORIGINAL_DEFAULT_THEME_NAME;
@@ -42,6 +44,7 @@ public abstract class AbstractThemeResolver implements ThemeResolver {
 	 * Set the name of the default theme.
 	 * Out-of-the-box value is "theme".
 	 */
+	// 设置默认主题的名称。默认值为“theme”。
 	public void setDefaultThemeName(String defaultThemeName) {
 		this.defaultThemeName = defaultThemeName;
 	}
@@ -49,6 +52,7 @@ public abstract class AbstractThemeResolver implements ThemeResolver {
 	/**
 	 * Return the name of the default theme.
 	 */
+	// 返回默认主题的名称。
 	public String getDefaultThemeName() {
 		return this.defaultThemeName;
 	}

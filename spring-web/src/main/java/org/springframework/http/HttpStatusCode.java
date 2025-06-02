@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
  * @see <a href="https://www.iana.org/assignments/http-status-codes">HTTP Status Code Registry</a>
  * @see <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">List of HTTP status codes - Wikipedia</a>
  */
+// 表示 HTTP 响应状态代码。由 {@link HttpStatus} 实现，但定义为接口，以允许使用该枚举中不存在的值。
 public sealed interface HttpStatusCode extends Serializable permits DefaultHttpStatusCode, HttpStatus {
 
 	/**

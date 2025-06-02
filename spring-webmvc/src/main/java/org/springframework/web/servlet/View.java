@@ -44,6 +44,13 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.view.AbstractView
  * @see org.springframework.web.servlet.view.InternalResourceView
  */
+// MVC 视图用于 Web 交互。实现负责渲染内容并公开模型。单个视图公开多个模型属性。
+//
+// <p>此类及其相关的 MVC 方法在 Rod Johnson 所著的《Expert One-On-One J2EE Design and Development》（Wrox，2002 年）第 12 章中进行了讨论。
+//
+// <p>视图的实现可能差异很大。一种显而易见的实现是基于 JSP 的。其他实现可能基于 XSLT，或者使用 HTML 生成库。此接口旨在避免限制可能的实现范围。
+//
+// <p>视图应该是 bean。它们很可能由 ViewResolver 实例化为 bean。由于此接口是无状态的，因此视图实现应该是线程安全的。
 public interface View {
 
 	/**
@@ -51,6 +58,8 @@ public interface View {
 	 * <p>Note: This attribute is not required to be supported by all View implementations.
 	 * @since 3.0
 	 */
+	// 包含响应状态代码的 {@link HttpServletRequest} 属性的名称。
+	// <p>注意：此属性不需要得到所有 View 实现的支持。
 	String RESPONSE_STATUS_ATTRIBUTE = View.class.getName() + ".responseStatus";
 
 	/**
@@ -60,6 +69,9 @@ public interface View {
 	 * <p>Note: This attribute is not required to be supported by all View implementations.
 	 * @since 3.1
 	 */
+	// 包含路径变量映射的 {@link HttpServletRequest} 属性的名称。
+	// 该映射包含基于字符串的 URI 模板变量名作为键，以及其对应的基于对象的值（从 URL 的各个部分提取并进行类型转换）。
+	// <p>注意：并非所有 View 实现都要求支持此属性。
 	String PATH_VARIABLES = View.class.getName() + ".pathVariables";
 
 	/**
@@ -68,6 +80,8 @@ public interface View {
 	 * "application/vnd.example-v1+xml" vs "application/*+xml".
 	 * @since 3.2
 	 */
+	// 内容协商期间选择的 {@link org.springframework.http.MediaType}，可能比视图配置的更具体。
+	// 例如：“application/vnd.example-v1+xml” vs “application/*+xml”。
 	String SELECTED_CONTENT_TYPE = View.class.getName() + ".selectedContentType";
 
 
@@ -78,6 +92,9 @@ public interface View {
 	 * @return the content type String (optionally including a character set),
 	 * or {@code null} if not predetermined
 	 */
+	// 如果已预先确定，则返回视图的内容类型。
+	// <p>可用于预先检查视图的内容类型，即在实际渲染尝试之前。
+	// @return 内容类型字符串（可选包含字符集），如果未预先确定，则返回 {@code null}
 	@Nullable
 	default String getContentType() {
 		return null;
@@ -94,6 +111,12 @@ public interface View {
 	 * @param response he HTTP response we are building
 	 * @throws Exception if rendering failed
 	 */
+	// 根据指定的模型渲染视图。
+	// <p>第一步是准备请求：在 JSP 中，这意味着将模型对象设置为请求属性。第二步是实际渲染视图，例如通过 RequestDispatcher 包含 JSP。
+	// @param model 一个 Map，以名称字符串为键，以对应的模型对象为值（如果模型为空，则 Map 也可以为 {@code null}）
+	// @param request 当前 HTTP 请求
+	// @param respond 我们正在构建的 HTTP 响应
+	// @throws Exception，如果渲染失败
 	void render(@Nullable Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception;
 

@@ -34,6 +34,10 @@ import org.springframework.lang.Nullable;
  * @author Stephane Nicoll
  * @since 2.0.5
  */
+// {@link org.springframework.context.ApplicationListener} 装饰器，用于过滤来自指定事件源的事件，
+// 仅对匹配的 {@link org.springframework.context.ApplicationEvent} 对象调用其委托侦听器。
+//
+// <p>也可用作基类，覆盖 {@link #onApplicationEventInternal} 方法，而不必指定委托侦听器。
 public class SourceFilteringListener implements GenericApplicationListener {
 
 	private final Object source;
@@ -49,6 +53,9 @@ public class SourceFilteringListener implements GenericApplicationListener {
 	 * @param delegate the delegate listener to invoke with event
 	 * from the specified source
 	 */
+	// 为给定的事件源创建一个 SourceFilteringListener。
+	// @param source 此监听器过滤的事件源，仅处理来自此源的事件
+	// @param delegate 委托监听器，用于处理来自指定源的事件
 	public SourceFilteringListener(Object source, ApplicationListener<?> delegate) {
 		this.source = source;
 		this.delegate = (delegate instanceof GenericApplicationListener gal ? gal :
@@ -62,6 +69,8 @@ public class SourceFilteringListener implements GenericApplicationListener {
 	 * @param source the event source that this listener filters for,
 	 * only processing events from this source
 	 */
+	// 为给定的事件源创建一个 SourceFilteringListener，期望子类重写 {@link #onApplicationEventInternal} 方法（而不是指定委托监听器）。
+	// @param source 此监听器过滤的事件源，仅处理来自此源的事件
 	protected SourceFilteringListener(Object source) {
 		this.source = source;
 	}
@@ -101,6 +110,9 @@ public class SourceFilteringListener implements GenericApplicationListener {
 	 * <p>The default implementation invokes the specified delegate, if any.
 	 * @param event the event to process (matching the specified source)
 	 */
+	// 根据所需事件源进行过滤后，实际处理事件。
+	// <p>默认实现会调用指定的委托（如果有）。
+	// @param event 要处理的事件（与指定的源匹配）
 	protected void onApplicationEventInternal(ApplicationEvent event) {
 		if (this.delegate == null) {
 			throw new IllegalStateException(

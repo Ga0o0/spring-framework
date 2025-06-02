@@ -31,6 +31,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @since 4.3.1
  * @see HandlerMappingIntrospector
  */
+// {@link HandlerMapping} 可以实现的附加接口，用于公开与其内部请求匹配配置和实现一致的请求匹配 API。
 public interface MatchableHandlerMapping extends HandlerMapping {
 
 	/**
@@ -38,6 +39,7 @@ public interface MatchableHandlerMapping extends HandlerMapping {
 	 * case pre-parsed patterns are used.
 	 * @since 5.3
 	 */
+	// 如果已配置，则返回此 {@code HandlerMapping} 的解析器，在这种情况下使用预解析模式。
 	@Nullable
 	default PathPatternParser getPatternParser() {
 		return null;
@@ -51,6 +53,11 @@ public interface MatchableHandlerMapping extends HandlerMapping {
 	 * @param pattern the pattern to match
 	 * @return the result from request matching, or {@code null} if none
 	 */
+	// 判断请求是否与给定的模式匹配。当 {@link #getPatternParser()} 返回 {@code null} 时使用此方法，
+	// 这意味着 {@code HandlerMapping} 正在使用字符串模式匹配。
+	// @param request 当前请求
+	// @param pattern 要匹配的模式
+	// @return 请求匹配的结果，如果没有匹配，则返回 {@code null}
 	@Nullable
 	RequestMatchResult match(HttpServletRequest request, String pattern);
 

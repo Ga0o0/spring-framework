@@ -63,6 +63,24 @@ import org.springframework.web.util.WebUtils;
  * @see InternalResourceViewResolver
  * @see JstlView
  */
+// 包装同一 Web 应用中的 JSP 或其他资源。
+// 将模型对象作为请求属性公开，并使用 {@link jakarta.servlet.RequestDispatcher} 将请求转发到指定的资源 URL。
+//
+// <p>此视图的 URL 应指定 Web 应用中的资源，适用于 RequestDispatcher 的 {@code forward} 或 {@code include} 方法。
+//
+// <p>如果在已包含的请求或已提交的响应中进行操作，此视图将回退到包含而不是转发。
+// 这可以通过在渲染视图之前调用 {@code respond.flushBuffer()}（这将提交响应）来强制执行。
+//
+// <p>从 DispatcherServlet 上下文定义的角度来看，{@link InternalResourceViewResolver} 的典型用法如下：
+//
+// <pre class="code">
+// <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+// 		<property name="prefix" value="/WEB-INF/jsp/"/>
+// 		<property name="suffix" value=".jsp"/>
+// </bean>
+// </pre>
+//
+// 从处理程序返回的每个视图名称都将转换为 JSP 资源（例如：“myView” &rarr; “/WEB-INF/jsp/myView.jsp”），默认情况下使用此视图类。
 public class InternalResourceView extends AbstractUrlBasedView {
 
 	private boolean alwaysInclude = false;

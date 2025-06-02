@@ -44,6 +44,7 @@ import org.springframework.web.util.UrlPathHelper;
  * @author Sam Brannen
  * @since 3.1.1
  */
+// {@link FlashMapManager} 实现的基类。
 public abstract class AbstractFlashMapManager implements FlashMapManager {
 
 	private static final Object DEFAULT_FLASH_MAPS_MUTEX = new Object();

@@ -44,6 +44,10 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Sam Brannen
  * @since 3.0
  */
+// {@link HandlerExceptionResolver} 实现的抽象基类。
+//
+// <p>支持解析器应应用到的映射 {@linkplain #setMappedHandlers 处理程序} 和
+// {@linkplain #setMappedHandlerClasses 处理程序类}，并实现 {@link Ordered} 接口。
 public abstract class AbstractHandlerExceptionResolver implements HandlerExceptionResolver, Ordered {
 
 	private static final String HEADER_CACHE_CONTROL = "Cache-Control";

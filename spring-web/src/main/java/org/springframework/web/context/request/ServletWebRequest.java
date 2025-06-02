@@ -48,6 +48,7 @@ import org.springframework.web.util.WebUtils;
  * @author Markus Malkusch
  * @since 2.0
  */
+// {@link WebRequest} 用于 {@link jakarta.servlet.http.HttpServletRequest} 的适配器。
 public class ServletWebRequest extends ServletRequestAttributes implements NativeWebRequest {
 
 	private static final Set<String> SAFE_METHODS = Set.of("GET", "HEAD");

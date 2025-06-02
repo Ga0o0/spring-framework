@@ -52,6 +52,10 @@ import org.springframework.util.StringUtils;
  * @see #getLookupPathForRequest
  * @see jakarta.servlet.RequestDispatcher
  */
+// URL 路径匹配的辅助类。提供对 {@code RequestDispatcher} 包含的 URL 路径的支持，以及对一致 URL 解码的支持。
+//
+// <p>由 {@link org.springframework.web.servlet.handler.AbstractUrlHandlerMapping} 和
+// {@link org.springframework.web.servlet.support.RequestContext} 用于路径匹配和/或 URI 确定。
 public class UrlPathHelper {
 
 	/**

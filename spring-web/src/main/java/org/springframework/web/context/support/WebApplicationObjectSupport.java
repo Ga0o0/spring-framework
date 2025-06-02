@@ -41,6 +41,11 @@ import org.springframework.web.util.WebUtils;
  * @since 28.08.2003
  * @see SpringBeanAutowiringSupport
  */
+// 方便地为在 {@link WebApplicationContext} 中运行的应用程序对象提供超类。
+// 提供 {@code getWebApplicationContext()}、{@code getServletContext()} 和 {@code getTempDir()} 访问器。
+//
+// <p>注意：通常建议针对实际需要的回调使用单独的回调接口。此广泛的基类主要用于框架内部，
+// 以防通常需要 {@link ServletContext} 访问等。
 public abstract class WebApplicationObjectSupport extends ApplicationObjectSupport implements ServletContextAware {
 
 	@Nullable

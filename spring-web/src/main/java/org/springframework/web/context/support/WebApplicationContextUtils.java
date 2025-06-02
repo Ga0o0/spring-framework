@@ -96,6 +96,10 @@ public abstract class WebApplicationContextUtils {
 	 * @return the root WebApplicationContext for this web app, or {@code null} if none
 	 * @see org.springframework.web.context.WebApplicationContext#ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE
 	 */
+	// 查找此 Web 应用的根 {@code WebApplicationContext}，通常通过 {@link org.springframework.web.context.ContextLoaderListener} 加载。
+	// <p>将重新抛出根上下文启动时发生的异常，以区分上下文启动失败和根本没有上下文。
+	// @param sc 查找 Web 应用上下文的 ServletContext
+	// @return 此 Web 应用的根 WebApplicationContext，如果没有则返回 {@code null}
 	@Nullable
 	public static WebApplicationContext getWebApplicationContext(ServletContext sc) {
 		return getWebApplicationContext(sc, WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
@@ -107,6 +111,10 @@ public abstract class WebApplicationContextUtils {
 	 * @param attrName the name of the ServletContext attribute to look for
 	 * @return the desired WebApplicationContext for this web app, or {@code null} if none
 	 */
+	// 为该 Web 应用查找自定义的 {@code WebApplicationContext}。
+	// @param sc 指定要查找的 Web 应用上下文的 ServletContext
+	// @param attrName 指定要查找的 ServletContext 属性的名称
+	// @return 该 Web 应用所需的 WebApplicationContext，如果没有则返回 {@code null}
 	@Nullable
 	public static WebApplicationContext getWebApplicationContext(ServletContext sc, String attrName) {
 		Assert.notNull(sc, "ServletContext must not be null");
@@ -124,6 +132,7 @@ public abstract class WebApplicationContextUtils {
 			throw new IllegalStateException(exception);
 		}
 		if (!(attr instanceof WebApplicationContext wac)) {
+			// Context 属性不是 WebApplicationContext 类型
 			throw new IllegalStateException("Context attribute is not of type WebApplicationContext: " + attr);
 		}
 		return wac;
@@ -298,6 +307,13 @@ public abstract class WebApplicationContextUtils {
 	 * @see org.springframework.core.env.PropertySource.StubPropertySource
 	 * @see org.springframework.core.env.ConfigurableEnvironment#getPropertySources()
 	 */
+	// 将基于 {@code Servlet} 的 {@link StubPropertySource 存根属性源} 替换为由给定的 {@code servletContext} 和 {@code servletConfig} 对象填充的实际实例。
+	// <p>此方法是幂等的，因为它可以被调用任意次数，但将执行一次且仅一次将存根属性源替换为其对应的实际属性源。
+	// @param sources 要初始化的 {@link MutablePropertySources}（不能为 {@code null}）
+	// @param servletContext 当前 {@link ServletContext}（如果 {@code null} 或
+	// 		{@link StandardServletEnvironment#SERVLET_CONTEXT_PROPERTY_SOURCE_NAME servlet 上下文属性源} 已初始化，则忽略）
+	// @param servletConfig 当前 {@link ServletConfig}（如果 {@code null} 或
+	// 		{@link StandardServletEnvironment#SERVLET_CONFIG_PROPERTY_SOURCE_NAME servlet 配置属性源} 已初始化，则忽略）
 	public static void initServletPropertySources(MutablePropertySources sources,
 			@Nullable ServletContext servletContext, @Nullable ServletConfig servletConfig) {
 

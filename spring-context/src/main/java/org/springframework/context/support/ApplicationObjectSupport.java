@@ -46,6 +46,13 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @see org.springframework.web.context.support.WebApplicationObjectSupport
  */
+// 对于需要感知应用上下文的应用对象来说，这是一个便捷的超类，例如，用于自定义协作 bean 的查找或特定于上下文的资源访问。
+// 它保存应用上下文引用并提供初始化回调方法。此外，它还提供了许多便捷的消息查找方法。
+//
+// <p>无需创建此类的子类：如果您需要访问上下文（例如，访问文件资源或消息源），它只是让事情变得更容易一些。
+// 请注意，许多应用对象根本不需要感知应用上下文，因为它们可以通过 bean 引用接收协作 bean。
+//
+// <p>许多框架类都派生自此类，尤其是在 Web 支持领域。
 public abstract class ApplicationObjectSupport implements ApplicationContextAware {
 
 	/** Logger that is available to subclasses. */

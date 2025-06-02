@@ -40,6 +40,7 @@ import org.springframework.util.StringUtils;
  * @author Rob Harrop
  * @since 13 May 2001
  */
+// {@link PropertyValues} 接口的默认实现。允许对属性进行简单的操作，并提供构造函数以支持深度复制和从 Map 构造。
 @SuppressWarnings("serial")
 public class MutablePropertyValues implements PropertyValues, Serializable {
 
@@ -167,6 +168,9 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * @param pv the PropertyValue object to add
 	 * @return this in order to allow for adding multiple property values in a chain
 	 */
+	// 添加一个 PropertyValue 对象，替换相应属性的任何现有对象或与其合并（如果适用）。
+	// @param pv 要添加的 PropertyValue 对象
+	// @return this 以允许在链中添加多个属性值
 	public MutablePropertyValues addPropertyValue(PropertyValue pv) {
 		for (int i = 0; i < this.propertyValueList.size(); i++) {
 			PropertyValue currentPv = this.propertyValueList.get(i);

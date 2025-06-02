@@ -45,6 +45,11 @@ import org.springframework.web.servlet.LocaleResolver;
  * @since 27.02.2003
  * @see jakarta.servlet.http.HttpServletRequest#getLocale()
  */
+// {@link LocaleResolver} 实现会在 {@code Accept-Language} 标头中的语言环境与已配置的支持语言环境列表之间查找匹配项。
+//
+// <p>有关如何匹配支持语言环境和请求语言环境的更多详细信息，请参阅 {@link #setSupportedLocales(List)}。
+//
+// <p>注意：此实现不支持 {@link #setLocale}，因为 {@code Accept-Language} 标头只能通过更改客户端的语言环境设置来更改。
 public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
 
 	private final List<Locale> supportedLocales = new ArrayList<>(4);
@@ -68,6 +73,12 @@ public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
 	 * @param locales the supported locales
 	 * @since 4.3
 	 */
+	// 配置受支持的语言环境列表，以便与 {@link HttpServletRequest#getLocales() 请求的语言环境} 进行比较和匹配。
+	// <p>要使受支持的语言环境被视为匹配，它必须同时匹配国家/地区和语言。如果您想支持仅匹配语言作为后备，则必须将该语言明确配置为受支持的语言环境。
+	// <p>例如，如果受支持的语言环境为 {@code ["de-DE","en-US"]}，则对 {@code "en-GB"} 的请求将不匹配，对 {@code "en"} 的请求也不会匹配。
+	// 如果您想为给定语言支持其他语言环境（例如 {@code "en"}），则必须将其添加到受支持的语言环境列表中。
+	// <p>如果没有匹配，则使用 {@link #setDefaultLocale(Locale) defaultLocale}（如果已配置），
+	// 否则将回退到 {@link HttpServletRequest#getLocale()}。@param locales 受支持的语言环境
 	public void setSupportedLocales(List<Locale> locales) {
 		this.supportedLocales.clear();
 		this.supportedLocales.addAll(locales);
@@ -77,6 +88,7 @@ public class AcceptHeaderLocaleResolver extends AbstractLocaleResolver {
 	 * Get the configured list of supported locales.
 	 * @since 4.3
 	 */
+	// 获取已配置的支持语言环境列表。
 	public List<Locale> getSupportedLocales() {
 		return this.supportedLocales;
 	}

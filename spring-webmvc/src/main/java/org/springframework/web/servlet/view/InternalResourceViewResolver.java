@@ -46,6 +46,14 @@ import org.springframework.util.ClassUtils;
  * @see InternalResourceView
  * @see JstlView
  */
+// {@link UrlBasedViewResolver} 的便捷子类，支持 {@link InternalResourceView}（即 Servlet 和 JSP）及其子类（例如 {@link JstlView}）。
+//
+// <p>此解析器生成的所有视图的视图类可以通过 {@link #setViewClass} 指定。有关详情，请参阅 {@link UrlBasedViewResolver} 的 javadoc。
+// 默认值为 {@link InternalResourceView}，如果存在 JSTL API，则为 {@link JstlView}。
+//
+// <p>顺便说一句，最好将仅用作视图的 JSP 文件放在 WEB-INF 下，以隐藏它们以防止直接访问（例如通过手动输入的 URL）。这样只有控制器才能访问它们。
+//
+// <p><b>注意：</b>链接 ViewResolvers 时，InternalResourceViewResolver 始终需要放在最后，因为它将尝试解析任何视图名称，无论底层资源是否实际存在。
 public class InternalResourceViewResolver extends UrlBasedViewResolver {
 
 	private static final boolean jstlPresent = ClassUtils.isPresent(

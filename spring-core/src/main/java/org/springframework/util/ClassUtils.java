@@ -708,6 +708,11 @@ public abstract class ClassUtils {
 	 * @see ClassLoader#getResource
 	 * @see Class#getResource
 	 */
+	// 给定一个输入类对象，返回一个由该类的包名称作为路径名组成的字符串，即将所有点 ('.') 替换为斜杠 ('/')。
+	// 不添加前导斜杠或尾随斜杠。结果可以与斜杠和资源名称连接，并直接传递给 {@code ClassLoader.getResource()}。
+	// 如果要将其传递给 {@code Class.getResource}，则还必须在返回值前面添加前导斜杠。
+	// @param clazz 输入类。{@code null} 值或默认（空）包将导致返回空字符串 ("")。
+	// @return 表示包名称的路径
 	public static String classPackageAsResourcePath(@Nullable Class<?> clazz) {
 		if (clazz == null) {
 			return "";
@@ -718,7 +723,7 @@ public abstract class ClassUtils {
 			return "";
 		}
 		String packageName = className.substring(0, packageEndIndex);
-		return packageName.replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);
+		return packageName.replace(PACKAGE_SEPARATOR, PATH_SEPARATOR); // . -> /
 	}
 
 	/**

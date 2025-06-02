@@ -47,10 +47,14 @@ import java.beans.PropertyDescriptor;
  * @see org.springframework.validation.DataBinder#initBeanPropertyAccess()
  */
 // Spring 底层 JavaBeans 基础架构的核心接口。
+//
 // <p>通常不直接使用，而是通过 {@link org.springframework.beans.factory.BeanFactory}
 // 或 {@link org.springframework.validation.DataBinder} 隐式使用。
+//
 // <p>提供分析和操作标准 JavaBean 的操作：获取和设置属性值（单个或批量）、获取属性描述符以及查询属性的可读性/可写性。
+//
 // <p>此接口支持<b>嵌套属性</b>，从而可以设置无限深度的子属性。
+//
 // <p>BeanWrapper 的 “extractOldValueForEditor” 默认设置为 “false”，以避免调用 getter 方法时产生的副作用。
 // 将其设置为 “true” 即可将当前属性值暴露给自定义编辑器。
 public interface BeanWrapper extends ConfigurablePropertyAccessor {

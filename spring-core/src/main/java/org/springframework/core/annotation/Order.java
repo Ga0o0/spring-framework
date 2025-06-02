@@ -60,6 +60,18 @@ import org.springframework.core.Ordered;
  * @see OrderUtils
  * @see jakarta.annotation.Priority
  */
+// {@code @Order} 定义带注解组件的排序顺序。<p>{@link #value} 是可选的，表示 {@link Ordered} 接口中定义的排序值。值越低，优先级越高。
+// 默认值为 {@code Ordered.LOWEST_PRECEDENCE}，表示优先级最低（低于任何其他指定的排序值）。
+//
+// <p><b>注意：</b>从 Spring 4.0 开始，Spring 中的许多组件都支持基于注解的排序，甚至对于集合注入也支持排序，因为会考虑目标组件的排序值（来自其目标类或其 {@code @Bean} 方法）。
+// 虽然这些排序值可能会影响注入点的优先级，但请注意，它们不会影响单例启动顺序，单例启动顺序是由依赖关系和 {@code @DependsOn} 声明（影响运行时确定的依赖图）决定的正交问题。
+//
+// <p>自 Spring 4.1 起，标准 {@link jakarta.annotation.Priority} 注解可在排序场景中直接替代此注解。
+// 请注意，当需要选择单个元素时，{@code @Priority} 可能具有其他语义（参见 {@link AnnotationAwareOrderComparator#getPriority}）。
+//
+// <p>或者，也可以通过 {@link Ordered} 接口基于每个实例确定顺序值，从而允许使用由配置确定的实例值，而不是附加到特定类的硬编码值。
+//
+// <p>有关无序对象的排序语义的详细信息，请参阅 {@link org.springframework.core.OrderComparator OrderComparator} 的 javadoc。
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
 @Documented

@@ -47,6 +47,18 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter
  * @see org.springframework.web.servlet.handler.SimpleServletHandlerAdapter
  */
+// MVC 框架 SPI，允许对核心 MVC 工作流进行参数化。
+//
+// <p>每个处理程序类型都必须实现此接口才能处理请求。此接口用于允许 {@link DispatcherServlet} 无限扩展。
+// {@code DispatcherServlet} 通过此接口访问所有已安装的处理程序，这意味着它不包含任何特定于处理程序类型的代码。
+//
+// <p>请注意，处理程序可以是 {@code Object} 类型。这是为了让其他框架的处理程序无需自定义代码即可与此框架集成，
+// 并允许使用不遵循任何特定 Java 接口的注解驱动的处理程序对象。
+//
+// <p>此接口不适用于应用程序开发人员。它适用于想要开发自己的 Web 工作流的处理程序。
+//
+// <p>注意：{@code HandlerAdapter} 实现者可以实现 {@link org.springframework.core.Ordered} 接口，
+// 以便能够指定由 {@code DispatcherServlet} 应用的排序顺序（以及优先级）。非有序实例被视为最低优先级。
 public interface HandlerAdapter {
 
 	/**
@@ -60,6 +72,14 @@ public interface HandlerAdapter {
 	 * @param handler the handler object to check
 	 * @return whether this object can use the given handler
 	 */
+	// 给定一个处理程序实例，返回此 {@code HandlerAdapter} 是否支持该处理程序。
+	// 典型的 HandlerAdapter 会根据处理程序类型进行判断。每个 HandlerAdapter 通常只支持一种处理程序类型。
+	// <p>典型实现：
+	// <p>{@code
+	// return (handler instanceof MyHandler);
+	// }
+	// @param handler 要检查的处理程序对象
+	// @return 此对象是否可以使用给定的处理程序
 	boolean supports(Object handler);
 
 	/**
@@ -74,6 +94,12 @@ public interface HandlerAdapter {
 	 * model data, or {@code null} if the request has been handled directly
 	 * @throws Exception in case of errors
 	 */
+	// 使用给定的处理程序来处理此请求。所需的工作流程可能差异很大。
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
+	// @param handler 要使用的处理程序。此对象必须先前已传递给此接口的 {@code support} 方法，并且该方法必须返回 {@code true}。
+	// @return 一个包含视图名称和所需模型数据的 ModelAndView 对象，如果请求已直接处理，则返回 {@code null}。
+	// @throws 错误时抛出异常
 	@Nullable
 	ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception;
 
@@ -86,6 +112,11 @@ public interface HandlerAdapter {
 	 * @deprecated as of 5.3.9 along with
 	 * {@link org.springframework.web.servlet.mvc.LastModified}.
 	 */
+	// 与 HttpServlet 的 {@code getLastModified} 方法的约定相同。如果处理程序类不支持，则只需返回 -1。
+	// @param request 当前 HTTP 请求
+	// @param handler 要使用的处理程序
+	// @return 给定处理程序的 lastModified 值
+	// @deprecated from 5.3.9 as well as {@link org.springframework.web.servlet.mvc.LastModified}.
 	@Deprecated
 	long getLastModified(HttpServletRequest request, Object handler);
 

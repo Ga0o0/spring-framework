@@ -75,6 +75,11 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @see #setInterceptors
  * @see org.springframework.web.servlet.HandlerInterceptor
  */
+// {@link org.springframework.web.servlet.HandlerMapping} 实现的抽象基类。
+// 支持排序、默认处理程序和处理程序拦截器，包括按路径模式映射的处理程序拦截器。
+//
+// <p>注意：此基类<i>不</i>支持公开 {@link #PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE}。
+// 此属性的支持取决于具体的子类，通常基于请求 URL 映射。
 public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		implements HandlerMapping, Ordered, BeanNameAware {
 

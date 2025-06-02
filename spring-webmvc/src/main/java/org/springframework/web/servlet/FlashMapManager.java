@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
  * @since 3.1
  * @see FlashMap
  */
+// 用于检索和保存 FlashMap 实例的策略接口。有关 Flash 属性的概述，请参阅 {@link FlashMap}。
 public interface FlashMapManager {
 
 	/**
@@ -42,6 +43,11 @@ public interface FlashMapManager {
 	 * @param response the current response
 	 * @return a FlashMap matching the current request or {@code null}
 	 */
+	// 查找与当前请求匹配的先前请求保存的 FlashMap，将其从底层存储中删除，并删除其他过期的 FlashMap 实例。
+	// <p>此方法在每个请求开始时调用，与 {@link #saveOutputFlashMap} 相反，后者仅在有要保存的 Flash 属性时调用 - 即在重定向之前。
+	// @param request 当前请求
+	// @param respond 当前响应
+	// @return 与当前请求匹配的 FlashMap 或 {@code null}
 	@Nullable
 	FlashMap retrieveAndUpdate(HttpServletRequest request, HttpServletResponse response);
 
@@ -55,6 +61,11 @@ public interface FlashMapManager {
 	 * @param request the current request
 	 * @param response the current response
 	 */
+	// 将给定的 FlashMap 保存在某些底层存储中，并设置其有效期的开始时间。
+	// <p><strong>注意：</strong>在重定向之前调用此方法，以便在提交响应之前将 FlashMap 保存在 HTTP 会话或响应 cookie 中。
+	// @param flashMap 要保存的 FlashMap
+	// @param request 当前请求
+	// @param respond 当前响应
 	void saveOutputFlashMap(FlashMap flashMap, HttpServletRequest request, HttpServletResponse response);
 
 }

@@ -74,6 +74,10 @@ import org.springframework.web.util.DisconnectedClientHelper;
  * @author Sebastien Deleuze
  * @since 3.1
  */
+// 一个 {@link AbstractHandlerMethodExceptionResolver}，通过 {@code @ExceptionHandler} 方法解析异常。
+//
+// <p>可以通过 {@link #setCustomArgumentResolvers} 和 {@link #setCustomReturnValueHandlers} 添加对自定义参数和返回值类型的支持。
+// 或者，要重新配置所有参数和返回值类型，请使用 {@link #setArgumentResolvers} 和 {@link #setReturnValueHandlers(List)}。
 public class ExceptionHandlerExceptionResolver extends AbstractHandlerMethodExceptionResolver
 		implements ApplicationContextAware, InitializingBean {
 

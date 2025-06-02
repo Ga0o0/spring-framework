@@ -40,6 +40,14 @@ package org.springframework.core;
  * @see org.springframework.core.annotation.Order
  * @see org.springframework.core.annotation.AnnotationAwareOrderComparator
  */
+// {@code Ordered} 是一个可由应<em>可排序</em>的对象实现的接口，例如在 {@code Collection} 中。
+//
+// <p>实际的 {@link #getOrder() 顺序} 可以解释为优先级排序，第一个对象（顺序值最低）具有最高优先级。
+//
+// <p>请注意，此接口还有一个<em>优先级</em>标记：{@link PriorityOrdered}。
+// 有关 {@code PriorityOrdered} 对象如何相对于<em>普通</em> {@link Ordered} 对象排序的详细信息，请参阅 {@code PriorityOrdered} 的 Javadoc。
+//
+// <p>有关无序对象的排序语义的详细信息，请参阅 {@link OrderComparator} 的 Javadoc。
 public interface Ordered {
 
 	/**

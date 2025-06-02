@@ -41,6 +41,9 @@ public interface PropertyEditorRegistry {
 	 * @param requiredType the type of the property
 	 * @param propertyEditor the editor to register
 	 */
+	// 为指定类型的所有属性注册指定的自定义属性编辑器。
+	// @param requiredType 属性的类型
+	// @param propertyEditor 要注册的编辑器
 	void registerCustomEditor(Class<?> requiredType, PropertyEditor propertyEditor);
 
 	/**

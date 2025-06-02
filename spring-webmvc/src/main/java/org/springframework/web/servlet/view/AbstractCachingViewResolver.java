@@ -43,6 +43,10 @@ import org.springframework.web.servlet.ViewResolver;
  * @author Juergen Hoeller
  * @see #loadView
  */
+// 便捷的 {@link org.springframework.web.servlet.ViewResolver} 实现基类。
+// 解析后会缓存 {@link org.springframework.web.servlet.View} 对象：这意味着无论初始视图检索的成本有多高，视图解析都不会造成性能问题。
+//
+// <p>子类需要实现 {@link #loadView} 模板方法，根据特定的视图名称和语言环境构建 View 对象。
 public abstract class AbstractCachingViewResolver extends WebApplicationObjectSupport implements ViewResolver {
 
 	/** Default maximum number of entries for the view cache: 1024. */
@@ -299,6 +303,7 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 	 * @author Arjen Poutsma
 	 * @since 5.2
 	 */
+	// 确定视图是否应该被缓存的过滤器。
 	@FunctionalInterface
 	public interface CacheFilter {
 
@@ -310,6 +315,11 @@ public abstract class AbstractCachingViewResolver extends WebApplicationObjectSu
 		 * @param locale the locale used to resolve the {@code view}
 		 * @return {@code true} if the view should be cached; {@code false} otherwise
 		 */
+		// 指示是否应缓存给定的视图。同时提供用于解析视图的名称和语言环境。
+		// @param view 视图
+		// @param viewName 用于解析 {@code view} 的名称
+		// @param locale 用于解析 {@code view} 的语言环境
+		// @return {@code true} 如果视图应被缓存；{@code false} 否则
 		boolean filter(View view, String viewName, Locale locale);
 	}
 

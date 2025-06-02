@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
  * @see LocaleContextHolder#getLocale()
  * @see SimpleTimeZoneAwareLocaleContext
  */
+// {@link LocaleContext} 接口的简单实现，始终返回指定的 {@code Locale}。
 public class SimpleLocaleContext implements LocaleContext {
 
 	@Nullable

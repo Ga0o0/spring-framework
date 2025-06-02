@@ -44,21 +44,29 @@ import org.springframework.util.CollectionUtils;
  * @see HandlerAdapter#handle
  * @see org.springframework.web.servlet.mvc.Controller#handleRequest
  */
+// Web MVC 框架中模型和视图的持有者。请注意，它们是完全不同的。此类仅持有两者，以便控制器能够在单个返回值中同时返回模型和视图。
+//
+// <p>表示由处理程序返回的模型和视图，由 DispatcherServlet 解析。视图可以采用字符串视图名称的形式，
+// 需要由 ViewResolver 对象解析；或者，也可以直接指定 View 对象。模型是一个 Map，允许使用以名称为键的多个对象。
 public class ModelAndView {
 
 	/** View instance or view name String. */
+	// 视图实例或视图名称字符串。
 	@Nullable
 	private Object view;
 
 	/** Model Map. */
+	// 模型映射。
 	@Nullable
 	private ModelMap model;
 
 	/** Optional HTTP status for the response. */
+	// 响应的可选 HTTP 状态。
 	@Nullable
 	private HttpStatusCode status;
 
 	/** Indicates whether this instance has been cleared with a call to {@link #clear()}. */
+	// 指示此实例是否已通过调用 {@link #clear()} 清除。
 	private boolean cleared = false;
 
 

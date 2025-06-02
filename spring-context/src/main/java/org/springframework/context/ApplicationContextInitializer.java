@@ -39,6 +39,13 @@ package org.springframework.context;
  * @see org.springframework.web.servlet.FrameworkServlet#setContextInitializerClasses
  * @see org.springframework.web.servlet.FrameworkServlet#applyInitializers
  */
+// 在 {@linkplain ConfigurableApplicationContext#refresh() 刷新} 之前初始化 Spring {@link ConfigurableApplicationContext} 的回调接口。
+//
+// <p>通常用于需要以编程方式初始化应用程序上下文的 Web 应用程序。例如，注册属性源或根据 {@linkplain ConfigurableApplicationContext#getEnvironment() 上下文的环境} 激活配置文件。
+// 请参阅 {@code ContextLoader} 和 {@code FrameworkServlet} 对分别声明“contextInitializerClasses”上下文参数和初始化参数的支持。
+//
+// <p>建议 {@code ApplicationContextInitializer} 处理器在调用之前检测 Spring 的 {@link org.springframework.core.Ordered Ordered} 接口是否已实现，
+// 或者是否存在 {@link org.springframework.core.annotation.Order @Order} 注解，并在调用前对实例进行相应的排序（如果存在）。
 @FunctionalInterface
 public interface ApplicationContextInitializer<C extends ConfigurableApplicationContext> {
 
@@ -46,6 +53,8 @@ public interface ApplicationContextInitializer<C extends ConfigurableApplication
 	 * Initialize the given application context.
 	 * @param applicationContext the application to configure
 	 */
+	// 初始化给定的应用程序上下文。
+	// @param applicationContext 要配置的应用程序
 	void initialize(C applicationContext);
 
 }

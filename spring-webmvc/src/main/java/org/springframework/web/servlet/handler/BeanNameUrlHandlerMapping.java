@@ -45,11 +45,24 @@ import org.springframework.util.StringUtils;
  * @author Juergen Hoeller
  * @see SimpleUrlHandlerMapping
  */
+// 实现 {@link org.springframework.web.servlet.HandlerMapping} 接口，
+// 将 URL 映射到名称以斜杠 ("/") 开头的 Bean，类似于 Struts 将 URL 映射到操作名称的方式。
+//
+// <p>这是 {@link org.springframework.web.servlet.DispatcherServlet} 以及
+// {@link org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping} 使用的默认实现。
+// 或者，{@link SimpleUrlHandlerMapping} 允许以声明方式自定义处理程序映射。
+//
+// <p>该映射是从 URL 到 Bean 名称的映射。因此，传入的 URL “/foo” 将映射到名为 “/foo” 的处理程序，
+// 如果多个 Bean 映射到单个处理程序，则将映射到 “/foo /foo2” 。
+//
+// <p>支持直接匹配（例如，给定“/test” -> 注册的“/test”）和“”匹配（例如，给定“/test” -> 注册的“/t”）。
+// 有关模式选项的详细信息，请参阅 {@link org.springframework.web.util.pattern.PathPattern} javadoc。
 public class BeanNameUrlHandlerMapping extends AbstractDetectingUrlHandlerMapping {
 
 	/**
 	 * Checks name and aliases of the given bean for URLs, starting with "/".
 	 */
+	// 检查给定 bean 的名称和别名的 URL，以“/”开头。
 	@Override
 	protected String[] determineUrlsForHandler(String beanName) {
 		List<String> urls = new ArrayList<>();

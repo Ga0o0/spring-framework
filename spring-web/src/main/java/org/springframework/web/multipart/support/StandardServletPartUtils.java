@@ -35,6 +35,7 @@ import org.springframework.web.multipart.MultipartException;
  * @see HttpServletRequest#getParts()
  * @see StandardServletMultipartResolver
  */
+// 标准 Servlet {@link Part} 处理的实用方法。
 public abstract class StandardServletPartUtils {
 
 	/**
@@ -43,6 +44,10 @@ public abstract class StandardServletPartUtils {
 	 * @return the parts in a MultiValueMap
 	 * @throws MultipartException in case of failures
 	 */
+	// 从给定的 Servlet 请求中检索所有部分。
+	// @param request Servlet 请求
+	// @return 以 MultiValueMap 形式返回所有部分
+	// @throws MultipartException（如果失败）
 	public static MultiValueMap<String, Part> getParts(HttpServletRequest request) throws MultipartException {
 		try {
 			MultiValueMap<String, Part> parts = new LinkedMultiValueMap<>();
@@ -63,6 +68,11 @@ public abstract class StandardServletPartUtils {
 	 * @return the parts in a MultiValueMap
 	 * @throws MultipartException in case of failures
 	 */
+	// 从给定的 servlet 请求中检索所有具有给定名称的部分。
+	// @param request servlet 请求
+	// @param name 要查找的名称
+	// @return 以 MultiValueMap 形式返回这些部分
+	// @throws MultipartException（如果失败）
 	public static List<Part> getParts(HttpServletRequest request, String name) throws MultipartException {
 		try {
 			List<Part> parts = new ArrayList<>(1);
@@ -85,6 +95,11 @@ public abstract class StandardServletPartUtils {
 	 * @param bindEmpty whether to bind empty parts as well
 	 * @throws MultipartException in case of failures
 	 */
+	// 绑定给定 servlet 请求的所有部分。
+	// @param request servlet 请求
+	// @param mpvs 要绑定的属性值
+	// @param bindEmpty 是否也绑定空部分
+	// @throws MultipartException 失败时抛出
 	public static void bindParts(HttpServletRequest request, MutablePropertyValues mpvs, boolean bindEmpty)
 			throws MultipartException {
 

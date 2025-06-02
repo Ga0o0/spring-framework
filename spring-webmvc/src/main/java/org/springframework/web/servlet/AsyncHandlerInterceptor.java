@@ -57,6 +57,23 @@ import org.springframework.web.method.HandlerMethod;
  * @see org.springframework.web.context.request.async.CallableProcessingInterceptor
  * @see org.springframework.web.context.request.async.DeferredResultProcessingInterceptor
  */
+// 使用在异步请求处理开始后调用的回调方法扩展 {@code HandlerInterceptor}。
+//
+// <p>当处理程序启动异步请求时，{@link DispatcherServlet} 会退出，
+// 而不会像处理同步请求那样调用 {@code postHandle} 和 {@code afterCompletion}，
+// 因为请求处理的结果（例如 ModelAndView）可能尚未准备好，并且会从另一个线程并发生成。
+// 在这种情况下，会改为调用 {@link #afterConcurrentHandlingStarted}，允许实现在将线程释放到 Servlet 容器之前执行清理线程绑定属性等任务。
+//
+// <p>异步处理完成后，请求将被分派到容器进行进一步处理。在此阶段，{@code DispatcherServlet}
+// 会调用 {@code preHandle}、{@code postHandle} 和 {@code afterCompletion}。
+// 为了区分初始请求和异步处理完成后的后续调度，拦截器可以检查 {@link jakarta.servlet.ServletRequest} 的
+// {@code jakarta.servlet.DispatcherType} 是 {@code "REQUEST"} 还是 {@code "ASYNC"}。
+//
+// <p>请注意，{@code HandlerInterceptor} 实现可能需要在异步请求超时或因网络错误而完成时执行工作。
+// 在这种情况下，Servlet 容器不会进行调度，因此 {@code postHandle} 和 {@code afterCompletion} 方法不会被调用。
+// 相反，拦截器可以通过 {@link org.springframework.web.context.request.async.WebAsyncManager WebAsyncManager}
+// 上的 {@code registerCallbackInterceptor} 和 {@code registerDeferredResultInterceptor} 方法注册以跟踪异步请求。
+// 无论异步请求处理是否启动，都可以对来自 {@code preHandle} 的每个请求主动执行此操作。
 public interface AsyncHandlerInterceptor extends HandlerInterceptor {
 
 	/**
@@ -72,6 +89,12 @@ public interface AsyncHandlerInterceptor extends HandlerInterceptor {
 	 * execution, for type and/or instance examination
 	 * @throws Exception in case of errors
 	 */
+	// 当处理程序并发执行时，调用该方法而不是 {@code postHandle} 和 {@code afterCompletion}。
+	// <p>实现可以使用提供的请求和响应，但应避免以与处理程序并发执行冲突的方式修改它们。此方法的典型用途是清理线程局部变量。
+	// @param request 当前请求
+	// @param respond 当前响应
+	// @param handler 启动异步执行的处理程序（或 {@link HandlerMethod}），用于类型和/或实例检查
+	// @throws Exception（如果发生错误）
 	default void afterConcurrentHandlingStarted(HttpServletRequest request, HttpServletResponse response,
 			Object handler) throws Exception {
 	}

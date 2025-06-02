@@ -55,6 +55,10 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @author Brian Clozel
  * @since 5.2
  */
+// {@code HandlerMapping} 实现支持 {@link RouterFunction RouterFunctions}。
+//
+// <p>如果在 {@linkplain #RouterFunctionMapping(RouterFunction) 构造时} 未提供 {@link RouterFunction}，
+// 则此映射将检测应用程序上下文中的所有路由器功能，并在 {@linkplain org.springframework.core.annotation.Order order} 中查阅它们。
 public class RouterFunctionMapping extends AbstractHandlerMapping implements InitializingBean, MatchableHandlerMapping {
 
 	@Nullable

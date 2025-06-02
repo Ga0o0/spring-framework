@@ -42,6 +42,8 @@ import org.springframework.web.context.WebApplicationContext;
  * @see org.springframework.web.HttpRequestHandler
  * @see org.springframework.web.servlet.DispatcherServlet
  */
+// 一个简单的 HttpServlet，委托给 Spring 根 Web 应用上下文中定义的 {@link HttpRequestHandler} bean。
+// 目标 bean 的名称必须与 {@code web.xml} 中定义的 HttpRequestHandlerServlet servlet 名称匹配。
 @SuppressWarnings("serial")
 public class HttpRequestHandlerServlet extends HttpServlet {
 

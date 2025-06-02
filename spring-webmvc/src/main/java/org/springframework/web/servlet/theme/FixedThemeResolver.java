@@ -35,6 +35,10 @@ import org.springframework.lang.Nullable;
  * @see #setDefaultThemeName
  * @deprecated as of 6.0 in favor of using CSS, without direct replacement
  */
+// {@link org.springframework.web.servlet.ThemeResolver} 实现仅使用固定主题。
+// 固定主题名称可以通过 “defaultThemeName” 属性定义；默认名称为 “theme”。
+//
+// <p>注意：不支持 {@code setThemeName}，因为固定主题无法更改。
 @Deprecated(since = "6.0")
 public class FixedThemeResolver extends AbstractThemeResolver {
 

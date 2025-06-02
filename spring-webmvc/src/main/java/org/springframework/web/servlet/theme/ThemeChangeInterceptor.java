@@ -33,6 +33,8 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  * @see org.springframework.web.servlet.ThemeResolver
  * @deprecated as of 6.0 in favor of using CSS, without direct replacement
  */
+// 拦截器，允许通过可配置的请求参数（默认参数名称：“theme”）在每次请求时更改当前主题。
+// @deprecated 自 6.0 起支持使用 CSS，无需直接替换
 @Deprecated(since = "6.0")
 public class ThemeChangeInterceptor implements HandlerInterceptor {
 

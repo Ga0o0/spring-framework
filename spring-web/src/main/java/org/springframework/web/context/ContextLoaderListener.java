@@ -34,6 +34,11 @@ import jakarta.servlet.ServletContextListener;
  * @see #setContextInitializers
  * @see org.springframework.web.WebApplicationInitializer
  */
+// 引导监听器用于启动和关闭 Spring 的根 {@link WebApplicationContext}。只需委托给 {@link ContextLoader} 和 {@link ContextCleanupListener} 即可。
+//
+// <p>{@code ContextLoaderListener} 支持通过 {@link #ContextLoaderListener(WebApplicationContext)}
+// 构造函数注入根 Web 应用程序上下文，从而允许在 Servlet 初始化程序中进行编程式配置。
+// 有关使用示例，请参阅 {@link org.springframework.web.WebApplicationInitializer}。
 public class ContextLoaderListener extends ContextLoader implements ServletContextListener {
 
 	/**
@@ -53,6 +58,11 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
 	 * @see #contextInitialized(ServletContextEvent)
 	 * @see #contextDestroyed(ServletContextEvent)
 	 */
+	// 创建一个新的 {@code ContextLoaderListener}，它将基于“contextClass”和“contextConfigLocation”servlet 上下文参数创建一个 Web 应用程序上下文。
+	// 有关每个参数的默认值的详细信息，请参阅 {@link ContextLoader} 超类文档。
+	// <p>此构造函数通常在 {@code web.xml} 中将 {@code ContextLoaderListener} 声明为 {@code <listener>} 时使用，此时需要使用无参数构造函数。
+	// <p>创建的应用程序上下文将注册到 ServletContext 中，属性名称为 {@link WebApplicationContext#ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE}，
+	// 并且当在此侦听器上调用 {@link #contextDestroyed} 生命周期方法时，Spring 应用程序上下文将关闭。
 	public ContextLoaderListener() {
 	}
 
@@ -89,6 +99,23 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
 	 * @see #contextInitialized(ServletContextEvent)
 	 * @see #contextDestroyed(ServletContextEvent)
 	 */
+	// 使用给定的应用上下文创建一个新的 {@code ContextLoaderListener}。
+	// 此构造函数在 Servlet 初始化程序中非常有用，因为可以通过 {@link jakarta.servlet.ServletContext#addListener} API 进行基于实例的监听器注册。
+	// <p>上下文可能已刷新，也可能尚未刷新 {@linkplain org.springframework.context.ConfigurableApplicationContext#refresh()}。
+	// 如果它 (a) 是 {@link ConfigurableWebApplicationContext} 的实现并且 (b) <strong>尚未</strong>刷新（推荐方法），则会发生以下情况：
+	// <ul>
+	// <li>如果给定的上下文尚未分配 {@linkplain org.springframework.context.ConfigurableApplicationContext#setId id}，则会为其分配一个</li>
+	// <li>{@code ServletContext} 和 {@code ServletConfig} 对象将被委托给应用程序上下文</li>
+	// <li>将调用 {@link #customizeContext} </li>
+	// <li>将应用通过“contextInitializerClasses”init-param 指定的任何
+	// {@link org.springframework.context.ApplicationContextInitializer ApplicationContextInitializer org.springframework.context.ApplicationContextInitializer ApplicationContextInitializers}。</li>
+	// <li>{@link org.springframework.context.ConfigurableApplicationContext#refresh refresh()} 将被调用</li>
+	// </ul>
+	// 如果上下文已经刷新或者没有实现 {@code ConfigurableWebApplicationContext}，则在假设用户已经根据其特定需求执行了这些操作（或没有执行）的情况下，上述任何操作都不会发生。
+	// <p>有关使用示例，请参阅 {@link org.springframework.web.WebApplicationInitializer}。
+	// <p>无论如何，给定的应用程序上下文将在属性名称 {@link WebApplicationContext#ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE} 下注册到 ServletContext 中，
+	// 并且当在此侦听器上调用 {@link #contextDestroyed} 生命周期方法时，Spring 应用程序上下文将关闭。
+	// @param context 要管理的应用程序上下文
 	public ContextLoaderListener(WebApplicationContext context) {
 		super(context);
 	}
@@ -97,6 +124,7 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
 	/**
 	 * Initialize the root web application context.
 	 */
+	// 初始化根 Web 应用程序上下文。
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		initWebApplicationContext(event.getServletContext());
@@ -106,6 +134,7 @@ public class ContextLoaderListener extends ContextLoader implements ServletConte
 	/**
 	 * Close the root web application context.
 	 */
+	// 关闭根 Web 应用程序上下文。
 	@Override
 	public void contextDestroyed(ServletContextEvent event) {
 		closeWebApplicationContext(event.getServletContext());

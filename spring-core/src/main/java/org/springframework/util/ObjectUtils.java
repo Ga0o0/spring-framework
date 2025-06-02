@@ -552,6 +552,9 @@ public abstract class ObjectUtils {
 	 * @return the object's identity as String representation,
 	 * or an empty String if the object was {@code null}
 	 */
+	// 返回对象整体身份的字符串表示形式。
+	// @param obj 对象（可能为 {@code null}）
+	// @return 对象的身份作为字符串表示形式，如果对象为 {@code null}，则返回空字符串
 	public static String identityToString(@Nullable Object obj) {
 		if (obj == null) {
 			return EMPTY_STRING;

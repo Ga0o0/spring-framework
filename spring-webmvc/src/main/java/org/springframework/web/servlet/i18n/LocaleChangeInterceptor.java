@@ -40,6 +40,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  * @since 20.06.2003
  * @see org.springframework.web.servlet.LocaleResolver
  */
+// 拦截器允许通过可配置的请求参数（默认参数名称：“locale”）在每次请求时更改当前语言环境。
 public class LocaleChangeInterceptor implements HandlerInterceptor {
 
 	/**

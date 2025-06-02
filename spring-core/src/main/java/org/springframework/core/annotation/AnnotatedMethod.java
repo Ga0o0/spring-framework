@@ -44,6 +44,7 @@ import org.springframework.util.StringUtils;
  * @see AnnotatedElementUtils
  * @see SynthesizingMethodParameter
  */
+// {@link Method} 句柄的便捷包装器，提供对方法和方法参数的深度注释自省，包括从具体目标方法中暴露接口声明的参数注释。
 public class AnnotatedMethod {
 
 	private final Method method;

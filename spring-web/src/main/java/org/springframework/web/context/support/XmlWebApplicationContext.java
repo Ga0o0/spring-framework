@@ -97,19 +97,20 @@ public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationC
 	 * @see #initBeanDefinitionReader
 	 * @see #loadBeanDefinitions
 	 */
+	// 通过 XmlBeanDefinitionReader 加载 bean 定义。
 	@Override
 	protected void loadBeanDefinitions(DefaultListableBeanFactory beanFactory) throws BeansException, IOException {
-		// Create a new XmlBeanDefinitionReader for the given BeanFactory.
+		// Create a new XmlBeanDefinitionReader for the given BeanFactory. --> 译文：为给定的 BeanFactory 创建一个新的 XmlBeanDefinitionReader。
 		XmlBeanDefinitionReader beanDefinitionReader = new XmlBeanDefinitionReader(beanFactory);
 
 		// Configure the bean definition reader with this context's
-		// resource loading environment.
+		// resource loading environment. --> 译文：使用此上下文的资源加载环境配置 bean 定义读取器。
 		beanDefinitionReader.setEnvironment(getEnvironment());
 		beanDefinitionReader.setResourceLoader(this);
 		beanDefinitionReader.setEntityResolver(new ResourceEntityResolver(this));
 
 		// Allow a subclass to provide custom initialization of the reader,
-		// then proceed with actually loading the bean definitions.
+		// then proceed with actually loading the bean definitions. --> 译文：允许子类提供读取器的自定义初始化，然后继续实际加载 bean 定义。
 		initBeanDefinitionReader(beanDefinitionReader);
 		loadBeanDefinitions(beanDefinitionReader);
 	}
@@ -123,6 +124,9 @@ public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationC
 	 * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader#setValidationMode
 	 * @see org.springframework.beans.factory.xml.XmlBeanDefinitionReader#setDocumentReaderClass
 	 */
+	// 初始化用于加载此上下文的 bean 定义的 bean 定义读取器。默认实现为空。
+	// <p>可在子类中重写，例如，关闭 XML 验证或使用不同的 XmlBeanDefinitionParser 实现。
+	// @param beanDefinitionReader 此上下文使用的 bean 定义读取器
 	protected void initBeanDefinitionReader(XmlBeanDefinitionReader beanDefinitionReader) {
 	}
 
@@ -138,6 +142,10 @@ public class XmlWebApplicationContext extends AbstractRefreshableWebApplicationC
 	 * @see #getResources
 	 * @see #getResourcePatternResolver
 	 */
+	// 使用给定的 XmlBeanDefinitionReader 加载 bean 定义。
+	// <p>bean 工厂的生命周期由 refreshBeanFactory 方法处理；因此，此方法仅用于加载和/或注册 bean 定义。
+	// <p>委托 ResourcePatternResolver 将位置模式解析为 Resource 实例。
+	// @throws IOException 如果未找到所需的 XML 文档，则抛出 @throws IOException
 	protected void loadBeanDefinitions(XmlBeanDefinitionReader reader) throws IOException {
 		String[] configLocations = getConfigLocations();
 		if (configLocations != null) {

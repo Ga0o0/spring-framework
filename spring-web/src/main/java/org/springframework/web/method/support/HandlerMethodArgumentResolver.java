@@ -30,6 +30,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @since 3.1
  * @see HandlerMethodReturnValueHandler
  */
+// 策略接口，用于在给定请求的上下文中将方法参数解析为参数值。
 public interface HandlerMethodArgumentResolver {
 
 	/**
@@ -39,6 +40,9 @@ public interface HandlerMethodArgumentResolver {
 	 * @return {@code true} if this resolver supports the supplied parameter;
 	 * {@code false} otherwise
 	 */
+	// 此解析器是否支持给定的 {@linkplain MethodParameter 方法参数}。
+	// @param parameter 要检查的方法参数
+	// @return 如果此解析器支持提供的参数，则返回 {@code true}；否则返回 {@code false}。
 	boolean supportsParameter(MethodParameter parameter);
 
 	/**
@@ -56,6 +60,14 @@ public interface HandlerMethodArgumentResolver {
 	 * @return the resolved argument value, or {@code null} if not resolvable
 	 * @throws Exception in case of errors with the preparation of argument values
 	 */
+	// 将方法参数解析为给定请求的参数值。{@link ModelAndViewContainer} 提供对请求模型的访问。
+	// {@link WebDataBinderFactory} 提供一种在需要进行数据绑定和类型转换时创建 {@link WebDataBinder} 实例的方法。
+	// @param parameter 需要解析的方法参数。此参数必须先前已传递给 {@link #supportsParameter}，且必须返回 {@code true}。
+	// @param mavContainer 当前请求的 ModelAndViewContainer
+	// @param webRequest 当前请求
+	// @param binderFactory 用于创建 {@link WebDataBinder} 实例的工厂
+	// @return 解析后的参数值，如果无法解析则返回 {@code null}
+	// @throws Exception，如果在准备参数值时出现错误
 	@Nullable
 	Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception;

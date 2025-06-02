@@ -16,16 +16,16 @@
 
 package org.springframework.web.multipart;
 
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.core.io.Resource;
+import org.springframework.lang.Nullable;
+import org.springframework.util.FileCopyUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import org.springframework.core.io.InputStreamSource;
-import org.springframework.core.io.Resource;
-import org.springframework.lang.Nullable;
-import org.springframework.util.FileCopyUtils;
 
 /**
  * A representation of an uploaded file received in a multipart request.
@@ -41,12 +41,18 @@ import org.springframework.util.FileCopyUtils;
  * @see org.springframework.web.multipart.MultipartHttpServletRequest
  * @see org.springframework.web.multipart.MultipartResolver
  */
+// 在多部分请求中收到的已上传文件的表示。
+//
+// <p>文件内容要么存储在内存中，要么临时存储在磁盘上。无论哪种情况，
+// 用户都需要根据需要将文件内容复制到会话级存储或持久性存储中。临时存储将在请求处理结束时被清除。
 public interface MultipartFile extends InputStreamSource {
 
 	/**
 	 * Return the name of the parameter in the multipart form.
 	 * @return the name of the parameter (never {@code null} or empty)
 	 */
+	// 返回多部分表单中的参数名称。
+	// @return 参数名称（绝不会为 {@code null} 或空）
 	String getName();
 
 	/**
@@ -64,6 +70,13 @@ public interface MultipartFile extends InputStreamSource {
 	 * @see <a href="https://tools.ietf.org/html/rfc7578#section-4.2">RFC 7578, Section 4.2</a>
 	 * @see <a href="https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload">Unrestricted File Upload</a>
 	 */
+	// 返回客户端文件系统中的原始文件名。
+	// <p>这可能包含路径信息，具体取决于所使用的浏览器，但通常除 Opera 浏览器外不会包含路径信息。
+	// <p><strong>注意：</strong>请记住，此文件名由客户端提供，不应盲目使用。除了不使用目录部分外，文件名还可能包含 “..” 等可被恶意使用的字符。
+	// 建议不要直接使用此文件名。最好生成一个唯一的文件名，并将其保存在某个地方，以便在必要时参考。
+	// @return 返回原始文件名；如果在多部分表单中未选择任何文件，则返回空字符串；如果未定义或不可用，则返回 {@code null}
+	// @see <a href="https://tools.ietf.org/html/rfc7578#section-4.2">RFC 7578, Section 4.2</a>
+	// @see <a href="https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload">不受限制的文件上传</a>
 	@Nullable
 	String getOriginalFilename();
 
@@ -72,6 +85,8 @@ public interface MultipartFile extends InputStreamSource {
 	 * @return the content type, or {@code null} if not defined
 	 * (or no file has been chosen in the multipart form)
 	 */
+	// 返回文件的内容类型。
+	// @return 内容类型，如果未定义（或在多部分表单中未选择任何文件），则返回 {@code null}。
 	@Nullable
 	String getContentType();
 
@@ -79,12 +94,15 @@ public interface MultipartFile extends InputStreamSource {
 	 * Return whether the uploaded file is empty, that is, either no file has
 	 * been chosen in the multipart form or the chosen file has no content.
 	 */
+	// 返回上传文件是否为空，即在多部分表单中未选择任何文件，或者所选文件没有内容。
 	boolean isEmpty();
 
 	/**
 	 * Return the size of the file in bytes.
 	 * @return the size of the file, or 0 if empty
 	 */
+	// 返回文件大小（以字节为单位）。
+	// @return 文件大小，如果为空，则返回 0。
 	long getSize();
 
 	/**
@@ -92,6 +110,9 @@ public interface MultipartFile extends InputStreamSource {
 	 * @return the contents of the file as bytes, or an empty byte array if empty
 	 * @throws IOException in case of access errors (if the temporary store fails)
 	 */
+	// 以字节数组形式返回文件内容。
+	// @return 文件内容为字节，如果为空，则返回一个空的字节数组。
+	// @throws 如果访问错误（例如临时存储失败），则抛出 IOException。
 	byte[] getBytes() throws IOException;
 
 	/**
@@ -100,6 +121,10 @@ public interface MultipartFile extends InputStreamSource {
 	 * @return the contents of the file as stream, or an empty stream if empty
 	 * @throws IOException in case of access errors (if the temporary store fails)
 	 */
+	// 返回一个用于读取文件内容的输入流。
+	// <p>用户负责关闭返回的流。
+	// @return 将文件内容作为流返回，如果为空，则返回一个空流。
+	// @throws 如果访问错误（例如临时存储失败），则抛出 IOException。
 	@Override
 	InputStream getInputStream() throws IOException;
 
@@ -110,6 +135,8 @@ public interface MultipartFile extends InputStreamSource {
 	 * @return this MultipartFile adapted to the Resource contract
 	 * @since 5.1
 	 */
+	// 返回此 MultipartFile 的资源表示。这可以用作 {@code RestTemplate} 或 {@code WebClient} 的输入，以便与 InputStream 一起公开内容长度和文件名。
+	// @return 此 MultipartFile 已根据资源契约进行适配
 	default Resource getResource() {
 		return new MultipartFileResource(this);
 	}
@@ -133,6 +160,14 @@ public interface MultipartFile extends InputStreamSource {
 	 * in the filesystem and is not available anymore for another transfer
 	 * @see jakarta.servlet.http.Part#write(String)
 	 */
+	// 将接收到的文件传输到指定的目标文件。
+	// <p>这可以是在文件系统中移动文件、在文件系统中复制文件，或者将内存中的内容保存到目标文件。如果目标文件已存在，则会先删除该文件。
+	// <p>如果目标文件已在文件系统中移动，则此操作之后无法再次调用。因此，只需调用一次此方法即可使用任何存储机制。
+	// <p><b>注意：</b>根据底层提供程序的不同，临时存储可能依赖于容器，包括此处指定的相对目标的基目录（例如，使用 Servlet 多部分处理）。
+	// 对于绝对目标，即使临时副本已存在，目标文件也可能会从其临时位置重命名/移动或重新复制。
+	// @param dest 目标文件（通常为绝对文件）
+	// @throws IOException（如果发生读取或写入错误）
+	// @throws IllegalStateException（如果文件已在文件系统中移动且无法再用于其他传输）
 	void transferTo(File dest) throws IOException, IllegalStateException;
 
 	/**
@@ -142,6 +177,8 @@ public interface MultipartFile extends InputStreamSource {
 	 * @see #getInputStream()
 	 * @see #transferTo(File)
  	 */
+	// 将接收到的文件传输到给定的目标文件。
+	// <p>默认实现只是复制文件输入流。
 	default void transferTo(Path dest) throws IOException, IllegalStateException {
 		FileCopyUtils.copy(getInputStream(), Files.newOutputStream(dest));
 	}

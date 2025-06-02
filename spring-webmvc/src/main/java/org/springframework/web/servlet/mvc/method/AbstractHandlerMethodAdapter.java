@@ -33,6 +33,7 @@ import org.springframework.web.servlet.support.WebContentGenerator;
  * @author Arjen Poutsma
  * @since 3.1
  */
+// 支持 {@link HandlerMethod} 类型处理程序的 {@link HandlerAdapter} 实现的抽象基类。
 public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator implements HandlerAdapter, Ordered {
 
 	private int order = Ordered.LOWEST_PRECEDENCE;

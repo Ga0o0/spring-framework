@@ -54,6 +54,7 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	 * Internal representation of the original path supplied by the user,
 	 * used for creating relative paths and resolving URLs and InputStreams.
 	 */
+	// 用户提供的原始路径的内部表示，用于创建相对路径和解析 URL 和 InputStreams。
 	private final String path;
 
 	private final String absolutePath;
@@ -118,6 +119,13 @@ public class ClassPathResource extends AbstractFileResolvingResource {
 	 * @see ClassUtils#getDefaultClassLoader()
 	 * @see ModuleResource
 	 */
+	// 为 {@code Class} 用法创建一个新的 {@code ClassPathResource}。
+	// <p>路径可以是相对于给定类的相对路径，也可以是通过前导斜杠在类路径中表示绝对路径。
+	// <p>如果提供的 {@code Class} 为 {@code null}，则将使用默认类加载器加载资源。
+	// <p>这对于模块系统内的资源访问也很有用，可以从给定 {@code Class} 的包含模块加载资源。请参阅 {@link ModuleResource} 及其 javadoc。
+	// @param path 类路径中的相对路径或绝对路径
+	// @param clazz 类用于加载资源
+	// @see ClassUtils#getDefaultClassLoader()
 	public ClassPathResource(String path, @Nullable Class<?> clazz) {
 		Assert.notNull(path, "Path must not be null");
 		this.path = StringUtils.cleanPath(path);

@@ -55,6 +55,8 @@ import org.springframework.web.multipart.MultipartFile;
  * @since 3.1
  * @see StandardServletMultipartResolver
  */
+// Spring MultipartHttpServletRequest 适配器，包装 Servlet HttpServletRequest 及其 Part 对象。
+// 参数通过原生请求的 getParameter 方法公开，无需我们进行任何自定义处理。
 public class StandardMultipartHttpServletRequest extends AbstractMultipartHttpServletRequest {
 
 	@Nullable

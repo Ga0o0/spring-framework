@@ -30,6 +30,9 @@ import org.springframework.web.servlet.LocaleResolver;
  * @since 1.2.9
  * @see #setDefaultLocale
  */
+// {@link LocaleResolver} 实现的抽象基类。
+//
+// <p>提供对 {@linkplain #setDefaultLocale(Locale) 默认语言环境} 的支持。
 public abstract class AbstractLocaleResolver implements LocaleResolver {
 
 	@Nullable
@@ -40,6 +43,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 	 * Set a default {@link Locale} that this resolver will return if no other
 	 * locale is found.
 	 */
+	// 设置默认的 {@link Locale}，如果未找到其他语言环境，此解析器将返回该默认语言环境。
 	public void setDefaultLocale(@Nullable Locale defaultLocale) {
 		this.defaultLocale = defaultLocale;
 	}
@@ -48,6 +52,7 @@ public abstract class AbstractLocaleResolver implements LocaleResolver {
 	 * Get the default {@link Locale} that this resolver is supposed to fall back
 	 * to, if any.
 	 */
+	// 获取此解析器应该回退到的默认 {@link Locale}（如果有）。
 	@Nullable
 	protected Locale getDefaultLocale() {
 		return this.defaultLocale;

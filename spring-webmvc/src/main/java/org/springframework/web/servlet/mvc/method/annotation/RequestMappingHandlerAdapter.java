@@ -119,18 +119,24 @@ import org.springframework.web.util.WebUtils;
  * @see HandlerMethodArgumentResolver
  * @see HandlerMethodReturnValueHandler
  */
+// {@link AbstractHandlerMethodAdapter} 的扩展，支持 {@link RequestMapping @RequestMapping} 注释的 {@link HandlerMethod HandlerMethods}。
+//
+// <p>可以通过 {@link #setCustomArgumentResolvers} 和 {@link #setCustomReturnValueHandlers} 添加对自定义参数和返回值类型的支持，
+// 或者，要重新配置所有参数和返回值类型，请使用 {@link #setArgumentResolvers} 和 {@link #setReturnValueHandlers}。
 public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		implements BeanFactoryAware, InitializingBean {
 
 	/**
 	 * MethodFilter that matches {@link InitBinder @InitBinder} methods.
 	 */
+	// 与 {@link InitBinder @InitBinder} 方法匹配的 MethodFilter。
 	public static final MethodFilter INIT_BINDER_METHODS = method ->
 			AnnotatedElementUtils.hasAnnotation(method, InitBinder.class);
 
 	/**
 	 * MethodFilter that matches {@link ModelAttribute @ModelAttribute} methods.
 	 */
+	// 与 {@link ModelAttribute @ModelAttribute} 方法匹配的 MethodFilter。
 	public static final MethodFilter MODEL_ATTRIBUTE_METHODS = method ->
 			(!AnnotatedElementUtils.hasAnnotation(method, RequestMapping.class) &&
 					AnnotatedElementUtils.hasAnnotation(method, ModelAttribute.class));

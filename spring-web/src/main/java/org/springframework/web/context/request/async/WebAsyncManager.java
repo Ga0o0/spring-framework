@@ -58,6 +58,12 @@ import org.springframework.web.context.request.async.DeferredResult.DeferredResu
  * @see org.springframework.web.filter.OncePerRequestFilter#shouldNotFilterAsyncDispatch
  * @see org.springframework.web.filter.OncePerRequestFilter#isAsyncDispatch
  */
+// 用于管理异步请求处理的核心类，主要用作 SPI，通常不直接由应用程序类使用。
+//
+// <p>异步场景从线程 (T1) 中的常规请求处理开始。可以通过调用 {@link #startCallableProcessing(Callable, Object...) startCallableProcessing}
+// 或 {@link #startDeferredResultProcessing(DeferredResult, Object...) startDeferredResultProcessing} 来启动并发请求处理，
+// 这两个方法都会在单独的线程 (T2) 中生成结果。结果将被保存，请求将被分派到容器，以便在第三个线程 (T3) 中使用保存的结果继续处理。
+// 在分派的线程 (T3) 中，可以通过 {@link #getConcurrentResult()} 访问保存的结果，或通过 {@link #hasConcurrentResult()} 检测其存在。
 public final class WebAsyncManager {
 
 	private static final Object RESULT_NONE = new Object();

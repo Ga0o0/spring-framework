@@ -121,6 +121,8 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * <p>If none specified, a default environment will be initialized via
 	 * {@link #createEnvironment()}.
 	 */
+	// 返回与此 servlet 关联的 {@link Environment}。
+	// <p>如果未指定，则将通过 {@link #createEnvironment()} 初始化默认环境。
 	@Override
 	public ConfigurableEnvironment getEnvironment() {
 		if (this.environment == null) {
@@ -134,6 +136,8 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * <p>Subclasses may override this in order to configure the environment or
 	 * specialize the environment type returned.
 	 */
+	// 创建并返回一个新的 {@link StandardServletEnvironment}。
+	// <p>子类可以重写此方法，以配置环境或特化返回的环境类型。
 	protected ConfigurableEnvironment createEnvironment() {
 		return new StandardServletEnvironment();
 	}
@@ -144,20 +148,26 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * @throws ServletException if bean properties are invalid (or required
 	 * properties are missing), or if subclass initialization fails.
 	 */
+	// 将配置参数映射到此 servlet 的 bean 属性上，并调用子类初始化。
+	// @throws ServletException 如果 bean 属性无效（或缺少必需属性），或者子类初始化失败
 	@Override
 	public final void init() throws ServletException {
 
-		// Set bean properties from init parameters.
-		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties);
+		// Set bean properties from init parameters. --> 译文：从初始化参数设置 bean 属性。
+		PropertyValues pvs = new ServletConfigPropertyValues(getServletConfig(), this.requiredProperties); // 创建新的 ServletConfigPropertyValues。
 		if (!pvs.isEmpty()) {
 			try {
+				// 获取给定目标对象的 BeanWrapper，以 JavaBean 风格访问属性。
 				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(this);
+				// 创建一个新的 ServletContextResourceLoader。
 				ResourceLoader resourceLoader = new ServletContextResourceLoader(getServletContext());
+				// 为指定类型的所有属性注册指定的自定义属性编辑器。
 				bw.registerCustomEditor(Resource.class, new ResourceEditor(resourceLoader, getEnvironment()));
-				initBeanWrapper(bw);
-				bw.setPropertyValues(pvs, true);
+				initBeanWrapper(bw); // 此默认实现为空。
+				bw.setPropertyValues(pvs, true); // 执行批量更新，更好地控制行为。
 			}
 			catch (BeansException ex) {
+				// 无法在 servlet 上设置 bean 属性
 				if (logger.isErrorEnabled()) {
 					logger.error("Failed to set bean properties on servlet '" + getServletName() + "'", ex);
 				}
@@ -165,7 +175,8 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 			}
 		}
 
-		// Let subclasses do whatever initialization they like.
+		// Let subclasses do whatever initialization they like. --> 译文：让子类做任何它们喜欢的初始化。
+		// 子类可以重写此方法以执行自定义初始化。此 servlet 的所有 bean 属性都将在调用此方法之前设置。<p>此默认实现为空。
 		initServletBean();
 	}
 
@@ -177,6 +188,11 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * @throws BeansException if thrown by BeanWrapper methods
 	 * @see org.springframework.beans.BeanWrapper#registerCustomEditor
 	 */
+	// 初始化此 HttpServletBean 的 BeanWrapper，可能包含自定义编辑器。
+	// <p>此默认实现为空。
+	// @param bw 要初始化的 BeanWrapper
+	// @throws BeanWrapper 方法抛出的异常（如果抛出 BeansException）
+	// @see org.springframework.beans.BeanWrapper#registerCustomEditor 
 	protected void initBeanWrapper(BeanWrapper bw) throws BeansException {
 	}
 
@@ -187,6 +203,9 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	 * <p>This default implementation is empty.
 	 * @throws ServletException if subclass initialization fails
 	 */
+	// 子类可以重写此方法以执行自定义初始化。此 servlet 的所有 bean 属性都将在调用此方法之前设置。
+	// <p>此默认实现为空。
+	// @throws ServletException 如果子类初始化失败
 	protected void initServletBean() throws ServletException {
 	}
 
@@ -205,6 +224,7 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 	/**
 	 * PropertyValues implementation created from ServletConfig init parameters.
 	 */
+	// 从 ServletConfig 初始化参数创建的 PropertyValues 实现。
 	private static class ServletConfigPropertyValues extends MutablePropertyValues {
 
 		/**
@@ -214,6 +234,10 @@ public abstract class HttpServletBean extends HttpServlet implements Environment
 		 * we can't accept default values
 		 * @throws ServletException if any required properties are missing
 		 */
+		// 创建新的 ServletConfigPropertyValues。
+		// @param config 我们将用来获取 PropertyValues 的 ServletConfig。
+		// @param requiredProperties 我们需要的属性名称集合，不能接受默认值。
+		// @throws ServletException 如果缺少任何必需的属性
 		public ServletConfigPropertyValues(ServletConfig config, Set<String> requiredProperties)
 				throws ServletException {
 

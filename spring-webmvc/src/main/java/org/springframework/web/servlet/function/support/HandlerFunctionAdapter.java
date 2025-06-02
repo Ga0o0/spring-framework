@@ -45,6 +45,7 @@ import org.springframework.web.servlet.function.ServerResponse;
  * @author Arjen Poutsma
  * @since 5.2
  */
+// {@code HandlerAdapter} 实现支持 {@link HandlerFunction}。
 public class HandlerFunctionAdapter implements HandlerAdapter, Ordered {
 
 	private static final Log logger = LogFactory.getLog(HandlerFunctionAdapter.class);

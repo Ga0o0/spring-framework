@@ -208,6 +208,13 @@ public interface PropertyAccessor {
 	 * successfully updated.
 	 * @see #setPropertyValues(PropertyValues, boolean, boolean)
 	 */
+	// 执行批量更新，更好地控制行为。
+	// <p>请注意，执行批量更新不同于执行单个更新，因为如果遇到<b>可恢复</b>的错误（例如类型不匹配，但<b>不是</b>无效字段名称等），
+	// 此类的实现将继续更新属性，并抛出包含所有单个错误的 {@link PropertyBatchUpdateException}。稍后可以检查此异常以查看所有绑定错误。成功更新的属性将保持不变。
+	// @param pvs 要在目标对象上设置的 PropertyValues
+	// @param ignoreUnknown 是否应忽略未知属性（在 Bean 中找不到）
+	// @throws InvalidPropertyException 如果不存在此类属性或属性不可写
+	// @throws PropertyBatchUpdateException 如果在批量更新期间特定属性发生一个或多个 PropertyAccessExceptions。此异常捆绑了所有单个 PropertyAccessExceptions。所有其他属性都将成功更新。
 	void setPropertyValues(PropertyValues pvs, boolean ignoreUnknown)
 			throws BeansException;
 

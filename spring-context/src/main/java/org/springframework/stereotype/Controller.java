@@ -39,6 +39,10 @@ import org.springframework.core.annotation.AliasFor;
  * @see org.springframework.web.bind.annotation.RequestMapping
  * @see org.springframework.context.annotation.ClassPathBeanDefinitionScanner
  */
+// 指示被注解的类是“控制器”（例如，Web 控制器）。
+//
+// <p>此注解是 {@link Component @Component} 的特化，允许通过类路径扫描自动检测实现类。
+// 它通常与基于 {@link org.springframework.web.bind.annotation.RequestMapping} 注解的带注解的处理程序方法结合使用。
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

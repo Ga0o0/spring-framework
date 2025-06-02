@@ -31,6 +31,7 @@ import org.springframework.util.ObjectUtils;
  * @since 2.5
  * @see #determineUrlsForHandler
  */
+// {@link org.springframework.web.servlet.HandlerMapping} 接口的抽象实现，通过检查应用程序上下文中所有定义的 bean 来检测处理程序 bean 的 URL 映射。
 public abstract class AbstractDetectingUrlHandlerMapping extends AbstractUrlHandlerMapping {
 
 	private boolean detectHandlersInAncestorContexts = false;

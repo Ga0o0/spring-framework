@@ -37,6 +37,9 @@ import org.springframework.util.Assert;
  * @see Conventions#getVariableName
  * @see org.springframework.web.servlet.ModelAndView
  */
+// {@link java.util.Map} 的实现，用于构建用于 UI 工具的模型数据。支持链式调用和模型属性名生成。
+//
+// <p>此类用作 Servlet MVC 的通用模型持有者，但并不依赖于它。请查看 {@link Model} 接口获取接口变体。
 @SuppressWarnings("serial")
 public class ModelMap extends LinkedHashMap<String, Object> {
 

@@ -36,15 +36,15 @@ import org.springframework.web.servlet.support.RequestContext;
  * from the perspective of the DispatcherServlet context definition:
  *
  * <pre class="code">
- * &lt;bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;
- *   &lt;property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/&gt;
- *   &lt;property name="prefix" value="/WEB-INF/jsp/"/&gt;
- *   &lt;property name="suffix" value=".jsp"/&gt;
- * &lt;/bean&gt;
+ * <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+ *   <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+ *   <property name="prefix" value="/WEB-INF/jsp/"/>
+ *   <property name="suffix" value=".jsp"/>
+ * </bean>
  *
- * &lt;bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"&gt;
- *   &lt;property name="basename" value="messages"/&gt;
- * &lt;/bean&gt;</pre>
+ * <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+ *   <property name="basename" value="messages"/>
+ * </bean></pre>
  *
  * Every view name returned from a handler will be translated to a JSP
  * resource (for example: "myView" &rarr; "/WEB-INF/jsp/myView.jsp"), using
@@ -75,6 +75,37 @@ import org.springframework.web.servlet.support.RequestContext;
  * @see org.springframework.context.support.ResourceBundleMessageSource
  * @see org.springframework.context.support.ReloadableResourceBundleMessageSource
  */
+// {@link InternalResourceView} 专门针对 JSTL 页面，即使用 JSP 标准标签库的 JSP 页面。
+//
+// <p>使用 Spring 的语言环境和 {@link org.springframework.context.MessageSource}，公开 JSTL 特定的请求属性，
+// 指定 JSTL 格式和消息标签的语言环境和资源包。
+// 
+// <p>从 DispatcherServlet 上下文定义的角度来看，{@link InternalResourceViewResolver} 的典型用法如下：
+// 
+// <pre class="code"> 
+// <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver> 
+// 		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/> 
+// 		<property name="prefix" value="/WEB-INF/jsp/"/> 
+// 		<property name="suffix" value=".jsp"/> 
+// </bean> 
+// <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource"/> 
+// 		<property name="basename" value="messages"/>
+// </bean>
+// </pre>
+//
+// 每个从处理器返回的视图名称都将转换为 JSP 资源（例如：“myView” &rarr; “/WEB-INF/jsp/myView.jsp”），并使用此视图类来启用显式 JSTL 支持。
+//
+// <p>指定的 MessageSource 会从类路径下的“messages.properties”等文件加载消息。
+// 这将自动作为 JSTL 本地化上下文暴露给视图，JSTL fmt 标签（message 等）将使用该上下文。为了实现更复杂的功能，
+// 请考虑使用 Spring 的 ReloadableResourceBundleMessageSource 代替标准的 ResourceBundleMessageSource。
+// 当然，任何其他 Spring 组件都可以共享同一个 MessageSource。
+//
+// <p>这是一个单独的类，主要是为了避免 {@link InternalResourceView} 本身的 JSTL 依赖。
+// 在 J2EE 1.4 之前，JSTL 并非 J2EE 标准的一部分，因此我们不能假设 JSTL API jar 文件在类路径中可用。
+//
+// <p>提示：将 {@link #setExposeContextBeansAsAttributes} 标志设置为“true”，
+// 以使应用程序上下文中的所有 Spring bean 都可以在 JSTL 表达式（例如，在 {@code c:out} 值表达式中）中访问。
+// 这也会使得所有这些 bean 都可以在 JSP 2.0 页面中的普通 {@code ${...}} 表达式中访问。
 public class JstlView extends InternalResourceView {
 
 	@Nullable

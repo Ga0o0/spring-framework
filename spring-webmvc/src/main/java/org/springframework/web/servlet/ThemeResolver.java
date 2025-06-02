@@ -47,6 +47,13 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.ui.context.ThemeSource
  * @deprecated as of 6.0 in favor of using CSS, without direct replacement
  */
+// 基于 Web 的主题解析策略接口，允许通过请求进行主题解析，也允许通过请求和响应进行主题修改。
+//
+// <p>此接口允许基于会话、Cookie 等实现。默认实现是 {@link org.springframework.web.servlet.theme.FixedThemeResolver}，即使用已配置的默认主题。
+//
+// <p>请注意，此解析器仅负责确定当前主题名称。DispatcherServlet 通过相应的 ThemeSource（即当前的 WebApplicationContext）查找已解析主题名称的 Theme 实例。
+//
+// <p>使用 {@link org.springframework.web.servlet.support.RequestContext#getTheme()} 在控制器或视图中检索当前主题，与实际的解析策略无关。
 @Deprecated(since = "6.0")
 public interface ThemeResolver {
 
@@ -56,6 +63,9 @@ public interface ThemeResolver {
 	 * @param request the request to be used for resolution
 	 * @return the current theme name
 	 */
+	// 通过给定的请求解析当前主题名称。无论如何都应返回默认主题作为后备。
+	// @param request 用于解析的请求
+	// @return 当前主题名称
 	String resolveThemeName(HttpServletRequest request);
 
 	/**
@@ -66,6 +76,11 @@ public interface ThemeResolver {
 	 * @throws UnsupportedOperationException if the ThemeResolver implementation
 	 * does not support dynamic changing of the theme
 	 */
+	// 将当前主题名称设置为给定名称。
+	// @param request 用于修改主题名称的请求
+	// @param respond 用于修改主题名称的响应
+	// @param themeName 新的主题名称（{@code null} 或为空以重置）
+	// 如果 ThemeResolver 实现不支持动态更改主题，则抛出 UnsupportedOperationException
 	void setThemeName(HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable String themeName);
 
 }

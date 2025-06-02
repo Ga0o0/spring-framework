@@ -47,16 +47,24 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest
  * @see org.springframework.web.multipart.support.AbstractMultipartHttpServletRequest
  */
+// 提供额外的方法用于在 servlet 请求中处理多部分内容，从而允许访问已上传的文件。
+//
+// <p>实现还需要重写标准的 {@link jakarta.servlet.ServletRequest} 方法以访问参数，从而可以使用多部分参数。
+//
+// <p>一个具体的实现是 {@link org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest}。
+// 作为中间步骤，可以对 {@link org.springframework.web.multipart.support.AbstractMultipartHttpServletRequest} 进行子类化。
 public interface MultipartHttpServletRequest extends HttpServletRequest, MultipartRequest {
 
 	/**
 	 * Return this request's method as a convenient HttpMethod instance.
 	 */
+	// 将此请求的方法作为便捷的 HttpMethod 实例返回。
 	HttpMethod getRequestMethod();
 
 	/**
 	 * Return this request's headers as a convenient HttpHeaders instance.
 	 */
+	// 将此请求的标头作为便捷的 HttpHeaders 实例返回。
 	HttpHeaders getRequestHeaders();
 
 	/**
@@ -65,6 +73,8 @@ public interface MultipartHttpServletRequest extends HttpServletRequest, Multipa
 	 * then all headers are returned. Otherwise, e.g. for a file upload, the
 	 * returned headers may expose a 'Content-Type' if available.
 	 */
+	// 返回多部分请求中指定部分的标头。
+	// <p>如果底层实现支持访问部分标头，则返回所有标头。否则，例如对于文件上传，返回的标头可能会暴露 “Content-Type”（如果可用）。
 	@Nullable
 	HttpHeaders getMultipartHeaders(String paramOrFileName);
 

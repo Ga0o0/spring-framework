@@ -62,6 +62,10 @@ import org.springframework.util.ObjectUtils;
  * @since 2.0
  * @see org.springframework.core.annotation.SynthesizingMethodParameter
  */
+// 辅助类，封装了方法参数的规范，例如 {@link Method} 或 {@link Constructor} 加上参数索引以及声明的泛型类型的嵌套类型索引。可用作传递的规范对象。
+//
+// <p>从 4.2 开始，有一个 {@link org.springframework.core.annotation.SynthesizingMethodParameter} 子类可用，
+// 它可以合成带有属性别名的注解。该子类尤其适用于 Web 和消息端点处理。
 public class MethodParameter {
 
 	private static final Annotation[] EMPTY_ANNOTATION_ARRAY = new Annotation[0];

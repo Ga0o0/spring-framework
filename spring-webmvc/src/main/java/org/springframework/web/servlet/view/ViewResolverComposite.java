@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ViewResolver;
  * @author Rossen Stoyanchev
  * @since 4.1
  */
+// 委托给其他人的 {@link org.springframework.web.servlet.ViewResolver}。
 public class ViewResolverComposite implements ViewResolver, Ordered, InitializingBean,
 		ApplicationContextAware, ServletContextAware {
 

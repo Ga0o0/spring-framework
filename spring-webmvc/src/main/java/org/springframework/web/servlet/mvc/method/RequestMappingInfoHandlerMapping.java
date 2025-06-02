@@ -65,6 +65,7 @@ import org.springframework.web.util.pattern.PathPattern;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// {@link RequestMappingInfo} 定义请求和处理程序方法之间的映射的类的抽象基类。
 public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMethodMapping<RequestMappingInfo> {
 
 	private static final Method HTTP_OPTIONS_HANDLE_METHOD;

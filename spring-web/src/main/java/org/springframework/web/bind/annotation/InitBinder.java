@@ -55,6 +55,20 @@ import org.springframework.aot.hint.annotation.Reflective;
  * @see org.springframework.web.bind.WebDataBinder
  * @see org.springframework.web.context.request.WebRequest
  */
+// 此注解用于标识初始化 {@link org.springframework.web.bind.WebDataBinder} 的方法，
+// 该方法将用于填充带注解的处理程序方法的命令和表单对象参数。
+//
+// <p><strong>警告</strong>：数据绑定可能会暴露对象图中不应由外部客户端访问或修改的部分，从而导致安全问题。
+// 因此，在设计和使用数据绑定时，应仔细考虑安全性。有关更多详细信息，请参阅参考手册中专门针对
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-initbinder-model-design">Spring Web MVC</a> 和
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#webflux-ann-initbinder-model-design">Spring WebFlux</a> 的数据绑定章节。
+//
+// <p>{@code @InitBinder} 方法支持 {@link RequestMapping @RequestMapping} 方法支持的所有参数，但命令/表单对象和相应的验证结果对象除外。
+// {@code @InitBinder} 方法不能有返回值；它们通常声明为 {@code void}。
+//
+// <p>典型的参数是 {@link org.springframework.web.bind.WebDataBinder} 与
+// {@link org.springframework.web.context.request.WebRequest} 或 {@link java.util.Locale} 的组合，
+// 从而允许注册特定于上下文的编辑器。
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

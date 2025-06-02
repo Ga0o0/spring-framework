@@ -63,6 +63,28 @@ import org.springframework.web.multipart.MultipartResolver;
  * @see #setStrictServletCompliance
  * @see HttpServletRequest#getParts()
  */
+// 基于 Servlet {@link jakarta.servlet.http.Part} API 的 {@link MultipartResolver} 接口的标准实现。
+// 作为“multipartResolver”bean 添加到 Spring DispatcherServlet 上下文中，无需在 bean 级别进行任何额外配置（见下文）。
+//
+// <p>此解析器变体按原样使用 Servlet 容器的多部分解析器，这可能会使应用程序暴露于容器实现差异。
+// 另请参阅此解析器的配置选项 {@linkplain #setStrictServletCompliance strict Servlet compliance}，
+// 该选项将 Spring 的 {@link MultipartHttpServletRequest} 的适用范围缩小到仅适用于表单数据。
+//
+// <p><b>注意：</b> 要使用基于 Servlet 容器的 Multipart 解析，您需要在 {@code web.xml} 文件中为受影响的 Servlet 添加“multipart-config”部分，
+// 或在编程式 Servlet 注册中使用 {@link jakarta.servlet.MultipartConfigElement}，
+// 或者（如果是自定义 Servlet 类）在您的 Servlet 类上使用 {@link jakarta.servlet.annotation.MultipartConfig} 注解。
+// 诸如最大大小或存储位置之类的配置设置需要在 Servlet 注册级别应用；Servlet 容器不允许在 MultipartResolver 级别设置这些设置。
+//
+// <pre class="code">
+// public class AppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+// 		// ...
+// 		@Override
+// 		protected void customizeRegistration(ServletRegistration.Dynamic Registration) {
+// 			// 还可以选择设置 maxFileSize、maxRequestSize、fileSizeThreshold
+// 			Registration.setMultipartConfig(new MultipartConfigElement("/tmp"));
+// 		}
+// }
+// </pre>
 public class StandardServletMultipartResolver implements MultipartResolver {
 
 	private boolean resolveLazily = false;

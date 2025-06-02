@@ -42,6 +42,10 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.context.support.MessageSourceAccessor
  * @see org.springframework.web.servlet.DispatcherServlet
  */
+// 简单的持有类，将 LocaleContext 实例与当前线程关联。如果 {@code inheritable} 标志设置为 {@code true}，则当前线程生成的任何子线程都将继承 LocaleContext。
+//
+// <p>在 Spring 中，可根据需要用作当前 Locale 的中心持有者：例如，在 MessageSourceAccessor 中。DispatcherServlet 会自动在此处公开其当前 Locale。
+// 其他应用程序也可以公开其 Locale，以使 MessageSourceAccessor 等类自动使用该 Locale。
 public final class LocaleContextHolder {
 
 	private static final ThreadLocal<LocaleContext> localeContextHolder =

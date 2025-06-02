@@ -52,6 +52,16 @@ import org.springframework.web.servlet.ModelAndView;
  * @see SimpleServletPostProcessor
  * @see org.springframework.web.servlet.mvc.ServletWrappingController
  */
+// 适配器将 Servlet 接口与通用 DispatcherServlet 结合使用。调用 Servlet 的 {@code service} 方法来处理请求。
+//
+// <p>不明确支持上次修改时间检查：这通常由 Servlet 实现本身处理（通常从 HttpServlet 基类派生）。
+//
+// <p>此适配器默认不激活；它需要在 DispatcherServlet 上下文中定义为 bean。它将自动应用于实现 Servlet 接口的映射处理程序 bean。
+//
+// <p>请注意，定义为 bean 的 Servlet 实例将不会接收初始化和销毁回调，除非在 DispatcherServlet 上下文中定义了特殊的后处理器
+// （例如 SimpleServletPostProcessor）。
+//
+// <p><b>或者，考虑使用 Spring 的 ServletWrappingController 包装 Servlet。</b>这尤其适用于现有的 Servlet 类，允许指定 Servlet 初始化参数等。
 public class SimpleServletHandlerAdapter implements HandlerAdapter {
 
 	@Override

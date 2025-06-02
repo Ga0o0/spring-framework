@@ -28,6 +28,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @since 3.1
  * @see HandlerMethodArgumentResolver
  */
+// 策略接口用于处理处理程序方法调用返回的值。
 public interface HandlerMethodReturnValueHandler {
 
 	/**
@@ -37,6 +38,9 @@ public interface HandlerMethodReturnValueHandler {
 	 * @return {@code true} if this handler supports the supplied return type;
 	 * {@code false} otherwise
 	 */
+	// 此处理程序是否支持给定的 {@linkplain MethodParameter 方法返回类型}。
+	// @param returnType 要检查的方法返回类型
+	// @return 如果此处理程序支持提供的返回类型，则返回 {@code true}；否则返回 {@code false}。
 	boolean supportsReturnType(MethodParameter returnType);
 
 	/**
@@ -52,6 +56,13 @@ public interface HandlerMethodReturnValueHandler {
 	 * @param webRequest the current request
 	 * @throws Exception if the return value handling results in an error
 	 */
+	// 通过向模型添加属性并设置视图或将 {@link ModelAndViewContainer#setRequestHandled} 标志
+	// 设置为 {@code true} 来处理给定的返回值，以指示响应已被直接处理。
+	// @param returnValue 处理程序方法的返回值
+	// @param returnType 返回值的类型。此类型必须先前已传递给 {@link #supportsReturnType}，而后者必须返回 {@code true}。
+	// @param mavContainer 当前请求的 ModelAndViewContainer
+	// @param webRequest 当前请求
+	// @throws Exception 如果返回值处理导致错误
 	void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
 			ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception;
 

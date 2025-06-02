@@ -54,6 +54,21 @@ import org.springframework.web.util.ServletRequestPathUtils;
  * @see org.springframework.web.servlet.RequestToViewNameTranslator
  * @see org.springframework.web.servlet.ViewResolver
  */
+// {@link RequestToViewNameTranslator} 只是将传入请求的 URI 转换为视图名称。
+//
+// <p>可以在 {@link org.springframework.web.servlet.DispatcherServlet} 上下文中明确定义为 {@code viewNameTranslator} bean。
+// 否则，将使用简单的默认实例。<p>默认转换只是去除 URI 的前导斜杠和尾随斜杠以及文件扩展名，并将结果作为视图名称返回，
+// 并根据需要添加配置的 {@link #setPrefix prefix} 和 {@link #setSuffix suffix}。
+//
+// <p>可以分别使用 {@link #setStripLeadingSlash stripLeadingSlash} 和 {@link #setStripExtension stripExtension} 属性禁用去除前导斜杠和文件扩展名的功能。
+//
+// <p>以下是一些请求到视图名称转换的示例。
+//
+// <ul>
+// <li>{@code http://localhost:8080/gamecast/display.html} &raquo; {@code display} </li>
+// <li>{@code http://localhost:8080/gamecast/displayShoppingCart.html} &raquo; {@code displayShoppingCart} </li>
+// <li>{@code http://localhost:8080/gamecast/admin/index.html} &raquo; {@code admin/index} </li>
+// </ul>
 public class DefaultRequestToViewNameTranslator implements RequestToViewNameTranslator {
 
 	private static final String SLASH = "/";
@@ -144,6 +159,9 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * @return the transformed path, with slashes and extensions stripped
 	 * if desired
 	 */
+	// 转换请求 URI（在 webapp 上下文中），去除斜杠和扩展名，并根据需要替换分隔符。
+	// @param lookupPath 当前请求的查找路径，由 UrlPathHelper 确定
+	// @return 转换后的路径，如果需要，可以去除斜杠和扩展名
 	@Nullable
 	protected String transformPath(String lookupPath) {
 		String path = lookupPath;

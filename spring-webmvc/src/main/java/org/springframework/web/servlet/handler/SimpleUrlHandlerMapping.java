@@ -55,6 +55,21 @@ import org.springframework.util.CollectionUtils;
  * @see #setUrlMap
  * @see BeanNameUrlHandlerMapping
  */
+// 实现 {@link org.springframework.web.servlet.HandlerMapping} 接口，将 URL 映射到请求处理程序 Bean。
+// 支持映射到 Bean 实例和 Bean 名称；非单例处理程序必须使用 Bean 名称。
+//
+// <p>“urlMap”属性适用于使用 Bean 引用填充处理程序映射，例如通过 XML Bean 定义中的 map 元素。
+//
+// <p>可以通过“mappings”属性设置 Bean 名称的映射，其格式为 {@code java.util.Properties} 类接受的格式，如下所示：
+// <pre class="code">
+// 	/welcome.html=ticketController
+// 	/show.html=ticketController
+// </pre>
+//
+// <p>语法为 {@code PATH=HANDLER_BEAN_NAME}。如果路径不以斜杠开头，则会在前面添加一个斜杠。
+//
+// <p>支持直接匹配（例如，给定“/test” -> 注册的“/test”）和“”匹配（例如，给定“/test” -> 注册的“/t”）。
+// 有关模式选项的详细信息，请参阅 {@link org.springframework.web.util.pattern.PathPattern} javadoc。
 public class SimpleUrlHandlerMapping extends AbstractUrlHandlerMapping {
 
 	private final Map<String, Object> urlMap = new LinkedHashMap<>();

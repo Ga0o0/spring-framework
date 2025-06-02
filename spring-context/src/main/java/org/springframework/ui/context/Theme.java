@@ -30,6 +30,8 @@ import org.springframework.context.MessageSource;
  * @see org.springframework.web.servlet.ThemeResolver
  * @deprecated as of 6.0 in favor of using CSS, without direct replacement
  */
+// 主题可以解析特定于主题的消息、代码、文件路径等（例如，Web 环境中的 CSS 和图像文件）。
+// 公开的 {@link org.springframework.context.MessageSource} 支持特定于主题的参数化和国际化。
 @Deprecated(since = "6.0")
 public interface Theme {
 
@@ -37,6 +39,8 @@ public interface Theme {
 	 * Return the name of the theme.
 	 * @return the name of the theme (never {@code null})
 	 */
+	// 返回主题的名称。
+	// @return 主题的名称（永远不会为 {@code null}）
 	String getName();
 
 	/**
@@ -44,6 +48,8 @@ public interface Theme {
 	 * with respect to this theme.
 	 * @return the theme-specific MessageSource (never {@code null})
 	 */
+	// 返回解析与此主题相关的消息的特定 MessageSource。
+	// @return 特定于主题的 MessageSource（永不为 {@code null}）
 	MessageSource getMessageSource();
 
 }

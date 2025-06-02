@@ -46,6 +46,17 @@ import org.springframework.util.StringUtils;
  * @since 3.1
  * @see FlashMapManager
  */
+// FlashMap 为一个请求提供了一种存储属性的方法，该属性旨在供另一个请求使用。
+// 这在从一个 URL 重定向到另一个 URL 时最常见，例如 Post/Redirect/Get 模式。
+// FlashMap 在重定向之前保存（通常在会话中），并在重定向完成后立即可用并被删除。
+//
+// <p>FlashMap 可以设置请求路径和请求参数，以帮助识别目标请求。
+// 如果没有这些信息，FlashMap 将可用于下一个请求，该请求可能是也可能不是预期的接收者。
+// 重定向时，目标 URL 是已知的，并且可以使用该信息更新 FlashMap。
+// 使用 {@code org.springframework.web.servlet.view.RedirectView} 时会自动完成此操作。
+//
+// <p>注意：带注解的控制器通常不会直接使用 FlashMap。
+// 有关在带注解的控制器中使用 Flash 属性的概述，请参阅 {@code org.springframework.web.servlet.mvc.support.RedirectAttributes}。
 @SuppressWarnings("serial")
 public final class FlashMap extends HashMap<String, Object> implements Comparable<FlashMap> {
 

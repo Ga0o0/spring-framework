@@ -46,6 +46,16 @@ import org.springframework.ui.ModelMap;
  * @see org.springframework.web.servlet.handler.AbstractHandlerMapping#setInterceptors
  * @see org.springframework.web.servlet.HandlerInterceptor
  */
+// 用于通用 Web 请求拦截的接口。允许基于 {@link WebRequest} 抽象构建，应用于 Servlet 请求。
+//
+// <p>此接口采用 MVC 风格的请求处理方式：执行处理程序，公开一组模型对象，然后基于该模型渲染视图。
+// 或者，处理程序也可以完全处理请求，不渲染任何视图。
+//
+// <p>在异步处理场景中，处理程序可以在单独的线程中执行，而主线程退出时不渲染或调用 {@code postHandle} 和 {@code afterCompletion} 回调。
+// 并发处理程序执行完成后，请求将被重新调度以继续渲染模型，并且此契约的所有方法都将再次调用。
+// 更多选项和注释，请参阅 {@code org.springframework.web.context.request.async.AsyncWebRequestInterceptor}
+//
+// <p>此接口刻意简化，以尽可能减少通用请求拦截器的依赖关系。
 public interface WebRequestInterceptor {
 
 	/**

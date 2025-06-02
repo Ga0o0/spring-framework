@@ -33,6 +33,7 @@ import org.springframework.web.util.WebUtils;
  * @author Juergen Hoeller
  * @since 3.1.1
  */
+// 在 HTTP 会话中存储和检索 {@link FlashMap} 实例。
 public class SessionFlashMapManager extends AbstractFlashMapManager {
 
 	private static final String FLASH_MAPS_SESSION_ATTRIBUTE = SessionFlashMapManager.class.getName() + ".FLASH_MAPS";

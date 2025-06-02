@@ -66,6 +66,9 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @param <T> the mapping for a {@link HandlerMethod} containing the conditions
  * needed to match the handler method to an incoming request.
  */
+// {@link HandlerMapping} 实现的抽象基类，定义请求和 {@link HandlerMethod} 之间的映射。
+//
+// <p>对于每个已注册的处理程序方法，都会维护一个唯一的映射，并通过子类定义映射类型 {@code <T>} 的详细信息。
 public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMapping implements InitializingBean {
 
 	/**

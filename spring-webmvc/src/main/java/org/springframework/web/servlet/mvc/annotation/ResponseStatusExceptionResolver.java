@@ -54,6 +54,15 @@ import org.springframework.web.servlet.handler.AbstractHandlerExceptionResolver;
  * @see ResponseStatus
  * @see ResponseStatusException
  */
+// {@link org.springframework.web.servlet.HandlerExceptionResolver HandlerExceptionResolver}
+// 使用 {@link ResponseStatus @ResponseStatus} 注解将异常映射到 HTTP 状态代码。
+//
+// <p>此异常解析器在 {@link org.springframework.web.servlet.DispatcherServlet}、MVC Java 配置和 MVC 命名空间中默认启用。
+//
+// <p>从 4.2 开始，此解析器还会递归查找导致异常时存在的 {@code @ResponseStatus}，并且从 4.2.2 开始，
+// 此解析器支持自定义组合注解中 {@code @ResponseStatus} 的属性覆盖。
+//
+// <p>从 5.0 开始，此解析器还支持 {@link ResponseStatusException}。
 public class ResponseStatusExceptionResolver extends AbstractHandlerExceptionResolver implements MessageSourceAware {
 
 	@Nullable

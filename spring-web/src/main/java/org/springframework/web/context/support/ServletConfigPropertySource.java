@@ -30,6 +30,7 @@ import org.springframework.util.StringUtils;
  * @since 3.1
  * @see ServletContextPropertySource
  */
+// {@link PropertySource} 从 {@link ServletConfig} 对象读取初始化参数。
 public class ServletConfigPropertySource extends EnumerablePropertySource<ServletConfig> {
 
 	public ServletConfigPropertySource(String name, ServletConfig servletConfig) {

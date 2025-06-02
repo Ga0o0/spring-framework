@@ -32,6 +32,8 @@ import org.springframework.util.Assert;
  * @since 5.1
  * @see MultipartFile#getResource()
  */
+// 将 {@link MultipartFile} 调整为 {@link org.springframework.core.io.Resource}，
+// 将内容公开为 {@code InputStream}，并覆盖 {@link #contentLength()} 以及 {@link #getFilename()}。
 class MultipartFileResource extends AbstractResource {
 
 	private final MultipartFile multipartFile;

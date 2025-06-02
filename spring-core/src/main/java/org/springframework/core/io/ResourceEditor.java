@@ -79,6 +79,9 @@ public class ResourceEditor extends PropertyEditorSupport {
 	 * @param resourceLoader the {@code ResourceLoader} to use
 	 * @param propertyResolver the {@code PropertyResolver} to use
 	 */
+	// 使用给定的 {@link ResourceLoader} 和 {@link PropertyResolver} 创建 {@link ResourceEditor} 类的新实例。
+	// @param resourceLoader 要使用的 {@code ResourceLoader}
+	// @param propertyResolver 要使用的 {@code PropertyResolver}
 	public ResourceEditor(ResourceLoader resourceLoader, @Nullable PropertyResolver propertyResolver) {
 		this(resourceLoader, propertyResolver, true);
 	}

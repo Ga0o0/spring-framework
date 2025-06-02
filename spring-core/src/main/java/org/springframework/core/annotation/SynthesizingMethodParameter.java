@@ -34,6 +34,7 @@ import org.springframework.core.MethodParameter;
  * @see AnnotationUtils#synthesizeAnnotation
  * @see AnnotationUtils#synthesizeAnnotationArray
  */
+// {@link MethodParameter} 变体，它合成通过 {@link AliasFor @AliasFor} 声明属性别名的注释。
 public class SynthesizingMethodParameter extends MethodParameter {
 
 	/**

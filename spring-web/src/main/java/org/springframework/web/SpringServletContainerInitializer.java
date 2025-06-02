@@ -107,6 +107,51 @@ import org.springframework.util.ReflectionUtils;
  * @see #onStartup(Set, ServletContext)
  * @see WebApplicationInitializer
  */
+// Spring 提供的 {@link ServletContainerInitializer} 旨在支持使用 Spring 的 {@link WebApplicationInitializer} SPI 进行基于代码的 servlet 容器配置，
+// 而不是（或可能结合）传统的基于 {@code web.xml} 的方法。
+//
+// <h2>运行机制</h2>
+//
+// 此类将被加载并实例化，并且任何符合 Servlet 规范的容器在容器启动期间都会调用其 {@link #onStartup} 方法，前提是 {@code spring-web} 模块 JAR 存在于类路径中。
+// 这是通过 JAR 服务 API {@link ServiceLoader#load(Class)} 方法检测 {@code spring-web} 模块的
+// {@code META-INF/services/jakarta.servlet.ServletContainerInitializer} 服务提供程序配置文件来实现的。
+//
+// <h3>与 {@code web.xml} 结合</h3>
+//
+// Web 应用程序可以选择限制 Servlet 容器在启动时执行的类路径扫描量，方法是通过 {@code web.xml} 中的 {@code metadata-complete} 属性
+// （控制对 Servlet 注释的扫描）或通过 {@code web.xml} 中的 {@code <absolute-ordering>} 元素（控制允许哪些 Web 片段（即 jar）执行 {@code ServletContainerInitializer} 扫描）。
+// 使用此功能时，可以通过将“spring_web”添加到 {@code web.xml} 中的命名 Web 片段列表来启用 {@link SpringServletContainerInitializer}，如下所示：
+//
+// <pre class="code">
+// <absolute-ordering>
+// 		<name>some_web_fragment</name>
+// 		<name>spring_web</name>
+// </absolute-ordering>
+// </pre>
+//
+// <h2>与 Spring 的 {@code WebApplicationInitializer} 的关系</h2>
+//
+// Spring 的 {@code WebApplicationInitializer} SPI 仅包含一种方法：{@link WebApplicationInitializer#onStartup(ServletContext)}。
+// 签名有意与 {@link ServletContainerInitializer#onStartup(Set, ServletContext)} 非常相似：
+// 简而言之，{@code SpringServletContainerInitializer} 负责实例化 {@code ServletContext} 并将其委托给任何用户定义的 {@code WebApplicationInitializer} 实现。
+// 然后，每个 {@code WebApplicationInitializer} 负责完成初始化 {@code ServletContext} 的实际工作。
+// 委托的具体过程在下面的 {@link #onStartup onStartup} 文档中有详细描述。
+//
+// <h2>一般说明</h2>
+//
+// 通常，此类应被视为更重要且面向用户的 {@code WebApplicationInitializer} SPI 的<em>支持基础架构</em>。使用此容器初始化程序也是完全<em>可选的</em>：
+// 虽然此初始化程序确实会在所有 Servlet 运行时下加载和调用，但用户仍然可以选择是否在类路径上提供任何 {@code WebApplicationInitializer} 实现。
+// 如果未检测到 {@code WebApplicationInitializer} 类型，则此容器初始化程序将不起作用。
+//
+// <p>请注意，此容器初始化器和 {@code WebApplicationInitializer} 的使用与 Spring MVC 没有任何“关联”，除了这些类型包含在 {@code spring-web} 模块 JAR 中。
+// 相反，它们可以被视为通用的，因为它们能够方便地基于代码配置 {@code ServletContext}。
+// 换句话说，任何 servlet、监听器或过滤器都可以在 {@code WebApplicationInitializer} 中注册，而不仅仅是 Spring MVC 特定的组件。
+//
+// <p>此类并非为扩展而设计，也不打算被扩展。它应该被视为内部类型，而 {@code WebApplicationInitializer} 是面向公众的 SPI。
+//
+// <h2>另请参阅</h2>
+//
+// 有关示例和详细的使用建议，请参阅 {@link WebApplicationInitializer} Javadoc。<p>
 @HandlesTypes(WebApplicationInitializer.class)
 public class SpringServletContainerInitializer implements ServletContainerInitializer {
 
@@ -136,6 +181,19 @@ public class SpringServletContainerInitializer implements ServletContainerInitia
 	 * @see WebApplicationInitializer#onStartup(ServletContext)
 	 * @see AnnotationAwareOrderComparator
 	 */
+	// 将 {@code ServletContext} 委托给应用程序类路径中存在的任何 {@link WebApplicationInitializer} 实现。
+	// <p>由于此类声明了 @{@code HandlesTypes(WebApplicationInitializer.class)}，
+	// Servlet 容器将自动扫描类路径以查找 Spring 的 {@code WebApplicationInitializer} 接口的实现，
+	// 并将所有此类类型的集合提供给此方法的 {@code webAppInitializerClasses} 参数。
+	// <p>如果在类路径中未找到任何 {@code WebApplicationInitializer} 实现，则此方法实际上为空操作。
+	// 将发出 INFO 级别的日志消息，通知用户 {@code ServletContainerInitializer} 确实已被调用，但未找到任何 {@code WebApplicationInitializer} 实现。
+	// <p>假设检测到一个或多个 {@code WebApplicationInitializer} 类型，它们将被实例化（如果存在 @{@link org.springframework.core.annotation.Order @Order} 注释
+	// 或已实现 {@link org.springframework.core.Ordered Ordered} 接口，则<em>进行排序</em>）。
+	// 然后将在每个实例上调用 {@link WebApplicationInitializer#onStartup(ServletContext)} 方法，委托 {@code ServletContext}，
+	// 以便每个实例可以注册和配置 servlet（例如 Spring 的 {@code DispatcherServlet}）、监听器（例如 Spring 的 {@code ContextLoaderListener}）
+	// 或任何其他 Servlet API 功能（例如过滤器）。
+	// @param webAppInitializerClasses 在应用程序类路径上找到的所有 {@link WebApplicationInitializer} 实现
+	// @param servletContext 要初始化的 servlet 上下文
 	@Override
 	public void onStartup(@Nullable Set<Class<?>> webAppInitializerClasses, ServletContext servletContext)
 			throws ServletException {

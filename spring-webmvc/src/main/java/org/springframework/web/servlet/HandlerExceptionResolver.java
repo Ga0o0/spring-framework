@@ -33,6 +33,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 22.11.2003
  */
+// 接口由对象实现，用于解析处理程序映射或执行期间抛出的异常，通常情况下是错误视图。实现者通常在应用程序上下文中注册为 Bean。
+//
+// <p>错误视图类似于 JSP 错误页面，但可以用于任何类型的异常，包括任何已检查异常，并可能针对特定处理程序进行细粒度的映射。
 public interface HandlerExceptionResolver {
 
 	/**
@@ -49,6 +52,14 @@ public interface HandlerExceptionResolver {
 	 * @return a corresponding {@code ModelAndView} to forward to,
 	 * or {@code null} for default processing in the resolution chain
 	 */
+	// 尝试解决在处理程序执行期间抛出的给定异常，并在适当的情况下返回表示特定错误页面的 {@link ModelAndView}。
+	// <p>返回的 {@code ModelAndView} 可能为 {@linkplain ModelAndView#isEmpty() 空}，以指示异常已成功解决，
+	// 但不应呈现任何视图，例如通过设置状态代码。
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
+	// @param handler 执行的处理程序，如果在发生异常时未选择任何处理程序（例如，如果多部分解析失败），则为 {@code null}
+	// @param ex 在处理程序执行期间抛出的异常
+	// @return 要转发到的相应 {@code ModelAndView}，或 {@code null} 用于解析链中的默认处理
 	@Nullable
 	ModelAndView resolveException(
 			HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex);

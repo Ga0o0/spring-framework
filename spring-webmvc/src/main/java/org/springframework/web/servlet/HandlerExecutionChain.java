@@ -37,6 +37,7 @@ import org.springframework.util.CollectionUtils;
  * @since 20.06.2003
  * @see HandlerInterceptor
  */
+// 处理程序执行链，由处理程序对象和任何处理程序拦截器组成。由 HandlerMapping 的 {@link HandlerMapping#getHandler} 方法返回。
 public class HandlerExecutionChain {
 
 	private static final Log logger = LogFactory.getLog(HandlerExecutionChain.class);

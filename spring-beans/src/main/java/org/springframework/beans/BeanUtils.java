@@ -168,6 +168,13 @@ public abstract class BeanUtils {
 	 * @throws BeanInstantiationException if the bean cannot be instantiated
 	 * @see Constructor#newInstance
 	 */
+	// 使用无参数构造函数实例化一个类，并返回新实例作为指定的可赋值类型。
+	// <p>当要实例化的类的类型 (clazz) 不可用，但所需类型 (assignableTo) 已知时，此方法很有用。
+	// <p>请注意，如果给定了一个不可访问（即非公共）的构造函数，则此方法会尝试将构造函数设置为可访问。
+	// @param clazz 要实例化的类
+	// @param assignableTo clazz 必须是可赋值的类型
+	// @return 新实例
+	// @throws BeanInstantiationException 如果无法实例化 bean
 	@SuppressWarnings("unchecked")
 	public static <T> T instantiateClass(Class<?> clazz, Class<T> assignableTo) throws BeanInstantiationException {
 		Assert.isAssignable(assignableTo, clazz);

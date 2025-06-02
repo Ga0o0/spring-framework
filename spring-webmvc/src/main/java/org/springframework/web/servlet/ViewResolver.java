@@ -35,6 +35,11 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.view.ContentNegotiatingViewResolver
  * @see org.springframework.web.servlet.view.BeanNameViewResolver
  */
+// 接口由能够按名称解析视图的对象实现。
+//
+// <p>视图状态在应用程序运行期间不会发生变化，因此实现可以自由缓存视图。
+//
+// <p>鼓励实现支持国际化，即本地化视图解析。
 public interface ViewResolver {
 
 	/**
@@ -52,6 +57,13 @@ public interface ViewResolver {
 	 * @throws Exception if the view cannot be resolved
 	 * (typically in case of problems creating an actual View object)
 	 */
+	// 按名称解析给定的视图。
+	// <p>注意：为允许 ViewResolver 链式调用，如果未定义具有给定名称的视图，ViewResolver 应返回 {@code null}。
+	// 但这不是必需的：某些 ViewResolver 将始终尝试构建具有给定名称的视图对象，无法返回 {@code null}（而是在视图创建失败时抛出异常）。
+	// @param viewName 要解析的视图的名称
+	// @param locale 解析视图的语言环境。支持国际化的 ViewResolver 应该尊重这一点。
+	// @return View 对象，如果未找到则返回 {@code null}（可选，以允许 ViewResolver 链式调用）
+	// @throws Exception 如果无法解析视图（通常在创建实际 View 对象时出现问题）
 	@Nullable
 	View resolveViewName(String viewName, Locale locale) throws Exception;
 

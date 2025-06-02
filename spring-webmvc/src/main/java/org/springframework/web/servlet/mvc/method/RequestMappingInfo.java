@@ -63,6 +63,17 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 请求映射信息。以下条件的组合：
+// <ol>
+// <li>{@link PathPatternsRequestCondition} 解析为 {@code PathPatterns} 或
+// {@link PatternsRequestCondition} 通过 {@code PathMatcher} 传入字符串模式
+// <li>{@link RequestMethodsRequestCondition}
+// <li>{@link ParamsRequestCondition}
+// <li>{@link HeadersRequestCondition}
+// <li>{@link ConsumesRequestCondition}
+// <li>{@link ProducesRequestCondition}
+// <li>{@code RequestCondition}（可选，自定义请求条件）
+// </ol>
 public final class RequestMappingInfo implements RequestCondition<RequestMappingInfo> {
 
 	private static final PathPatternsRequestCondition EMPTY_PATH_PATTERNS = new PathPatternsRequestCondition();

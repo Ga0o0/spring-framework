@@ -31,6 +31,8 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// {@link org.springframework.web.servlet.HandlerExceptionResolver HandlerExceptionResolver} 实现的抽象基类，
+// 支持处理来自 {@link HandlerMethod} 类型的处理程序的异常。
 public abstract class AbstractHandlerMethodExceptionResolver extends AbstractHandlerExceptionResolver {
 
 	/**

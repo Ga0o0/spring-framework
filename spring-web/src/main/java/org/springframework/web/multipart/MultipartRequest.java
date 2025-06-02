@@ -31,6 +31,7 @@ import org.springframework.util.MultiValueMap;
  * @author Arjen Poutsma
  * @since 2.5.2
  */
+// 此接口定义了实际 Multipart 请求所暴露的 Multipart 请求访问操作。它由 {@link MultipartHttpServletRequest} 扩展。
 public interface MultipartRequest {
 
 	/**
@@ -40,6 +41,8 @@ public interface MultipartRequest {
 	 * original file names.
 	 * @return the names of the files
 	 */
+	// 返回一个 String 对象的 {@link java.util.Iterator} 迭代器，其中包含此请求中所含多部分文件的参数名称。这些参数名称是表单的字段名称（与普通参数一样），而不是原始文件名。
+	// @return 文件的名称
 	Iterator<String> getFileNames();
 
 	/**
@@ -48,6 +51,9 @@ public interface MultipartRequest {
 	 * @param name a String specifying the parameter name of the multipart file
 	 * @return the uploaded content in the form of a {@link MultipartFile} object
 	 */
+	// 返回此请求中已上传文件的内容及描述，如果文件不存在则返回 {@code null}。
+	// @param name 指定分段文件参数名称的字符串
+	// @return 以 {@link MultipartFile} 对象的形式返回已上传的内容
 	@Nullable
 	MultipartFile getFile(String name);
 
@@ -58,6 +64,9 @@ public interface MultipartRequest {
 	 * @return the uploaded content in the form of a {@link MultipartFile} list
 	 * @since 3.0
 	 */
+	// 返回本次请求中已上传文件的内容及描述，若不存在则返回空列表。
+	// @param name 指定分段文件参数名称的字符串
+	// @return 以 {@link MultipartFile} 列表形式返回已上传的内容
 	List<MultipartFile> getFiles(String name);
 
 	/**
@@ -65,6 +74,8 @@ public interface MultipartRequest {
 	 * @return a map containing the parameter names as keys, and the
 	 * {@link MultipartFile} objects as values
 	 */
+	// 返回此请求中包含的 multipart 文件的 {@link java.util.Map}。
+	// @return 一个包含参数名称作为键、{@link MultipartFile} 对象作为值的映射
 	Map<String, MultipartFile> getFileMap();
 
 	/**
@@ -73,6 +84,8 @@ public interface MultipartRequest {
 	 * {@link MultipartFile} objects as values
 	 * @since 3.0
 	 */
+	// 返回此请求中包含的 multipart 文件的 {@link MultiValueMap}。
+	// @return 一个包含参数名称作为键和 {@link MultipartFile} 对象列表作为值的映射。
 	MultiValueMap<String, MultipartFile> getMultiFileMap();
 
 	/**
@@ -81,6 +94,9 @@ public interface MultipartRequest {
 	 * @return the associated content type, or {@code null} if not defined
 	 * @since 3.1
 	 */
+	// 确定指定请求部分的内容类型。
+	// @param paramOrFileName 部分的名称
+	// @return 关联的内容类型，如果未定义，则返回 {@code null}
 	@Nullable
 	String getMultipartContentType(String paramOrFileName);
 

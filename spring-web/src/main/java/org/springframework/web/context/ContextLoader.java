@@ -83,6 +83,23 @@ import org.springframework.util.StringUtils;
  * @see ConfigurableWebApplicationContext
  * @see org.springframework.web.context.support.XmlWebApplicationContext
  */
+// 执行根应用上下文的实际初始化工作。由 {@link ContextLoaderListener} 调用。
+//
+// <p>在 {@code web.xml} 上下文参数级别查找 {@link #CONTEXT_CLASS_PARAM "contextClass"} 参数以指定上下文类类型，
+// 如果未找到，则返回 {@link org.springframework.web.context.support.XmlWebApplicationContext}。
+// 使用默认的 ContextLoader 实现，任何指定的上下文类都需要实现 {@link ConfigurableWebApplicationContext} 接口。
+//
+// <p>处理 {@link #CONFIG_LOCATION_PARAM "contextConfigLocation"} 上下文参数并将其值传递给上下文实例，将其解析为多个文件路径，
+// 这些文件路径可以用任意数量的逗号和空格分隔，例如“WEB-INF/applicationContext1.xml, WEB-INF/applicationContext2.xml”。
+// 同时还支持 Ant 风格的路径模式，例如： “WEB-INF/Context.xml,WEB-INF/spring.xml”或“WEB-INF/&#42;&#42;/Context.xml”。
+// 如果未明确指定，则上下文实现应使用默认位置（例如 XmlWebApplicationContext: “/WEB-INF/applicationContext.xml”）。
+//
+// <p>注意：如果存在多个配置位置，后续的 bean 定义将覆盖先前加载的文件中定义的 bean，至少在使用 Spring 的默认 ApplicationContext 实现之一时是这样。
+// 可以利用这一点，通过额外的 XML 文件故意覆盖某些 bean 定义。 <p>除了加载根应用程序上下文之外，此类还可以选择加载或获取共享父上下文并将其连接到根应用程序上下文。
+// 有关更多信息，请参阅 {@link #loadParentContext(ServletContext)} 方法。
+//
+// <p>{@code ContextLoader} 支持通过 {@link #ContextLoader(WebApplicationContext)} 构造函数注入根 Web 应用程序上下文，
+// 从而允许在 Servlet 初始化程序中进行编程式配置。有关使用示例，请参阅 {@link org.springframework.web.WebApplicationInitializer}。
 public class ContextLoader {
 
 	/**
@@ -117,6 +134,7 @@ public class ContextLoader {
 	 * for initializing all web application contexts in the current application: {@value}.
 	 * @see #customizeContext(ServletContext, ConfigurableWebApplicationContext)
 	 */
+	// 用于初始化当前应用程序中的所有 Web 应用程序上下文的全局 {@link ApplicationContextInitializer} 类的配置参数：{@value}。
 	public static final String GLOBAL_INITIALIZER_CLASSES_PARAM = "globalInitializerClasses";
 
 	/**
@@ -411,6 +429,14 @@ public class ContextLoader {
 	 * @see #CONTEXT_INITIALIZER_CLASSES_PARAM
 	 * @see ApplicationContextInitializer#initialize(ConfigurableApplicationContext)
 	 */
+	// 在将配置位置提供给上下文之后但在上下文<em>刷新</em>之前，自定义由此 ContextLoader 创建的 {@link ConfigurableWebApplicationContext}。
+	// <p>默认实现 {@linkplain #determineContextInitializerClasses(ServletContext) 确定}
+	// 通过 {@linkplain #CONTEXT_INITIALIZER_CLASSES_PARAM 上下文初始化参数} 指定了哪些上下文初始化器类（如果有），
+	// 并且 {@linkplain ApplicationContextInitializer#initialize 使用给定的 Web 应用程序上下文调用每个类。
+	// <p>任何实现 {@link org.springframework.core.Ordered Ordered} 或
+	// 标有 @{@link org.springframework.core.annotation.Order Order} 的 {@code ApplicationContextInitializers} 都将进行适当排序。
+	// @param sc 当前 servlet 上下文
+	// @param wac 新创建的应用程序上下文
 	protected void customizeContext(ServletContext sc, ConfigurableWebApplicationContext wac) {
 		List<Class<ApplicationContextInitializer<ConfigurableApplicationContext>>> initializerClasses =
 				determineContextInitializerClasses(sc);
