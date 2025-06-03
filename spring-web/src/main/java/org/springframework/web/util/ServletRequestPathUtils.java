@@ -63,6 +63,11 @@ public abstract class ServletRequestPathUtils {
 	 * After that the pre-parsed and cached {@code RequestPath} can be accessed
 	 * through {@link #getParsedRequestPath(ServletRequest)}.
 	 */
+	// 将 {@link HttpServletRequest#getRequestURI() requestURI} 解析为 {@link RequestPath} 并将其保存在请求属性 {@link #PATH_ATTRIBUTE} 中，
+	// 以便随后与 {@link org.springframework.web.util.pattern.PathPattern 解析的模式} 一起使用。
+	// <p>返回的 {@code RequestPath} 将同时省略 contextPath 以及它所公开的 {@link RequestPath#pathWithinApplication() pathWithinApplication}
+	// 中的任何 servletPath 前缀。<p>此方法通常由 {@code DispatcherServlet} 调用，以确定是否有任何 {@code HandlerMapping} 指示它使用解析的模式。
+	// 之后，可以通过 {@link #getParsedRequestPath(ServletRequest)} 访问预先解析和缓存的 {@code RequestPath}。
 	public static RequestPath parseAndCache(HttpServletRequest request) {
 		RequestPath requestPath = ServletRequestPath.parse(request);
 		request.setAttribute(PATH_ATTRIBUTE, requestPath);
@@ -86,6 +91,9 @@ public abstract class ServletRequestPathUtils {
 	 * @param request the current request
 	 * @since 5.3.3
 	 */
+	// 将缓存的、已解析的 {@code RequestPath} 设置为给定值。
+	// @param requestPath 为要设置的值，或者如果 {@code null} 则清除缓存值。
+	// @param request 当前请求
 	public static void setParsedRequestPath(@Nullable RequestPath requestPath, ServletRequest request) {
 		if (requestPath != null) {
 			request.setAttribute(PATH_ATTRIBUTE, requestPath);

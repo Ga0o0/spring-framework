@@ -40,6 +40,10 @@ import org.springframework.web.cors.CorsUtils;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 逻辑连接 ({@code ' && '}) 请求条件，用于将请求与一组标头表达式进行匹配，其语法定义在 {@link RequestMapping#headers()} 中。
+//
+// <p>传递给构造函数的标头名称为 “Accept” 或 “Content-Type” 的表达式将被忽略。
+// 请参阅 {@link ConsumesRequestCondition} 和 {@link ProducesRequestCondition} 了解详情。
 public final class HeadersRequestCondition extends AbstractRequestCondition<HeadersRequestCondition> {
 
 	private static final HeadersRequestCondition PRE_FLIGHT_MATCH = new HeadersRequestCondition();

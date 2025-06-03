@@ -270,6 +270,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * Whether the request mapping has an empty URL path mapping.
 	 * @since 6.0.10
 	 */
+	// 请求映射是否有空的 URL 路径映射。
 	public boolean isEmptyMapping() {
 		RequestCondition<?> condition = getActivePatternsCondition();
 		return (condition instanceof PathPatternsRequestCondition pprc ?
@@ -344,6 +345,9 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * <p>Example: combine type- and method-level request mappings.
 	 * @return a new request mapping info instance; never {@code null}
 	 */
+	// 将“此”请求映射信息（即当前实例）与另一个请求映射信息实例合并。
+	// <p>示例：合并类型和方法级别的请求映射。
+	// @return 一个新的请求映射信息实例；永不 {@code null}
 	@Override
 	public RequestMappingInfo combine(RequestMappingInfo other) {
 		String name = combineNames(other);
@@ -548,6 +552,8 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * @return a builder to create a new, modified instance
 	 * @since 5.3.4
 	 */
+	// 返回一个构建器，通过修改此构建器来创建新的 RequestMappingInfo。
+	// @return 一个构建器来创建一个新的、修改过的实例
 	public Builder mutate() {
 		return new MutateBuilder(this);
 	}
@@ -558,6 +564,8 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * @param paths the paths to use
 	 * @since 4.2
 	 */
+	// 使用给定的路径创建一个新的 {@code RequestMappingInfo.Builder}。
+	// @param routes 要使用的路径
 	public static Builder paths(String... paths) {
 		return new DefaultBuilder(paths);
 	}
@@ -885,6 +893,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 	 * @since 4.2
 	 * @see Builder#options
 	 */
+	// 用于请求映射的配置选项容器。创建 RequestMappingInfo 实例时需要此类配置，但通常会在所有 RequestMappingInfo 实例中使用。
 	public static class BuilderConfiguration {
 
 		private static PathPatternParser defaultPatternParser = new PathPatternParser();
@@ -916,6 +925,10 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 		 * {@link #setPathMatcher(PathMatcher)} is explicitly set.
 		 * @since 5.3
 		 */
+		// 启用已解析的 {@link PathPattern}，如 {@link AbstractHandlerMapping#setPatternParser(PathPatternParser)} 中所述。
+		// <p><strong>注意：</strong>此属性与 {@link #setPathMatcher(PathMatcher)} 互斥。
+		// <p>默认情况下未设置，但 {@link RequestMappingInfo.Builder} 默认使用 {@link PathPatternParser}，
+		// 除非明确设置了 {@link #setPathMatcher(PathMatcher)}。
 		public void setPatternParser(@Nullable PathPatternParser patternParser) {
 			this.patternParser = patternParser;
 		}
@@ -977,6 +990,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 		 * and {@code PathMatcher} are not set.
 		 * @since 6.1.2
 		 */
+		// 返回要使用的 {@code PathPatternParser}，如果 {@code PathPatternParser} 和 {@code PathMatcher} 均未设置，则返回明确设置的实例或回退到默认实例。
 		@Nullable
 		public PathPatternParser getPatternParserToUse() {
 			if (this.patternParser == null && this.pathMatcher == null) {
@@ -992,6 +1006,9 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 		 * @deprecated as of 6.0, see
 		 * {@link PathPatternParser#setMatchOptionalTrailingSeparator(boolean)}
 		 */
+		// 设置是否在 PatternsRequestCondition 中应用尾部斜杠匹配。
+		// <p>为了支持该属性的弃用，默认值在 6.0 中从 {@code true} 更改为 {@code false}。
+		// @deprecated 自 6.0 起，请参阅
 		@Deprecated(since = "6.0")
 		public void setTrailingSlashMatch(boolean trailingSlashMatch) {
 			this.trailingSlashMatch = trailingSlashMatch;
@@ -1077,6 +1094,8 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 		 * Set the ContentNegotiationManager to use for the ProducesRequestCondition.
 		 * <p>By default this is not set.
 		 */
+		// 设置用于 ProducesRequestCondition 的 ContentNegotiationManager。
+		// <p>默认情况下未设置。
 		public void setContentNegotiationManager(ContentNegotiationManager contentNegotiationManager) {
 			this.contentNegotiationManager = contentNegotiationManager;
 		}
@@ -1085,6 +1104,7 @@ public final class RequestMappingInfo implements RequestCondition<RequestMapping
 		 * Return the ContentNegotiationManager to use for the ProducesRequestCondition,
 		 * if any.
 		 */
+		// 如果有的话，返回用于 ProducesRequestCondition 的 ContentNegotiationManager。
 		@Nullable
 		public ContentNegotiationManager getContentNegotiationManager() {
 			return this.contentNegotiationManager;

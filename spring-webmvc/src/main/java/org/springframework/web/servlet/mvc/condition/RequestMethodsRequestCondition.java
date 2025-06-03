@@ -42,6 +42,7 @@ import org.springframework.web.cors.CorsUtils;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 逻辑析取 (' || ') 请求条件，将请求与一组 {@link RequestMethod RequestMethods} 进行匹配。
 public final class RequestMethodsRequestCondition extends AbstractRequestCondition<RequestMethodsRequestCondition> {
 
 	/** Per HTTP method cache to return ready instances from getMatchingCondition. */

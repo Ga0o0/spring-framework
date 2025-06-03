@@ -60,6 +60,10 @@ public abstract class MergedAnnotationPredicates {
 	 * @param types the types that should be matched
 	 * @return a {@link Predicate} to test the annotation type
 	 */
+	// 创建一个新的 {@link Predicate}，如果指定数组中包含 {@linkplain MergedAnnotation#getType() 合并的注解类型}，则结果为 {@code true}。
+	// @param <A> 注解类型
+	// @param types 应匹配的类型
+	// @return 一个 {@link Predicate} 用于测试注解类型
 	public static <A extends Annotation> Predicate<MergedAnnotation<? extends A>> typeIn(Class<?>... types) {
 		return annotation -> ObjectUtils.containsElement(types, annotation.getType());
 	}
@@ -92,6 +96,12 @@ public abstract class MergedAnnotationPredicates {
 	 * @return a {@link Predicate} that matches the first run of the extracted
 	 * values
 	 */
+	// 创建一个新的有状态的、一次性使用的 {@link Predicate}，该谓词仅匹配提取值的第一个运行。
+	// 例如，{@code MergedAnnotationPredicates.firstRunOf(MergedAnnotation::distance)} 将匹配第一个注释，以及任何具有相同距离的后续运行。
+	// <p>注意：此谓词仅匹配第一个运行。一旦提取的值发生变化，谓词将始终返回 {@code false}。
+	// 例如，如果您有一组距离为 {@code [1, 1, 2, 1]} 的注释，则只有前两个会匹配。
+	// @param valueExtractor 函数用于提取要检查的值
+	// @return 一个与提取值的第一个运行匹配的 {@link Predicate}
 	public static <A extends Annotation> Predicate<MergedAnnotation<A>> firstRunOf(
 			Function<? super MergedAnnotation<A>, ?> valueExtractor) {
 

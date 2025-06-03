@@ -46,6 +46,10 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @author Rossen Stoyanchev
  * @since 5.3
  */
+// 逻辑析取 (' || ') 请求条件，将请求与一组 URL 路径模式进行匹配。
+//
+// <p>与 {@link PatternsRequestCondition} 相反，
+// 此条件使用解析的 {@link PathPattern}，而不是使用 {@link org.springframework.util.AntPathMatcher AntPathMatcher} 进行字符串模式匹配。
 public final class PathPatternsRequestCondition extends AbstractRequestCondition<PathPatternsRequestCondition> {
 
 	private static final SortedSet<PathPattern> EMPTY_PATH_PATTERN =
@@ -216,6 +220,8 @@ public final class PathPatternsRequestCondition extends AbstractRequestCondition
 	 * contain only patterns that match the request and are sorted with
 	 * the best matches on top.
 	 */
+	// 根据两个条件所包含的 URL 模式进行比较。每次比较一个模式，从上到下。如果所有比较的模式都匹配，但其中一个实例包含更多模式，则认为其匹配更接近。
+	// <p>假设两个实例均已通过 {@link #getMatchingCondition(HttpServletRequest)} 获取，以确保它们仅包含与请求匹配的模式，并按最佳匹配排序。
 	@Override
 	public int compareTo(PathPatternsRequestCondition other, HttpServletRequest request) {
 		Iterator<PathPattern> iterator = this.patterns.iterator();

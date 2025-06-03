@@ -51,6 +51,10 @@ public interface PathMatcher {
 	 * @param path the path to check
 	 * @return {@code true} if the given {@code path} represents a pattern
 	 */
+	// 给定的 {@code path} 是否代表可由此接口的实现匹配的模式？
+	// <p>如果返回值为 {@code false}，则无需使用 {@link #match} 方法，因为对静态路径字符串直接进行相等性比较将得到相同的结果。
+	// @param path 要检查的路径
+	// @return {@code true} 如果给定的 {@code path} 代表模式
 	boolean isPattern(String path);
 
 	/**

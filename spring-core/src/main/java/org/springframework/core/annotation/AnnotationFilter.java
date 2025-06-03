@@ -31,6 +31,10 @@ import java.lang.annotation.Annotation;
  * @since 5.2
  * @see MergedAnnotations
  */
+// 回调接口可用于过滤特定注释类型。
+//
+// <p>请注意，{@link MergedAnnotations} 模型（此接口的设计目的）始终会根据 {@link #PLAIN} 过滤器忽略语言注释（出于效率考虑）。
+// 任何其他过滤器，甚至自定义过滤器实现，都在此范围内适用，并且范围可能只会进一步缩小。
 @FunctionalInterface
 public interface AnnotationFilter {
 

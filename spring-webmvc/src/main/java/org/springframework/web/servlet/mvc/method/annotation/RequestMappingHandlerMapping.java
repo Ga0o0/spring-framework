@@ -209,6 +209,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	/**
 	 * Return the configured {@link ContentNegotiationManager}.
 	 */
+	// 返回已配置的 {@link ContentNegotiation Manager}。
 	public ContentNegotiationManager getContentNegotiationManager() {
 		return this.contentNegotiationManager;
 	}
@@ -221,28 +222,30 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	@Override
 	@SuppressWarnings("deprecation")
 	public void afterPropertiesSet() {
-		this.config = new RequestMappingInfo.BuilderConfiguration();
-		this.config.setTrailingSlashMatch(useTrailingSlashMatch());
+		this.config = new RequestMappingInfo.BuilderConfiguration(); // 用于请求映射的配置选项容器。
+		this.config.setTrailingSlashMatch(useTrailingSlashMatch());	 // 设置是否在 PatternsRequestCondition 中应用尾部斜杠匹配。
+		// 设置用于 ProducesRequestCondition 的 ContentNegotiationManager。
 		this.config.setContentNegotiationManager(getContentNegotiationManager());
 
 		if (getPatternParser() != null && this.defaultPatternParser &&
-				(this.useSuffixPatternMatch || this.useRegisteredSuffixPatternMatch)) {
+				(this.useSuffixPatternMatch || this.useRegisteredSuffixPatternMatch)) { // skip
 
 			setPatternParser(null);
 		}
 
 		if (getPatternParser() != null) {
-			this.config.setPatternParser(getPatternParser());
+			this.config.setPatternParser(getPatternParser()); // 启用已解析的 {@link PathPattern}
+			// PathPatternParser 不支持后缀模式匹配。
 			Assert.isTrue(!this.useSuffixPatternMatch && !this.useRegisteredSuffixPatternMatch,
 					"Suffix pattern matching not supported with PathPatternParser.");
 		}
-		else {
+		else { // skip
 			this.config.setSuffixPatternMatch(useSuffixPatternMatch());
 			this.config.setRegisteredSuffixPatternMatch(useRegisteredSuffixPatternMatch());
 			this.config.setPathMatcher(getPathMatcher());
 		}
 
-		super.afterPropertiesSet();
+		super.afterPropertiesSet(); // 在初始化时检测处理程序方法。
 	}
 
 
@@ -269,6 +272,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	/**
 	 * Whether to match to URLs irrespective of the presence of a trailing slash.
 	 */
+	// 是否匹配 URL，无论是否存在尾部斜杠。
 	public boolean useTrailingSlashMatch() {
 		return this.useTrailingSlashMatch;
 	}
@@ -303,6 +307,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * {@inheritDoc}
 	 * <p>Expects a handler to have a type-level @{@link Controller} annotation.
 	 */
+	// <p>期望处理程序具有类型级别的 @{@link Controller} 注释。
 	@Override
 	protected boolean isHandler(Class<?> beanType) {
 		return AnnotatedElementUtils.hasAnnotation(beanType, Controller.class);
@@ -317,20 +322,29 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @see #getCustomMethodCondition(Method)
 	 * @see #getCustomTypeCondition(Class)
 	 */
+	// 使用类型级别和方法级别的 {@link RequestMapping @RequestMapping} 和
+	// {@link HttpExchange @HttpExchange} 注解来创建 {@link RequestMappingInfo}。
+	// @return 创建的 {@code RequestMappingInfo}，如果该方法没有 {@code @RequestMapping}
+	// 或 {@code @HttpExchange} 注解，则返回 {@code null}
 	@Override
 	@Nullable
 	protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		RequestMappingInfo info = createRequestMappingInfo(method);
+		// 根据 @HttpExchange 和 @RequestMapping 创建的 RequestMappingInfo
+		RequestMappingInfo info = createRequestMappingInfo(method); // 方法 请求映射信息
 		if (info != null) {
+			// 类型 请求映射信息
 			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
+				// 将 typeInfo 请求映射信息（即当前实例）与 info 请求映射信息实例合并。
 				info = typeInfo.combine(info);
 			}
 			if (info.isEmptyMapping()) {
+				// 返回一个构建器，通过修改此构建器来创建新的 RequestMappingInfo。
 				info = info.mutate().paths("", "/").options(this.config).build();
 			}
 			String prefix = getPathPrefix(handlerType);
 			if (prefix != null) {
+				// 使用给定的路径创建一个新的 {@code RequestMappingInfo.Builder}。
 				info = RequestMappingInfo.paths(prefix).options(this.config).build().combine(info);
 			}
 		}
@@ -354,11 +368,16 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	@Nullable
 	private RequestMappingInfo createRequestMappingInfo(AnnotatedElement element) {
 		RequestMappingInfo requestMappingInfo = null;
+		// getCustomTypeCondition(clazz) -> 提供自定义类型级请求条件。
+		// getCustomMethodCondition((Method) element) -> 提供自定义方法级请求条件。
 		RequestCondition<?> customCondition = (element instanceof Class<?> clazz ?
 				getCustomTypeCondition(clazz) : getCustomMethodCondition((Method) element));
 
+		// 1. 创建一个新的 MergedAnnotations 实例，其中包含来自指定元素的所有注释和元注释，并且取决于 SearchStrategy，相关的继承元素。
+		// 然后 查询 @RequestMapping 和 @HttpExchange 注解，并封装成 AnnotationDescriptor 返回
 		List<AnnotationDescriptor> descriptors = getAnnotationDescriptors(element);
 
+		// 2. 处理 @RequestMapping 注解相关的 AnnotationDescriptor
 		List<AnnotationDescriptor> requestMappings = descriptors.stream()
 				.filter(desc -> desc.annotation instanceof RequestMapping).toList();
 		if (!requestMappings.isEmpty()) {
@@ -366,9 +385,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 				logger.warn("Multiple @RequestMapping annotations found on %s, but only the first will be used: %s"
 						.formatted(element, requestMappings));
 			}
+			// 从提供的 {@link RequestMapping @RequestMapping} 注释、元注释或在注释层次结构中合并注释属性的合成结果创建 {@link RequestMappingInfo}。
 			requestMappingInfo = createRequestMappingInfo((RequestMapping) requestMappings.get(0).annotation, customCondition);
 		}
 
+		// 3. 处理 @HttpExchange 注解相关的 AnnotationDescriptor
 		List<AnnotationDescriptor> httpExchanges = descriptors.stream()
 				.filter(desc -> desc.annotation instanceof HttpExchange).toList();
 		if (!httpExchanges.isEmpty()) {
@@ -378,9 +399,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 			Assert.state(httpExchanges.size() == 1,
 					() -> "Multiple @HttpExchange annotations found on %s, but only one is allowed: %s"
 							.formatted(element, httpExchanges));
+			// 从提供的 {@link RequestMapping @RequestMapping} 注释、元注释或在注释层次结构中合并注释属性的合成结果创建 {@link RequestMappingInfo}。
 			requestMappingInfo = createRequestMappingInfo((HttpExchange) httpExchanges.get(0).annotation, customCondition);
 		}
 
+		// 根据 @HttpExchange 创建的 RequestMappingInfo 会覆盖 @RequestMapping 创建的 RequestMappingInfo
 		return requestMappingInfo;
 	}
 
@@ -395,6 +418,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @param handlerType the handler type for which to create the condition
 	 * @return the condition, or {@code null}
 	 */
+	// 提供自定义类型级请求条件。
+	// 自定义 {@link RequestCondition} 可以是任何类型，只要所有调用此方法返回的条件类型相同即可，以确保自定义请求条件可以组合和比较。
+	// <p>考虑扩展 {@link AbstractRequestCondition} 以自定义条件类型，并使用 {@link CompositeRequestCondition} 提供多个自定义条件。
+	// @param handlerType 指定要为其创建条件的处理程序类型；
+	// @return 指定条件，或 {@code null}
 	@Nullable
 	protected RequestCondition<?> getCustomTypeCondition(Class<?> handlerType) {
 		return null;
@@ -411,6 +439,12 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @param method the handler method for which to create the condition
 	 * @return the condition, or {@code null}
 	 */
+	// 提供自定义方法级请求条件。
+	// 自定义 {@link RequestCondition} 可以是任何类型，只要所有调用此方法都返回相同的条件类型即可，以确保自定义请求条件可以组合和比较。
+	// <p>考虑扩展 {@link AbstractRequestCondition} 以支持自定义条件类型，
+	// 并使用 {@link CompositeRequestCondition} 提供多个自定义条件。
+	// @param method 为其创建条件的处理程序方法
+	// @return 条件，或 {@code null}
 	@Nullable
 	protected RequestCondition<?> getCustomMethodCondition(Method method) {
 		return null;
@@ -422,9 +456,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * or synthesized result of merging annotation attributes within an
 	 * annotation hierarchy.
 	 */
+	// 从提供的 {@link RequestMapping @RequestMapping} 注释、元注释或在注释层次结构中合并注释属性的合成结果创建 {@link RequestMappingInfo}。
 	protected RequestMappingInfo createRequestMappingInfo(
 			RequestMapping requestMapping, @Nullable RequestCondition<?> customCondition) {
 
+		// RequestMappingInfo.DefaultBuilder
 		RequestMappingInfo.Builder builder = RequestMappingInfo
 				.paths(resolveEmbeddedValuesInPatterns(requestMapping.path()))
 				.methods(requestMapping.method())
@@ -468,6 +504,8 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * Resolve placeholder values in the given array of patterns.
 	 * @return a new array with updated patterns
 	 */
+	// 解析给定模式数组中的占位符值。
+	// @return 一个包含更新模式的新数组
 	protected String[] resolveEmbeddedValuesInPatterns(String[] patterns) {
 		if (this.embeddedValueResolver == null) {
 			return patterns;
@@ -544,15 +582,19 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	@Override
 	@Nullable
 	protected CorsConfiguration initCorsConfiguration(Object handler, Method method, RequestMappingInfo mappingInfo) {
-		HandlerMethod handlerMethod = createHandlerMethod(handler, method);
-		Class<?> beanType = handlerMethod.getBeanType();
+		// 1. 提取类型/方法上的 @CrossOrigin
+		HandlerMethod handlerMethod = createHandlerMethod(handler, method); // 创建 HandlerMethod 实例。
+		Class<?> beanType = handlerMethod.getBeanType(); // 此方法返回此处理程序方法的处理程序的类型。
+		// 类型上的 @CrossOrigin
 		CrossOrigin typeAnnotation = AnnotatedElementUtils.findMergedAnnotation(beanType, CrossOrigin.class);
+		// 方法上的 @CrossOrigin
 		CrossOrigin methodAnnotation = AnnotatedElementUtils.findMergedAnnotation(method, CrossOrigin.class);
 
 		if (typeAnnotation == null && methodAnnotation == null) {
 			return null;
 		}
 
+		// 2. 合并类型/方法上的 @CrossOrigin 配置到 CorsConfiguration
 		CorsConfiguration config = new CorsConfiguration();
 		updateCorsConfig(config, typeAnnotation);
 		updateCorsConfig(config, methodAnnotation);
@@ -562,6 +604,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 				config.addAllowedMethod(allowedMethod.name());
 			}
 		}
+		// 应用允许默认值
 		return config.applyPermitDefaultValues();
 	}
 
@@ -625,10 +668,13 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	}
 
 	private static List<AnnotationDescriptor> getAnnotationDescriptors(AnnotatedElement element) {
+		// 创建一个新的 {@link MergedAnnotations} 实例，其中包含来自指定元素的所有注释和元注释，并且取决于 {@link SearchStrategy}，相关的继承元素。
 		return MergedAnnotations.from(element, SearchStrategy.TYPE_HIERARCHY, RepeatableContainers.none())
 				.stream()
+				// 创建一个新的 {@link Predicate}，如果指定数组中包含 {@linkplain MergedAnnotation#getType() 合并的注解类型}，则结果为 {@code true}。
 				.filter(MergedAnnotationPredicates.typeIn(RequestMapping.class, HttpExchange.class))
-				.filter(MergedAnnotationPredicates.firstRunOf(MergedAnnotation::getAggregateIndex))
+				// 创建一个新的有状态的、一次性使用的 {@link Predicate}，该谓词仅匹配提取值的第一个运行。
+				.filter(MergedAnnotationPredicates.firstRunOf(MergedAnnotation::getAggregateIndex)) // 获取包含此注解的聚合集合的索引。
 				.map(AnnotationDescriptor::new)
 				.distinct()
 				.toList();

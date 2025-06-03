@@ -37,6 +37,7 @@ import org.springframework.web.util.WebUtils;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 逻辑连接 ({@code ' && '}) 请求条件，使用 {@link RequestMapping#params()} 中定义的语法将请求与一组参数表达式进行匹配。
 public final class ParamsRequestCondition extends AbstractRequestCondition<ParamsRequestCondition> {
 
 	private final Set<ParamExpression> expressions;

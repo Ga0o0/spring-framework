@@ -44,6 +44,7 @@ import org.springframework.util.ReflectionUtils;
  * @since 5.2
  * @see AnnotationsProcessor
  */
+// 扫描仪在 {@link AnnotatedElement} 的注释层次结构中搜索相关注释。
 abstract class AnnotationsScanner {
 
 	private static final Annotation[] NO_ANNOTATIONS = {};

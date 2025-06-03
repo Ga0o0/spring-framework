@@ -37,6 +37,10 @@ import org.springframework.lang.Nullable;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 当请求条件的类型无法提前知晓时（例如自定义条件），{@link RequestCondition} 的持有者非常有用。
+// 由于此类也是 {@code RequestCondition} 的一个实现，因此它实际上修饰了持有的请求条件，并允许以类型安全且为空的方式将其与其他请求条件组合和比较。
+//
+// <p>当两个 {@code RequestConditionHolder} 实例相互组合或比较时，预期它们持有的条件类型相同。如果类型不同，则会引发 {@link ClassCastException}。
 public final class RequestConditionHolder extends AbstractRequestCondition<RequestConditionHolder> {
 
 	@Nullable

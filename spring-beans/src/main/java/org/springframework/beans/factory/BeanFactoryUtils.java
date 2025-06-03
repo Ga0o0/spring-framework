@@ -369,6 +369,22 @@ public abstract class BeanFactoryUtils {
 	 * @throws BeansException if a bean could not be created
 	 * @see ListableBeanFactory#getBeansOfType(Class, boolean, boolean)
 	 */
+	// 返回给定类型或子类型的所有 Bean，如果当前 Bean 工厂是 HierarchicalBeanFactory，则还会选择在祖先 Bean 工厂中定义的 Bean。
+	// 返回的 Map 将仅包含此类型的 Bean。
+	// <p>如果设置了“allowEagerInit”标志，则不会考虑 FactoryBeans 创建的对象，这意味着 FactoryBeans 将被初始化。
+	// 如果 FactoryBean 创建的对象不匹配，则将使用原始 FactoryBean 本身与类型进行匹配。
+	// 如果未设置“allowEagerInit”，则仅检查原始 FactoryBeans（这不需要初始化每个 FactoryBean）。
+	// <p><b>注意：同名 Bean 将在“最低”工厂级别中优先处理，即，此类 Bean 将从它们所在的最低工厂返回，从而隐藏祖先工厂中对应的 Bean。</b>
+	// 此功能允许通过在子工厂中明确选择相同的 Bean 名称来“替换” Bean；祖先工厂中的 bean 将不可见，即使按类型查找也不可见。
+	// @param lbf bean 工厂
+	// @param type 要匹配的 bean 类型
+	// @param includeNonSingletons 是否包含原型 bean、作用域 bean 或仅包含单例 bean（同样适用于 FactoryBeans）
+	// @param allowEagerInit 是否初始化 <i>lazy-init 单例</i> 和 <i>FactoryBeans</i> 创建的对象
+	// （或通过带有“factory-bean”引用的工厂方法创建的对象）以进行类型检查。请注意，FactoryBeans 需要立即初始化才能确定其类型：
+	// 因此，传入此标志的“true”将初始化 FactoryBeans 和“factory-bean”引用。
+	// @return 匹配 bean 实例的 Map，如果没有则返回空 Map
+	// @throws BeansException 如果无法创建 bean
+	// @see ListableBeanFactory#getBeansOfType(Class, boolean, boolean)
 	public static <T> Map<String, T> beansOfTypeIncludingAncestors(
 			ListableBeanFactory lbf, Class<T> type, boolean includeNonSingletons, boolean allowEagerInit)
 			throws BeansException {

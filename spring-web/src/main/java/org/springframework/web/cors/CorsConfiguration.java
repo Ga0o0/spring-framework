@@ -50,6 +50,10 @@ import org.springframework.util.StringUtils;
  * @since 4.2
  * @see <a href="https://www.w3.org/TR/cors/">CORS spec</a>
  */
+// 一个用于 CORS 配置的容器，其中包含用于检查给定请求的实际来源、HTTP 方法和标头的方法。
+//
+// <p>默认情况下，新创建的 {@code CorsConfiguration} 不允许任何跨域请求，必须明确配置以指示应允许哪些请求。
+// 使用 {@link #applyPermitDefaultValues()} 可翻转初始化模型，使其从开放的默认值开始，允许所有 GET、HEAD 和 POST 跨域请求。
 public class CorsConfiguration {
 
 	/** Wildcard representing <em>all</em> origins, methods, or headers. */
@@ -534,6 +538,16 @@ public class CorsConfiguration {
 	 * <li>Set max age to 1800 seconds (30 minutes).</li>
 	 * </ul>
 	 */
+	// 默认情况下，{@code CorsConfiguration} 不允许任何跨域请求，必须明确配置。
+	// 使用此方法可切换到允许所有 GET、HEAD 和 POST 跨域请求的默认值，但不会覆盖任何已设置的值。
+	// <p>对于未设置的值，将应用以下默认值：
+	// <ul>
+	// <li>允许所有具有 CORS 规范中定义的特殊值 {@code ""} 的来源。仅当 {@link #setAllowedOrigins origins} 和
+	// {@link #setAllowedOriginPatterns originPatterns} 均未设置时，才会设置此选项。</li>
+	// <li>允许“简单”方法 {@code GET}、{@code HEAD} 和 {@code POST}。</li>
+	// <li>允许所有标头。</li>
+	// <li>将最大期限设置为 1800 秒（30 分钟）。</li>
+	// </ul>
 	public CorsConfiguration applyPermitDefaultValues() {
 		if (this.allowedOrigins == null && this.allowedOriginPatterns == null) {
 			this.allowedOrigins = DEFAULT_PERMIT_ALL;
@@ -560,6 +574,10 @@ public class CorsConfiguration {
 	 * @throws IllegalArgumentException if the validation fails
 	 * @since 5.3
 	 */
+	// 验证当 {@link #setAllowCredentials allowCredentials} 为 {@code true} 时，
+	// {@link #setAllowedOrigins allowedOrigins} 不包含特殊值 {@code ""}，
+	// 因为在这种情况下“Access-Control-Allow-Origin”不能设置为 {@code ""}。
+	// 如果验证失败，则抛出 @throws IllegalArgumentException
 	public void validateAllowCredentials() {
 		if (this.allowCredentials == Boolean.TRUE &&
 				this.allowedOrigins != null && this.allowedOrigins.contains(ALL)) {
@@ -579,6 +597,9 @@ public class CorsConfiguration {
 	 * @throws IllegalArgumentException if the validation fails
 	 * @since 5.3.32
 	 */
+	// 验证当 {@link #setAllowPrivateNetwork allowPrivateNetwork} 为 {@code true} 时，
+	// {@link #setAllowedOrigins allowedOrigins} 不包含特殊值 {@code ""}，因为这是不安全的。
+	// 如果验证失败，则抛出 @throws IllegalArgumentException
 	public void validateAllowPrivateNetwork() {
 		if (this.allowPrivateNetwork == Boolean.TRUE &&
 				this.allowedOrigins != null && this.allowedOrigins.contains(ALL)) {

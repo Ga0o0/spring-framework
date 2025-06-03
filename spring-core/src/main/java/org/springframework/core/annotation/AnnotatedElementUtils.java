@@ -531,13 +531,21 @@ public abstract class AnnotatedElementUtils {
 	 * @since 4.3
 	 * @see #isAnnotated(AnnotatedElement, Class)
 	 */
+	// 确定指定的 {@code commentType} 的注释在提供的 {@link AnnotatedElement} 上或指定元素上方的注释层次结构中是否可用。
+	// <p>如果此方法返回 {@code true}，则 {@link #findMergedAnnotationAttributes} 将返回非空值。
+	// <p>此方法遵循 {@linkplain AnnotatedElementUtils 类级 javadoc} 中描述的查找语义。
+	// @param element 带注释的元素
+	// @param commentType 要查找的注释类型
+	// @return {@code true}（如果存在匹配的注释）
 	public static boolean hasAnnotation(AnnotatedElement element, Class<? extends Annotation> annotationType) {
 		// Shortcut: directly present on the element, with no merging needed?
+		// --> 译文：快捷方式：直接出现在元素上，无需合并？
 		if (AnnotationFilter.PLAIN.matches(annotationType) ||
 				AnnotationsScanner.hasPlainJavaAnnotationsOnly(element)) {
 			return element.isAnnotationPresent(annotationType);
 		}
 		// Exhaustive retrieval of merged annotations...
+		// --> 译文：详尽检索合并的注释……
 		return findAnnotations(element).isPresent(annotationType);
 	}
 
@@ -631,6 +639,13 @@ public abstract class AnnotatedElementUtils {
 	 * @see #findMergedAnnotationAttributes(AnnotatedElement, String, boolean, boolean)
 	 * @see #getMergedAnnotationAttributes(AnnotatedElement, Class)
 	 */
+	// 在提供的 {@code element} 上方的注释层次结构中查找指定 {@code commentType} 的第一个注释，
+	// 将该注释的属性与注释层次结构较低级别的注释中的匹配属性合并，然后将结果合成回指定 {@code commentType} 的注释。
+	// <p>{@link AliasFor @AliasFor} 语义在单个注释和注释层次结构中均完全受支持。
+	// <p>此方法遵循 {@linkplain AnnotatedElementUtils 类级 javadoc} 中描述的<em>查找语义</em>。
+	// @param element 带注释的元素
+	// @param commentType 要查找的注释类型
+	// @return 合并的、合成的 {@code Annotation}，如果未找到，则返回 {@code null}
 	@Nullable
 	public static <A extends Annotation> A findMergedAnnotation(AnnotatedElement element, Class<A> annotationType) {
 		// Shortcut: directly present on the element, with no merging needed?

@@ -342,6 +342,11 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 * element annotations
 	 * @see #search(SearchStrategy)
 	 */
+	// 创建一个新的 {@link MergedAnnotations} 实例，其中包含来自指定元素的所有注释和元注释，并且取决于 {@link SearchStrategy}，相关的继承元素。
+	// @param element 源元素
+	// @param searchStrategy 要使用的搜索策略
+	// @param repeatableContainers 元素注释或元注释可能使用的可重复容器
+	// @return 包含合并元素注释的 {@code MergedAnnotations} 实例
 	static MergedAnnotations from(AnnotatedElement element, SearchStrategy searchStrategy,
 			RepeatableContainers repeatableContainers) {
 
@@ -636,6 +641,10 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 * <p>Each strategy creates a different set of aggregates that will be
 	 * combined to create the final {@link MergedAnnotations}.
 	 */
+	// {@link MergedAnnotations#search(SearchStrategy)} 和
+	// {@link MergedAnnotations#from(AnnotatedElement, SearchStrategy)} 及其变体支持的搜索策略。
+	//
+	// <p>每种策略都会创建一组不同的聚合体，这些聚合体将组合在一起以创建最终的 {@link MergedAnnotations}。
 	enum SearchStrategy {
 
 		/**
@@ -643,6 +652,7 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * {@link Inherited @Inherited} annotations and without searching
 		 * superclasses or implemented interfaces.
 		 */
+		// 仅查找直接声明的注释，不考虑 {@link Inherited @Inherited} 注释，也不搜索超类或实现的接口。
 		DIRECT,
 
 		/**
@@ -653,7 +663,11 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * all other {@linkplain AnnotatedElement annotated elements}.
 		 * <p>This strategy does not search implemented interfaces.
 		 */
-		INHERITED_ANNOTATIONS,
+		// 查找所有直接声明的注释以及任何 {@link Inherited @Inherited} 超类注释。
+		// <p>此策略仅在与 {@link Class} 类型一起使用时才真正有用，
+		// 因为对于所有其他 {@linkplain AnnotatedElement 注释元素}，{@link Inherited @Inherited} 注释都会被忽略。
+		// <p>此策略不搜索已实现的接口。
+		INHERITED_ANNOTATIONS, // inherited annotation： S继承注解
 
 		/**
 		 * Find all directly declared and superclass annotations.
@@ -662,6 +676,8 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * {@link Inherited @Inherited}.
 		 * <p>This strategy does not search implemented interfaces.
 		 */
+		// 查找所有直接声明的注释和超类注释。
+		// <p>此策略类似于 {@link #INHERITED_ANNOTATIONS}，但注释不需要使用 {@link Inherited @Inherited} 进行元注释。<p>此策略不搜索已实现的接口。
 		SUPERCLASS,
 
 		/**
@@ -674,7 +690,11 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 		 * <p>Superclass and enclosing class annotations do not need to be
 		 * meta-annotated with {@link Inherited @Inherited}.
 		 */
-		TYPE_HIERARCHY
+		// 对整个类型层次结构（包括超类和已实现的接口）进行全面搜索。
+		// <p>与 {@link Search#withEnclosingClasses(Predicate)} 结合使用时，
+		// 如果提供的 {@link Predicate} 计算结果为 {@code true}，则还会递归搜索 {@linkplain Class#getEnclosingClass() 封闭类}。
+		// <p>超类和封闭类注释无需使用 {@link Inherited @Inherited} 进行元注释。
+		TYPE_HIERARCHY // type hierarchy：类型层次结构
 
 	}
 

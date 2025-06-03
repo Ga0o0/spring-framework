@@ -147,6 +147,8 @@ public abstract class ApplicationObjectSupport implements ApplicationContextAwar
 	 * Return the ApplicationContext that this object is associated with.
 	 * @throws IllegalStateException if not running in an ApplicationContext
 	 */
+	// 返回与此对象关联的 ApplicationContext。
+	// 如果未在 ApplicationContext 中运行，则抛出 IllegalStateException 异常。
 	@Nullable
 	public final ApplicationContext getApplicationContext() throws IllegalStateException {
 		if (this.applicationContext == null && isContextRequired()) {
@@ -162,6 +164,9 @@ public abstract class ApplicationObjectSupport implements ApplicationContextAwar
 	 * @throws IllegalStateException in case of no ApplicationContext set
 	 * @since 5.0
 	 */
+	// 获取实际使用的 ApplicationContext。
+	// @return ApplicationContext（永不返回 null）
+	// @throws IllegalStateException（如果未设置 ApplicationContext）
 	protected final ApplicationContext obtainApplicationContext() {
 		ApplicationContext applicationContext = getApplicationContext();
 		Assert.state(applicationContext != null, "No ApplicationContext");

@@ -48,6 +48,9 @@ import org.springframework.web.servlet.mvc.condition.HeadersRequestCondition.Hea
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 逻辑析取 (' || ') 请求条件，用于将请求的 “Content-Type” 标头与一系列媒体类型表达式进行匹配。
+// 支持两种媒体类型表达式，分别在 {@link RequestMapping#consumes()} 和 {@link RequestMapping#headers()} 中进行了描述，
+// 其中标头名称为 “Content-Type”。无论使用哪种语法，语义都是相同的。
 public final class ConsumesRequestCondition extends AbstractRequestCondition<ConsumesRequestCondition> {
 
 	private static final ConsumesRequestCondition EMPTY_CONDITION = new ConsumesRequestCondition();

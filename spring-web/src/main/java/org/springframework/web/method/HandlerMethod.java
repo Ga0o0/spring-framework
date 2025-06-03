@@ -157,6 +157,7 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * Variant of {@link #HandlerMethod(String, BeanFactory, Method)} that
 	 * also accepts a {@link MessageSource}.
 	 */
+	// {@link #HandlerMethod(String, BeanFactory, Method)} 的变体也接受 {@link MessageSource}。
 	public HandlerMethod(
 			String beanName, BeanFactory beanFactory,
 			@Nullable MessageSource messageSource, Method method) {
@@ -188,6 +189,7 @@ public class HandlerMethod extends AnnotatedMethod {
 	/**
 	 * Re-create HandlerMethod with additional input.
 	 */
+	// 使用附加输入重新创建 HandlerMethod。
 	private HandlerMethod(HandlerMethod handlerMethod, @Nullable Object handler, boolean initValidateFlags) {
 		super(handlerMethod);
 		this.bean = (handler != null ? handler : handlerMethod.bean);
@@ -247,6 +249,8 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * <p>Note that if the bean type is a CGLIB-generated class, the original
 	 * user-defined class is returned.
 	 */
+	// 此方法返回此处理程序方法的处理程序的类型。
+	// <p>请注意，如果 bean 类型是 CGLIB 生成的类，则返回原始的用户定义类。
 	public Class<?> getBeanType() {
 		return this.beanType;
 	}
@@ -317,6 +321,7 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * {@link #shouldValidateArguments()} and {@link #shouldValidateReturnValue()}.
 	 * @since 6.1.3
 	 */
+	// 重新创建 HandlerMethod 并初始化 {@link #shouldValidateArguments()} 和 {@link #shouldValidateReturnValue()}。
 	public HandlerMethod createWithValidateFlags() {
 		return new HandlerMethod(this, null, true);
 	}

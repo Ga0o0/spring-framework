@@ -27,6 +27,7 @@ import org.springframework.http.MediaType;
  * @author Rossen Stoyanchev
  * @since 3.2
  */
+// 将 {@link MediaType} 解析为文件扩展名列表的策略 &mdash; 例如，将“application/json”解析为“json”。
 public interface MediaTypeFileExtensionResolver {
 
 	/**
@@ -34,12 +35,17 @@ public interface MediaTypeFileExtensionResolver {
 	 * @param mediaType the media type to resolve
 	 * @return a list of extensions or an empty list (never {@code null})
 	 */
+	// 将给定的媒体类型解析为文件扩展名列表。
+	// @param mediaType 需要解析的媒体类型
+	// @return 扩展名列表或空列表（永不为 null）
 	List<String> resolveFileExtensions(MediaType mediaType);
 
 	/**
 	 * Get all registered file extensions.
 	 * @return a list of extensions or an empty list (never {@code null})
 	 */
+	// 获取所有已注册的文件扩展名。
+	// @return 扩展名列表或空列表（永不为 null）
 	List<String> getAllFileExtensions();
 
 }

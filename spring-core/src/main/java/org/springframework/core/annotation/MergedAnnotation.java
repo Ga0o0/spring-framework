@@ -127,6 +127,10 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * @return the aggregate index (starting at {@code 0}) or {@code -1} if the
 	 * annotation is missing
 	 */
+	// 获取包含此注解的聚合集合的索引。
+	// <p>可用于重新排序注解流，例如，赋予在超类或接口上声明的注解更高的优先级。
+	// {@linkplain #missing() missing} 注解始终返回聚合索引 {@code -1}。
+	// @return 返回聚合索引（从 {@code 0} 开始），如果注解缺失，则返回 {@code -1}
 	int getAggregateIndex();
 
 	/**

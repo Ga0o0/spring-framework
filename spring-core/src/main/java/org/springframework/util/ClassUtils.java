@@ -824,6 +824,10 @@ public abstract class ClassUtils {
 	 * @param clazz the class to analyze for interfaces
 	 * @return all interfaces that the given object implements as a Set
 	 */
+	// 返回给定类实现的所有接口（包括超类实现的接口）。
+	// <p>如果类本身是接口，则返回唯一的接口。
+	// @param clazz 要分析接口的类
+	// @return 给定对象实现的所有接口（以 Set 形式）
 	public static Set<Class<?>> getAllInterfacesForClassAsSet(Class<?> clazz) {
 		return getAllInterfacesForClassAsSet(clazz, null);
 	}
@@ -1015,6 +1019,8 @@ public abstract class ClassUtils {
 	 * @return the user-defined class
 	 * @see #CGLIB_CLASS_SEPARATOR
 	 */
+	// 在指定的处理程序 bean 中查找处理程序方法。
+	// @param handler 可以是 bean 名称或实际的处理程序实例
 	public static Class<?> getUserClass(Class<?> clazz) {
 		if (clazz.getName().contains(CGLIB_CLASS_SEPARATOR)) {
 			Class<?> superclass = clazz.getSuperclass();

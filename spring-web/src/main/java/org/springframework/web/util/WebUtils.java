@@ -499,6 +499,10 @@ public abstract class WebUtils {
 	 * @param request current servlet request
 	 * @return whether the given request is an include request
 	 */
+	// 判断给定的请求是否为包含请求，即非来自外部的顶级 HTTP 请求。
+	// <p>检查 “jakarta.servlet.include.request_uri” 请求属性是否存在。可以检查任何仅存在于包含请求中的请求属性。
+	// @param request 当前 servlet 请求
+	// @return 给定的请求是否为包含请求
 	public static boolean isIncludeRequest(ServletRequest request) {
 		return (request.getAttribute(INCLUDE_REQUEST_URI_ATTRIBUTE) != null);
 	}

@@ -47,6 +47,9 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Juergen Hoeller
  * @since 3.2
  */
+// 用于确定请求的 {@linkplain MediaType 媒体类型} 的中心类。此操作通过委托给已配置的 {@code ContentNegotiationStrategy} 实例列表来完成。
+//
+// <p>此外，还提供了查找媒体类型文件扩展名的方法。此操作通过委托给已配置的 {@code MediaTypeFileExtensionResolver} 实例列表来完成。
 public class ContentNegotiationManager implements ContentNegotiationStrategy, MediaTypeFileExtensionResolver {
 
 	private final List<ContentNegotiationStrategy> strategies = new ArrayList<>();

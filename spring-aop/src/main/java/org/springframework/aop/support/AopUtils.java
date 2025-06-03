@@ -139,13 +139,20 @@ public abstract class AopUtils {
 	 * @since 4.3
 	 * @see MethodIntrospector#selectInvocableMethod(Method, Class)
 	 */
+	// 选择目标类型上的可调用方法：如果实际在目标类型上暴露，则选择给定方法本身，否则选择目标类型的接口之一或目标类型本身上的相应方法。
+	// @param method 要检查的方法
+	// @param targetType 要在其上搜索方法的目标类型（通常是 AOP 代理）
+	// @return 目标类型上相应的可调用方法
+	// @throws IllegalStateException 如果给定方法在给定目标类型上不可调用（通常是由于代理不匹配）
 	public static Method selectInvocableMethod(Method method, @Nullable Class<?> targetType) {
 		if (targetType == null) {
 			return method;
 		}
+		// 选择可调用方法
 		Method methodToUse = MethodIntrospector.selectInvocableMethod(method, targetType);
 		if (Modifier.isPrivate(methodToUse.getModifiers()) && !Modifier.isStatic(methodToUse.getModifiers()) &&
 				SpringProxy.class.isAssignableFrom(targetType)) {
+			// 需要调用目标类 “%s” 的代理上的方法 “%s” ，但无法委托给目标 Bean。请将其可见性切换为包或受保护。
 			throw new IllegalStateException(String.format(
 					"Need to invoke method '%s' found on proxy for target class '%s' but cannot " +
 					"be delegated to target bean. Switch its visibility to package or protected.",

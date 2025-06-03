@@ -49,6 +49,7 @@ import org.springframework.util.StringUtils;
  * @see <a href="https://tools.ietf.org/html/rfc7231#section-3.1.1.1">
  *     HTTP 1.1: Semantics and Content, section 3.1.1.1</a>
  */
+// {@link MimeType} 的子类，增加了对 HTTP 规范中定义的质量参数的支持。
 public class MediaType extends MimeType implements Serializable {
 
 	private static final long serialVersionUID = 2069937152339670231L;

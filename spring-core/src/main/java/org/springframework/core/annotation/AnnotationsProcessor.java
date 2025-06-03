@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
  * @see AnnotationsScanner
  * @see TypeMappedAnnotations
  */
+// 用于处理注释的回调接口。
 @FunctionalInterface
 interface AnnotationsProcessor<C, R> {
 

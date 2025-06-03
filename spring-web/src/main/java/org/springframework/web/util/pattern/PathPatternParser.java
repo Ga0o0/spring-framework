@@ -33,6 +33,12 @@ import org.springframework.util.StringUtils;
  * @author Andy Clement
  * @since 5.0
  */
+// URI 路径模式解析器，生成 {@link PathPattern} 实例，然后可将其与请求进行匹配。
+//
+// <p>{@link PathPatternParser} 和 {@link PathPattern} 专为 Web 应用中的 HTTP URL 路径而设计，
+// 在 Web 应用中，大量 URI 路径模式会持续与传入请求进行匹配，因此需要高效的匹配。
+//
+// <p>有关路径模式语法的详细信息，请参阅 {@link PathPattern}。
 public class PathPatternParser {
 
 	private boolean matchOptionalTrailingSeparator = false;

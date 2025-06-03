@@ -176,6 +176,8 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * String pattern matching with {@link AntPathMatcher} is enabled instead.
 	 * @since 5.3
 	 */
+	// 返回已配置的 {@link #setPatternParser(PathPatternParser)} {@code PathPatternParser}，
+	// 或 {@code null}，否则表示已启用与 {@link AntPathMatcher} 的字符串模式匹配。
 	@Nullable
 	public PathPatternParser getPatternParser() {
 		return this.patternParser;
@@ -264,6 +266,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	/**
 	 * Return the {@link #setPathMatcher configured} {@code PathMatcher}.
 	 */
+	// 返回{@link #setPathMatcher 配置的} {@code PathMatcher}。
 	public PathMatcher getPathMatcher() {
 		return this.pathMatcher;
 	}

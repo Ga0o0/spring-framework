@@ -42,6 +42,12 @@ import org.springframework.util.ObjectUtils;
  * @author Sam Brannen
  * @since 5.2
  */
+// 用于确定哪些注解充当其他注解的容器的策略。{@link #standardRepeatables()} 方法提供了一种默认策略，
+// 该策略遵循 Java 的 {@link Repeatable @Repeatable} 支持，并且应该适用于大多数情况。
+//
+// <p>{@link #of} 方法可用于为不希望使用 {@link Repeatable @Repeatable} 的注解注册关系。
+//
+// <p>要完全禁用可重复支持，请使用 {@link #none()}。
 public abstract class RepeatableContainers {
 
 	static final Map<Class<? extends Annotation>, Object> cache = new ConcurrentReferenceHashMap<>();
@@ -133,6 +139,8 @@ public abstract class RepeatableContainers {
 	 * repeatable annotations.
 	 * @return a {@link RepeatableContainers} instance
 	 */
+	// 创建一个不支持任何可重复注解的 {@link RepeatableContainers} 实例。
+	// @return 一个 {@link RepeatableContainers} 实例
 	public static RepeatableContainers none() {
 		return NoRepeatableContainers.INSTANCE;
 	}

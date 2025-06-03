@@ -48,6 +48,9 @@ import org.springframework.web.servlet.mvc.condition.HeadersRequestCondition.Hea
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 逻辑析取（“ || ”）请求条件，用于将请求的 “Accept” 标头与一系列媒体类型表达式进行匹配。
+// 支持两种媒体类型表达式，分别在 {@link RequestMapping#produces()} 和 {@link RequestMapping#headers()} 中进行了描述，
+// 其中标头名称为 “Accept” 。无论使用哪种语法，语义都是相同的。
 public final class ProducesRequestCondition extends AbstractRequestCondition<ProducesRequestCondition> {
 
 	private static final ContentNegotiationManager DEFAULT_CONTENT_NEGOTIATION_MANAGER =
