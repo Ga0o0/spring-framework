@@ -202,6 +202,13 @@ public class RequestContext {
 	 * @see org.springframework.web.context.WebApplicationContext
 	 * @see org.springframework.web.servlet.DispatcherServlet
 	 */
+	// 为给定的请求创建一个新的 RequestContext，并使用给定的模型属性来检索错误。
+	// <p>这适用于所有视图实现。它通常由视图实现使用。
+	// <p>如果指定了 ServletContext，则 RequestContext 也可以与根 WebApplicationContext（DispatcherServlet 之外）一起使用。
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
+	// @param servletContext Web 应用程序的 servlet 上下文（可以为 null；回退到根 WebApplicationContext 的必需参数）
+	// @param model 当前视图的模型属性（可以为 null，使用请求属性来检索错误）
 	public RequestContext(HttpServletRequest request, @Nullable HttpServletResponse response,
 			@Nullable ServletContext servletContext, @Nullable Map<String, Object> model) {
 

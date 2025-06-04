@@ -124,6 +124,34 @@ import org.springframework.validation.annotation.ValidationAnnotationUtils;
  * @see DefaultBindingErrorProcessor
  * @see org.springframework.context.MessageSource
  */
+// 该绑定器允许通过构造函数和设置函数注入将属性值应用于目标对象，并支持验证和绑定结果分析。
+//
+// <p>您可以通过指定允许的字段模式、必填字段、自定义编辑器等来自定义绑定过程。
+//
+// <p><strong>警告</strong>：数据绑定可能会暴露对象图中不应由外部客户端访问或修改的部分，从而导致安全问题。
+// 因此，在设计和使用数据绑定时应谨慎考虑安全性。更多详细信息，请参阅参考手册中专门针对
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-initbinder-model-design">Spring Web MVC</a> 和
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#webflux-ann-initbinder-model-design">Spring WebFlux</a> 的数据绑定章节。
+//
+// <p>可以通过 {@link BindingResult} 接口检查绑定结果，该接口扩展了 {@link Errors} 接口：请参阅 {@link #getBindingResult()} 方法。
+// 缺失字段和属性访问异常将转换为 {@link FieldError FieldErrors}，并在 Errors 实例中收集，使用以下错误代码：
+//
+// <ul>
+// <li>缺失字段错误：“required”
+// <li>类型不匹配错误：“typeMismatch”
+// <li>方法调用错误：“methodInvocation”
+// </ul>
+//
+// <p>默认情况下，绑定错误通过 {@link BindingErrorProcessor} 策略解决，处理缺失字段和属性访问异常：
+// 请参阅 {@link #setBindingErrorProcessor} 方法。您可以根据需要覆盖默认策略，例如生成不同的错误代码。
+//
+// <p>之后可以添加自定义验证错误。您通常希望将这些错误代码解析为适当的用户可见错误消息；
+// 这可以通过使用 {@link org.springframework.context.MessageSource} 解决每个错误来实现，它能够通过其
+// {@link org.springframework.context.MessageSource#getMessage(org.springframework.context.MessageSourceResolvable, java.util.Locale)} 方法解析
+// {@link ObjectError}/{@link FieldError}。消息代码列表可以通过 {@link MessageCodesResolver} 策略自定义：请参阅 {@link #setMessageCodesResolver} 方法。
+// {@link DefaultMessageCodesResolver} 的 javadoc 详细说明了默认解析规则。
+//
+// <p>这种通用数据绑定器可用于任何类型的环境。
 public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 
 	/** Default object name used for binding: "target". */

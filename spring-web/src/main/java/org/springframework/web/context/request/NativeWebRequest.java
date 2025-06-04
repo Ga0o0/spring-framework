@@ -37,12 +37,14 @@ public interface NativeWebRequest extends WebRequest {
 	 * Return the underlying native request object.
 	 * @see jakarta.servlet.http.HttpServletRequest
 	 */
+	// 返回底层原生请求对象。
 	Object getNativeRequest();
 
 	/**
 	 * Return the underlying native response object, if any.
 	 * @see jakarta.servlet.http.HttpServletResponse
 	 */
+	// 返回底层原生响应对象（如果有）。
 	@Nullable
 	Object getNativeResponse();
 
@@ -53,6 +55,9 @@ public interface NativeWebRequest extends WebRequest {
 	 * of that type is available
 	 * @see jakarta.servlet.http.HttpServletRequest
 	 */
+	// 如果可用，则返回底层原生请求对象。
+	// @param requiredType 所需的请求对象类型
+	// @return 匹配的请求对象，如果该类型不可用，则返回 {@code null}。
 	@Nullable
 	<T> T getNativeRequest(@Nullable Class<T> requiredType);
 
@@ -63,6 +68,9 @@ public interface NativeWebRequest extends WebRequest {
 	 * of that type is available
 	 * @see jakarta.servlet.http.HttpServletResponse
 	 */
+	// 如果可用，则返回底层原生响应对象。
+	// @param requiredType 所需的响应对象类型
+	// @return 匹配的响应对象，如果该类型不可用，则返回 {@code null}。
 	@Nullable
 	<T> T getNativeResponse(@Nullable Class<T> requiredType);
 

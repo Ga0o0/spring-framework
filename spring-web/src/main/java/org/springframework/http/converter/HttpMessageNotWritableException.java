@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
  * @author Arjen Poutsma
  * @since 3.0
  */
+// 当 {@link HttpMessageConverter#write} 方法失败时由 {@link HttpMessageConverter} 实现抛出。
 @SuppressWarnings("serial")
 public class HttpMessageNotWritableException extends HttpMessageConversionException {
 

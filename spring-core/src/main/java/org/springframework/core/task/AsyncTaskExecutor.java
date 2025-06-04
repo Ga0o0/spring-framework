@@ -42,6 +42,12 @@ import org.springframework.util.concurrent.FutureUtils;
  * @see java.util.concurrent.Callable
  * @see java.util.concurrent.Executors
  */
+// 异步 {@link TaskExecutor} 实现的扩展接口，提供对 {@link java.util.concurrent.Callable} 的支持。
+//
+// <p>注意：{@link java.util.concurrent.Executors} 类包含一组方法，可以在执行之前将一些其他常见的类似闭包的对象
+// （例如，将 {@link java.security.PrivilegedAction} 转换为 {@link Callable}）转换为 {@link Callable}。
+//
+// <p>实现此接口还表明 {@link #execute(Runnable)} 方法不会在调用者的线程中执行其 Runnable，而是在其他线程中异步执行。
 public interface AsyncTaskExecutor extends TaskExecutor {
 
 	/**

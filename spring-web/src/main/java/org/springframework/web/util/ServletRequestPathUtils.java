@@ -78,7 +78,10 @@ public abstract class ServletRequestPathUtils {
 	 * Return a {@link #parseAndCache  previously} parsed and cached {@code RequestPath}.
 	 * @throws IllegalArgumentException if not found
 	 */
+	// 返回一个 {@link #parseAndCache 先前} 解析并缓存的 {@code RequestPath}。
+	// @throws IllegalArgumentException 如果未找到
 	public static RequestPath getParsedRequestPath(ServletRequest request) {
+		// PATH_ATTRIBUTE = ServletRequestPathUtils.class.getName() + ".PATH"
 		RequestPath path = (RequestPath) request.getAttribute(PATH_ATTRIBUTE);
 		Assert.notNull(path, () -> "Expected parsed RequestPath in request attribute \"" + PATH_ATTRIBUTE + "\".");
 		return path;
@@ -166,6 +169,11 @@ public abstract class ServletRequestPathUtils {
 	 * @param request the current request
 	 * @return the full request mapping path as a String
 	 */
+	// {@link #getCachedPath(ServletRequest)} 的变体，以字符串形式返回请求映射的路径。
+	// <p>如果缓存路径是 {@link #parseAndCache(HttpServletRequest) 预解析} {@code RequestPath}，则返回的字符串路径值经过编码，且路径参数已被移除。
+	// <p>如果缓存路径是 {@link UrlPathHelper#resolveAndCacheLookupPath 预解析} 字符串 lookupPath，
+	// 则返回的字符串路径值取决于已解析的 {@link UrlPathHelper} 的配置方式。
+	// @param request 当前请求 @return 完整的请求映射路径作为字符串
 	public static String getCachedPathValue(ServletRequest request) {
 		Object path = getCachedPath(request);
 		if (path instanceof PathContainer pathContainer) {
@@ -182,6 +190,9 @@ public abstract class ServletRequestPathUtils {
 	 * @param request the current request
 	 * @return whether a pre-resolved or pre-parsed path is available
 	 */
+	// 检查先前已 {@link UrlPathHelper#resolveAndCacheLookupPath 解析} 的字符串 lookupPath 或先前 {@link #parseAndCache 解析} 的 {@code RequestPath}。
+	// @param request 当前请求
+	// @return 是否有预解析或预解析的路径可用
 	public static boolean hasCachedPath(ServletRequest request) {
 		return (request.getAttribute(PATH_ATTRIBUTE) != null ||
 				request.getAttribute(UrlPathHelper.PATH_ATTRIBUTE) != null);

@@ -41,6 +41,12 @@ import org.springframework.core.annotation.AliasFor;
  * @see RequestParam
  * @see CookieValue
  */
+// 此注解指示方法参数应绑定到 Web 请求标头。
+//
+// <p>Spring MVC 和 Spring WebFlux 中带注解的处理程序方法支持此注解。
+//
+// <p>如果方法参数为 {@link java.util.Map Map&lt;String, String&gt;}、{@link org.springframework.util.MultiValueMap MultiValueMap&lt;String, String&gt;}
+// 或 {@link org.springframework.http.HttpHeaders HttpHeaders}，则映射将填充所有标头名称和值。
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

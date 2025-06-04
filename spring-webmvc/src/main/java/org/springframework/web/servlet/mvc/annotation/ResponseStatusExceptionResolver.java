@@ -82,11 +82,13 @@ public class ResponseStatusExceptionResolver extends AbstractHandlerExceptionRes
 
 		try {
 			if (ex instanceof ResponseStatusException rse) {
+				// 处理 {@link ResponseStatusException} 的模板方法。
 				return resolveResponseStatusException(rse, request, response, handler);
 			}
 
 			ResponseStatus status = AnnotatedElementUtils.findMergedAnnotation(ex.getClass(), ResponseStatus.class);
 			if (status != null) {
+				// 处理 {@link ResponseStatus @ResponseStatus} 注释的模板方法。
 				return resolveResponseStatus(status, request, response, handler, ex);
 			}
 
@@ -114,6 +116,13 @@ public class ResponseStatusExceptionResolver extends AbstractHandlerExceptionRes
 	 * @param ex the exception
 	 * @return an empty ModelAndView, i.e. exception resolved
 	 */
+	// 处理 {@link ResponseStatus @ResponseStatus} 注释的模板方法。
+	// <p>默认实现委托给 {@link #applyStatusAndReason}，并使用注释中的状态代码和原因。
+	// @param respondStatus {@code @ResponseStatus} 注释
+	// @param request 当前 HTTP 请求 @param respond 当前 HTTP 响应
+	// @param handler 执行的处理程序，如果在发生异常时未选择任何处理程序，则返回 {@code null}，例如，如果多部分解析失败
+	// @param ex 异常
+	// @return 一个空的 ModelAndView，即异常已解决
 	protected ModelAndView resolveResponseStatus(ResponseStatus responseStatus, HttpServletRequest request,
 			HttpServletResponse response, @Nullable Object handler, Exception ex) throws Exception {
 
@@ -136,6 +145,13 @@ public class ResponseStatusExceptionResolver extends AbstractHandlerExceptionRes
 	 * @return an empty ModelAndView, i.e. exception resolved
 	 * @since 5.0
 	 */
+	// 处理 {@link ResponseStatusException} 的模板方法。
+	// <p>默认实现会应用 {@link ResponseStatusException#getHeaders()} 中的标头，并将异常的状态码和原因委托给 {@link #applyStatusAndReason}。
+	// @param ex 异常
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
+	// @param handler 执行的处理程序，如果在发生异常时未选择任何处理程序（例如，如果多部分解析失败），则返回 {@code null}。
+	// @return 一个空的 ModelAndView，即异常已解决
 	protected ModelAndView resolveResponseStatusException(ResponseStatusException ex,
 			HttpServletRequest request, HttpServletResponse response, @Nullable Object handler) throws Exception {
 

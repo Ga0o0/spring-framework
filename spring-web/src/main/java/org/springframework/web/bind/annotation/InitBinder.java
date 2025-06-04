@@ -84,6 +84,9 @@ public @interface InitBinder {
 	 * attributes/parameters, with different init-binder methods typically applying to
 	 * different groups of attributes or parameters.
 	 */
+	// 此 init-binder 方法应应用到的命令/表单属性和/或请求参数的名称。
+	// <p>默认应用于所有由注解处理程序类处理的命令/表单属性和所有请求参数。
+	// 在此处指定模型属性名称或请求参数名称会将 init-binder 方法限制为仅应用于这些特定的属性/参数，不同的 init-binder 方法通常应用于不同的属性或参数组。
 	String[] value() default {};
 
 }

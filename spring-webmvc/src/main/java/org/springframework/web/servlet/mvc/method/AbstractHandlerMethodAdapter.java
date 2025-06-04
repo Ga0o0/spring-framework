@@ -65,6 +65,9 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 	 * @param handler the handler instance to check
 	 * @return whether this adapter can adapt the given handler
 	 */
+	// 此实现要求处理程序为 {@link HandlerMethod}。
+	// @param handler 要检查的处理程序实例
+	// @return 此适配器是否可以适配给定的处理程序
 	@Override
 	public final boolean supports(Object handler) {
 		return (handler instanceof HandlerMethod handlerMethod && supportsInternal(handlerMethod));
@@ -75,11 +78,15 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 	 * @param handlerMethod the handler method to check
 	 * @return whether this adapter can adapt the given method
 	 */
+	// 给定一个处理程序方法，返回此适配器是否支持该方法。
+	// @param handlerMethod 要检查的处理程序方法
+	// @return 此适配器是否可以适配给定的方法。
 	protected abstract boolean supportsInternal(HandlerMethod handlerMethod);
 
 	/**
 	 * This implementation expects the handler to be an {@link HandlerMethod}.
 	 */
+	// 此实现期望处理程序是 {@link HandlerMethod}。
 	@Override
 	@Nullable
 	public final ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler)
@@ -98,6 +105,12 @@ public abstract class AbstractHandlerMethodAdapter extends WebContentGenerator i
 	 * or {@code null} if the request has been handled directly
 	 * @throws Exception in case of errors
 	 */
+	// 使用指定的处理程序方法来处理请求。
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
+	// @param handlerMethod 要使用的处理程序方法。此对象必须先前已传递给 {@link #supportsInternal(HandlerMethod)} 此接口，并且该接口必须返回 {@code true}。
+	// @return 一个包含视图名称和所需模型数据的 ModelAndView 对象，如果请求已直接处理，则返回 {@code null}。
+	// @throws 错误时抛出异常
 	@Nullable
 	protected abstract ModelAndView handleInternal(HttpServletRequest request,
 			HttpServletResponse response, HandlerMethod handlerMethod) throws Exception;

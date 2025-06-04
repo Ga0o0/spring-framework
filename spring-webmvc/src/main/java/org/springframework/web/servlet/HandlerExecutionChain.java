@@ -53,6 +53,8 @@ public class HandlerExecutionChain {
 	 * Create a new HandlerExecutionChain.
 	 * @param handler the handler object to execute
 	 */
+	// 创建一个新的 HandlerExecutionChain。
+	// @param handler 要执行的处理程序对象
 	public HandlerExecutionChain(Object handler) {
 		this(handler, (HandlerInterceptor[]) null);
 	}
@@ -141,10 +143,13 @@ public class HandlerExecutionChain {
 	 * next interceptor or the handler itself. Else, DispatcherServlet assumes
 	 * that this interceptor has already dealt with the response itself.
 	 */
+	// 调用已注册拦截器的 preHandle 方法。
+	// @return {@code true} 如果执行链应该继续执行下一个拦截器或处理程序本身。否则，DispatcherServlet 会假定此拦截器已经处理了响应本身。
 	boolean applyPreHandle(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		for (int i = 0; i < this.interceptorList.size(); i++) {
 			HandlerInterceptor interceptor = this.interceptorList.get(i);
 			if (!interceptor.preHandle(request, response, this.handler)) {
+				// 在映射的 HandlerInterceptors 上触发 afterCompletion 回调。
 				triggerAfterCompletion(request, response, null);
 				return false;
 			}
@@ -156,11 +161,13 @@ public class HandlerExecutionChain {
 	/**
 	 * Apply postHandle methods of registered interceptors.
 	 */
+	// 应用已注册拦截器的 postHandle 方法。
 	void applyPostHandle(HttpServletRequest request, HttpServletResponse response, @Nullable ModelAndView mv)
 			throws Exception {
 
 		for (int i = this.interceptorList.size() - 1; i >= 0; i--) {
 			HandlerInterceptor interceptor = this.interceptorList.get(i);
+			// invoke HandlerInterceptor.postHandle() -> 成功执行处理程序后的拦截点。
 			interceptor.postHandle(request, response, this.handler, mv);
 		}
 	}
@@ -170,6 +177,7 @@ public class HandlerExecutionChain {
 	 * Will just invoke afterCompletion for all interceptors whose preHandle invocation
 	 * has successfully completed and returned true.
 	 */
+	// 在映射的 HandlerInterceptors 上触发 afterCompletion 回调。所有 preHandle 调用成功完成并返回 true 的拦截器都会调用 afterCompletion 回调。
 	void triggerAfterCompletion(HttpServletRequest request, HttpServletResponse response, @Nullable Exception ex) {
 		for (int i = this.interceptorIndex; i >= 0; i--) {
 			HandlerInterceptor interceptor = this.interceptorList.get(i);

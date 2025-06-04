@@ -49,6 +49,19 @@ import org.springframework.util.StringUtils;
  * HTTP caching - Google developers reference</a>
  * @see <a href="https://www.mnot.net/cache_docs/">Mark Nottingham's cache documentation</a>
  */
+// 用于创建 “Cache-Control” HTTP 响应标头的构建器。
+//
+// <p>向 HTTP 响应添加 Cache-Control 指令可以显著提升客户端与 Web 应用交互时的体验。此构建器仅使用响应指令创建自定义的 “Cache-Control” 标头，并考虑了多种用例。
+//
+// <ul>
+// <li>使用 {@code CacheControl cc = CacheControl.maxAge(1, TimeUnit.HOURS)} 缓存 HTTP 响应将导致 {@code Cache-Control: "max-age=3600"</li>
+// <li>使用 {@code CacheControl cc = CacheControl.noStore()} 阻止缓存将导致 {@code Cache-Control: "no-store"</li>
+// <li>高级情况如 {@code CacheControl cc = CacheControl.maxAge(1, TimeUnit.HOURS).noTransform().cachePublic()} 将导致
+// {@code Cache-Control: "max-age=3600, no-transform, public"
+// </li>
+// </ul>
+//
+// <p>请注意，为了提高效率，Cache-Control 标头应与 HTTP 验证器（例如“Last-Modified”或“ETag”标头）一起写入。
 public class CacheControl {
 
 	@Nullable

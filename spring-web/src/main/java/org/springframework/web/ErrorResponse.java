@@ -43,6 +43,12 @@ import org.springframework.lang.Nullable;
  * @since 6.0
  * @see ErrorResponseException
  */
+// 完整的 RFC 9457 错误响应表示，包括状态、标头和 RFC 9457 格式的 {@link ProblemDetail} 正文。允许任何异常公开 HTTP 错误响应信息。
+//
+// <p>{@link ErrorResponseException} 是此接口的默认实现，也是其他异常使用的便捷基类。
+//
+// <p>{@code ErrorResponse} 支持作为 {@code @ExceptionHandler} 方法的返回值，这些方法可直接呈现到响应中，
+// 例如通过标记为 {@code @ResponseBody} 或在 {@code @RestController} 或 {@code RestControllerAdvice} 类中声明。
 public interface ErrorResponse {
 
 	/**

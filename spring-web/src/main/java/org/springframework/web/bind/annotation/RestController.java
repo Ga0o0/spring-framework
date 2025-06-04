@@ -42,6 +42,11 @@ import org.springframework.stereotype.Controller;
  * @author Sam Brannen
  * @since 4.0
  */
+// 这是一个便捷的注解，其本身带有 {@link Controller @Controller} 和 {@link ResponseBody @ResponseBody} 注解。
+//
+// <p> 带有此注解的类型将被视为控制器，其中 {@link RequestMapping @RequestMapping} 方法默认采用 {@link ResponseBody @ResponseBody} 语义。
+// <p><b>注意：</b> 如果配置了适当的 {@code HandlerMapping}-{@code HandlerAdapter} 对
+// （例如，MVC Java 配置和 MVC 命名空间中的默认设置是 {@code RequestMappingHandlerMapping}-{@code RequestMappingHandlerAdapter} 对），则会处理 {@code @RestController}。
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -55,6 +60,8 @@ public @interface RestController {
 	 * @return the suggested component name, if any (or empty String otherwise)
 	 * @since 4.0.1
 	 */
+	// 该值可能指示逻辑组件名称的建议，在自动检测到组件的情况下转换为 Spring bean。
+	// @return 建议的组件名称（如果有）（否则返回空字符串）
 	@AliasFor(annotation = Controller.class)
 	String value() default "";
 

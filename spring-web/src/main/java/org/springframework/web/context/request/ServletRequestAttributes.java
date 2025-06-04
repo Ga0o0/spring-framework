@@ -95,6 +95,7 @@ public class ServletRequestAttributes extends AbstractRequestAttributes {
 	/**
 	 * Exposes the native {@link HttpServletRequest} that we're wrapping.
 	 */
+	// 公开我们正在包装的本机 {@link HttpServletRequest}。
 	public final HttpServletRequest getRequest() {
 		return this.request;
 	}
@@ -102,6 +103,7 @@ public class ServletRequestAttributes extends AbstractRequestAttributes {
 	/**
 	 * Exposes the native {@link HttpServletResponse} that we're wrapping (if any).
 	 */
+	// 公开我们正在包装的本机 {@link HttpServletResponse}（如果有）。
 	@Nullable
 	public final HttpServletResponse getResponse() {
 		return this.response;

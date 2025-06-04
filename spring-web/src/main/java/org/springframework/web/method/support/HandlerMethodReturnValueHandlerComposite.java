@@ -32,6 +32,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+//通过委托给已注册的 {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} 列表来处理方法返回值。先前解析的返回类型会被缓存，以便更快地查找。
 public class HandlerMethodReturnValueHandlerComposite implements HandlerMethodReturnValueHandler {
 
 	private final List<HandlerMethodReturnValueHandler> returnValueHandlers = new ArrayList<>();
@@ -67,6 +68,8 @@ public class HandlerMethodReturnValueHandlerComposite implements HandlerMethodRe
 	 * Iterate over registered {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} and invoke the one that supports it.
 	 * @throws IllegalStateException if no suitable {@link HandlerMethodReturnValueHandler} is found.
 	 */
+	// 遍历已注册的 {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} 并调用支持它的那个。
+	// @throws IllegalStateException 如果未找到合适的 {@link HandlerMethodReturnValueHandler}
 	@Override
 	public void handleReturnValue(@Nullable Object returnValue, MethodParameter returnType,
 			ModelAndViewContainer mavContainer, NativeWebRequest webRequest) throws Exception {
@@ -75,6 +78,7 @@ public class HandlerMethodReturnValueHandlerComposite implements HandlerMethodRe
 		if (handler == null) {
 			throw new IllegalArgumentException("Unknown return value type: " + returnType.getParameterType().getName());
 		}
+		// invoke HandlerMethodReturnValueHandler.handleReturnValue()
 		handler.handleReturnValue(returnValue, returnType, mavContainer, webRequest);
 	}
 
@@ -85,6 +89,7 @@ public class HandlerMethodReturnValueHandlerComposite implements HandlerMethodRe
 			if (isAsyncValue && !(handler instanceof AsyncHandlerMethodReturnValueHandler)) {
 				continue;
 			}
+			// invoke HandlerMethodReturnValueHandler.supportsReturnType()
 			if (handler.supportsReturnType(returnType)) {
 				return handler;
 			}
@@ -95,6 +100,7 @@ public class HandlerMethodReturnValueHandlerComposite implements HandlerMethodRe
 	private boolean isAsyncReturnValue(@Nullable Object value, MethodParameter returnType) {
 		for (HandlerMethodReturnValueHandler handler : this.returnValueHandlers) {
 			if (handler instanceof AsyncHandlerMethodReturnValueHandler asyncHandler &&
+					// invoke AsyncHandlerMethodReturnValueHandler.isAsyncReturnValue()
 					asyncHandler.isAsyncReturnValue(value, returnType)) {
 				return true;
 			}

@@ -86,6 +86,8 @@ public class ModelAndView {
 	 * by the DispatcherServlet's ViewResolver
 	 * @see #addObject
 	 */
+	// 当没有模型数据可供暴露时，此构造函数十分便捷。也可与 {@code addObject} 结合使用。
+	// @param viewName 待渲染视图的名称，由 DispatcherServlet 的 ViewResolver 解析
 	public ModelAndView(String viewName) {
 		this.view = viewName;
 	}
@@ -156,6 +158,10 @@ public class ModelAndView {
 	 * (to be set just prior to View rendering)
 	 * @since 4.3
 	 */
+	// 给定视图名称、模型和 HTTP 状态，创建一个新的 ModelAndView。
+	// @param viewName 待渲染视图的名称，由 DispatcherServlet 的 ViewResolver 解析。
+	// @param model 一个模型名称（字符串）到模型对象（对象）的 Map。模型条目不能为 {@code null}，但如果没有模型数据，则模型 Map 可能为 {@code null}。
+	// @param status 用于响应的 HTTP 状态码（在视图渲染之前设置）
 	public ModelAndView(@Nullable String viewName, @Nullable Map<String, ?> model, @Nullable HttpStatusCode status) {
 		this.view = viewName;
 		if (model != null) {
@@ -210,6 +216,7 @@ public class ModelAndView {
 	 * Set a View object for this ModelAndView. Will override any
 	 * pre-existing view name or View.
 	 */
+	// 为该 ModelAndView 设置一个 View 对象。该对象将覆盖任何已存在的视图名称或 View。
 	public void setView(@Nullable View view) {
 		this.view = view;
 	}
@@ -227,6 +234,7 @@ public class ModelAndView {
 	 * Indicate whether this {@code ModelAndView} has a view, either
 	 * as a view name or as a direct {@link View} instance.
 	 */
+	// 指示此 {@code ModelAndView} 是否具有视图，可以作为视图名称或直接 {@link View} 实例。
 	public boolean hasView() {
 		return (this.view != null);
 	}
@@ -244,6 +252,7 @@ public class ModelAndView {
 	 * Return the model map. May return {@code null}.
 	 * Called by DispatcherServlet for evaluation of the model.
 	 */
+	// 返回模型映射。可能返回 {@code null}。由 DispatcherServlet 调用以评估模型。
 	@Nullable
 	protected Map<String, Object> getModelInternal() {
 		return this.model;
@@ -280,6 +289,7 @@ public class ModelAndView {
 	 * Return the configured HTTP status for the response, if any.
 	 * @since 4.3
 	 */
+	// 如果有的话，返回响应的配置 HTTP 状态。
 	@Nullable
 	public HttpStatusCode getStatus() {
 		return this.status;

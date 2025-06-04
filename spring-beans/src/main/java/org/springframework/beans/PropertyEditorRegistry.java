@@ -34,6 +34,9 @@ import org.springframework.lang.Nullable;
  * @see BeanWrapper
  * @see org.springframework.validation.DataBinder
  */
+// 封装了注册 JavaBeans {@link PropertyEditor PropertyEditors} 的方法。这是 {@link PropertyEditorRegistrar} 操作的核心接口。
+//
+// <p>由 {@link BeanWrapper} 扩展；由 {@link BeanWrapperImpl} 和 {@link org.springframework.validation.DataBinder} 实现。
 public interface PropertyEditorRegistry {
 
 	/**

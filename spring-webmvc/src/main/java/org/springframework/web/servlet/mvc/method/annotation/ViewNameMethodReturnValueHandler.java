@@ -42,6 +42,12 @@ import org.springframework.web.servlet.RequestToViewNameTranslator;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 处理 {@code void} 和 {@code String} 类型的返回值，并将它们解释为视图名称引用。
+// 从 4.2 开始，它还可以处理通用 {@code CharSequence} 类型，例如 {@code StringBuilder} 或 Groovy 的 {@code GString}，作为视图名称。
+//
+// <p>由于 {@code void} 返回类型或实际返回值保留原样，导致 {@code null} 返回值保留原样，从而允许已配置的 {@link RequestToViewNameTranslator} 按照约定选择视图名称。
+//
+// <p>根据是否存在 {@code @ModelAttribute} 或 {@code @ResponseBody} 等注解，String 返回值可以以多种方式解释。因此，应在支持这些注解的处理程序之后配置此处理程序。
 public class ViewNameMethodReturnValueHandler implements HandlerMethodReturnValueHandler {
 
 	@Nullable
@@ -80,7 +86,7 @@ public class ViewNameMethodReturnValueHandler implements HandlerMethodReturnValu
 
 		if (returnValue instanceof CharSequence) {
 			String viewName = returnValue.toString();
-			mavContainer.setViewName(viewName);
+			mavContainer.setViewName(viewName);	// this.view = viewName;
 			if (isRedirectViewName(viewName)) {
 				mavContainer.setRedirectModelScenario(true);
 			}
@@ -100,6 +106,9 @@ public class ViewNameMethodReturnValueHandler implements HandlerMethodReturnValu
 	 * @return "true" if the given view name is recognized as a redirect view
 	 * reference; "false" otherwise.
 	 */
+	// 给定的视图名称是否为重定向视图引用。默认实现会检查已配置的重定向模式，以及视图名称是否以 “redirect:” 前缀开头。
+	// @param viewName 要检查的视图名称，永不 {@code null}
+	// @return 如果给定的视图名称被识别为重定向视图引用，则返回“true”；否则返回“false”。
 	protected boolean isRedirectViewName(String viewName) {
 		return (PatternMatchUtils.simpleMatch(this.redirectPatterns, viewName) || viewName.startsWith("redirect:"));
 	}

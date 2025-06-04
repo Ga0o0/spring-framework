@@ -47,6 +47,13 @@ import org.springframework.web.bind.support.SimpleSessionStatus;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 记录 {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} 和
+// {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} 在调用控制器方法过程中做出的与模型和视图相关的决策。
+//
+// <p>{@link #setRequestHandled} 标志可用于指示请求已被直接处理，并且不需要视图解析。
+//
+// <p>实例化时会自动创建默认的 {@link Model}。可通过 {@link #setRedirectModel} 提供备用模型实例，以用于重定向场景。
+// 当 {@link #setRedirectModelScenario} 设置为 {@code true} 以表示重定向场景时，{@link #getModel()} 将返回重定向模型而不是默认模型。
 public class ModelAndViewContainer {
 
 	private boolean ignoreDefaultModelOnRedirect = true;
@@ -87,6 +94,11 @@ public class ModelAndViewContainer {
 	 * @deprecated as of 6.0 without a replacement; once removed, the default
 	 * model will always be ignored on redirect
 	 */
+	// 默认情况下，“默认”模型的内容在渲染和重定向场景中均会使用。
+	// 或者，控制器方法可以声明一个类型为 {@code RedirectAttributes} 的参数，并使用它来提供属性以准备重定向 URL。
+	// <p>将此标志设置为 {@code true} 可确保即使未声明 RedirectAttributes 参数，重定向场景中也不会使用“默认”模型。
+	// 将其设置为 {@code false} 意味着，如果控制器方法未声明 RedirectAttributes 参数，则可以在重定向中使用“默认”模型。
+	// <p>从 6.0 开始，此属性默认设置为 {@code true}。@deprecated 自 6.0 起，无替代；一旦移除，重定向时将始终忽略默认模型
 	@Deprecated(since = "6.0")
 	public void setIgnoreDefaultModelOnRedirect(boolean ignoreDefaultModelOnRedirect) {
 		this.ignoreDefaultModelOnRedirect = ignoreDefaultModelOnRedirect;
@@ -96,6 +108,7 @@ public class ModelAndViewContainer {
 	 * Set a view name to be resolved by the DispatcherServlet via a ViewResolver.
 	 * Will override any pre-existing view name or View.
 	 */
+	// 设置 DispatcherServlet 通过 ViewResolver 解析的视图名称。将覆盖任何现有的视图名称或视图。
 	public void setViewName(@Nullable String viewName) {
 		this.view = viewName;
 	}
@@ -121,6 +134,7 @@ public class ModelAndViewContainer {
 	 * Return the View object, or {@code null} if we are using a view name
 	 * to be resolved by the DispatcherServlet via a ViewResolver.
 	 */
+	// 返回 View 对象，或者如果我们使用由 DispatcherServlet 通过 ViewResolver 解析的视图名称，则返回 {@code null}。
 	@Nullable
 	public Object getView() {
 		return this.view;
@@ -130,6 +144,7 @@ public class ModelAndViewContainer {
 	 * Whether the view is a view reference specified via a name to be
 	 * resolved by the DispatcherServlet via a ViewResolver.
 	 */
+	// 该视图是否是通过名称指定的视图引用，由 DispatcherServlet 通过 ViewResolver 进行解析。
 	public boolean isViewReference() {
 		return (this.view instanceof String);
 	}
@@ -140,6 +155,9 @@ public class ModelAndViewContainer {
 	 * there is no redirect model (i.e. RedirectAttributes was not declared as
 	 * a method argument) and {@code ignoreDefaultModelOnRedirect=false}.
 	 */
+	// 返回要使用的模型 —— “默认” 模型或 “重定向” 模型。
+	// 如果 {@code redirectModelScenario=false} 或没有重定向模型（即 RedirectAttributes 未声明为方法参数），
+	// 并且 {@code ignoreDefaultModelOnRedirect=false}，则使用默认模型。
 	public ModelMap getModel() {
 		if (useDefaultModel()) {
 			return this.defaultModel;
@@ -155,6 +173,7 @@ public class ModelAndViewContainer {
 	/**
 	 * Whether to use the default model or the redirect model.
 	 */
+	// 是否使用默认模型或重定向模型。
 	private boolean useDefaultModel() {
 		return (!this.redirectModelScenario || (this.redirectModel == null && !this.ignoreDefaultModelOnRedirect));
 	}
@@ -169,6 +188,10 @@ public class ModelAndViewContainer {
 	 * @return the default model (never {@code null})
 	 * @since 4.1.4
 	 */
+	// 返回实例化时创建的“默认”模型。
+	// <p>通常建议使用 {@link #getModel()}，它返回“默认”模型（模板渲染）或“重定向”模型（重定向 URL 准备）。
+	// 在需要访问“默认”模型的高级情况下，可能需要使用此方法，例如，保存通过 {@code @SessionAttributes} 指定的模型属性。
+	// @return 默认模型（永远不会返回 {@code null}）
 	public ModelMap getDefaultModel() {
 		return this.defaultModel;
 	}
@@ -187,6 +210,7 @@ public class ModelAndViewContainer {
 	 * Whether the controller has returned a redirect instruction, e.g. a
 	 * "redirect:" prefixed view name, a RedirectView instance, etc.
 	 */
+	// 控制器是否返回了重定向指令，例如以 “redirect:” 为前缀的视图名称、RedirectView 实例等。
 	public void setRedirectModelScenario(boolean redirectModelScenario) {
 		this.redirectModelScenario = redirectModelScenario;
 	}
@@ -259,6 +283,9 @@ public class ModelAndViewContainer {
 	 * argument of type {@code ServletResponse} or {@code OutputStream}).
 	 * <p>The default value is {@code false}.
 	 */
+	// 请求是否已在处理程序（例如 {@code @ResponseBody} 方法）中完全处理，因此无需进行视图解析。
+	// 当控制器方法声明 {@code ServletResponse} 或 {@code OutputStream} 类型的参数时，也可以设置此标志。
+	// <p>默认值为 {@code false}。
 	public void setRequestHandled(boolean requestHandled) {
 		this.requestHandled = requestHandled;
 	}
@@ -266,6 +293,7 @@ public class ModelAndViewContainer {
 	/**
 	 * Whether the request has been handled fully within the handler.
 	 */
+	// 请求是否已在处理程序内得到完全处理。
 	public boolean isRequestHandled() {
 		return this.requestHandled;
 	}
@@ -292,6 +320,7 @@ public class ModelAndViewContainer {
 	 * Copy all attributes to the underlying model.
 	 * A shortcut for {@code getModel().addAllAttributes(Map)}.
 	 */
+	// 将所有属性复制到底层模型。{@code getModel().addAllAttributes(Map)} 的快捷方式。
 	public ModelAndViewContainer addAllAttributes(@Nullable Map<String, ?> attributes) {
 		getModel().addAllAttributes(attributes);
 		return this;
@@ -302,6 +331,7 @@ public class ModelAndViewContainer {
 	 * the same name taking precedence (i.e. not getting replaced).
 	 * A shortcut for {@code getModel().mergeAttributes(Map<String, ?>)}.
 	 */
+	// 复制提供的 {@code Map} 中的属性，优先复制同名的现有对象（即不被替换）。这是 {@code getModel().mergeAttributes(Map<String, ?>)} 的快捷方式。
 	public ModelAndViewContainer mergeAttributes(@Nullable Map<String, ?> attributes) {
 		getModel().mergeAttributes(attributes);
 		return this;

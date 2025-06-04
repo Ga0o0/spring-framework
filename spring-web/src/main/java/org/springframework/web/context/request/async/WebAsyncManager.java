@@ -118,6 +118,10 @@ public final class WebAsyncManager {
 	 * {@code true}.
 	 * @param asyncWebRequest the web request to use
 	 */
+	// 配置要使用的 {@link AsyncWebRequest}。
+	// 此属性可以在单个请求期间多次设置，以准确反映请求的当前状态（例如，在转发、请求/响应包装等之后）。
+	// 但是，不应在并发处理过程中设置此属性，即在 {@link #isConcurrentHandlingStarted()} 为 {@code true} 时。
+	// @param asyncWebRequest 要使用的 Web 请求
 	public void setAsyncWebRequest(AsyncWebRequest asyncWebRequest) {
 		Assert.notNull(asyncWebRequest, "AsyncWebRequest must not be null");
 		this.asyncWebRequest = asyncWebRequest;
@@ -139,6 +143,8 @@ public final class WebAsyncManager {
 	 * {@link #startCallableProcessing(Callable, Object...)}.
 	 * <p>By default a {@link SimpleAsyncTaskExecutor} instance is used.
 	 */
+	// 通过 {@link #startCallableProcessing(Callable, Object...)} 配置 AsyncTaskExecutor 以用于并发处理。
+	// <p>默认情况下使用 {@link SimpleAsyncTaskExecutor} 实例。
 	public void setTaskExecutor(AsyncTaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;
 	}
@@ -161,6 +167,7 @@ public final class WebAsyncManager {
 	/**
 	 * Return whether a result value exists as a result of concurrent handling.
 	 */
+	// 返回并发处理后是否存在结果值。
 	public boolean hasConcurrentResult() {
 		return (this.concurrentResult != RESULT_NONE);
 	}
@@ -171,6 +178,8 @@ public final class WebAsyncManager {
 	 * concurrent handling raised one
 	 * @see #clearConcurrentResult()
 	 */
+	// 获取并发处理的结果。
+	// @return 一个对象，如果并发处理引发异常，则可能返回 {@code Exception} 或 {@code Throwable}
 	@Nullable
 	public Object getConcurrentResult() {
 		return this.concurrentResult;
@@ -180,6 +189,7 @@ public final class WebAsyncManager {
 	 * Get the additional processing context saved at the start of concurrent handling.
 	 * @see #clearConcurrentResult()
 	 */
+	// 获取并发处理开始时保存的附加处理上下文。
 	@Nullable
 	public Object[] getConcurrentResultContext() {
 		return this.concurrentResultContext;
@@ -221,6 +231,8 @@ public final class WebAsyncManager {
 	 * The key is derived from the class name and hash code.
 	 * @param interceptors one or more interceptors to register
 	 */
+	// 注册一个不带键的 {@link CallableProcessingInterceptor}。键由类名和哈希码派生而来。
+	// @param interceptors 一个或多个要注册的拦截器
 	public void registerCallableInterceptors(CallableProcessingInterceptor... interceptors) {
 		Assert.notNull(interceptors, "A CallableProcessingInterceptor is required");
 		for (CallableProcessingInterceptor interceptor : interceptors) {
@@ -245,6 +257,8 @@ public final class WebAsyncManager {
 	 * without a specified key. The default key is derived from the interceptor class name and hash code.
 	 * @param interceptors one or more interceptors to register
 	 */
+	// 注册一个或多个 {@link DeferredResultProcessingInterceptor DeferredResultProcessingInterceptors}，无需指定键。默认键由拦截器类名和哈希码派生而来。
+	// @param interceptors 需要注册的一个或多个拦截器
 	public void registerDeferredResultInterceptors(DeferredResultProcessingInterceptor... interceptors) {
 		Assert.notNull(interceptors, "A DeferredResultProcessingInterceptor is required");
 		for (DeferredResultProcessingInterceptor interceptor : interceptors) {
@@ -274,6 +288,7 @@ public final class WebAsyncManager {
 	 * Clear {@linkplain #getConcurrentResult() concurrentResult} and
 	 * {@linkplain #getConcurrentResultContext() concurrentResultContext}.
 	 */
+	// 清除 {@linkplain #getConcurrentResult() concurrentResult} 和 {@linkplain #getConcurrentResultContext() concurrentResultContext}。
 	public void clearConcurrentResult() {
 		if (!this.state.compareAndSet(State.RESULT_SET, State.NOT_STARTED)) {
 			if (logger.isDebugEnabled()) {

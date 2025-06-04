@@ -30,18 +30,22 @@ package org.springframework.web.bind.support;
  * @see org.springframework.web.bind.annotation.RequestMapping
  * @see org.springframework.web.bind.annotation.SessionAttributes
  */
+// 这是一个简单的接口，可以注入到处理程序方法中，允许它们发出会话处理已完成的信号。处理程序调用者随后可以进行适当的清理，
+// 例如，清理在此处理程序处理过程中隐式创建的会话属性（根据 {@link org.springframework.web.bind.annotation.SessionAttributes @SessionAttributes} 注解）。
 public interface SessionStatus {
 
 	/**
 	 * Mark the current handler's session processing as complete, allowing for
 	 * cleanup of session attributes.
 	 */
+	// 将当前处理程序的会话处理标记为完成，以允许清理会话属性。
 	void setComplete();
 
 	/**
 	 * Return whether the current handler's session processing has been marked
 	 * as complete.
 	 */
+	// 返回当前处理程序的会话处理是否已标记为完成。
 	boolean isComplete();
 
 }

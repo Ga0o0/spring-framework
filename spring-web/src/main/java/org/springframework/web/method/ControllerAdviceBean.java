@@ -54,6 +54,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
  * @author Sam Brannen
  * @since 3.2
  */
+// 封装有关 {@link ControllerAdvice @ControllerAdvice} Spring 管理 Bean 的信息，无需实例化。
+//
+// <p>可以使用 {@link #findAnnotatedBeans(ApplicationContext)} 方法发现此类 Bean。
+// 但是，{@code ControllerAdviceBean} 可以从任何对象创建，包括未使用 {@code @ControllerAdvice} 注解的对象。
 public class ControllerAdviceBean implements Ordered {
 
 	/**
@@ -224,12 +228,15 @@ public class ControllerAdviceBean implements Ordered {
 	 * will be cached if it is a singleton, thereby avoiding repeated lookups in
 	 * the {@code BeanFactory}.
 	 */
+	// 获取此 {@code ControllerAdviceBean} 的 bean 实例，如有必要，通过 {@link BeanFactory} 解析 bean 名称。
+	// <p>从 Spring Framework 5.2 开始，一旦 bean 实例被解析，如果它是单例，它将被缓存，从而避免在 {@code BeanFactory} 中重复查找。
 	public Object resolveBean() {
 		if (this.resolvedBean == null) {
 			// this.beanOrName must be a String representing the bean name if
 			// this.resolvedBean is null.
+			// --> 译文：如果 this.resolvedBean 为空，则 this.beanOrName 必须是表示 bean 名称的字符串。
 			Object resolvedBean = obtainBeanFactory().getBean((String) this.beanOrName);
-			// Don't cache non-singletons (e.g., prototypes).
+			// Don't cache non-singletons (e.g., prototypes). --> 译文：不要缓存非单例（例如原型）。
 			if (!this.isSingleton) {
 				return resolvedBean;
 			}
@@ -250,6 +257,8 @@ public class ControllerAdviceBean implements Ordered {
 	 * @since 4.0
 	 * @see ControllerAdvice
 	 */
+	// 检查给定的 bean 类型是否应该由此 {@code ControllerAdviceBean} 进行通知。
+	// @param beanType 需要检查的 bean 类型
 	public boolean isApplicableToBeanType(@Nullable Class<?> beanType) {
 		return this.beanTypePredicate.test(beanType);
 	}

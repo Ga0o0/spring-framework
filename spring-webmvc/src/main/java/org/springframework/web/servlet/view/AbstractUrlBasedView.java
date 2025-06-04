@@ -60,6 +60,7 @@ public abstract class AbstractUrlBasedView extends AbstractView implements Initi
 	/**
 	 * Return the URL of the resource that this view wraps.
 	 */
+	// 返回此视图包装的资源的 URL。
 	@Nullable
 	public String getUrl() {
 		return this.url;

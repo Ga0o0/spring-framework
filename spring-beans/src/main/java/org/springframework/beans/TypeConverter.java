@@ -35,6 +35,10 @@ import org.springframework.lang.Nullable;
  * @see SimpleTypeConverter
  * @see BeanWrapperImpl
  */
+// 定义类型转换方法的接口。通常（但不一定）与 {@link PropertyEditorRegistry} 接口结合实现。
+//
+// <p><b>注意：</b>由于 TypeConverter 的实现通常基于非线程安全的
+// {@link java.beans.PropertyEditor PropertyEditors}，因此 TypeConverter 本身也不<em>线程安全</em>。
 public interface TypeConverter {
 
 	/**

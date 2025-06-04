@@ -106,6 +106,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	/**
 	 * Return the content type for this view.
 	 */
+	// 返回此视图的内容类型。
 	@Override
 	@Nullable
 	public String getContentType() {
@@ -304,6 +305,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * Delegates to renderMergedOutputModel for the actual rendering.
 	 * @see #renderMergedOutputModel
 	 */
+	// 根据指定的模型准备视图，并在必要时将其与静态属性和 RequestContext 属性合并。委托给 renderMergedOutputModel 进行实际渲染。
 	@Override
 	public void render(@Nullable Map<String, ?> model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
@@ -314,8 +316,12 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 					(this.staticAttributes.isEmpty() ? "" : ", static attributes " + this.staticAttributes));
 		}
 
+		// 创建一个包含动态值和静态属性的组合输出 Map（永不为 null）。动态值优先于静态属性。
 		Map<String, Object> mergedModel = createMergedOutputModel(model, request, response);
+		// 准备给定的响应以进行渲染。
 		prepareResponse(request, response);
+		// 实际渲染视图。
+		// <p>第一步是准备请求：将相关属性公开为请求属性。第二步是实际渲染视图，例如通过 RequestDispatcher 包含 JSP；解析 freemarker 文件并写入响应流。
 		renderMergedOutputModel(mergedModel, getRequestToExpose(request), response);
 	}
 
@@ -323,6 +329,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * Creates a combined output Map (never {@code null}) that includes dynamic values and static attributes.
 	 * Dynamic values take precedence over static attributes.
 	 */
+	// 创建一个包含动态值和静态属性的组合输出 Map（永不为 null）。动态值优先于静态属性。
 	protected Map<String, Object> createMergedOutputModel(@Nullable Map<String, ?> model,
 			HttpServletRequest request, HttpServletResponse response) {
 
@@ -330,7 +337,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 		Map<String, Object> pathVars = (this.exposePathVariables ?
 				(Map<String, Object>) request.getAttribute(View.PATH_VARIABLES) : null);
 
-		// Consolidate static and dynamic model attributes.
+		// Consolidate static and dynamic model attributes. --> 译文：合并静态和动态模型属性。
 		int size = this.staticAttributes.size();
 		size += (model != null ? model.size() : 0);
 		size += (pathVars != null ? pathVars.size() : 0);
@@ -344,7 +351,7 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 			mergedModel.putAll(model);
 		}
 
-		// Expose RequestContext?
+		// Expose RequestContext? --> 译文：公开 RequestContext？
 		if (this.requestContextAttribute != null) {
 			mergedModel.put(this.requestContextAttribute, createRequestContext(request, response, mergedModel));
 		}
@@ -363,9 +370,14 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @see #setRequestContextAttribute
 	 * @see org.springframework.web.servlet.support.RequestContext
 	 */
+	// 创建一个 RequestContext 对象，并通过指定的属性名进行暴露。
+	// <p>默认实现会为给定的请求和模型创建一个标准的 RequestContext 实例。子类可以重写该实例来自定义实例。
+	// @param request 当前 HTTP 请求
+	// @param model 组合输出 Map（永不为 {@code null}），动态值优先于静态属性
+	// @return RequestContext 实例
 	protected RequestContext createRequestContext(
 			HttpServletRequest request, HttpServletResponse response, Map<String, Object> model) {
-
+		// 为给定的请求创建一个新的 RequestContext，并使用给定的模型属性来检索错误。
 		return new RequestContext(request, response, getServletContext(), model);
 	}
 
@@ -376,7 +388,12 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @param request current HTTP request
 	 * @param response current HTTP response
 	 */
+	// 准备给定的响应以进行渲染。
+	// <p>默认实现会针对通过 HTTPS 发送下载内容时出现的 IE 错误应用一种解决方法。
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
 	protected void prepareResponse(HttpServletRequest request, HttpServletResponse response) {
+		// 返回此视图是否生成下载内容（通常是 PDF 或 Excel 文件等二进制内容）。
 		if (generatesDownloadContent()) {
 			response.setHeader("Pragma", "private");
 			response.setHeader("Cache-Control", "private, must-revalidate");
@@ -393,6 +410,8 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @see #prepareResponse
 	 * @see jakarta.servlet.http.HttpServletResponse#getOutputStream()
 	 */
+	// 返回此视图是否生成下载内容（通常是 PDF 或 Excel 文件等二进制内容）。
+	// <p>默认实现返回 {@code false}。如果子类知道自己正在生成需要在客户端临时缓存的下载内容（通常通过响应 OutputStream 进行缓存），则建议在此处返回 {@code true}。
 	protected boolean generatesDownloadContent() {
 		return false;
 	}
@@ -407,6 +426,10 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @see #setExposedContextBeanNames
 	 * @see org.springframework.web.context.support.ContextExposingHttpServletRequest
 	 */
+	// 获取要公开给 {@link #renderMergedOutputModel}（即视图）的请求句柄。
+	// <p>默认实现会将原始请求包装为 Spring Bean 的请求属性（如果需要）。
+	// @param originalRequest 引擎提供的原始 Servlet 请求
+	// @return 包装后的请求，如果不需要包装，则返回原始请求
 	protected HttpServletRequest getRequestToExpose(HttpServletRequest originalRequest) {
 		if (this.exposeContextBeansAsAttributes || this.exposedContextBeanNames != null) {
 			WebApplicationContext wac = getWebApplicationContext();
@@ -428,6 +451,12 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @param response current HTTP response
 	 * @throws Exception if rendering failed
 	 */
+	// 子类必须实现此方法才能实际渲染视图。
+	// <p>第一步是准备请求：在 JSP 中，这意味着将模型对象设置为请求属性。第二步是实际渲染视图，例如通过 RequestDispatcher 包含 JSP。
+	// @param model 组合输出 Map（永远不会为 {@code null}），动态值优先于静态属性
+	// @param request 当前 HTTP 请求
+	// @param respond 当前 HTTP 响应
+	// @throws 渲染失败时抛出异常
 	protected abstract void renderMergedOutputModel(
 			Map<String, Object> model, HttpServletRequest request, HttpServletResponse response) throws Exception;
 
@@ -439,6 +468,9 @@ public abstract class AbstractView extends WebApplicationObjectSupport implement
 	 * @param model a Map of model objects to expose
 	 * @param request current HTTP request
 	 */
+	// 将给定映射中的模型对象作为请求属性公开。名称将从模型映射中获取。此方法适用于所有可通过 {@link jakarta.servlet.RequestDispatcher} 访问的资源。
+	// @param model 要公开的模型对象映射
+	// @param request 当前 HTTP 请求
 	protected void exposeModelAsRequestAttributes(Map<String, Object> model,
 			HttpServletRequest request) throws Exception {
 

@@ -41,6 +41,10 @@ import org.springframework.util.Assert;
  * @see DataBinder#getBindingResult()
  * @see DataBinder#close()
  */
+// 当绑定错误被认为是致命错误时抛出。实现 {@link BindingResult} 接口（及其父接口 {@link Errors}），以便直接分析绑定错误。
+//
+// <p>从 Spring 2.0 开始，这是一个特殊用途的类。通常，应用程序代码会使用 {@link BindingResult} 接口，或者使用 {@link DataBinder}，
+// 后者通过 {@link org.springframework.validation.DataBinder#getBindingResult()} 暴露一个 BindingResult。
 @SuppressWarnings("serial")
 public class BindException extends Exception implements BindingResult {
 

@@ -33,6 +33,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 创建一个 {@link WebRequestDataBinder} 实例并使用 {@link WebBindingInitializer} 初始化它。
 public class DefaultDataBinderFactory implements WebDataBinderFactory {
 
 	@Nullable
@@ -46,6 +47,8 @@ public class DefaultDataBinderFactory implements WebDataBinderFactory {
 	 * @param initializer for global data binder initialization
 	 * (or {@code null} if none)
 	 */
+	// 创建一个新的 {@code DefaultDataBinderFactory} 实例。
+	// @param 初始化器用于全局数据绑定器的初始化（如果没有则为 {@code null}）
 	public DefaultDataBinderFactory(@Nullable WebBindingInitializer initializer) {
 		this.initializer = initializer;
 	}
@@ -57,6 +60,7 @@ public class DefaultDataBinderFactory implements WebDataBinderFactory {
 	 * Spring MVC, and method parameters have {@code @Constraint} annotations.
 	 * @since 6.1
 	 */
+	// 配置标志以指示是否将验证应用于处理程序方法参数，如果在 Spring MVC 中启用了 Bean 验证，并且方法参数具有 {@code @Constraint} 注释，则会出现这种情况。
 	public void setMethodValidationApplicable(boolean methodValidationApplicable) {
 		this.methodValidationApplicable = methodValidationApplicable;
 	}

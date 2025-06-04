@@ -28,6 +28,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 为命名目标对象创建 {@link WebDataBinder} 实例的工厂。
 public interface WebDataBinderFactory {
 
 	/**
@@ -39,6 +40,12 @@ public interface WebDataBinderFactory {
 	 * @return the created {@link WebDataBinder} instance, never null
 	 * @throws Exception raised if the creation and initialization of the data binder fails
 	 */
+	// 为给定对象创建一个 {@link WebDataBinder}。
+	// @param webRequest 当前请求
+	// @param target 要为其创建数据绑定器的对象，如果为简单类型创建绑定器，则为 {@code null}
+	// @param objectName 目标对象的名称
+	// @return 创建的 {@link WebDataBinder} 实例，永不为 null
+	// @throws Exception 如果数据绑定器的创建和初始化失败
 	WebDataBinder createBinder(NativeWebRequest webRequest, @Nullable Object target, String objectName)
 			throws Exception;
 
@@ -49,6 +56,8 @@ public interface WebDataBinderFactory {
 	 * insight on how to initialize the binder.
 	 * @since 6.1
 	 */
+	// {@link #createBinder(NativeWebRequest, Object, String)} 的变体，带有 {@link ResolvableType}，用于创建 {@code DataBinder}。
+	// 这可用于构造目标，或以其他方式提供有关如何初始化绑定器的更多详情。
 	default WebDataBinder createBinder(
 			NativeWebRequest webRequest, @Nullable Object target, String objectName,
 			ResolvableType targetType) throws Exception {

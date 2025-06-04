@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 当 {@link HttpMessageConverter#read} 方法失败时由 {@link HttpMessageConverter} 实现抛出。
 @SuppressWarnings("serial")
 public class HttpMessageNotReadableException extends HttpMessageConversionException {
 

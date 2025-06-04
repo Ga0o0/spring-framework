@@ -82,6 +82,10 @@ public abstract class WebAsyncUtils {
 	 * @param response the current response
 	 * @return an AsyncWebRequest instance (never {@code null})
 	 */
+	// 创建一个 AsyncWebRequest 实例。默认情况下，会创建一个 {@link StandardServletAsyncWebRequest} 实例。
+	// @param request 当前请求
+	// @param respond 当前响应
+	// @return 一个 AsyncWebRequest 实例（永不返回 {@code null}）
 	public static AsyncWebRequest createAsyncWebRequest(HttpServletRequest request, HttpServletResponse response) {
 		AsyncWebRequest prev = getAsyncManager(request).getAsyncWebRequest();
 		return (prev instanceof StandardServletAsyncWebRequest standardRequest ?

@@ -113,6 +113,9 @@ public abstract class PatternMatchUtils {
 	 * @param str the String to match
 	 * @return whether the String matches any of the given patterns
 	 */
+	// 将字符串与给定的模式进行匹配，支持直接相等以及以下简单模式样式：{@code xxx*}、{@code *xxx}、{@code *xxx*} 和 {@code xxx*yyy}（具有任意数量的模式部分）。
+	// <p>如果提供的字符串为 {@code null} 或提供的模式数组为 {@code null} 或为空，则返回 {@code false}。
+	// @param pattern 要匹配的模式 @param str 要匹配的字符串 @return 字符串是否与任何给定的模式匹配
 	public static boolean simpleMatch(@Nullable String[] patterns, @Nullable String str) {
 		if (patterns != null) {
 			for (String pattern : patterns) {

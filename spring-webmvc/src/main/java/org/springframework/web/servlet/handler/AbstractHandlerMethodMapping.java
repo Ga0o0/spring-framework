@@ -419,13 +419,17 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	/**
 	 * Look up a handler method for the given request.
 	 */
+	// 查找给定请求的处理程序方法。
 	@Override
 	@Nullable
 	protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
+		// 初始化用于请求映射的路径。
 		String lookupPath = initLookupPath(request);
 		this.mappingRegistry.acquireReadLock();
 		try {
+			// 查找与当前请求最匹配的处理程序方法。如果找到多个匹配项，则选择最佳匹配项。
 			HandlerMethod handlerMethod = lookupHandlerMethod(lookupPath, request);
+			// handlerMethod.createWithResolvedBean() -> 如果提供的实例包含 bean 名称而不是对象实例，则在创建和返回 {@link HandlerMethod} 之前解析 bean 名称。
 			return (handlerMethod != null ? handlerMethod.createWithResolvedBean() : null);
 		}
 		finally {
@@ -442,6 +446,10 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @see #handleMatch(Object, String, HttpServletRequest)
 	 * @see #handleNoMatch(Set, String, HttpServletRequest)
 	 */
+	// 查找与当前请求最匹配的处理程序方法。如果找到多个匹配项，则选择最佳匹配项。
+	// @param lookupPath 映射当前 Servlet 映射中的查找路径
+	// @param request 当前请求
+	// @return 最匹配的处理程序方法，如果没有匹配，则返回 {@code null}
 	@Nullable
 	protected HandlerMethod lookupHandlerMethod(String lookupPath, HttpServletRequest request) throws Exception {
 		List<Match> matches = new ArrayList<>();
@@ -679,6 +687,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 		/**
 		 * Acquire the read lock when using getMappings and getMappingsByUrl.
 		 */
+		// 使用 getMappings 和 getMappingsByUrl 时获取读锁。
 		public void acquireReadLock() {
 			this.readWriteLock.readLock().lock();
 		}

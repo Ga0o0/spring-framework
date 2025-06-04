@@ -28,6 +28,7 @@ import org.springframework.util.ClassUtils;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 尝试设置 bean 属性时，由于类型不匹配而引发异常。
 @SuppressWarnings("serial")
 public class TypeMismatchException extends PropertyAccessException {
 

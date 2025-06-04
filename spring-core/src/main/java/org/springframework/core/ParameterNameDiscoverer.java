@@ -33,6 +33,9 @@ import org.springframework.lang.Nullable;
  * @author Adrian Colyer
  * @since 2.0
  */
+// 用于发现方法和构造函数参数名称的接口。
+//
+// <p>参数名称发现并非总是可行，但可以尝试各种策略，例如查找可能在编译时发出的调试信息，以及查找可选地伴随 AspectJ 注释方法的 argname 注释值。
 public interface ParameterNameDiscoverer {
 
 	/**
@@ -44,6 +47,11 @@ public interface ParameterNameDiscoverer {
 	 * @return an array of parameter names if the names can be resolved,
 	 * or {@code null} if they cannot
 	 */
+	// 返回方法的参数名称，如果无法确定，则返回 {@code null}。
+	// <p>如果参数名称仅适用于给定方法的某些参数，而其他参数不可用，则数组中的单个条目可能为 {@code null}。
+	// 但是，建议尽可能使用存根参数名称。
+	// @param method 用于查找参数名称的方法
+	// @return 如果名称可以解析，则返回一个参数名称数组，如果无法解析，则返回 {@code null}
 	@Nullable
 	String[] getParameterNames(Method method);
 
@@ -56,6 +64,11 @@ public interface ParameterNameDiscoverer {
 	 * @return an array of parameter names if the names can be resolved,
 	 * or {@code null} if they cannot
 	 */
+	// 返回构造函数的参数名称，如果无法确定，则返回 {@code null}。
+	// <p>如果参数名称仅适用于给定构造函数的某些参数，而其他参数不可用，则数组中的单个条目可能为 {@code null}。
+	// 但是，建议尽可能使用存根参数名称。
+	// @param ctor 构造函数用于查找参数名称，
+	// @return 如果名称可以解析，则返回一个参数名称数组，如果无法解析，则返回 {@code null}
 	@Nullable
 	String[] getParameterNames(Constructor<?> ctor);
 

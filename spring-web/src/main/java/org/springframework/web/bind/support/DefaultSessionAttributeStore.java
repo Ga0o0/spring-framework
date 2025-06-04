@@ -31,6 +31,7 @@ import org.springframework.web.context.request.WebRequest;
  * @see org.springframework.web.context.request.WebRequest#getAttribute
  * @see org.springframework.web.context.request.WebRequest#removeAttribute
  */
+// {@link SessionAttributeStore} 接口的默认实现，将属性存储在 WebRequest 会话（即 HttpSession）中。
 public class DefaultSessionAttributeStore implements SessionAttributeStore {
 
 	private String attributeNamePrefix = "";
@@ -41,6 +42,8 @@ public class DefaultSessionAttributeStore implements SessionAttributeStore {
 	 * <p>Default is to use no prefix, storing the session attributes with the
 	 * same name as in the model.
 	 */
+	// 指定后端会话中属性名称使用的前缀。
+	// <p>默认不使用前缀，会话属性将使用与模型中相同的名称进行存储。
 	public void setAttributeNamePrefix(@Nullable String attributeNamePrefix) {
 		this.attributeNamePrefix = (attributeNamePrefix != null ? attributeNamePrefix : "");
 	}
@@ -81,6 +84,11 @@ public class DefaultSessionAttributeStore implements SessionAttributeStore {
 	 * @param attributeName the name of the attribute
 	 * @return the attribute name in the backend session
 	 */
+	// 计算后端会话中的属性名称。
+	// <p>默认实现仅添加已配置的 {@link #setAttributeNamePrefix "attributeNamePrefix"}（如果有）。
+	// @param request 当前请求
+	// @param attributeName 属性名称
+	// @return 后端会话中的属性名称
 	protected String getAttributeNameInSession(WebRequest request, String attributeName) {
 		return this.attributeNamePrefix + attributeName;
 	}

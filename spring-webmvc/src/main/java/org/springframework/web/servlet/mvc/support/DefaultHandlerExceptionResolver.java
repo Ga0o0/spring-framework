@@ -188,7 +188,7 @@ public class DefaultHandlerExceptionResolver extends AbstractHandlerExceptionRes
 			HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, Exception ex) {
 
 		try {
-			// ErrorResponse exceptions that expose HTTP response details
+			// ErrorResponse exceptions that expose HTTP response details --> 译文：ErrorResponse 异常暴露了 HTTP 响应的详细信息
 			if (ex instanceof ErrorResponse errorResponse) {
 				ModelAndView mav = null;
 				if (ex instanceof HttpRequestMethodNotSupportedException theEx) {

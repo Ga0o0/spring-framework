@@ -29,6 +29,9 @@ import java.io.IOException;
  * @author Rossen Stoyanchev
  * @since 5.3.33
  */
+// 当异步请求的响应变得不可用（如写入失败或 Servlet 容器错误通知所示）或异步请求完成后，引发此异常。
+//
+// <p>此异常依赖于响应包装和 {@code AsyncListener} 通知，由 {@link StandardServletAsyncWebRequest} 管理。
 @SuppressWarnings("serial")
 public class AsyncRequestNotUsableException extends IOException {
 

@@ -629,6 +629,13 @@ public class CorsConfiguration {
 	 * @return the combined {@code CorsConfiguration}, or {@code this}
 	 * configuration if the supplied configuration is {@code null}
 	 */
+	// 将提供的 {@code CorsConfiguration} 的非空属性与此属性组合。
+	// <p>组合单个值（例如 {@code allowCredentials} 或 {@code maxAge}）时，{@code this} 属性将被非空 {@code other} 属性（如果有）覆盖。
+	// <p>组合列表（例如 {@code allowedOrigins}、{@code allowedMethods}、{@code allowedHeaders} 或 {@code exposedHeaders}）以附加方式完成。
+	// 例如，组合 {@code ["GET", "POST"]} 与 {@code ["PATCH"]} 会生成 {@code ["GET", "POST", "PATCH"]}。
+	// 但是，组合 {@code ["GET", "POST"]} 与 {@code [""]} 会生成 {@code [""]}。
+	// 另请注意，由 {@link CorsConfiguration#applyPermitDefaultValues()} 设置的默认允许值将被任何显式定义的值覆盖。
+	// @return 组合的 {@code CorsConfiguration}，或 {@code this} 配置（如果提供的配置为 {@code null}）
 	public CorsConfiguration combine(@Nullable CorsConfiguration other) {
 		if (other == null) {
 			return this;

@@ -58,6 +58,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 在控制器方法调用之前协助初始化 {@link Model}，并在调用之后对其进行更新。
+//
+// <p>初始化时，模型将使用会话中临时存储的属性以及 {@code @ModelAttribute} 方法的调用进行填充。
+//
+// <p>更新时，模型属性将与会话同步，并且如果缺少 {@link BindingResult} 属性，也会添加。
 public final class ModelFactory {
 
 	private static final Log logger = LogFactory.getLog(ModelFactory.class);
@@ -76,6 +81,10 @@ public final class ModelFactory {
 	 * @param binderFactory for preparation of {@link BindingResult} attributes
 	 * @param attributeHandler for access to session attributes
 	 */
+	// 使用给定的 {@code @ModelAttribute} 方法创建一个新实例。
+	// @param handlerMethods 要调用的 {@code @ModelAttribute} 方法
+	// @param bindingFactory 用于准备 {@link BindingResult} 属性
+	// @param attributeHandler 用于访问会话属性
 	public ModelFactory(@Nullable List<InvocableHandlerMethod> handlerMethods,
 			WebDataBinderFactory binderFactory, SessionAttributesHandler attributeHandler) {
 
@@ -103,6 +112,16 @@ public final class ModelFactory {
 	 * @param handlerMethod the method for which the model is initialized
 	 * @throws Exception may arise from {@code @ModelAttribute} methods
 	 */
+	// 按以下顺序填充模型：
+	// <ol>
+	// <li>检索 {@code @SessionAttributes} 中列出的“已知”会话属性。
+	// <li>调用 {@code @ModelAttribute} 方法
+	// <li>查找同样列为 {@code @SessionAttributes} 的 {@code @ModelAttribute} 方法参数，并确保它们存在于模型中，必要时引发异常。
+	// </ol>
+	// @param request 当前请求
+	// @param container 包含待初始化模型的容器
+	// @param handlerMethod 初始化模型的方法
+	// @throws {@code @ModelAttribute} 方法可能引发异常
 	public void initModel(NativeWebRequest request, ModelAndViewContainer container, HandlerMethod handlerMethod)
 			throws Exception {
 
@@ -125,6 +144,7 @@ public final class ModelFactory {
 	 * Invoke model attribute methods to populate the model.
 	 * Attributes are added only if not already present in the model.
 	 */
+	// 调用模型属性方法来填充模型。仅当模型中不存在属性时才会添加属性。
 	private void invokeModelAttributeMethods(NativeWebRequest request, ModelAndViewContainer container)
 			throws Exception {
 
@@ -196,12 +216,19 @@ public final class ModelFactory {
 	 * @param container contains the model to update
 	 * @throws Exception if creating BindingResult attributes fails
 	 */
+	// 将以 {@code @SessionAttributes} 形式列出的模型属性提升到会话中。在必要时添加 {@link BindingResult} 属性。
+	// @param request 当前请求
+	// @param container 包含要更新的模型
+	// @throws 如果创建 BindingResult 属性失败，则抛出异常
 	public void updateModel(NativeWebRequest request, ModelAndViewContainer container) throws Exception {
+		// 返回实例化时创建的“默认”模型。
 		ModelMap defaultModel = container.getDefaultModel();
 		if (container.getSessionStatus().isComplete()){
+			// 从会话中移除 “已知” 属性
 			this.sessionAttributesHandler.cleanupAttributes(request);
 		}
 		else {
+			// 将给定属性的子集存储在会话中。
 			this.sessionAttributesHandler.storeAttributes(request, defaultModel);
 		}
 		if (!container.isRequestHandled() && container.getModel() == defaultModel) {
@@ -212,6 +239,7 @@ public final class ModelFactory {
 	/**
 	 * Add {@link BindingResult} attributes to the model for attributes that require it.
 	 */
+	// 对于需要的属性，向模型添加 {@link BindingResult} 属性。
 	private void updateBindingResult(NativeWebRequest request, ModelMap model) throws Exception {
 		List<String> keyNames = new ArrayList<>(model.keySet());
 		for (String name : keyNames) {
@@ -229,6 +257,7 @@ public final class ModelFactory {
 	/**
 	 * Whether the given attribute requires a {@link BindingResult} in the model.
 	 */
+	// 给定的属性是否需要模型中的 {@link BindingResult}。
 	private boolean isBindingCandidate(String attributeName, Object value) {
 		if (attributeName.startsWith(BindingResult.MODEL_KEY_PREFIX)) {
 			return false;

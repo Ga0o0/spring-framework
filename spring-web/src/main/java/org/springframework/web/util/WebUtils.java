@@ -436,6 +436,13 @@ public abstract class WebUtils {
 	 * @see #SESSION_MUTEX_ATTRIBUTE
 	 * @see HttpSessionMutexListener
 	 */
+	// 返回给定会话的最佳可用互斥锁：即用于为给定会话进行同步的对象。
+	// <p>如果可用，则返回会话互斥锁属性；通常，这意味着需要在 {@code web.xml} 中定义 HttpSessionMutexListener。如果未找到互斥锁属性，则返回 HttpSession 本身。
+	// <p>会话互斥锁保证在会话的整个生命周期内都是同一个对象，并通过 {@code SESSION_MUTEX_ATTRIBUTE} 常量定义的键访问。它可作为同步锁定当前会话的安全引用。
+	// <p>在许多情况下，HttpSession 引用本身也是一个安全的互斥锁，因为对于同一个活动逻辑会话，它始终是同一个对象引用。
+	// 但是，这在不同的 Servlet 容器之间无法保证；唯一 100% 安全的方法是使用会话互斥锁。
+	// @param session HttpSession 用于查找互斥锁
+	// @return 互斥锁对象（永不为 {@code null}）
 	public static Object getSessionMutex(HttpSession session) {
 		Assert.notNull(session, "Session must not be null");
 		Object mutex = session.getAttribute(SESSION_MUTEX_ATTRIBUTE);
@@ -525,6 +532,19 @@ public abstract class WebUtils {
 	 * @param ex the exception encountered
 	 * @param servletName the name of the offending servlet
 	 */
+	// 将 Servlet 规范的错误属性公开为 Servlet 2.3 规范中定义的键下的 {@link jakarta.servlet.http.HttpServletRequest} 属性，
+	// 用于直接呈现的错误页面，而不是通过 Servlet 容器的错误页面解析：
+	// {@code jakarta.servlet.error.status_code}、
+	// {@code jakarta.servlet.error.exception_type}、
+	// {@code jakarta.servlet.error.message}、
+	// {@code jakarta.servlet.error.exception}、
+	// {@code jakarta.servlet.error.request_uri} 和
+	// {@code jakarta.servlet.error.servlet_name}。
+	// <p>如果已存在值，则不会覆盖，以尊重之前已明确公开的属性值。
+	// <p>默认公开状态码 200。明确设置“jakarta.servlet.error.status_code”属性（之前或之后）以显示不同的状态代码。
+	// @param request 当前 servlet 请求
+	// @param ex 遇到的异常
+	// @param servletName 有问题的 servlet 的名称
 	public static void exposeErrorRequestAttributes(HttpServletRequest request, Throwable ex,
 			@Nullable String servletName) {
 
@@ -544,6 +564,10 @@ public abstract class WebUtils {
 	 * @param name the name of the attribute
 	 * @param value the suggested value of the attribute
 	 */
+	// 如果指定的请求属性不存在，则公开该属性。
+	// @param request 当前 servlet 请求
+	// @param name 属性名称
+	// @param value 属性的建议值
 	private static void exposeRequestAttributeIfNotPresent(ServletRequest request, String name, @Nullable Object value) {
 		if (request.getAttribute(name) == null) {
 			request.setAttribute(name, value);
@@ -561,6 +585,14 @@ public abstract class WebUtils {
 	 * {@code jakarta.servlet.error.servlet_name}.
 	 * @param request current servlet request
 	 */
+	// 清除 Servlet 规范的错误属性，将其作为 Servlet 2.3 规范中定义的键下的 {@link jakarta.servlet.http.HttpServletRequest} 属性：
+	// {@code jakarta.servlet.error.status_code},
+	// {@code jakarta.servlet.error.exception_type},
+	// {@code jakarta.servlet.error.message},
+	// {@code jakarta.servlet.error.exception},
+	// {@code jakarta.servlet.error.request_uri},
+	// {@code jakarta.servlet.error.servlet_name}.
+	// @param request 当前 Servlet 请求
 	public static void clearErrorRequestAttributes(HttpServletRequest request) {
 		request.removeAttribute(ERROR_STATUS_CODE_ATTRIBUTE);
 		request.removeAttribute(ERROR_EXCEPTION_TYPE_ATTRIBUTE);

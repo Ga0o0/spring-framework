@@ -68,6 +68,8 @@ public class InternalResourceViewResolver extends UrlBasedViewResolver {
 	 * by default {@link InternalResourceView}, or {@link JstlView} if the JSTL API
 	 * is present.
 	 */
+	// 将默认的 {@link #setViewClass 视图类} 设置为 {@link #requiredViewClass}：
+	// 默认情况下为 {@link InternalResourceView}，如果存在 JSTL API，则为 {@link JstlView}。
 	public InternalResourceViewResolver() {
 		Class<?> viewClass = requiredViewClass();
 		if (InternalResourceView.class == viewClass && jstlPresent) {

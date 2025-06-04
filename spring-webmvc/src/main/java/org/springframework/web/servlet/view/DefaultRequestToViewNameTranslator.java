@@ -145,6 +145,8 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * @see ServletRequestPathUtils#getCachedPath(ServletRequest)
 	 * @see #transformPath
 	 */
+	// 根据配置的参数将传入的 {@link HttpServletRequest} 的请求 URI 转换为视图名称。
+	// 如果解析的 RequestPath 和 String lookupPath 都未解析并缓存为请求属性，则抛出 @throws IllegalArgumentException。
 	@Override
 	public String getViewName(HttpServletRequest request) {
 		String path = ServletRequestPathUtils.getCachedPathValue(request);

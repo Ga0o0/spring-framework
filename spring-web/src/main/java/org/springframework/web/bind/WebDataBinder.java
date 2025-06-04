@@ -62,6 +62,16 @@ import org.springframework.web.multipart.MultipartFile;
  * @see #setFieldDefaultPrefix
  * @see ServletRequestDataBinder
  */
+// 特殊的 {@link DataBinder}，用于将 Web 请求参数数据绑定到 JavaBean 对象。
+// 专为 Web 环境设计，但不依赖于 Servlet API；可作为更具体的 DataBinder 变体（例如 {@link org.springframework.web.bind.ServletRequestDataBinder}）的基类。
+//
+// <p><strong>警告</strong>：数据绑定可能会暴露对象图中不应被外部客户端访问或修改的部分，从而导致安全问题。
+// 因此，在设计和使用数据绑定时，应谨慎考虑安全性。更多详情，请参阅参考手册中关于
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-initbinder-model-design">Spring Web MVC</a> 和
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#webflux-ann-initbinder-model-design">Spring WebFlux</a> 数据绑定的专门章节。
+//
+// <p>新增对字段标记的支持，解决了 HTML 复选框和选择选项的常见问题：检测到字段是表单的一部分，但由于字段为空而未生成请求参数。
+// 字段标记可以检测该状态并相应地重置相应的 Bean 属性。对于不存在的参数，默认值可以为字段指定非空值。
 public class WebDataBinder extends DataBinder {
 
 	/**

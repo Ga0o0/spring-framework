@@ -34,6 +34,7 @@ import org.springframework.web.ErrorResponseException;
  * @author Juergen Hoeller
  * @since 5.0
  */
+// {@link ErrorResponseException} 的子类接受“原因”，并且默认将其映射到 {@code ProblemDetail} 的 {@link ErrorResponseException#setDetail(String)“detail”}。
 @SuppressWarnings("serial")
 public class ResponseStatusException extends ErrorResponseException {
 

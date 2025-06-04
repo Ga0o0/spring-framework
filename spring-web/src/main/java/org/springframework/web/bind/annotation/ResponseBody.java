@@ -34,6 +34,9 @@ import java.lang.annotation.Target;
  * @see RequestBody
  * @see RestController
  */
+// 指示方法返回值的注解应绑定到 Web 响应主体。支持带注解的处理程序方法。
+//
+// <p>从 4.0 版本开始，此注解也可以在类型级别添加，在这种情况下，它是继承的，无需在方法级别添加。
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

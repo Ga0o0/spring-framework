@@ -57,6 +57,7 @@ import org.springframework.web.method.HandlerMethod;
  * @author Sebastien Deleuze
  * @since 3.1
  */
+// {@link HandlerMethod} 的扩展，通过 {@link HandlerMethodArgumentResolver} 列表，使用从当前 HTTP 请求解析的参数值来调用底层方法。
 public class InvocableHandlerMethod extends HandlerMethod {
 
 	private static final Object[] EMPTY_ARGS = new Object[0];
@@ -87,6 +88,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	/**
 	 * Create an instance from a bean instance and a method.
 	 */
+	// 从 bean 实例和方法创建一个实例。
 	public InvocableHandlerMethod(Object bean, Method method) {
 		super(bean, method);
 	}
@@ -118,6 +120,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	 * Set {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers}
 	 * to use for resolving method argument values.
 	 */
+	// 设置 {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} 用于解析方法参数值。
 	public void setHandlerMethodArgumentResolvers(HandlerMethodArgumentResolverComposite argumentResolvers) {
 		this.resolvers = argumentResolvers;
 	}
@@ -127,6 +130,8 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	 * (e.g. default request attribute name).
 	 * <p>Default is a {@link org.springframework.core.DefaultParameterNameDiscoverer}.
 	 */
+	// 设置 ParameterNameDiscoverer 以便在需要时解析参数名称（例如，默认请求属性名称）。
+	// <p>默认值为 {@link org.springframework.core.DefaultParameterNameDiscoverer}。
 	public void setParameterNameDiscoverer(ParameterNameDiscoverer parameterNameDiscoverer) {
 		this.parameterNameDiscoverer = parameterNameDiscoverer;
 	}
@@ -135,6 +140,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	 * Set the {@link WebDataBinderFactory} to be passed to argument resolvers allowing them
 	 * to create a {@link WebDataBinder} for data binding and type conversion purposes.
 	 */
+	// 设置 {@link WebDataBinderFactory} 传递给参数解析器，允许它们创建 {@link WebDataBinder} 用于数据绑定和类型转换目的。
 	public void setDataBinderFactory(WebDataBinderFactory dataBinderFactory) {
 		this.dataBinderFactory = dataBinderFactory;
 	}
@@ -145,6 +151,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	 * {@link #shouldValidateReturnValue()}.
 	 * @since 6.1
 	 */
+	// 设置 {@link MethodValidator} 以在控制器方法 {@link #shouldValidateArguments()} 或 {@link #shouldValidateReturnValue()} 时执行方法验证。
 	public void setMethodValidator(@Nullable MethodValidator methodValidator) {
 		this.methodValidator = methodValidator;
 		this.validationGroups = (methodValidator != null ?
@@ -171,23 +178,38 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	 * @see #getMethodArgumentValues
 	 * @see #doInvoke
 	 */
+	// 在给定请求的上下文中解析其参数值后调用该方法。
+	// <p>参数值通常通过 {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} 解析。
+	// 但是，{@code providedArgs} 参数可以提供直接使用的参数值，即无需参数解析。
+	// 提供的参数值的示例包括 {@link WebDataBinder}、{@link SessionStatus} 或引发的异常实例。提供的参数值在参数解析器之前进行检查。
+	// <p>委托给 {@link #getMethodArgumentValues} 并使用解析后的参数调用 {@link #doInvoke}。
+	// @param request 当前请求
+	// @param mavContainer 此请求的 ModelAndViewContainer
+	// @param providedArgs 按类型匹配的“给定”参数，尚未解析
+	// @return 调用方法返回的原始值
+	// @throws Exception 如果找不到合适的参数解析器或方法引发异常
 	@Nullable
 	public Object invokeForRequest(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
+		// 获取当前请求的方法参数值
 		Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Arguments: " + Arrays.toString(args));
 		}
 
+		// 方法参数是否需要进行方法验证
 		if (shouldValidateArguments() && this.methodValidator != null) {
+			// 应用参数验证 -> MethodValidator.validateArguments()
 			this.methodValidator.applyArgumentValidation(
 					getBean(), getBridgedMethod(), getMethodParameters(), args, this.validationGroups);
 		}
 
 		Object returnValue = doInvoke(args);
 
+		// 方法返回值是否是方法验证的候选值
 		if (shouldValidateReturnValue() && this.methodValidator != null) {
+			// 验证给定的返回值并返回验证结果。 -> MethodValidator.validateReturnValue()
 			this.methodValidator.applyReturnValueValidation(
 					getBean(), getBridgedMethod(), getReturnType(), returnValue, this.validationGroups);
 		}
@@ -201,9 +223,12 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	 * <p>The resulting array will be passed into {@link #doInvoke}.
 	 * @since 5.1.2
 	 */
+	// 获取当前请求的方法参数值，检查提供的参数值并返回到已配置的参数解析器。
+	// <p>结果数组将传递到 {@link #doInvoke}。
 	protected Object[] getMethodArgumentValues(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
+		// 返回此 {@code AnnotatedMethod} 的方法参数。
 		MethodParameter[] parameters = getMethodParameters();
 		if (ObjectUtils.isEmpty(parameters)) {
 			return EMPTY_ARGS;
@@ -225,6 +250,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 			}
 			catch (Exception ex) {
 				// Leave stack trace for later, exception may actually be resolved and handled...
+				// --> 译文：保留堆栈跟踪以供稍后使用，异常实际上可能会被解决和处理......
 				if (logger.isDebugEnabled()) {
 					String exMsg = ex.getMessage();
 					if (exMsg != null && !exMsg.contains(parameter.getExecutable().toGenericString())) {
@@ -240,10 +266,13 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	/**
 	 * Invoke the handler method with the given argument values.
 	 */
+	// 使用给定的参数值调用处理程序方法。
 	@Nullable
 	protected Object doInvoke(Object... args) throws Exception {
+		// 如果被注解的方法是桥接方法，则此方法返回桥接的（用户定义的）方法。
 		Method method = getBridgedMethod();
 		try {
+			// Kotlin 反射是否存在。
 			if (KotlinDetector.isKotlinReflectPresent()) {
 				if (KotlinDetector.isSuspendingFunction(method)) {
 					return invokeSuspendingFunction(method, getBean(), args);
@@ -252,9 +281,11 @@ public class InvocableHandlerMethod extends HandlerMethod {
 					return KotlinDelegate.invokeFunction(method, getBean(), args);
 				}
 			}
+			// invoke java.lang.reflect.Method.invoke()
 			return method.invoke(getBean(), args);
 		}
 		catch (IllegalArgumentException ex) {
+			// 断言目标 Bean 类是声明了指定方法的类的实例。
 			assertTargetBean(method, getBean(), args);
 			String text = (ex.getMessage() == null || ex.getCause() instanceof NullPointerException) ?
 					"Illegal argument" : ex.getMessage();

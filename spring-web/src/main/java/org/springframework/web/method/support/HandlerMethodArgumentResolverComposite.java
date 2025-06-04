@@ -36,6 +36,7 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 通过委托给已注册的 {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} 列表来解析方法参数。先前解析的方法参数会被缓存，以便更快地查找。
 public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgumentResolver {
 
 	private final List<HandlerMethodArgumentResolver> argumentResolvers = new ArrayList<>();
@@ -98,6 +99,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	 * Whether the given {@linkplain MethodParameter method parameter} is
 	 * supported by any registered {@link HandlerMethodArgumentResolver}.
 	 */
+	// 给定的 {@linkplain MethodParameter 方法参数} 是否被任何已注册的 {@link HandlerMethodArgumentResolver} 支持。
 	@Override
 	public boolean supportsParameter(MethodParameter parameter) {
 		return getArgumentResolver(parameter) != null;
@@ -109,11 +111,14 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	 * and invoke the one that supports it.
 	 * @throws IllegalArgumentException if no suitable argument resolver is found
 	 */
+	// 遍历已注册的 {@link HandlerMethodArgumentResolver HandlerMethodArgumentResolvers} 并调用支持它的那个。
+	// @throws IllegalArgumentException 如果未找到合适的参数解析器
 	@Override
 	@Nullable
 	public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
 
+		// 查找支持给定方法参数的已注册的 HandlerMethodArgumentResolver。
 		HandlerMethodArgumentResolver resolver = getArgumentResolver(parameter);
 		if (resolver == null) {
 			throw new IllegalArgumentException("Unsupported parameter type [" +
@@ -126,6 +131,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	 * Find a registered {@link HandlerMethodArgumentResolver} that supports
 	 * the given method parameter.
 	 */
+	// 查找支持给定方法参数的已注册的 {@link HandlerMethodArgumentResolver}。
 	@Nullable
 	public HandlerMethodArgumentResolver getArgumentResolver(MethodParameter parameter) {
 		HandlerMethodArgumentResolver result = this.argumentResolverCache.get(parameter);

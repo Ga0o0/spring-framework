@@ -34,6 +34,11 @@ import org.springframework.lang.Nullable;
  * @author Rossen Stoyanchev
  * @since 4.2
  */
+// 支持异步类型的返回值处理程序。此类返回值类型需要优先处理，以便异步值能够被“解包”。
+//
+// <p><strong>注意：</strong> 实现此契约并非必需，但当需要优先处理该处理程序时，应实现此契约。
+// 例如，自定义（异步）处理程序默认排在内置处理程序之后，应优先于 {@code @ResponseBody} 或 {@code @ModelAttribute} 处理，
+// 后者应在异步值准备就绪后执行。相比之下，内置（异步）处理程序的排序已经优先于同步处理程序。
 public interface AsyncHandlerMethodReturnValueHandler extends HandlerMethodReturnValueHandler {
 
 	/**
@@ -42,6 +47,10 @@ public interface AsyncHandlerMethodReturnValueHandler extends HandlerMethodRetur
 	 * @param returnType the return type
 	 * @return {@code true} if the return value type represents an async value
 	 */
+	// 给定的返回值是否表示异步计算。
+	// @param returnValue 处理程序方法的返回值
+	// @param returnType 返回类型
+	// @return {@code true} 如果返回值类型表示异步值
 	boolean isAsyncReturnValue(@Nullable Object returnValue, MethodParameter returnType);
 
 }

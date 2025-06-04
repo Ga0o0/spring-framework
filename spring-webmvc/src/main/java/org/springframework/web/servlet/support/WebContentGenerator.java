@@ -103,12 +103,15 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	// deprecated fields
 
 	/** Use HTTP 1.0 expires header? */
+	// 是否使用 HTTP 1.0 的 expires 标头？
 	private boolean useExpiresHeader = false;
 
 	/** Use HTTP 1.1 cache-control header? */
+	// 是否使用 HTTP 1.1 的 cache-control 标头？
 	private boolean useCacheControlHeader = true;
 
 	/** Use HTTP 1.1 cache-control header value "no-store"? */
+	// 是否使用 HTTP 1.1 的 cache-control 标头值 “no-store” ？
 	private boolean useCacheControlNoStore = true;
 
 	private boolean alwaysMustRevalidate = false;
@@ -374,14 +377,17 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * @throws ServletException if the request cannot be handled because a check failed
 	 * @since 4.2
 	 */
+	// 检查给定请求是否支持方法以及所需的会话（如果有）。
+	// @param request 当前 HTTP 请求
+	// @throws ServletException 如果由于检查失败而无法处理请求
 	protected final void checkRequest(HttpServletRequest request) throws ServletException {
-		// Check whether we should support the request method.
+		// Check whether we should support the request method. --> 译文：检查我们是否应该支持该请求方法。
 		String method = request.getMethod();
 		if (this.supportedMethods != null && !this.supportedMethods.contains(method)) {
 			throw new HttpRequestMethodNotSupportedException(method, this.supportedMethods);
 		}
 
-		// Check whether a session is required.
+		// Check whether a session is required. --> 译文：检查是否需要会话。
 		if (this.requireSession && request.getSession(false) == null) {
 			throw new HttpSessionRequiredException("Pre-existing session required but none found");
 		}
@@ -393,17 +399,21 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * @param response current HTTP response
 	 * @since 4.2
 	 */
+	// 根据此生成器的设置准备给定的响应。应用此生成器指定的缓存秒数。
+	// @param 响应当前 HTTP 响应
 	protected final void prepareResponse(HttpServletResponse response) {
 		if (this.cacheControl != null) {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Applying default " + getCacheControl());
 			}
+			// 根据给定设置设置 HTTP Cache-Control 标头。
 			applyCacheControl(response, this.cacheControl);
 		}
 		else {
 			if (logger.isTraceEnabled()) {
 				logger.trace("Applying default cacheSeconds=" + this.cacheSeconds);
 			}
+			// 应用指定的缓存秒数并生成相应的 HTTP 标头
 			applyCacheSeconds(response, this.cacheSeconds);
 		}
 		if (this.varyByRequestHeaders != null) {
@@ -419,18 +429,21 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * @param cacheControl the pre-configured cache control settings
 	 * @since 4.2
 	 */
+	// 根据给定设置设置 HTTP Cache-Control 标头。
+	// @param request 当前 HTTP 响应
+	// @param cacheControl 预配置的缓存控制设置
 	protected final void applyCacheControl(HttpServletResponse response, CacheControl cacheControl) {
 		String ccValue = cacheControl.getHeaderValue();
 		if (ccValue != null) {
-			// Set computed HTTP 1.1 Cache-Control header
-			response.setHeader(HEADER_CACHE_CONTROL, ccValue);
+			// Set computed HTTP 1.1 Cache-Control header --> 译文：设置计算的 HTTP 1.1 Cache-Control 标头
+			response.setHeader(HEADER_CACHE_CONTROL, ccValue); // HEADER_CACHE_CONTROL = "Cache-Control"
 
-			if (response.containsHeader(HEADER_PRAGMA)) {
-				// Reset HTTP 1.0 Pragma header if present
+			if (response.containsHeader(HEADER_PRAGMA)) { // HEADER_PRAGMA = "Pragma"
+				// Reset HTTP 1.0 Pragma header if present --> 译文：如果存在，则重置 HTTP 1.0 Pragma 标头
 				response.setHeader(HEADER_PRAGMA, "");
 			}
-			if (response.containsHeader(HEADER_EXPIRES)) {
-				// Reset HTTP 1.0 Expires header if present
+			if (response.containsHeader(HEADER_EXPIRES)) { // HEADER_EXPIRES = "Expires"
+				// Reset HTTP 1.0 Expires header if present --> 译文：如果存在，则重置 HTTP 1.0 Expires 标头
 				response.setHeader(HEADER_EXPIRES, "");
 			}
 		}
@@ -445,31 +458,43 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * @param cacheSeconds positive number of seconds into the future that the
 	 * response should be cacheable for, 0 to prevent caching
 	 */
+	// 应用指定的缓存秒数并生成相应的 HTTP 标头，例如，如果为正值，则允许缓存指定的秒数；如果为 0，则阻止缓存；其他操作不执行。不会通知浏览器重新验证资源。
+	// @param request 当前 HTTP 响应
+	// @param cacheSeconds 响应应可缓存的未来正秒数，0 为阻止缓存
 	@SuppressWarnings("deprecation")
 	protected final void applyCacheSeconds(HttpServletResponse response, int cacheSeconds) {
 		if (this.useExpiresHeader || !this.useCacheControlHeader) {
 			// Deprecated HTTP 1.0 cache behavior, as in previous Spring versions
+			// --> 译文：与以前的 Spring 版本一样，已弃用 HTTP 1.0 缓存行为
 			if (cacheSeconds > 0) {
+				// 设置 HTTP 标头以允许缓存指定秒数。不会指示浏览器重新验证资源。
 				cacheForSeconds(response, cacheSeconds);
 			}
 			else if (cacheSeconds == 0) {
+				// 阻止响应被缓存。仅在 HTTP 1.0 兼容模式下调用。
 				preventCaching(response);
 			}
 		}
 		else {
 			CacheControl cControl;
 			if (cacheSeconds > 0) {
+				// 添加 “max-age=” 指令。
 				cControl = CacheControl.maxAge(cacheSeconds, TimeUnit.SECONDS);
 				if (this.alwaysMustRevalidate) {
+					// 添加 “must-revalidate” 指令。
 					cControl = cControl.mustRevalidate();
 				}
 			}
 			else if (cacheSeconds == 0) {
+				// CacheControl.noStore() -> 添加 “no-store” 指令。
+				// CacheControl.noCache() -> 添加 “no-cache” 指令。
 				cControl = (this.useCacheControlNoStore ? CacheControl.noStore() : CacheControl.noCache());
 			}
 			else {
+				// 返回一个空指令。
 				cControl = CacheControl.empty();
 			}
+			// 根据给定设置设置 HTTP Cache-Control 标头。
 			applyCacheControl(response, cControl);
 		}
 	}
@@ -523,6 +548,10 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * should be cacheable for
 	 * @deprecated as of 4.2, in favor of {@link #applyCacheControl}
 	 */
+	// 设置 HTTP 标头以允许缓存指定秒数。不会指示浏览器重新验证资源。
+	// @param request 当前 HTTP 响应
+	// @param seconds 响应应可缓存的未来秒数
+	// @deprecated from 4.2, in favor of {@link #applyCacheControl}
 	@Deprecated
 	protected final void cacheForSeconds(HttpServletResponse response, int seconds) {
 		cacheForSeconds(response, seconds, false);
@@ -539,11 +568,16 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * (typically only necessary for controllers with last-modified support)
 	 * @deprecated as of 4.2, in favor of {@link #applyCacheControl}
 	 */
+	// 设置 HTTP 标头以允许缓存指定秒数。如果 mustRevalidate 为 {@code true}，则指示浏览器重新验证资源。
+	// @param respond 当前 HTTP 响应
+	// @param seconds 响应应可缓存的未来秒数
+	// @param mustRevalidate 客户端是否应重新验证资源（通常仅对支持 last-modified 的控制器才需要）
+	// @deprecated from 4.2, in favor of {@link #applyCacheControl}
 	@Deprecated
 	protected final void cacheForSeconds(HttpServletResponse response, int seconds, boolean mustRevalidate) {
 		if (this.useExpiresHeader) {
 			// HTTP 1.0 header
-			response.setDateHeader(HEADER_EXPIRES, System.currentTimeMillis() + seconds * 1000L);
+			response.setDateHeader(HEADER_EXPIRES, System.currentTimeMillis() + seconds * 1000L); // HEADER_EXPIRES = "Expires"
 		}
 		else if (response.containsHeader(HEADER_EXPIRES)) {
 			// Reset HTTP 1.0 Expires header if present
@@ -556,10 +590,10 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 			if (mustRevalidate || this.alwaysMustRevalidate) {
 				headerValue += ", must-revalidate";
 			}
-			response.setHeader(HEADER_CACHE_CONTROL, headerValue);
+			response.setHeader(HEADER_CACHE_CONTROL, headerValue); // HEADER_CACHE_CONTROL = "Cache-Control"
 		}
 
-		if (response.containsHeader(HEADER_PRAGMA)) {
+		if (response.containsHeader(HEADER_PRAGMA)) { // HEADER_PRAGMA = "Pragma"
 			// Reset HTTP 1.0 Pragma header if present
 			response.setHeader(HEADER_PRAGMA, "");
 		}
@@ -571,6 +605,9 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 	 * <p>See {@code https://www.mnot.net/cache_docs}.
 	 * @deprecated as of 4.2, in favor of {@link #applyCacheControl}
 	 */
+	// 阻止响应被缓存。仅在 HTTP 1.0 兼容模式下调用。
+	// <p>请参阅 {@code https://www.mnot.net/cache_docs}。
+	// @deprecated 自 4.2 起，建议使用 {@link #applyCacheControl}
 	@Deprecated
 	protected final void preventCaching(HttpServletResponse response) {
 		response.setHeader(HEADER_PRAGMA, "no-cache");
@@ -583,6 +620,7 @@ public abstract class WebContentGenerator extends WebApplicationObjectSupport {
 		if (this.useCacheControlHeader) {
 			// HTTP 1.1 Cache-Control header: "no-cache" is the standard value,
 			// "no-store" is necessary to prevent caching on Firefox.
+			// --> 译文：HTTP 1.1 Cache-Control 标头：“no-cache” 是标准值，“no-store” 是防止在 Firefox 上缓存所必需的。
 			response.setHeader(HEADER_CACHE_CONTROL, "no-cache");
 			if (this.useCacheControlNoStore) {
 				response.addHeader(HEADER_CACHE_CONTROL, "no-store");

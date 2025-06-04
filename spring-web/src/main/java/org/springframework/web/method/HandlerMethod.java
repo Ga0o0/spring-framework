@@ -240,6 +240,7 @@ public class HandlerMethod extends AnnotatedMethod {
 	/**
 	 * Return the bean for this handler method.
 	 */
+	// 返回此处理程序方法的 bean。
 	public Object getBean() {
 		return this.bean;
 	}
@@ -271,6 +272,9 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * this method returns false, deferring to method validation via AOP proxy.
 	 * @since 6.1
 	 */
+	// 方法参数是否需要进行方法验证，当参数带有 {@code jakarta.validation.Constraint} 注解时，即可进行方法验证。
+	// <p>{@code jakarta.validation.Valid} 本身并不会触发方法验证，因为此类参数已在参数解析器级别进行验证。
+	// <p><strong>注意：</strong>如果类带有 {@link Validated} 注解，则此方法将返回 false，并推迟到通过 AOP 代理进行方法验证。
 	public boolean shouldValidateArguments() {
 		return this.validateArguments;
 	}
@@ -283,6 +287,8 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * this method returns false, deferring to method validation via AOP proxy.
 	 * @since 6.1
 	 */
+	// 方法返回值是否是方法验证的候选值，当方法带有 {@code jakarta.validation.Constraint} 或
+	// {@code jakarta.validation.Valid} 注解时，该方法将返回 false，并通过 AOP 代理进行方法验证。
 	public boolean shouldValidateReturnValue() {
 		return this.validateReturnValue;
 	}
@@ -292,6 +298,7 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * @since 4.3.8
 	 * @see ResponseStatus#code()
 	 */
+	// 返回指定的响应状态（如果有）。
 	@Nullable
 	protected HttpStatusCode getResponseStatus() {
 		return this.responseStatus;
@@ -302,6 +309,7 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * @since 4.3.8
 	 * @see ResponseStatus#reason()
 	 */
+	// 如果有的话，返回相关的响应状态原因。
 	@Nullable
 	protected String getResponseStatusReason() {
 		return this.responseStatusReason;
@@ -330,9 +338,11 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * If the provided instance contains a bean name rather than an object instance,
 	 * the bean name is resolved before a {@link HandlerMethod} is created and returned.
 	 */
+	// 如果提供的实例包含 bean 名称而不是对象实例，则在创建和返回 {@link HandlerMethod} 之前解析 bean 名称。
 	public HandlerMethod createWithResolvedBean() {
 		Object handler = this.bean;
 		if (this.bean instanceof String beanName) {
+			// 没有 BeanFactory 就无法解析 bean 名称
 			Assert.state(this.beanFactory != null, "Cannot resolve bean name without BeanFactory");
 			handler = this.beanFactory.getBean(beanName);
 		}
@@ -375,6 +385,9 @@ public class HandlerMethod extends AnnotatedMethod {
 	 * beans, and others). {@code @Controller}'s that require proxying should prefer
 	 * class-based proxy mechanisms.
 	 */
+	// 断言目标 Bean 类是声明了指定方法的类的实例。
+	// 在某些情况下，请求处理时的实际控制器实例可能是 JDK 动态代理（延迟初始化、原型 Bean 等）。
+	// 需要代理的 {@code @Controller} 应该优先使用基于类的代理机制。
 	protected void assertTargetBean(Method method, Object targetBean, Object[] args) {
 		Class<?> methodDeclaringClass = method.getDeclaringClass();
 		Class<?> targetBeanClass = targetBean.getClass();

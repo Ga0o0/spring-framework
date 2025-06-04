@@ -31,6 +31,7 @@ import org.springframework.web.method.support.InvocableHandlerMethod;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 创建一个 {@code ServletRequestDataBinder}。
 public class ServletRequestDataBinderFactory extends InitBinderDataBinderFactory {
 
 	/**
@@ -38,6 +39,9 @@ public class ServletRequestDataBinderFactory extends InitBinderDataBinderFactory
 	 * @param binderMethods one or more {@code @InitBinder} methods
 	 * @param initializer provides global data binder initialization
 	 */
+	// 创建新实例。
+	// @param binderMethods 一个或多个 {@code @InitBinder} 方法
+	// @param initializer 提供全局数据绑定器初始化
 	public ServletRequestDataBinderFactory(@Nullable List<InvocableHandlerMethod> binderMethods,
 			@Nullable WebBindingInitializer initializer) {
 
@@ -47,6 +51,7 @@ public class ServletRequestDataBinderFactory extends InitBinderDataBinderFactory
 	/**
 	 * Returns an instance of {@link ExtendedServletRequestDataBinder}.
 	 */
+	// 返回 {@link ExtendedServletRequestDataBinder} 的实例。
 	@Override
 	protected ServletRequestDataBinder createBinderInstance(
 			@Nullable Object target, String objectName, NativeWebRequest request) throws Exception {

@@ -38,6 +38,10 @@ import org.springframework.http.converter.HttpMessageConverter;
  * @see ResponseBody
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter
  */
+// 指示方法参数的注解应绑定到 Web 请求的主体。请求主体通过 {@link HttpMessageConverter} 传递，以根据请求的内容类型解析方法参数。
+// （可选）可以使用 {@code @Valid} 注解参数来应用自动验证。
+//
+// <p>支持带注解的处理程序方法。
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -50,6 +54,9 @@ public @interface RequestBody {
 	 * {@code null} to be passed when the body content is {@code null}.
 	 * @since 3.2
 	 */
+	// 是否需要 body 内容。
+	// <p>默认值为 {@code true}，如果 body 内容为空，则会抛出异常。
+	// 如果您希望 body 内容为 {@code null} 时传递 {@code null}，请将此值切换为 {@code false}。
 	boolean required() default true;
 
 }

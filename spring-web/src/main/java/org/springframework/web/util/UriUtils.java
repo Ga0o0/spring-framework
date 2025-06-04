@@ -368,6 +368,12 @@ public abstract class UriUtils {
 	 * @see StringUtils#uriDecode(String, Charset)
 	 * @see java.net.URLDecoder#decode(String, String)
 	 */
+	// 解码给定的已编码 URI 组件。
+	// <p>有关解码规则，请参阅 {@link StringUtils#uriDecode(String, Charset)}。
+	// @param source 已编码的字符串
+	// @param encoding 要使用的字符编码
+	// @return 解码后的值
+	// 当给定的源包含无效的编码序列时，抛出 IllegalArgumentException
 	public static String decode(String source, String encoding) {
 		return StringUtils.uriDecode(source, Charset.forName(encoding));
 	}

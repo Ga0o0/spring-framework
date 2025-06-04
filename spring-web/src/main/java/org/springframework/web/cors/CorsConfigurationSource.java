@@ -27,12 +27,15 @@ import org.springframework.lang.Nullable;
  * @author Sebastien Deleuze
  * @since 4.2
  */
+// 由类（通常是 HTTP 请求处理程序）实现的接口，该接口根据提供的请求提供 {@link CorsConfiguration} 实例。
 public interface CorsConfigurationSource {
 
 	/**
 	 * Return a {@link CorsConfiguration} based on the incoming request.
 	 * @return the associated {@link CorsConfiguration}, or {@code null} if none
 	 */
+	// 根据传入的请求返回一个 {@link CorsConfiguration}。
+	// @return 关联的 {@link CorsConfiguration}，如果没有则返回 {@code null}
 	@Nullable
 	CorsConfiguration getCorsConfiguration(HttpServletRequest request);
 

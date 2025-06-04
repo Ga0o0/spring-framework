@@ -32,11 +32,15 @@ import org.springframework.util.MultiValueMap;
  * @author Rossen Stoyanchev
  * @since 5.0
  */
+// 通过 {@link #parsePath(String)} 解析的 URI 路径的结构化表示，该路径被解析为一系列 {@link Separator} 和 {@link PathSegment} 元素。
+//
+// <p>每个 {@link PathSegment} 都以解码后的形式显示其内容，并移除路径参数。这样可以安全地一次匹配一个路径段，而不会出现解码后的保留字符改变路径结构的风险。
 public interface PathContainer {
 
 	/**
 	 * The original path from which this instance was parsed.
 	 */
+	// 解析此实例的原始路径。
 	String value();
 
 	/**

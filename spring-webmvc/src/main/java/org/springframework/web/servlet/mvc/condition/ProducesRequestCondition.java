@@ -347,6 +347,8 @@ public final class ProducesRequestCondition extends AbstractRequestCondition<Pro
 	 * @param request the current request
 	 * @since 5.2
 	 */
+	// 使用此方法清除包含已解析、已请求的媒体类型的 {@link #MEDIA_TYPES_ATTRIBUTE}。
+	// @param request 当前请求
 	public static void clearMediaTypesAttribute(HttpServletRequest request) {
 		request.removeAttribute(MEDIA_TYPES_ATTRIBUTE);
 	}

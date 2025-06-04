@@ -89,5 +89,6 @@ public interface RedirectAttributes extends Model {
 	/**
 	 * Return the attributes candidate for flash storage or an empty Map.
 	 */
+	// 返回闪存的属性候选或空 Map。
 	Map<String, ?> getFlashAttributes();
 }

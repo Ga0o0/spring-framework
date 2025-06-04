@@ -358,6 +358,9 @@ public abstract class StringUtils {
 	 * @param singleCharacter the character to compare to
 	 * @since 5.2.9
 	 */
+	// 测试给定的 {@code String} 是否与给定的单个字符匹配。
+	// @param str 待检查的 {@code String}
+	// @param singleCharacter 待比较的字符
 	public static boolean matchesCharacter(@Nullable String str, char singleCharacter) {
 		return (str != null && str.length() == 1 && str.charAt(0) == singleCharacter);
 	}

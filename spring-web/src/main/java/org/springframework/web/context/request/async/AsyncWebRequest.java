@@ -36,6 +36,8 @@ public interface AsyncWebRequest extends NativeWebRequest {
 	 * @param timeout amount of time in milliseconds; {@code null} means no
 	 * 	timeout, i.e. rely on the default timeout of the container.
 	 */
+	// 设置并发处理完成所需的时间。当并发处理正在进行时（即 {@link #isAsyncStarted()} 为 {@code true} 时），不应设置此属性。
+	// @param timeout 以毫秒为单位的时间量；{@code null} 表示无超时，即依赖于容器的默认超时时间。
 	void setTimeout(@Nullable Long timeout);
 
 	/**

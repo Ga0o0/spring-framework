@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
  * @since 6.1
  * @see MethodValidator
  */
+// 异常是 {@link MethodValidationResult}。
 @SuppressWarnings("serial")
 public class MethodValidationException extends RuntimeException implements MethodValidationResult {
 

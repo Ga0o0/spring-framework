@@ -208,6 +208,10 @@ public final class MappedInterceptor implements HandlerInterceptor {
 	 * @param request the request to match to
 	 * @return {@code true} if the interceptor should be applied to the request
 	 */
+	// 检查此拦截器是否已映射到请求。
+	// <p>请求映射路径预计已在外部解析。另请参阅类级 Javadoc。
+	// @param request 要匹配的请求
+	// @return {@code true} 如果拦截器应应用于请求
 	public boolean matches(HttpServletRequest request) {
 		Object path = ServletRequestPathUtils.getCachedPath(request);
 		if (this.pathMatcher != defaultPathMatcher) {

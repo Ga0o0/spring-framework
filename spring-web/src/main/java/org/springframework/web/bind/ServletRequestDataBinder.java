@@ -80,6 +80,24 @@ import org.springframework.web.util.WebUtils;
  * @see #setRequiredFields
  * @see #setFieldMarkerPrefix
  */
+// 特殊的 {@link org.springframework.validation.DataBinder} 用于执行从 Servlet 请求参数到 JavaBean 的数据绑定，包括对多部分文件的支持。
+//
+// <p><strong>警告</strong>：数据绑定可能会暴露对象图中不应被外部客户端访问或修改的部分，从而导致安全问题。
+// 因此，在设计和使用数据绑定时，应仔细考虑安全性。更多详细信息，请参阅参考手册中专门针对
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html#mvc-ann-initbinder-model-design">Spring Web MVC</a> 和
+// <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web-reactive.html#webflux-ann-initbinder-model-design">Spring WebFlux</a> 的数据绑定章节。
+//
+// <p>请参阅 DataBinder/WebDataBinder 超类，了解自定义选项，包括指定允许/必填字段以及注册自定义属性编辑器。
+//
+// <p>也可用于手动数据绑定。只需为每个绑定过程实例化一个 ServletRequestDataBinder，然后使用当前 ServletRequest 作为参数调用 {@code bind} 即可：
+//
+// <pre class="code">
+// MyBean myBean = new MyBean(); 		// 将绑定器应用于自定义目标对象
+// ServletRequestDataBinder binder = new ServletRequestDataBinder(myBean); // 如果需要，注册自定义编辑器
+// binder.registerCustomEditor(...); 	// 触发请求参数的实际绑定
+// binder.bind(request); 				// 可选地评估绑定错误
+// Errors errors = binder.getErrors();
+// ...</pre>
 public class ServletRequestDataBinder extends WebDataBinder {
 
 	/**

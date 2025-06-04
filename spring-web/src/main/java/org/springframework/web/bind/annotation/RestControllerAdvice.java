@@ -45,6 +45,13 @@ import org.springframework.core.annotation.AliasFor;
  * @see RestController
  * @see ControllerAdvice
  */
+// 这是一个便捷的注解，其本身带有 {@link ControllerAdvice @ControllerAdvice} 和 {@link ResponseBody @ResponseBody} 注解。
+//
+// <p>带有此注解的类型将被视为控制器建议，其中 {@link ExceptionHandler @ExceptionHandler} 方法默认采用 {@link ResponseBody @ResponseBody} 语义。
+//
+// <p><b>注意：</b>如果配置了适当的 {@code HandlerMapping}-{@code HandlerAdapter} 对
+// （例如，MVC Java 配置和 MVC 命名空间中的默认配置是 {@code RequestMappingHandlerMapping}-{@code RequestMappingHandlerAdapter} 对），
+// 则会处理 {@code @RestControllerAdvice}。
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

@@ -125,9 +125,11 @@ public abstract class RequestMappingInfoHandlerMapping extends AbstractHandlerMe
 	protected HandlerMethod getHandlerInternal(HttpServletRequest request) throws Exception {
 		request.removeAttribute(PRODUCIBLE_MEDIA_TYPES_ATTRIBUTE);
 		try {
+			// 查找给定请求的处理程序方法。
 			return super.getHandlerInternal(request);
 		}
 		finally {
+			// 使用此方法清除包含已解析、已请求的媒体类型的 {@link #MEDIA_TYPES_ATTRIBUTE}。
 			ProducesRequestCondition.clearMediaTypesAttribute(request);
 		}
 	}

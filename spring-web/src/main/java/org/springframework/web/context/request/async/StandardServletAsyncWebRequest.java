@@ -49,6 +49,10 @@ import org.springframework.web.context.request.ServletWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.2
  */
+// {@link AsyncWebRequest} 的 Servlet 实现。
+//
+// <p>异步请求中涉及的 Servlet 和所有过滤器必须使用 Servlet API 启用异步支持，或者在 {@code web.xml} 中的 Servlet 和过滤器声明中添加
+// <code><async-supported>true</async-supported></code> 元素。
 public class StandardServletAsyncWebRequest extends ServletWebRequest implements AsyncWebRequest, AsyncListener {
 
 	private final List<Runnable> timeoutHandlers = new ArrayList<>();

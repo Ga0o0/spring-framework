@@ -77,6 +77,7 @@ public abstract class KotlinDetector {
 	 * Determine whether Kotlin reflection is present.
 	 * @since 5.1
 	 */
+	// 确定 Kotlin 反射是否存在。
 	public static boolean isKotlinReflectPresent() {
 		return kotlinReflectPresent;
 	}
@@ -97,6 +98,7 @@ public abstract class KotlinDetector {
 	 * Return {@code true} if the method is a suspending function.
 	 * @since 5.3
 	 */
+	// 如果该方法是暂停函数，则返回 {@code true}。
 	public static boolean isSuspendingFunction(Method method) {
 		if (KotlinDetector.isKotlinType(method.getDeclaringClass())) {
 			Class<?>[] types = method.getParameterTypes();

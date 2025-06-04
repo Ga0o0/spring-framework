@@ -52,6 +52,7 @@ public @interface Controller {
 	/**
 	 * Alias for {@link Component#value}.
 	 */
+	// {@link Component#value} 的别名。
 	@AliasFor(annotation = Component.class)
 	String value() default "";
 

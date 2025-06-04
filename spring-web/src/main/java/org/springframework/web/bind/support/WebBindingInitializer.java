@@ -26,6 +26,7 @@ import org.springframework.web.bind.WebDataBinder;
  * @author Rossen Stoyanchev
  * @since 2.5
  */
+// 用于初始化 {@link WebDataBinder} 的回调接口，用于在特定 Web 请求的上下文中执行数据绑定。
 public interface WebBindingInitializer {
 
 	/**
@@ -33,6 +34,8 @@ public interface WebBindingInitializer {
 	 * @param binder the DataBinder to initialize
 	 * @since 5.0
 	 */
+	// 初始化给定的 DataBinder。
+	// @param binder 要初始化的 DataBinder
 	void initBinder(WebDataBinder binder);
 
 }

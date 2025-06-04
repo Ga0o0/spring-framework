@@ -231,6 +231,9 @@ public abstract class RequestContextUtils {
 	 * @return a read-only Map, or {@code null} if not found
 	 * @see FlashMap
 	 */
+	// 返回重定向前请求的只读 “input” Flash 属性。
+	// @param request 当前请求
+	// @return 一个只读 Map，若未找到则返回 {@code null}
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public static Map<String, ?> getInputFlashMap(HttpServletRequest request) {
@@ -243,6 +246,9 @@ public abstract class RequestContextUtils {
 	 * @return a {@link FlashMap} instance, never {@code null} within a
 	 * {@code DispatcherServlet}-handled request
 	 */
+	// 返回“输出”FlashMap，用于保存重定向后请求的属性。
+	// @param request 当前请求
+	// @return 一个 {@link FlashMap} 实例，在 {@code DispatcherServlet} 处理的请求中永远不会返回 {@code null}。
 	public static FlashMap getOutputFlashMap(HttpServletRequest request) {
 		return (FlashMap) request.getAttribute(DispatcherServlet.OUTPUT_FLASH_MAP_ATTRIBUTE);
 	}

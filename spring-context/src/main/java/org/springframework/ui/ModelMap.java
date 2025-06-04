@@ -143,6 +143,9 @@ public class ModelMap extends LinkedHashMap<String, Object> {
 	 * @param attributeName the name of the model attribute (never {@code null})
 	 * @return whether this model contains a corresponding attribute
 	 */
+	// 此模型是否包含指定名称的属性？
+	// @param attributeName 模型属性的名称（永不为 {@code null}）
+	// @return 此模型是否包含相应的属性
 	public boolean containsAttribute(String attributeName) {
 		return containsKey(attributeName);
 	}

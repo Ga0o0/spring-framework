@@ -92,6 +92,7 @@ public class AnnotatedMethod {
 	 * If the annotated method is a bridge method, this method returns the bridged
 	 * (user-defined) method. Otherwise, it returns the same method as {@link #getMethod()}.
 	 */
+	// 如果被注解的方法是桥接方法，则此方法返回桥接的（用户定义的）方法。否则，它返回与 {@link #getMethod()} 相同的方法。
 	protected final Method getBridgedMethod() {
 		return this.bridgedMethod;
 	}
@@ -107,6 +108,7 @@ public class AnnotatedMethod {
 	/**
 	 * Return the method parameters for this {@code AnnotatedMethod}.
 	 */
+	// 返回此 {@code AnnotatedMethod} 的方法参数。
 	public final MethodParameter[] getMethodParameters() {
 		return this.parameters;
 	}
@@ -130,6 +132,7 @@ public class AnnotatedMethod {
 	/**
 	 * Return a {@link MethodParameter} for the actual return value type.
 	 */
+	// 返回一个 {@link MethodParameter} 作为实际的返回值类型。
 	public MethodParameter getReturnValueType(@Nullable Object returnValue) {
 		return new ReturnValueMethodParameter(returnValue);
 	}
@@ -334,6 +337,7 @@ public class AnnotatedMethod {
 	/**
 	 * A MethodParameter for an AnnotatedMethod return type based on an actual return value.
 	 */
+	// 基于实际返回值的 AnnotatedMethod 返回类型的 MethodParameter。
 	private class ReturnValueMethodParameter extends AnnotatedMethodParameter {
 
 		@Nullable
