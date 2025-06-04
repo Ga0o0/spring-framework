@@ -37,6 +37,10 @@ import org.springframework.lang.Nullable;
  * @since 4.1
  * @param <T> the body type
  */
+// 允许在执行 {@code @ResponseBody} 或 {@code ResponseEntity} 控制器方法之后但在使用 {@code HttpMessageConverter} 写入正文之前自定义响应。
+//
+// <p>实现可以直接使用 {@code RequestMappingHandlerAdapter} 和 {@code ExceptionHandlerExceptionResolver} 注册，
+// 或者更有可能使用 {@code @ControllerAdvice} 进行注释，在这种情况下，它们将被两者自动检测。
 public interface ResponseBodyAdvice<T> {
 
 	/**
@@ -47,6 +51,10 @@ public interface ResponseBodyAdvice<T> {
 	 * @return {@code true} if {@link #beforeBodyWrite} should be invoked;
 	 * {@code false} otherwise
 	 */
+	// 此组件是否支持给定的控制器方法返回类型和所选的 {@code HttpMessageConverter} 类型。
+	// @param returnType 返回类型
+	// @param converterType 所选转换器类型
+	// @return {@code true} 如果需要调用 {@link #beforeBodyWrite}；否则为 {@code false}
 	boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType);
 
 	/**
@@ -60,6 +68,14 @@ public interface ResponseBodyAdvice<T> {
 	 * @param response the current response
 	 * @return the body that was passed in or a modified (possibly new) instance
 	 */
+	// 在选择 {@code HttpMessageConverter} 之后，在其 write 方法调用之前调用。
+	// @param body 待写入的 body
+	// @param returnType 控制器方法的返回类型
+	// @param selectedContentType 通过内容协商选择的内容类型
+	// @param selectedConverterType 所选的用于写入响应的转换器类型
+	// @param request 当前请求
+	// @param respond 当前响应
+	// @return 传入的 body 或修改后的（可能是新的）实例
 	@Nullable
 	T beforeBodyWrite(@Nullable T body, MethodParameter returnType, MediaType selectedContentType,
 			Class<? extends HttpMessageConverter<?>> selectedConverterType,

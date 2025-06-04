@@ -128,6 +128,10 @@ public abstract class ScopedProxyUtils {
 	 * @see #getTargetBeanName(String)
 	 * @see #isScopedTarget(String)
 	 */
+	// 获取提供的 {@linkplain #getTargetBeanName 目标 bean 名称} 的原始 bean 名称。
+	// @param targetBeanName 范围代理的目标 bean 名称
+	// @return 原始 bean 名称
+	// @throws IllegalArgumentException 如果提供的 bean 名称未引用范围代理的目标
 	public static String getOriginalBeanName(@Nullable String targetBeanName) {
 		Assert.isTrue(isScopedTarget(targetBeanName), () -> "bean name '" +
 				targetBeanName + "' does not refer to the target of a scoped proxy");
@@ -139,6 +143,7 @@ public abstract class ScopedProxyUtils {
 	 * the target bean within a scoped proxy.
 	 * @since 4.1.4
 	 */
+	// 确定 {@code beanName} 是否是引用范围代理内的目标 bean 的 bean 名称。
 	public static boolean isScopedTarget(@Nullable String beanName) {
 		return (beanName != null && beanName.startsWith(TARGET_NAME_PREFIX));
 	}

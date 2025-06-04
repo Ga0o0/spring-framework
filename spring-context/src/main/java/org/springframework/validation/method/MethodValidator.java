@@ -29,6 +29,7 @@ import org.springframework.lang.Nullable;
  * @author Rossen Stoyanchev
  * @since 6.1
  */
+// 约定应用方法验证并处理结果。公开返回 {@link MethodValidationResult} 的方法以及处理结果的方法，默认情况下会引发 {@link MethodValidationException}。
 public interface MethodValidator {
 
 	/**

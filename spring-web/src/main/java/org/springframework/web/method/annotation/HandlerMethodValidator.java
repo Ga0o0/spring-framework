@@ -49,6 +49,10 @@ import org.springframework.web.bind.support.WebBindingInitializer;
  * @author Rossen Stoyanchev
  * @since 6.1
  */
+// {@link MethodValidator} 使用 Bean Validation 来验证 {@code @RequestMapping} 方法参数。
+//
+// <p>通过将 {@link MethodValidationResult#getBeanResults() beanResults} 中的错误填充到 {@link BindingResult} 方法参数中来处理验证结果。
+// 此外，它还有助于确定 {@code @ModelAttribute} 和 {@code @RequestBody} 参数的名称。
 public final class HandlerMethodValidator implements MethodValidator {
 
 	private static final MethodValidationAdapter.ObjectNameResolver objectNameResolver = new WebObjectNameResolver();

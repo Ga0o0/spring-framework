@@ -37,6 +37,9 @@ import org.springframework.lang.Nullable;
  * @author Rossen Stoyanchev
  * @since 4.2
  */
+// 允许在读取请求主体并将其转换为对象之前自定义请求，还允许在将结果对象作为 {@code @RequestBody} 或 {@code HttpEntity} 方法参数传递到控制器方法之前对其进行处理。
+//
+// <p>此契约的实现可以直接向 {@code RequestMappingHandlerAdapter} 注册，或者更有可能使用 {@code @ControllerAdvice} 进行注释，在这种情况下它们会被自动检测。
 public interface RequestBodyAdvice {
 
 	/**

@@ -220,6 +220,12 @@ public abstract class BeanFactoryUtils {
 	 * @return the array of matching bean names, or an empty array if none
 	 * @see ListableBeanFactory#getBeanNamesForType(Class)
 	 */
+	// 获取给定类型的所有 Bean 名称，包括祖先工厂中定义的 Bean 名称。如果 Bean 定义被覆盖，则返回唯一名称。
+	// <p>会考虑 FactoryBeans 创建的对象，这意味着 FactoryBeans 会被初始化。如果 FactoryBean 创建的对象不匹配，则原始 FactoryBean 本身将与类型进行匹配。
+	// <p>此版本的 {@code beanNamesForTypeIncludingAncestors} 自动包含原型和 FactoryBeans。
+	// @param lbf Bean 工厂
+	// @param type Bean 必须匹配的类型（以 {@code Class} 的形式）
+	// @return 匹配 Bean 名称的数组，如果没有，则返回空数组
 	public static String[] beanNamesForTypeIncludingAncestors(ListableBeanFactory lbf, Class<?> type) {
 		Assert.notNull(lbf, "ListableBeanFactory must not be null");
 		String[] result = lbf.getBeanNamesForType(type);

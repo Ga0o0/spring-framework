@@ -123,6 +123,10 @@ public class ControllerAdviceBean implements Ordered {
 	 * bean, or {@code null} if not yet retrieved
 	 * @since 5.2
 	 */
+	// 使用给定的 bean 名称、{@code BeanFactory} 和 {@link ControllerAdvice @ControllerAdvice} 注释创建一个 {@code ControllerAdviceBean}。
+	// @param beanName bean 的名称
+	// @param beanFactory 一个 {@code BeanFactory}，用于最初检索 bean 类型，稍后解析实际的 bean
+	// @param controllerAdvice bean 的 {@code @ControllerAdvice} 注释，如果尚未检索，则为 {@code null}
 	public ControllerAdviceBean(String beanName, BeanFactory beanFactory, @Nullable ControllerAdvice controllerAdvice) {
 		Assert.hasText(beanName, "Bean name must contain text");
 		Assert.notNull(beanFactory, "BeanFactory must not be null");
@@ -216,6 +220,8 @@ public class ControllerAdviceBean implements Ordered {
 	 * <p>If the bean type is a CGLIB-generated class, the original user-defined
 	 * class is returned.
 	 */
+	// 返回所包含 bean 的类型。
+	// <p>如果 bean 类型是 CGLIB 生成的类，则返回原始的用户定义类。
 	@Nullable
 	public Class<?> getBeanType() {
 		return this.beanType;
@@ -291,19 +297,26 @@ public class ControllerAdviceBean implements Ordered {
 	 * @see OrderComparator
 	 * @see Ordered
 	 */
+	// 在给定的 {@link ApplicationContext} 中查找带有 {@link ControllerAdvice @ControllerAdvice} 注释的 Bean，并将它们包装为 {@code ControllerAdviceBean} 实例。
+	// <p>从 Spring Framework 5.2 开始，返回列表中的 {@code ControllerAdviceBean} 实例使用 {@link OrderComparator#sort(List)} 进行排序。
 	public static List<ControllerAdviceBean> findAnnotatedBeans(ApplicationContext context) {
 		ListableBeanFactory beanFactory = context;
 		if (context instanceof ConfigurableApplicationContext cac) {
 			// Use internal BeanFactory for potential downcast to ConfigurableBeanFactory above
+			// --> 译文：使用内部 BeanFactory 进行向下转型至上述 ConfigurableBeanFactory
 			beanFactory = cac.getBeanFactory();
 		}
 		List<ControllerAdviceBean> adviceBeans = new ArrayList<>();
+		// BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, Object.class) ->
+		// 获取给定类型的所有 Bean 名称，包括祖先工厂中定义的 Bean 名称。如果 Bean 定义被覆盖，则返回唯一名称。
 		for (String name : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, Object.class)) {
+			// ScopedProxyUtils.isScopedTarget(name) -> 确定 {@code beanName} 是否是引用范围代理内的目标 bean 的 bean 名称。
 			if (!ScopedProxyUtils.isScopedTarget(name)) {
 				ControllerAdvice controllerAdvice = beanFactory.findAnnotationOnBean(name, ControllerAdvice.class);
 				if (controllerAdvice != null) {
 					// Use the @ControllerAdvice annotation found by findAnnotationOnBean()
 					// in order to avoid a subsequent lookup of the same annotation.
+					// --> 译文：使用 findAnnotationOnBean() 找到的 @ControllerAdvice 注释，以避免随后查找相同的注释。
 					adviceBeans.add(new ControllerAdviceBean(name, beanFactory, controllerAdvice));
 				}
 			}
