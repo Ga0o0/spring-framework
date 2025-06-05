@@ -87,8 +87,11 @@ class RequestResponseBodyAdviceChain implements RequestBodyAdvice, ResponseBodyA
 	public HttpInputMessage beforeBodyRead(HttpInputMessage request, MethodParameter parameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
 
+		// getMatchingAdvice(parameter, RequestBodyAdvice.class) -> 获取匹配的 RequestBodyAdvice
 		for (RequestBodyAdvice advice : getMatchingAdvice(parameter, RequestBodyAdvice.class)) {
+			// 首先调用此拦截器来确定是否适用。RequestBodyAdvice.supports()
 			if (advice.supports(parameter, targetType, converterType)) {
+				// invoke RequestBodyAdvice.beforeBodyRead()
 				request = advice.beforeBodyRead(request, parameter, targetType, converterType);
 			}
 		}
@@ -99,8 +102,11 @@ class RequestResponseBodyAdviceChain implements RequestBodyAdvice, ResponseBodyA
 	public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
 
+		// getMatchingAdvice(parameter, RequestBodyAdvice.class) -> 获取匹配的 RequestBodyAdvice
 		for (RequestBodyAdvice advice : getMatchingAdvice(parameter, RequestBodyAdvice.class)) {
+			// 首先调用此拦截器来确定是否适用。RequestBodyAdvice.supports()
 			if (advice.supports(parameter, targetType, converterType)) {
+				// invoke RequestBodyAdvice.afterBodyRead()
 				body = advice.afterBodyRead(body, inputMessage, parameter, targetType, converterType);
 			}
 		}
@@ -121,8 +127,11 @@ class RequestResponseBodyAdviceChain implements RequestBodyAdvice, ResponseBodyA
 	public Object handleEmptyBody(@Nullable Object body, HttpInputMessage inputMessage, MethodParameter parameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
 
+		// getMatchingAdvice(parameter, RequestBodyAdvice.class) -> 获取匹配的 RequestBodyAdvice
 		for (RequestBodyAdvice advice : getMatchingAdvice(parameter, RequestBodyAdvice.class)) {
+			// 首先调用此拦截器来确定是否适用。RequestBodyAdvice.supports()
 			if (advice.supports(parameter, targetType, converterType)) {
+				// invoke RequestBodyAdvice.handleEmptyBody()
 				body = advice.handleEmptyBody(body, inputMessage, parameter, targetType, converterType);
 			}
 		}
@@ -136,8 +145,11 @@ class RequestResponseBodyAdviceChain implements RequestBodyAdvice, ResponseBodyA
 			Class<? extends HttpMessageConverter<?>> converterType,
 			ServerHttpRequest request, ServerHttpResponse response) {
 
+		// getMatchingAdvice(returnType, ResponseBodyAdvice.class) -> 获取匹配的 ResponseBodyAdvice
 		for (ResponseBodyAdvice<?> advice : getMatchingAdvice(returnType, ResponseBodyAdvice.class)) {
+			// 此组件是否支持给定的控制器方法返回类型和所选的 {@code HttpMessageConverter} 类型。ResponseBodyAdvice.supports()
 			if (advice.supports(returnType, converterType)) {
+				// invoke ResponseBodyAdvice.beforeBodyWrite()
 				body = ((ResponseBodyAdvice<T>) advice).beforeBodyWrite((T) body, returnType,
 						contentType, converterType, request, response);
 			}

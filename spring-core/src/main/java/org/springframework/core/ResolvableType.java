@@ -816,6 +816,12 @@ public class ResolvableType implements Serializable {
 	 * @see #resolveGeneric(int...)
 	 * @see #resolveGenerics()
 	 */
+	// 将此类型解析为 {@link java.lang.Class}，如果无法解析，则返回 {@code null}。如果直接解析失败，
+	// 此方法将考虑 {@link TypeVariable TypeVariables} 和 {@link WildcardType WildcardTypes} 的边界；
+	// 但是，将忽略 {@code Object.class} 的边界。
+	// <p>如果此方法返回非空 {@code Class} 且 {@link #hasGenerics()} 返回 {@code false}，
+	// 则给定类型实际上包装了一个普通的 {@code Class}，允许在需要时进行普通的 {@code Class} 处理。
+	// @return 已解析的 {@link Class}，如果无法解析，则返回 {@code null}
 	@Nullable
 	public Class<?> resolve() {
 		return this.resolved;
@@ -1324,6 +1330,9 @@ public class ResolvableType implements Serializable {
 	 * @return a {@code ResolvableType} for the specified method parameter
 	 * @see #forMethodParameter(Method, int)
 	 */
+	// 返回指定 {@link MethodParameter} 的 {@code ResolvableType}。
+	// @param methodParameter 源方法参数（不得为 {@code null}）
+	// @return 指定方法参数的 {@code ResolvableType}
 	public static ResolvableType forMethodParameter(MethodParameter methodParameter) {
 		return forMethodParameter(methodParameter, (Type) null);
 	}

@@ -631,6 +631,9 @@ public abstract class StringUtils {
 	 * @param path the file path (may be {@code null})
 	 * @return the extracted filename extension, or {@code null} if none
 	 */
+	// 从给定的 Java 资源路径中提取文件扩展名，例如“mypath/myfile.txt”->“txt”。
+	// @param path 文件路径（可能为 {@code null}）
+	// @return 提取的文件扩展名，如果没有，则返回 {@code null}
 	@Nullable
 	public static String getFilenameExtension(@Nullable String path) {
 		if (path == null) {

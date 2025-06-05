@@ -146,6 +146,7 @@ public class ServletInvocableHandlerMethod extends InvocableHandlerMethod {
 		Assert.state(this.returnValueHandlers != null, "No return value handlers"); // 无返回值处理程序
 		try {
 			// 遍历已注册的 {@link HandlerMethodReturnValueHandler HandlerMethodReturnValueHandlers} 并调用支持它的那个。
+			// invoke HandlerMethodReturnValueHandler.handleReturnValue()
 			this.returnValueHandlers.handleReturnValue(
 					returnValue, getReturnValueType(returnValue), mavContainer, webRequest);
 		}

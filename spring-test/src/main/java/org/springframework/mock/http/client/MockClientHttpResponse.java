@@ -32,6 +32,7 @@ import org.springframework.util.Assert;
  * @author Sam Brannen
  * @since 3.2
  */
+// {@link ClientHttpResponse} 的模拟实现。
 public class MockClientHttpResponse extends MockHttpInputMessage implements ClientHttpResponse {
 
 	private final HttpStatusCode statusCode;

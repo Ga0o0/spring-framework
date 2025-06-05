@@ -33,6 +33,11 @@ import org.springframework.http.HttpStatusCode;
  * @author Arjen Poutsma
  * @since 3.0
  */
+// 表示客户端 HTTP 响应。
+//
+// <p>通过调用 {@link ClientHttpRequest#execute()} 获取。
+//
+// <p>{@code ClientHttpResponse} 必须通过 {@linkplain #close() 关闭}，通常在 {@code finally} 块中。
 public interface ClientHttpResponse extends HttpInputMessage, Closeable {
 
 	/**

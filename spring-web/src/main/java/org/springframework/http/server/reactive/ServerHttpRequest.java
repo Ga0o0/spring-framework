@@ -37,6 +37,7 @@ import org.springframework.util.MultiValueMap;
  * @author Sam Brannen
  * @since 5.0
  */
+// 表示响应式服务器端 HTTP 请求。
 public interface ServerHttpRequest extends HttpRequest, ReactiveHttpInputMessage {
 
 	/**

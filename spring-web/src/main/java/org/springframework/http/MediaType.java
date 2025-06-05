@@ -163,6 +163,7 @@ public class MediaType extends MimeType implements Serializable {
 	/**
 	 * Public constant media type for {@code application/octet-stream}.
 	 */
+	// {@code application/octet-stream} 的公共常量媒体类型。
 	public static final MediaType APPLICATION_OCTET_STREAM;
 
 	/**
@@ -683,6 +684,12 @@ public class MediaType extends MimeType implements Serializable {
 	 * @return {@code true} if this media type is compatible with the given media type;
 	 * {@code false} otherwise
 	 */
+	// 指示此 {@code MediaType} 是否与给定的媒体类型兼容。
+	// <p>例如，{@code text/} 与 {@code text/plain}、{@code text/html} 兼容，反之亦然。
+	// 实际上，此方法类似于 {@link #includes}，只是它<b>是</b>对称的。
+	// <p>只需调用 {@link MimeType#isCompatibleWith(MimeType)}，但使用 {@code MediaType} 参数声明以实现二进制向后兼容性。
+	// @param other 要与之比较的参考媒体类型
+	// @return 如果此媒体类型与给定的媒体类型兼容，则返回 {@code true}；否则返回 {@code false}
 	public boolean isCompatibleWith(@Nullable MediaType other) {
 		return super.isCompatibleWith(other);
 	}
@@ -692,6 +699,8 @@ public class MediaType extends MimeType implements Serializable {
 	 * @return the same instance if the given MediaType doesn't have a quality value,
 	 * or a new one otherwise
 	 */
+	// 返回此实例的副本，其质量值与给定的 {@code MediaType} 一致。
+	// 如果给定的 MediaType 没有质量值，则返回相同的实例，否则返回一个新的实例
 	public MediaType copyQualityValue(MediaType mediaType) {
 		if (!mediaType.getParameters().containsKey(PARAM_QUALITY_FACTOR)) {
 			return this;
@@ -706,6 +715,8 @@ public class MediaType extends MimeType implements Serializable {
 	 * @return the same instance if the media type doesn't contain a quality value,
 	 * or a new one otherwise
 	 */
+	// 返回此实例的副本，其中删除了其质量值。
+	// @return 如果媒体类型不包含质量值，则返回相同的实例，否则返回新的实例
 	public MediaType removeQualityValue() {
 		if (!getParameters().containsKey(PARAM_QUALITY_FACTOR)) {
 			return this;

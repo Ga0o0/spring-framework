@@ -34,6 +34,7 @@ import org.springframework.util.ClassUtils;
  * @author Rossen Stoyanchev
  * @since 2.0
  */
+// 提供支持框架内各种命名和其他约定的方法。主要供框架内部使用。
 public final class Conventions {
 
 	/**
@@ -97,6 +98,13 @@ public final class Conventions {
 	 * @param parameter the method or constructor parameter
 	 * @return the generated variable name
 	 */
+	// 确定给定参数的常规变量名称，同时考虑通用集合类型（如果有）。
+	// <p>从 5.0 开始，此方法支持响应式类型：<br>
+	// {@code Mono<com.myapp.Product>} 变为 {@code "productMono"} <br>
+	// {@code Flux<com.myapp.MyProduct>} 变为 {@code "myProductFlux"} <br>
+	// {@code Observable<com.myapp.MyProduct>} 变为 {@code "myProductObservable"} <br>
+	// @param parameter 方法或构造函数参数
+	// @return 生成的变量名称
 	public static String getVariableNameForParameter(MethodParameter parameter) {
 		Assert.notNull(parameter, "MethodParameter must not be null");
 		Class<?> valueClass;
@@ -282,6 +290,7 @@ public final class Conventions {
 	/**
 	 * Pluralize the given name.
 	 */
+	// 将名字变为复数。
 	private static String pluralize(String name) {
 		return name + PLURAL_SUFFIX;
 	}

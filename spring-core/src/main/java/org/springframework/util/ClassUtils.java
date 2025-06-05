@@ -1101,6 +1101,9 @@ public abstract class ClassUtils {
 	 * @return the short name rendered in a standard JavaBeans property format
 	 * @see StringUtils#uncapitalizeAsProperty(String)
 	 */
+	// 以非大写的 JavaBeans 属性格式返回 Java 类的短字符串名称。如果是嵌套类，则去除外部类名。
+	// @param clazz 类
+	// @return 以标准 JavaBeans 属性格式呈现的短名称
 	public static String getShortNameAsProperty(Class<?> clazz) {
 		String shortName = getShortName(clazz);
 		int dotIndex = shortName.lastIndexOf(PACKAGE_SEPARATOR);

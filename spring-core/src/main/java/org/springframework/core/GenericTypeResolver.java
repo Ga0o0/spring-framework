@@ -41,6 +41,9 @@ import org.springframework.util.ConcurrentReferenceHashMap;
  * @author Phillip Webb
  * @since 2.5.2
  */
+// 用于根据类型变量解析泛型类型的辅助类。
+//
+// <p>主要用于框架内部使用，即使方法参数类型声明为泛型，也能解析它们。
 public final class GenericTypeResolver {
 
 	/** Cache from Class to TypeVariable Map. */
@@ -152,6 +155,10 @@ public final class GenericTypeResolver {
 	 * @return the resolved type (possibly the given generic type as-is)
 	 * @since 5.0
 	 */
+	// 根据给定的上下文类解析给定的泛型类型，并尽可能替换类型变量。
+	// @param genericType （潜在的）泛型类型
+	// @param contextClass 目标类型的上下文类，例如，目标类型出现在方法签名中的类（可以为 {@code null}）
+	// @return 解析后的类型（可能是给定的泛型类型）
 	public static Type resolveType(Type genericType, @Nullable Class<?> contextClass) {
 		if (contextClass != null) {
 			if (genericType instanceof TypeVariable<?> typeVariable) {

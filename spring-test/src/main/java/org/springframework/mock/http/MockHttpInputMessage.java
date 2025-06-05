@@ -30,6 +30,7 @@ import org.springframework.util.Assert;
  * @author Rossen Stoyanchev
  * @since 3.2
  */
+// {@link HttpInputMessage} 的模拟实现。
 public class MockHttpInputMessage implements HttpInputMessage {
 
 	private final HttpHeaders headers = new HttpHeaders();

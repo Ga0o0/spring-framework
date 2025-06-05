@@ -93,6 +93,25 @@ import org.springframework.util.StringUtils;
  * @author Simon Baslé
  * @since 3.0
  */
+// 表示 HTTP 请求或响应标头的数据结构，将字符串标头名称映射到字符串值列表，还提供常见应用程序级数据类型的访问器。
+//
+// <p>除了 {@link Map} 定义的常规方法之外，此类还提供了许多常见的便捷方法，例如：
+// <ul>
+// <li>{@link #getFirst(String)} 返回与给定标头名称关联的第一个值</li>
+// <li>{@link #add(String, String)} 将标头值添加到标头名称的值列表中</li>
+// <li>{@link #set(String, String)} 将标头值设置为单个字符串值</li>
+// </ul>
+//
+// <p>请注意，默认构造函数创建的 {@code HttpHeaders} 实例不区分大小写地处理标头名称。
+// 使用 {@link #HttpHeaders(MultiValueMap)} 构造函数创建的实例
+// （例如由框架内部实例化的实例，以适应现有的 HTTP 标头数据结构）确实保证每个标头的 get/set/add 操作不区分大小写，这是 HTTP 规范所要求的。
+// 但是，对于处理整个集合的操作（如 {@code size()}、{@code values()}、{@code keySet()} 和 {@code entrySet()}）不一定如此。
+// 对于这些情况，最好使用 {@link #headerSet()}。
+//
+// <p>某些支持实现可以以区分大小写的方式存储标头名称，这将导致在 entrySet() 迭代期间出现重复，
+// 其中标头名称可能会根据字母大小写出现多次，但每个这样的条目都有完整的 {@code List} 值。
+// 例如，当通过迭代旧实例的 {@code entrySet()} 并使用 {@link #addAll(String, List)}
+// 而不是 {@link #put(String, List)} 将标题复制到新实例中时，可能会出现问题。
 public class HttpHeaders implements MultiValueMap<String, String>, Serializable {
 
 	private static final long serialVersionUID = -8578554704772377436L;
@@ -1010,6 +1029,9 @@ public class HttpHeaders implements MultiValueMap<String, String>, Serializable 
 	 * <p>Returns {@code null} when the {@code Content-Type} header is not set.
 	 * @throws InvalidMediaTypeException if the media type value cannot be parsed
 	 */
+	// 返回正文的 {@linkplain MediaType 媒体类型}，由 {@code Content-Type} 标头指定。
+	// <p>如果未设置 {@code Content-Type} 标头，则返回 {@code null}。
+	// 如果无法解析媒体类型值，则抛出 InvalidMediaTypeException
 	@Nullable
 	public MediaType getContentType() {
 		String value = getFirst(CONTENT_TYPE);

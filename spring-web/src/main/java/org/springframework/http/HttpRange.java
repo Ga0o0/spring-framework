@@ -43,6 +43,7 @@ import org.springframework.util.StringUtils;
  * @see HttpHeaders#setRange(List)
  * @see HttpHeaders#getRange()
  */
+// 表示与 HTTP {@code "Range"} 标头一起使用的 HTTP（字节）范围。
 public abstract class HttpRange {
 
 	/** Maximum ranges per request. */

@@ -342,6 +342,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * JavaBean property access.
 	 * @since 4.2.1
 	 */
+	// 使用标准 JavaBean 属性访问创建 {@link AbstractPropertyBindingResult} 实例。
 	protected AbstractPropertyBindingResult createBeanPropertyBindingResult() {
 		BeanPropertyBindingResult result = new BeanPropertyBindingResult(getTarget(),
 				getObjectName(), isAutoGrowNestedPaths(), getAutoGrowCollectionLimit());
@@ -373,6 +374,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * field access.
 	 * @since 4.2.1
 	 */
+	// 使用直接字段访问创建 {@link AbstractPropertyBindingResult} 实例。
 	protected AbstractPropertyBindingResult createDirectFieldBindingResult() {
 		DirectFieldBindingResult result = new DirectFieldBindingResult(getTarget(),
 				getObjectName(), isAutoGrowNestedPaths());
@@ -391,6 +393,7 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * Return the internal BindingResult held by this DataBinder,
 	 * as an AbstractPropertyBindingResult.
 	 */
+	// 以 AbstractPropertyBindingResult 的形式返回此 DataBinder 持有的内部 BindingResult。
 	protected AbstractPropertyBindingResult getInternalBindingResult() {
 		if (this.bindingResult == null) {
 			this.bindingResult = (this.directFieldAccess ?
@@ -452,6 +455,8 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @see Errors
 	 * @see #bind
 	 */
+	// 返回此 DataBinder 创建的 BindingResult 实例。这允许在绑定操作后方便地访问绑定结果。
+	// @return BindingResult 实例，可作为 BindingResult 或 Errors 实例处理（Errors 是 BindingResult 的父接口）。
 	public BindingResult getBindingResult() {
 		return getInternalBindingResult();
 	}
@@ -767,6 +772,8 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * {@link #setExcludedValidators(Predicate) exclude predicate}.
 	 * @since 6.1
 	 */
+	// 返回数据绑定后要应用的验证器。
+	// 这包括已配置的 {@link #getValidators() 验证器}，并通过 {@link #setExcludedValidators(Predicate) 排除谓词} 进行过滤。
 	public List<Validator> getValidatorsToApply() {
 		return (this.excludedValidators != null ?
 				this.validators.stream().filter(validator -> !this.excludedValidators.test(validator)).toList() :
@@ -1282,16 +1289,22 @@ public class DataBinder implements PropertyEditorRegistry, TypeConverter {
 	 * @see #setValidator(Validator)
 	 * @see SmartValidator#validate(Object, Errors, Object...)
 	 */
+	// 使用给定的验证提示调用指定的验证器（如果有）。
+	// <p>注意：验证提示可能会被实际的目标验证器忽略。
+	// @param validationHints 一个或多个要传递给 {@link SmartValidator} 的提示对象
 	public void validate(Object... validationHints) {
 		Object target = getTarget();
 		Assert.state(target != null, "No target to validate");
 		BindingResult bindingResult = getBindingResult();
-		// Call each validator with the same binding result
+		// Call each validator with the same binding result --> 译文：使用相同的绑定结果调用每个验证器
+		// getValidatorsToApply() -> 返回数据绑定后要应用的验证器。
 		for (Validator validator : getValidatorsToApply()) {
 			if (!ObjectUtils.isEmpty(validationHints) && validator instanceof SmartValidator smartValidator) {
+				// invoke SmartValidator.validate()
 				smartValidator.validate(target, bindingResult, validationHints);
 			}
 			else if (validator != null) {
+				// invoke Validator.validate()
 				validator.validate(target, bindingResult);
 			}
 		}

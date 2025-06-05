@@ -75,6 +75,7 @@ import org.springframework.web.util.UrlPathHelper;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 扩展 {@link AbstractMessageConverterMethodArgumentResolver}，使其能够通过使用 {@link HttpMessageConverter HttpMessageConverters} 写入响应来处理方法返回值。
 public abstract class AbstractMessageConverterMethodProcessor extends AbstractMessageConverterMethodArgumentResolver
 		implements HandlerMethodReturnValueHandler {
 
@@ -138,6 +139,9 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * @param webRequest the web request to create an output message from
 	 * @return the output message
 	 */
+	// 根据给定的 {@link NativeWebRequest} 创建一个新的 {@link HttpOutputMessage}。
+	// @param webRequest 要创建输出消息的 Web 请求
+	// @return 输出消息
 	protected ServletServerHttpResponse createOutputMessage(NativeWebRequest webRequest) {
 		HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
 		Assert.state(response != null, "No HttpServletResponse");
@@ -169,6 +173,14 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * be written by a converter, or if the content-type chosen by the server
 	 * has no compatible converter.
 	 */
+	// 将指定的返回类型写入指定的输出消息。
+	// @param value 要写入输出消息的值
+	// @param returnType 值的类型
+	// @param inputMessage 输入消息。用于检查 {@code Accept} 标头。
+	// @param outputMessage 要写入的输出消息
+	// @throws 发生 I/O 错误时抛出 IOException
+	// @throws 消息转换器无法满足请求中 {@code Accept} 标头指示的条件时抛出 HttpMediaTypeNotAcceptableException
+	// @throws 转换器无法写入给定消息，或者服务器选择的内容类型没有兼容的转换器时抛出 HttpMessageNotWritableException。
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	protected <T> void writeWithMessageConverters(@Nullable T value, MethodParameter returnType,
 			ServletServerHttpRequest inputMessage, ServletServerHttpResponse outputMessage)
@@ -185,13 +197,16 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		}
 		else {
 			body = value;
+			// 返回要写入响应的值的类型。
 			valueType = getReturnValueType(body, returnType);
+			// 根据给定的上下文类解析给定的泛型类型，并尽可能替换类型变量。
 			targetType = GenericTypeResolver.resolveType(getGenericType(returnType), returnType.getContainingClass());
 		}
 
+		// 返回返回值或声明的返回类型是否扩展了{@link Resource}。
 		if (isResourceType(value, returnType)) {
-			outputMessage.getHeaders().set(HttpHeaders.ACCEPT_RANGES, "bytes");
-			if (value != null && inputMessage.getHeaders().getFirst(HttpHeaders.RANGE) != null &&
+			outputMessage.getHeaders().set(HttpHeaders.ACCEPT_RANGES, "bytes"); // ACCEPT_RANGES = "Accept-Ranges"
+			if (value != null && inputMessage.getHeaders().getFirst(HttpHeaders.RANGE) != null && // RANGE = "Range"
 					outputMessage.getServletResponse().getStatus() == 200) {
 				Resource resource = (Resource) value;
 				try {
@@ -202,15 +217,16 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 					targetType = RESOURCE_REGION_LIST_TYPE;
 				}
 				catch (IllegalArgumentException ex) {
-					outputMessage.getHeaders().set(HttpHeaders.CONTENT_RANGE, "bytes */" + resource.contentLength());
+					outputMessage.getHeaders().set(HttpHeaders.CONTENT_RANGE, "bytes */" + resource.contentLength()); // CONTENT_RANGE = "Content-Range"
 					outputMessage.getServletResponse().setStatus(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE.value());
 				}
 			}
 		}
 
 		MediaType selectedMediaType = null;
+		// 返回正文的 {@linkplain MediaType 媒体类型}，由 {@code Content-Type} 标头指定。
 		MediaType contentType = outputMessage.getHeaders().getContentType();
-		boolean isContentTypePreset = contentType != null && contentType.isConcrete();
+		boolean isContentTypePreset = contentType != null && contentType.isConcrete(); // 是 ContentType 预设
 		if (isContentTypePreset) {
 			if (logger.isDebugEnabled()) {
 				logger.debug("Found 'Content-Type:" + contentType + "' in response");
@@ -221,7 +237,8 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			HttpServletRequest request = inputMessage.getServletRequest();
 			List<MediaType> acceptableTypes;
 			try {
-				acceptableTypes = getAcceptableMediaTypes(request);
+				// invoke ContentNegotiationStrategy.resolveMediaTypes()
+				acceptableTypes = getAcceptableMediaTypes(request); // 获取可接受的媒体类型
 			}
 			catch (HttpMediaTypeNotAcceptableException ex) {
 				int series = outputMessage.getServletResponse().getStatus() / 100;
@@ -234,6 +251,8 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 				throw ex;
 			}
 
+			// 返回可生成的媒体类型。
+			// invoke HttpMessageConverter.getSupportedMediaTypes(java.lang.Class<?>)
 			List<MediaType> producibleTypes = getProducibleMediaTypes(request, valueType, targetType);
 			if (body != null && producibleTypes.isEmpty()) {
 				throw new HttpMessageNotWritableException(
@@ -241,9 +260,10 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			}
 
 			List<MediaType> compatibleMediaTypes = new ArrayList<>();
+			// 确定兼容媒体类型
 			determineCompatibleMediaTypes(acceptableTypes, producibleTypes, compatibleMediaTypes);
 
-			// For ProblemDetail, fall back on RFC 9457 format
+			// For ProblemDetail, fall back on RFC 9457 format --> 译文：对于 ProblemDetail，请采用 RFC 9457 格式
 			if (compatibleMediaTypes.isEmpty() && ProblemDetail.class.isAssignableFrom(valueType)) {
 				determineCompatibleMediaTypes(this.problemMediaTypes, producibleTypes, compatibleMediaTypes);
 			}
@@ -258,9 +278,11 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 				return;
 			}
 
+			// 根据 {@linkplain MimeType#isMoreSpecific(MimeType) 特异性} 对给定的 {@code MimeType} 对象列表进行排序。
 			MimeTypeUtils.sortBySpecificity(compatibleMediaTypes);
 
 			for (MediaType mediaType : compatibleMediaTypes) {
+				// 指示此 MIME 类型是否具体，即类型和子类型是否都不是通配符
 				if (mediaType.isConcrete()) {
 					selectedMediaType = mediaType;
 					break;
@@ -278,13 +300,17 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		}
 
 		if (selectedMediaType != null) {
+			// 返回此实例的副本，其中删除了其质量值。
 			selectedMediaType = selectedMediaType.removeQualityValue();
 			for (HttpMessageConverter<?> converter : this.messageConverters) {
 				GenericHttpMessageConverter genericConverter =
 						(converter instanceof GenericHttpMessageConverter ghmc ? ghmc : null);
 				if (genericConverter != null ?
+						// invoke GenericHttpMessageConverter.canWrite()
 						((GenericHttpMessageConverter) converter).canWrite(targetType, valueType, selectedMediaType) :
+						// invoke HttpMessageConverter.canWrite()
 						converter.canWrite(valueType, selectedMediaType)) {
+					// invoke ResponseBodyAdvice.supports() and ResponseBodyAdvice.beforeBodyWrite()
 					body = getAdvice().beforeBodyWrite(body, returnType, selectedMediaType,
 							(Class<? extends HttpMessageConverter<?>>) converter.getClass(),
 							inputMessage, outputMessage);
@@ -292,11 +318,14 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 						Object theBody = body;
 						LogFormatUtils.traceDebug(logger, traceOn ->
 								"Writing [" + LogFormatUtils.formatValue(theBody, !traceOn) + "]");
+						// 添加 ContentDisposition 标头
 						addContentDispositionHeader(inputMessage, outputMessage);
 						if (genericConverter != null) {
+							// invoke GenericHttpMessageConverter.write()
 							genericConverter.write(body, targetType, selectedMediaType, outputMessage);
 						}
 						else {
+							// invoke HttpMessageConverter.write()
 							((HttpMessageConverter) converter).write(body, selectedMediaType, outputMessage);
 						}
 					}
@@ -329,6 +358,8 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * return type needs to be examined possibly including generic type determination
 	 * (e.g. {@code ResponseEntity<T>}).
 	 */
+	// 返回要写入响应的值的类型。
+	// 通常，这可以通过 getClass 对值进行简单检查，但如果值为 null，则需要检查返回类型，可能还需要进行泛型判断（例如 {@code ResponseEntity<T>}）。
 	protected Class<?> getReturnValueType(@Nullable Object value, MethodParameter returnType) {
 		return (value != null ? value.getClass() : returnType.getParameterType());
 	}
@@ -336,6 +367,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	/**
 	 * Return whether the returned value or the declared return type extends {@link Resource}.
 	 */
+	// 返回返回值或声明的返回类型是否扩展了{@link Resource}。
 	protected boolean isResourceType(@Nullable Object value, MethodParameter returnType) {
 		Class<?> clazz = getReturnValueType(value, returnType);
 		return clazz != InputStreamResource.class && Resource.class.isAssignableFrom(clazz);
@@ -345,6 +377,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * Return the generic type of the {@code returnType} (or of the nested type
 	 * if it is an {@link HttpEntity}).
 	 */
+	// 返回 {@code returnType} 的泛型类型（如果它是 {@link HttpEntity}，则返回嵌套类型）。
 	private Type getGenericType(MethodParameter returnType) {
 		if (HttpEntity.class.isAssignableFrom(returnType.getParameterType())) {
 			return ResolvableType.forType(returnType.getGenericParameterType()).getGeneric().getType();
@@ -372,6 +405,12 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * </ul>
 	 * @since 4.2
 	 */
+	// 返回可生成的媒体类型。结果媒体类型包括：
+	// <ul>
+	// <li>请求映射中指定的可生成媒体类型，或
+	// <li>可写入特定返回值的已配置转换器的媒体类型，或
+	// <li>{@link MediaType#ALL}
+	// </ul>
 	@SuppressWarnings("unchecked")
 	protected List<MediaType> getProducibleMediaTypes(
 			HttpServletRequest request, Class<?> valueClass, @Nullable Type targetType) {
@@ -385,10 +424,12 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		for (HttpMessageConverter<?> converter : this.messageConverters) {
 			if (converter instanceof GenericHttpMessageConverter<?> ghmc && targetType != null) {
 				if (ghmc.canWrite(targetType, valueClass, null)) {
+					// invoke HttpMessageConverter.getSupportedMediaTypes(java.lang.Class<?>)
 					result.addAll(converter.getSupportedMediaTypes(valueClass));
 				}
 			}
 			else if (converter.canWrite(valueClass, null)) {
+				// invoke HttpMessageConverter.getSupportedMediaTypes(java.lang.Class<?>)
 				result.addAll(converter.getSupportedMediaTypes(valueClass));
 			}
 		}
@@ -406,6 +447,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 
 		for (MediaType requestedType : acceptableTypes) {
 			for (MediaType producibleType : producibleTypes) {
+				// 指示此 {@code MediaType} 是否与给定的媒体类型兼容。
 				if (requestedType.isCompatibleWith(producibleType)) {
 					mediaTypesToUse.add(getMostSpecificMediaType(requestedType, producibleType));
 				}
@@ -417,6 +459,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * Return the more specific of the acceptable and the producible media types
 	 * with the q-value of the former.
 	 */
+	// 返回可接受的和可生产的媒体类型中更具体的一个以及前者的 q 值。
 	private MediaType getMostSpecificMediaType(MediaType acceptType, MediaType produceType) {
 		MediaType produceTypeToUse = produceType.copyQualityValue(acceptType);
 		if (acceptType.isLessSpecific(produceTypeToUse)) {
@@ -435,6 +478,9 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 	 * header with a safe attachment file name ("f.txt") is added to prevent
 	 * RFD exploits.
 	 */
+	// 检查路径是否包含文件扩展名，以及该扩展名是否在 {@link #SAFE_EXTENSIONS 安全扩展名} 列表中，
+	// 或是否已明确 {@link ContentNegotiationManager#getAllFileExtensions() 注册}。
+	// 如果不是，且状态在 2xx 范围内，则会添加一个带有安全附件文件名（“f.txt”）的“Content-Disposition”标头，以防止 RFD 漏洞。
 	private void addContentDispositionHeader(ServletServerHttpRequest request, ServletServerHttpResponse response) {
 		HttpHeaders headers = response.getHeaders();
 		if (headers.containsKey(HttpHeaders.CONTENT_DISPOSITION)) {
@@ -452,6 +498,7 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 		}
 
 		HttpServletRequest servletRequest = request.getServletRequest();
+		// 返回给定请求的请求 URI。如果是转发请求，则正确解析为原始请求的 URI。
 		String requestUri = UrlPathHelper.rawPathInstance.getOriginatingRequestUri(servletRequest);
 
 		int index = requestUri.lastIndexOf('/') + 1;
@@ -464,9 +511,11 @@ public abstract class AbstractMessageConverterMethodProcessor extends AbstractMe
 			filename = filename.substring(0, index);
 		}
 
+		// 使用 URLDecoder 解码给定的源字符串。编码将从请求中获取，并回退到默认的 “ISO-8859-1”。
 		filename = UrlPathHelper.defaultInstance.decodeRequestString(servletRequest, filename);
 		String ext = StringUtils.getFilenameExtension(filename);
 
+		// 使用 URLDecoder 解码给定的源字符串。编码将从请求中获取，并回退到默认的 “ISO-8859-1”。
 		pathParams = UrlPathHelper.defaultInstance.decodeRequestString(servletRequest, pathParams);
 		String extInPathParams = StringUtils.getFilenameExtension(pathParams);
 

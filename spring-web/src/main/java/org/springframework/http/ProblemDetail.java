@@ -49,6 +49,16 @@ import org.springframework.util.ObjectUtils;
  * @see org.springframework.web.ErrorResponse
  * @see org.springframework.web.ErrorResponseException
  */
+// RFC 9457 问题详情的表示。包含规范定义的属性，以及用于其他非标准属性的 {@link #getProperties() properties} 映射。
+//
+// <p>对于扩展响应，应用程序可以向 {@link #getProperties() properties} 映射添加属性。
+// 使用 Jackson 库时，{@code properties} 映射会通过
+// {@link org.springframework.http.converter.json.ProblemDetailJacksonMixin} 扩展为顶级 JSON 属性。
+//
+// <p>对于扩展响应，应用程序还可以创建具有附加属性的子类。
+// 子类可以使用受保护的复制构造函数重新创建现有的 {@code ProblemDetail} 实例作为子类，例如：来自 {@code @ControllerAdvice} 例如
+// {@link org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler} 或
+// {@link org.springframework.web.reactive.result.method.annotation.ResponseEntityExceptionHandler}。
 public class ProblemDetail {
 
 	private static final URI BLANK_TYPE = URI.create("about:blank");

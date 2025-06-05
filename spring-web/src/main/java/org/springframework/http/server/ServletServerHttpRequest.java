@@ -76,6 +76,8 @@ public class ServletServerHttpRequest implements ServerHttpRequest {
 	 * given {@link HttpServletRequest}.
 	 * @param servletRequest the servlet request
 	 */
+	// 根据给定的 {@link HttpServletRequest} 构造一个新的 ServletServerHttpRequest 实例。
+	// @param servletRequest servlet 请求
 	public ServletServerHttpRequest(HttpServletRequest servletRequest) {
 		Assert.notNull(servletRequest, "HttpServletRequest must not be null");
 		this.servletRequest = servletRequest;
@@ -85,6 +87,7 @@ public class ServletServerHttpRequest implements ServerHttpRequest {
 	/**
 	 * Returns the {@code HttpServletRequest} this object is based on.
 	 */
+	// 返回此对象所基于的 {@code HttpServletRequest}。
 	public HttpServletRequest getServletRequest() {
 		return this.servletRequest;
 	}

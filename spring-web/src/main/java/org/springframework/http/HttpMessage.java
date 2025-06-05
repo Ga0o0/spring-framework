@@ -23,12 +23,15 @@ package org.springframework.http;
  * @author Arjen Poutsma
  * @since 3.0
  */
+// 表示 HTTP 请求和响应消息的基本接口。由 {@link HttpHeaders} 组成，可通过 {@link #getHeaders()} 获取。
 public interface HttpMessage {
 
 	/**
 	 * Return the headers of this message.
 	 * @return a corresponding HttpHeaders object (never {@code null})
 	 */
+	// 返回此消息的标头。
+	// @return 相应的 HttpHeaders 对象（永不为 {@code null}）
 	HttpHeaders getHeaders();
 
 }

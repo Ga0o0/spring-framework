@@ -27,6 +27,7 @@ import java.util.List;
  * @since 5.0
  * @see DataBuffer
  */
+// {@link DataBuffer DataBuffers} 的工厂，允许分配和包装数据缓冲区。
 public interface DataBufferFactory {
 
 	/**

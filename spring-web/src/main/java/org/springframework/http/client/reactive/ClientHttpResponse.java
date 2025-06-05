@@ -29,6 +29,7 @@ import org.springframework.util.ObjectUtils;
  * @author Brian Clozel
  * @since 5.0
  */
+// 表示客户端反应式 HTTP 响应。
 public interface ClientHttpResponse extends ReactiveHttpInputMessage {
 
 	/**

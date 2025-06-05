@@ -63,6 +63,10 @@ import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolv
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 解析带有 {@code @RequestBody} 注解的方法参数，并通过使用 {@link HttpMessageConverter} 读写请求或响应主体来处理带有 {@code @ResponseBody} 注解的方法的返回值。
+//
+// <p>如果 {@code @RequestBody} 方法参数带有任何 {@linkplain org.springframework.validation.annotation.ValidationAnnotationUtils#determineValidationHints 注解，则会对其进行验证。
+// 如果配置了 {@link DefaultHandlerExceptionResolver}，则验证失败时会引发 {@link MethodArgumentNotValidException} 异常，并返回 HTTP 400 响应状态码。
 public class RequestResponseBodyMethodProcessor extends AbstractMessageConverterMethodProcessor {
 
 	/**
@@ -126,20 +130,40 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 	 * is {@code true} and there is no body content or if there is no suitable
 	 * converter to read the content with.
 	 */
+	// 如果验证失败，则抛出 MethodArgumentNotValidException。
+	// 如果 {@link RequestBody#required()} 为 {@code true} 并且没有正文内容，
+	// 或者没有合适的转换器来读取内容，则抛出 @throws HttpMessageNotReadableException。
 	@Override
 	@Nullable
 	public Object resolveArgument(MethodParameter parameter, @Nullable ModelAndViewContainer mavContainer,
 			NativeWebRequest webRequest, @Nullable WebDataBinderFactory binderFactory) throws Exception {
 
+		// （1）RequestResponseBodyMethodProcessor.resolveArgument() 代码逻辑：
+		// 		使用 MessageConverters 进行参数转换，并执行 SmartValidator/Validator.validate() 进行校验
+		// 		使用 MessageConverters 进行参数转换的代码逻辑：
+		// 		1. GenericHttpMessageConverter.canRead()/HttpMessageConverter.canRead()
+		// 		2.1. body != null
+		// 			RequestBodyAdvice.supports() and RequestBodyAdvice.beforeBodyRead()
+		// 			GenericHttpMessageConverter.read()/HttpMessageConverter.read()
+		// 			RequestBodyAdvice.supports() and RequestBodyAdvice.afterBodyRead()
+		// 		2.2. body == null
+		// 			RequestBodyAdvice.supports() and RequestBodyAdvice.handleEmptyBody()
+		// 		3. RequestBodyAdvice.supports() and RequestBodyAdvice.handleEmptyBody()
+
 		parameter = parameter.nestedIfOptional();
+		// 使用 MessageConverters 进行读取
 		Object arg = readWithMessageConverters(webRequest, parameter, parameter.getNestedGenericParameterType());
 
 		if (binderFactory != null) {
+			// 确定给定参数的常规变量名称，同时考虑通用集合类型（如果有）。
 			String name = Conventions.getVariableNameForParameter(parameter);
+			// 返回指定 {@link MethodParameter} 的 {@code ResolvableType}。
 			ResolvableType type = ResolvableType.forMethodParameter(parameter);
 			WebDataBinder binder = binderFactory.createBinder(webRequest, arg, name, type);
 			if (arg != null) {
+				// 如果适用，验证绑定目标。
 				validateIfApplicable(binder, parameter);
+				// 验证结果处理
 				if (binder.getBindingResult().hasErrors() && isBindExceptionRequired(binder, parameter)) {
 					throw new MethodArgumentNotValidException(parameter, binder.getBindingResult());
 				}
@@ -149,6 +173,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 			}
 		}
 
+		// 如有必要，根据方法参数调整给定参数。
 		return adaptArgumentIfNecessary(arg, parameter);
 	}
 
@@ -157,9 +182,11 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 	protected <T> Object readWithMessageConverters(NativeWebRequest webRequest, MethodParameter parameter,
 			Type paramType) throws IOException, HttpMediaTypeNotSupportedException, HttpMessageNotReadableException {
 
+		// 通过给定的 {@link NativeWebRequest} 创建一个新的 {@link HttpInputMessage}。
 		ServletServerHttpRequest inputMessage = createInputMessage(webRequest);
+		// 通过读取给定的 HttpInputMessage 来创建与预期参数类型对应的方法参数值。
 		Object arg = readWithMessageConverters(inputMessage, parameter, paramType);
-		if (arg == null && checkRequired(parameter)) {
+		if (arg == null && checkRequired(parameter)) { // 缺少必需的请求正文；检查 RequestBody.required
 			throw new HttpMessageNotReadableException("Required request body is missing: " +
 					parameter.getExecutable().toGenericString(), inputMessage);
 		}
@@ -177,6 +204,7 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 			throws IOException, HttpMediaTypeNotAcceptableException, HttpMessageNotWritableException {
 
 		mavContainer.setRequestHandled(true);
+		// 通过给定的 {@link NativeWebRequest} 创建一个新的 {@link HttpInputMessage}。
 		ServletServerHttpRequest inputMessage = createInputMessage(webRequest);
 		ServletServerHttpResponse outputMessage = createOutputMessage(webRequest);
 
@@ -188,7 +216,17 @@ public class RequestResponseBodyMethodProcessor extends AbstractMessageConverter
 			}
 		}
 
+		// 1. genericConverter != null ? GenericHttpMessageConverter.canWrite() : HttpMessageConverter.canWrite()
+		// 2. ResponseBodyAdvice.supports() and ResponseBodyAdvice.beforeBodyWrite()
+		// 3. body != null
+		// 		if genericConverter != null
+		//			GenericHttpMessageConverter.write()
+		//		else genericConverter == null
+		// 			HttpMessageConverter.write()
+
 		// Try even with null return value. ResponseBodyAdvice could get involved.
+		// --> 译文：即使返回值为空，也请尝试。ResponseBodyAdvice 可能会参与其中。
+		// 将指定的返回类型写入指定的输出消息。
 		writeWithMessageConverters(returnValue, returnType, inputMessage, outputMessage);
 	}
 

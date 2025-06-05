@@ -34,6 +34,9 @@ import org.springframework.core.io.buffer.DataBufferFactory;
  * @author Sebastien Deleuze
  * @since 5.0
  */
+// 一种“响应式”HTTP 输出消息，以 {@link Publisher} 的形式接受输出。
+//
+// <p>通常由客户端的 HTTP 请求或服务器端的 HTTP 响应实现。
 public interface ReactiveHttpOutputMessage extends HttpMessage {
 
 	/**
@@ -41,6 +44,8 @@ public interface ReactiveHttpOutputMessage extends HttpMessage {
 	 * @return a buffer factory
 	 * @see #writeWith(Publisher)
 	 */
+	// 返回一个可用于创建主体的 {@link DataBufferFactory}。
+	// @return 缓冲区工厂
 	DataBufferFactory bufferFactory();
 
 	/**
@@ -50,11 +55,15 @@ public interface ReactiveHttpOutputMessage extends HttpMessage {
 	 * executed in the right order, relative to other actions.
 	 * @param action the action to apply
 	 */
+	// 在提交 HttpOutputMessage 之前注册一个要应用的操作。
+	// <p><strong>注意：</strong>提供的操作必须正确延迟，例如通过 {@link Mono#defer} 或 {@link Mono#fromRunnable}，以确保它相对于其他操作按正确的顺序执行。
+	// @param action 要应用的操作
 	void beforeCommit(Supplier<? extends Mono<Void>> action);
 
 	/**
 	 * Whether the HttpOutputMessage is committed.
 	 */
+	// HttpOutputMessage 是否已提交。
 	boolean isCommitted();
 
 	/**
@@ -63,7 +72,9 @@ public interface ReactiveHttpOutputMessage extends HttpMessage {
 	 * @param body the body content publisher
 	 * @return a {@link Mono} that indicates completion or error
 	 */
-
+	// 使用给定的 {@link Publisher} 将消息正文写入底层 HTTP 层。
+	// @param body 正文内容发布者
+	// @return 一个 {@link Mono} 表示完成或错误
 	Mono<Void> writeWith(Publisher<? extends DataBuffer> body);
 
 	/**
@@ -73,6 +84,10 @@ public interface ReactiveHttpOutputMessage extends HttpMessage {
 	 * @param body the body content publisher
 	 * @return a {@link Mono} that indicates completion or error
 	 */
+	// 使用给定的 {@code Publishers} 中的 {@link Publisher} 将 HttpOutputMessage 的主体写入底层 HTTP 层，
+	// 并在每个 {@code Publisher<DataBuffer>} 之后刷新。
+	// @param body 主体内容发布者
+	// @return 一个 {@link Mono} 表示完成或错误
 	Mono<Void> writeAndFlushWith(Publisher<? extends Publisher<? extends DataBuffer>> body);
 
 	/**
@@ -85,6 +100,9 @@ public interface ReactiveHttpOutputMessage extends HttpMessage {
 	 * If invoked multiple times it should have no side effects.
 	 * @return a {@link Mono} that indicates completion or error
 	 */
+	// 指示消息处理已完成，允许执行任何清理或结束处理任务，例如将通过 {@link #getHeaders()} 进行的标头更改应用于底层 HTTP 消息（如果尚未应用）。
+	// <p>此方法应在消息处理结束时自动调用，因此应用程序通常不必调用它。如果多次调用，应该不会产生副作用。
+	// @return 一个 {@link Mono}，指示完成或错误
 	Mono<Void> setComplete();
 
 }

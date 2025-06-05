@@ -33,6 +33,9 @@ import org.springframework.http.HttpRequest;
  * @since 3.0
  * @see ClientHttpRequestFactory#createRequest(java.net.URI, HttpMethod)
  */
+// 表示客户端 HTTP 请求。通过 {@link ClientHttpRequestFactory} 的实现创建。
+//
+// <p>{@code ClientHttpRequest} 可以通过 {@linkplain #execute() 执行}，并接收可读取的 {@link ClientHttpResponse}。
 public interface ClientHttpRequest extends HttpRequest, HttpOutputMessage {
 
 	/**
@@ -40,6 +43,9 @@ public interface ClientHttpRequest extends HttpRequest, HttpOutputMessage {
 	 * @return the response result of the execution
 	 * @throws IOException in case of I/O errors
 	 */
+	// 执行此请求，生成可读取的 {@link ClientHttpResponse}。
+	// @return 执行的响应结果
+	// @throws IOException（如果发生 I/O 错误）
 	ClientHttpResponse execute() throws IOException;
 
 }

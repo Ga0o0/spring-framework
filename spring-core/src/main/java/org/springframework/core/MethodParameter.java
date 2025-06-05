@@ -366,6 +366,7 @@ public class MethodParameter {
 	 * same parameter but one nesting level deeper.
 	 * @since 4.3
 	 */
+	// 返回此 {@code MethodParameter} 的变体，该变体指向相同的参数，但嵌套级别更深。
 	public MethodParameter nested() {
 		return nested(null);
 	}
@@ -376,6 +377,8 @@ public class MethodParameter {
 	 * @param typeIndex the type index for the new nesting level
 	 * @since 5.2
 	 */
+	// 返回此 {@code MethodParameter} 的变体，该变体指向相同的参数，但嵌套级别更深。
+	// @param typeIndex 新嵌套级别的类型索引
 	public MethodParameter nested(@Nullable Integer typeIndex) {
 		MethodParameter nestedParam = this.nestedMethodParameter;
 		if (nestedParam != null && typeIndex == null) {
@@ -439,6 +442,7 @@ public class MethodParameter {
 	 * @see #isOptional()
 	 * @see #nested()
 	 */
+	// 返回此 {@code MethodParameter} 的变体，该变体指向相同的参数，但在 {@link java.util.Optional} 声明的情况下嵌套级别更深。
 	public MethodParameter nestedIfOptional() {
 		return (getParameterType() == Optional.class ? nested() : this);
 	}
@@ -473,6 +477,8 @@ public class MethodParameter {
 	 * declaring class), or otherwise simply the declaring class itself
 	 * @see #getDeclaringClass()
 	 */
+	// 返回此方法参数的包含类。
+	// @return 一个特定的包含类（可能是声明类的子类），或者仅仅是声明类本身
 	public Class<?> getContainingClass() {
 		Class<?> containingClass = this.containingClass;
 		return (containingClass != null ? containingClass : getDeclaringClass());
@@ -591,6 +597,8 @@ public class MethodParameter {
 	 * @since 4.2
 	 * @see #getNestingLevel()
 	 */
+	// 返回方法/构造函数参数的嵌套泛型类型。
+	// @return 参数类型（永不为 {@code null}）
 	public Type getNestedGenericParameterType() {
 		if (this.nestingLevel > 1) {
 			Type type = getGenericParameterType();

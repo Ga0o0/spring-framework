@@ -276,6 +276,8 @@ public class MimeType implements Comparable<MimeType>, Serializable {
 	 * nor the subtype is a wildcard character <code>&#42;</code>.
 	 * @return whether this MIME Type is concrete
 	 */
+	// 指示此 MIME 类型是否具体，即类型和子类型是否都不是通配符 <code>&#42;</code>。
+	// @return 此 MIME 类型是否具体
 	public boolean isConcrete() {
 		return !isWildcardType() && !isWildcardSubtype();
 	}
@@ -423,6 +425,9 @@ public class MimeType implements Comparable<MimeType>, Serializable {
 	 * @return whether the two mime types have the same type and subtype
 	 * @since 5.1.4
 	 */
+	// 类似于 {@link #equals(Object)}，但仅基于类型和子类型，即忽略参数。
+	// @param other 要比较的另一个 MIME 类型
+	// @return 两个 MIME 类型是否具有相同的类型和子类型
 	public boolean equalsTypeAndSubtype(@Nullable MimeType other) {
 		if (other == null) {
 			return false;
@@ -438,6 +443,9 @@ public class MimeType implements Comparable<MimeType>, Serializable {
 	 * @return whether the list contains the given mime type
 	 * @since 5.1.4
 	 */
+	// 与依赖于 {@link MimeType#equals(Object)} 的 {@link Collection#contains(Object)} 不同，此方法仅检查类型和子类型，其他参数均忽略。
+	// @param mimeTypes 要执行检查的 MIME 类型列表
+	// @return 列表是否包含指定的 MIME 类型
 	public boolean isPresentIn(Collection<? extends MimeType> mimeTypes) {
 		for (MimeType mimeType : mimeTypes) {
 			if (mimeType.equalsTypeAndSubtype(this)) {

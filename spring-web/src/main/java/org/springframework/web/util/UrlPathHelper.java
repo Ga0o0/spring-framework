@@ -536,6 +536,7 @@ public class UrlPathHelper {
 	 * Return the request URI for the given request. If this is a forwarded request,
 	 * correctly resolves to the request URI of the original request.
 	 */
+	// 返回给定请求的请求 URI。如果是转发请求，则正确解析为原始请求的 URI。
 	public String getOriginatingRequestUri(HttpServletRequest request) {
 		String uri = (String) request.getAttribute(WEBSPHERE_URI_ATTRIBUTE);
 		if (uri == null) {

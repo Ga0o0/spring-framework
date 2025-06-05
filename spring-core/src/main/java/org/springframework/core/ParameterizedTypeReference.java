@@ -41,6 +41,14 @@ import org.springframework.util.Assert;
  * @param <T> the referenced type
  * @see <a href="https://gafter.blogspot.nl/2006/12/super-type-tokens.html">Neal Gafter on Super Type Tokens</a>
  */
+// 此类的目的是支持捕获和传递泛型 {@link Type}。为了捕获泛型类型并在运行时保留它，您需要创建一个子类（最好是匿名内联类），如下所示：
+//
+// <pre class="code">
+// ParameterizedTypeReference<List<String>> typeRef = new ParameterizedTypeReference<List<String>>() {};
+// </pre>
+//
+// <p>生成的 {@code typeRef} 实例随后可用于获取 {@link Type} 实例，该实例在运行时携带捕获的参数化类型信息。
+// 有关“超类型标记”的更多信息，请参阅 Neal Gafter 博客文章的链接。
 public abstract class ParameterizedTypeReference<T> {
 
 	private final Type type;

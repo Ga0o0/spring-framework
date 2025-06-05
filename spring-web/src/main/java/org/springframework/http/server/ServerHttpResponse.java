@@ -29,12 +29,15 @@ import org.springframework.http.HttpStatusCode;
  * @author Arjen Poutsma
  * @since 3.0
  */
+// 表示服务器端 HTTP 响应。
 public interface ServerHttpResponse extends HttpOutputMessage, Flushable, Closeable {
 
 	/**
 	 * Set the HTTP status code of the response.
 	 * @param status the HTTP status as an HttpStatus enum value
 	 */
+	// 设置响应的 HTTP 状态码。
+	// @param status HTTP 状态，以 HttpStatus 枚举值的形式表示
 	void setStatusCode(HttpStatusCode status);
 
 	/**
@@ -42,12 +45,15 @@ public interface ServerHttpResponse extends HttpOutputMessage, Flushable, Closea
 	 * <p>After the first flush, headers can no longer be changed.
 	 * Only further content writing and content flushing is possible.
 	 */
+	// 确保响应的标头和内容均已写出。
+	// <p>首次刷新后，标头将无法再更改。只能进行后续内容写入和内容刷新。
 	@Override
 	void flush() throws IOException;
 
 	/**
 	 * Close this response, freeing any resources created.
 	 */
+	// 关闭此响应，释放所有创建的资源。
 	@Override
 	void close();
 

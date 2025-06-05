@@ -29,6 +29,9 @@ import java.io.OutputStream;
  * @author Arjen Poutsma
  * @since 3.0
  */
+// 表示 HTTP 输出消息，由 {@linkplain #getHeaders() headers} 和可写的 {@linkplain #getBody() body} 组成。
+//
+// <p>通常由客户端的 HTTP 请求句柄或服务器端的 HTTP 响应句柄实现。
 public interface HttpOutputMessage extends HttpMessage {
 
 	/**
@@ -36,6 +39,9 @@ public interface HttpOutputMessage extends HttpMessage {
 	 * @return the output stream body (never {@code null})
 	 * @throws IOException in case of I/O errors
 	 */
+	// 将消息主体作为输出流返回。
+	// @return 输出流主体（永不返回 {@code null}）
+	// @throws IOException （如果发生 I/O 错误）
 	OutputStream getBody() throws IOException;
 
 }

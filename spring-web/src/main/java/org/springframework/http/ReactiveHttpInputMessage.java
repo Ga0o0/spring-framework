@@ -30,12 +30,17 @@ import org.springframework.core.io.buffer.DataBuffer;
  * @author Arjen Poutsma
  * @since 5.0
  */
+// 将输入公开为 {@link Publisher} 的“响应式”HTTP 输入消息。
+//
+// <p>通常由服务器端的 HTTP 请求或客户端的响应实现。
 public interface ReactiveHttpInputMessage extends HttpMessage {
 
 	/**
 	 * Return the body of the message as a {@link Publisher}.
 	 * @return the body content publisher
 	 */
+	// 将消息正文作为 {@link Publisher} 返回。
+	// @return 正文内容发布者
 	Flux<DataBuffer> getBody();
 
 }

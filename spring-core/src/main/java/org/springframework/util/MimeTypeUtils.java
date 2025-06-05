@@ -358,6 +358,10 @@ public abstract class MimeTypeUtils {
 	 * and Content, section 5.3.2</a>
 	 * @see MimeType#isMoreSpecific(MimeType)
 	 */
+	// 根据 {@linkplain MimeType#isMoreSpecific(MimeType) 特异性} 对给定的 {@code MimeType} 对象列表进行排序。
+	// <p>由于计算成本较高，如果给定列表包含过多元素，此方法将抛出异常。
+	// @param mimeTypes 待排序的 MIME 类型列表
+	// @throws 如果 {@code mimeTypes} 包含超过 50 个元素，则抛出 InvalidMimeTypeException
 	public static <T extends MimeType> void sortBySpecificity(List<T> mimeTypes) {
 		Assert.notNull(mimeTypes, "'mimeTypes' must not be null");
 		if (mimeTypes.size() > 50) {

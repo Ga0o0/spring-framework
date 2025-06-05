@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
  * @author Sebastien Deleuze
  * @since 4.2
  */
+// {@link HttpInputMessage} 最终可以存储用于反序列化消息的 Jackson 视图。
 public class MappingJacksonInputMessage implements HttpInputMessage {
 
 	private final InputStream body;

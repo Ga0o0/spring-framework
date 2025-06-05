@@ -34,6 +34,8 @@ import org.springframework.lang.Nullable;
  * @since 3.0
  * @param <T> the converted object type
  */
+// 用于转换 HTTP 请求和响应的策略接口。
+// @param <T> 转换后的对象类型
 public interface HttpMessageConverter<T> {
 
 	/**
@@ -43,6 +45,10 @@ public interface HttpMessageConverter<T> {
 	 * typically the value of a {@code Content-Type} header.
 	 * @return {@code true} if readable; {@code false} otherwise
 	 */
+	// 指示此转换器是否可以读取给定的类。
+	// @param clazz 需要测试可读性的类
+	// @param mediaType 需要读取的媒体类型（如果未指定，则为 {@code null}）；通常为 {@code Content-Type} 标头的值。
+	// @return 如果可读，则返回 {@code true}；否则返回 {@code false}
 	boolean canRead(Class<?> clazz, @Nullable MediaType mediaType);
 
 	/**
@@ -52,6 +58,10 @@ public interface HttpMessageConverter<T> {
 	 * typically the value of an {@code Accept} header.
 	 * @return {@code true} if writable; {@code false} otherwise
 	 */
+	// 指示此转换器是否可以写入给定的类。
+	// @param clazz 需要测试可写入性的类
+	// @param mediaType 需要写入的媒体类型（如果未指定，则为 {@code null}）；通常为 {@code Accept} 标头的值。
+	// @return 如果可写，则返回 {@code true}；否则返回 {@code false}
 	boolean canWrite(Class<?> clazz, @Nullable MediaType mediaType);
 
 	/**
@@ -63,6 +73,10 @@ public interface HttpMessageConverter<T> {
 	 * {@link #getSupportedMediaTypes(Class)} for a more precise list.
 	 * @return the list of supported media types
 	 */
+	// 返回此转换器支持的媒体类型列表。
+	// 该列表可能并非适用于所有可能的目标元素类型，并且通常应通过 {@link #canWrite(Class, MediaType) canWrite(clazz, null} 来保护对此方法的调用。
+	// 该列表还可能排除仅支持特定类的 MIME 类型。或者，使用 {@link #getSupportedMediaTypes(Class)} 获取更精确的列表。
+	// @return 支持的媒体类型列表
 	List<MediaType> getSupportedMediaTypes();
 
 	/**
@@ -74,6 +88,10 @@ public interface HttpMessageConverter<T> {
 	 * @return the list of media types supported for the given class
 	 * @since 5.3.4
 	 */
+	// 返回此转换器针对给定类支持的媒体类型列表。
+	// 如果转换器不支持给定类，或者仅支持部分媒体类型，则该列表可能与 {@link #getSupportedMediaTypes()} 不同。
+	// @param clazz 要检查的类的类型
+	// @return 给定类支持的媒体类型列表
 	default List<MediaType> getSupportedMediaTypes(Class<?> clazz) {
 		return (canRead(clazz, null) || canWrite(clazz, null) ?
 				getSupportedMediaTypes() : Collections.emptyList());
@@ -88,6 +106,12 @@ public interface HttpMessageConverter<T> {
 	 * @throws IOException in case of I/O errors
 	 * @throws HttpMessageNotReadableException in case of conversion errors
 	 */
+	// 从给定的输入消息中读取指定类型的对象并返回。
+	// @param clazz 指定要返回的对象类型。此类型必须先前已传递给此接口的 {@link #canRead canRead} 方法，并且该方法必须返回 {@code true}。
+	// @param inputMessage 指定要读取的 HTTP 输入消息
+	// @return 转换后的对象
+	// @throws IOException（如果发生 I/O 错误）
+	// @throws HttpMessageNotReadableException（如果发生转换错误）
 	T read(Class<? extends T> clazz, HttpInputMessage inputMessage)
 			throws IOException, HttpMessageNotReadableException;
 
@@ -103,6 +127,13 @@ public interface HttpMessageConverter<T> {
 	 * @throws IOException in case of I/O errors
 	 * @throws HttpMessageNotWritableException in case of conversion errors
 	 */
+	// 将给定对象写入给定的输出消息。
+	// @param t 要写入输出消息的对象。此对象的类型必须先前已传递给此接口的 {@link #canWrite canWrite} 方法，该方法必须返回 {@code true}。
+	// @param contentType 写入时使用的内容类型。可以为 {@code null}，表示必须使用转换器的默认内容类型。
+	// 如果不是 {@code null}，则此媒体类型必须先前已传递给此接口的 {@link #canWrite canWrite} 方法，该方法必须返回 {@code true}。
+	// @param outputMessage 要写入的消息
+	// @throws IOException（如果发生 I/O 错误）
+	// @throws HttpMessageNotWritableException（如果发生转换错误）
 	void write(T t, @Nullable MediaType contentType, HttpOutputMessage outputMessage)
 			throws IOException, HttpMessageNotWritableException;
 

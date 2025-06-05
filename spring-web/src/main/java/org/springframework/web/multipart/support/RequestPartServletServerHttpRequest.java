@@ -44,6 +44,8 @@ import org.springframework.web.multipart.MultipartResolver;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// {@link ServerHttpRequest} 实现，用于访问多部分请求中的某个部分。如果使用 {@link MultipartResolver} 配置，
+// 则通过 {@link MultipartFile} 访问该部分。如果使用 Servlet 多部分处理，则通过 {@code ServletRequest.getPart} 访问该部分。
 public class RequestPartServletServerHttpRequest extends ServletServerHttpRequest {
 
 	private final MultipartHttpServletRequest multipartRequest;

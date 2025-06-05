@@ -30,6 +30,7 @@ import org.springframework.util.MultiValueMap;
  * @author Brian Clozel
  * @since 5.0
  */
+// 表示客户端反应式 HTTP 请求。
 public interface ClientHttpRequest extends ReactiveHttpOutputMessage {
 
 	/**

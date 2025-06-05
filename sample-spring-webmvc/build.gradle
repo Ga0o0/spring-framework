@@ -13,6 +13,7 @@ dependencies {
     implementation project(':spring-webmvc')
     implementation('org.apache.tomcat.embed:tomcat-embed-core:11.0.7')
     implementation('org.apache.tomcat.embed:tomcat-embed-jasper:11.0.7')
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.19.0")
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }

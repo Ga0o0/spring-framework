@@ -30,6 +30,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 表示 HTTP 请求方法。旨在与 {@link org.springframework.http.client.ClientHttpRequest} 和 {@link org.springframework.web.client.RestTemplate} 一起使用。
 public final class HttpMethod implements Comparable<HttpMethod>, Serializable {
 
 	private static final long serialVersionUID = -70133475680645360L;

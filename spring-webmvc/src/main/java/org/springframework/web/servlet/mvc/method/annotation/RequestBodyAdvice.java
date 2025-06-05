@@ -50,6 +50,11 @@ public interface RequestBodyAdvice {
 	 * @param converterType the selected converter type
 	 * @return whether this interceptor should be invoked or not
 	 */
+	// 首先调用此拦截器来确定是否适用。
+	// @param methodParameter 方法参数
+	// @param targetType 目标类型，不必与方法参数类型相同，例如 {@code HttpEntity<String>}。
+	// @param convertType 所选的转换器类型
+	// @return 是否应调用此拦截器
 	boolean supports(MethodParameter methodParameter, Type targetType,
 			Class<? extends HttpMessageConverter<?>> converterType);
 
@@ -62,6 +67,12 @@ public interface RequestBodyAdvice {
 	 * @param converterType the converter used to deserialize the body
 	 * @return the input request or a new instance (never {@code null})
 	 */
+	// 在读取和转换请求主体之前第二次调用。
+	// @param inputMessage 请求
+	// @param parameter 目标方法参数
+	// @param targetType 目标类型，不必与方法参数类型相同，例如 {@code HttpEntity<String>}。
+	// @param convertType 用于反序列化主体的转换器
+	// @return 输入请求或新实例（永不为 {@code null}）
 	HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException;
 
@@ -75,6 +86,13 @@ public interface RequestBodyAdvice {
 	 * @param converterType the converter used to deserialize the body
 	 * @return the same body or a new instance
 	 */
+	// 在请求主体转换为对象后第三次（也是最后一次）调用。
+	// @param body 在第一个通知调用之前设置为转换器对象。
+	// @param inputMessage 请求
+	// @param parameter 目标方法参数。
+	// @param targetType 目标类型，不必与方法参数类型相同，例如 {@code HttpEntity<String>}。
+	// @param convertType 用于反序列化主体的转换器。
+	// @return 返回相同的主体或新的实例。
 	Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType);
 
@@ -89,6 +107,13 @@ public interface RequestBodyAdvice {
 	 * @return the value to use, or {@code null} which may then raise an
 	 * {@code HttpMessageNotReadableException} if the argument is required
 	 */
+	// 如果 body 为空，则第二次（也是最后一次）调用。
+	// @param body 通常在调用第一个 advice 之前设置为 {@code null}。
+	// @param inputMessage 请求
+	// @param parameter 方法参数
+	// @param targetType 目标类型，不必与方法参数类型相同，例如 {@code HttpEntity<String>}。
+	// @param convertType 所选的转换器类型
+	// @return 要使用的值，或者设置为 {@code null}，如果参数是必需的，则可能引发 {@code HttpMessageNotReadableException}
 	@Nullable
 	Object handleEmptyBody(@Nullable Object body, HttpInputMessage inputMessage, MethodParameter parameter,
 			Type targetType, Class<? extends HttpMessageConverter<?>> converterType);
