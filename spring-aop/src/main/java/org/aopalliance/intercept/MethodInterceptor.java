@@ -42,6 +42,22 @@ import javax.annotation.Nullable;
  *
  * @author Rod Johnson
  */
+// 拦截指向目标的接口调用。这些调用嵌套在目标的“顶部”。
+//
+// <p>用户应实现 {@link #invoke(MethodInvocation)} 方法来修改原始行为。
+// 例如，以下类实现了一个跟踪拦截器（跟踪所有被拦截方法的调用）：
+// 
+// <pre class=code>
+// class TracingInterceptor implements MethodInterceptor {
+//   Object invoke(MethodInvocation i) throws Throwable {
+//     System.out.println("method "+i.getMethod()+" is called on "+
+//                        i.getThis()+" with args "+i.getArguments());
+//     Object ret=i.proceed();
+//     System.out.println("method "+i.getMethod()+" returns "+ret);
+//     return ret;
+//   }
+// }
+// </pre>
 @FunctionalInterface
 public interface MethodInterceptor extends Interceptor {
 

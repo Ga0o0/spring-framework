@@ -30,6 +30,9 @@ import javax.annotation.Nonnull;
  * @author Rod Johnson
  * @see ConstructorInterceptor
  */
+// 构造函数调用的描述，在构造函数调用时传递给拦截器。
+//
+// <p>构造函数调用是一个连接点，可以被构造函数拦截器拦截。
 public interface ConstructorInvocation extends Invocation {
 
 	/**
@@ -38,6 +41,9 @@ public interface ConstructorInvocation extends Invocation {
 	 * {@link Joinpoint#getStaticPart()} method (same result).
 	 * @return the constructor being called
 	 */
+	// 获取被调用的构造函数。
+	// <p>此方法是 {@link Joinpoint#getStaticPart()} 方法的友好实现（结果相同）。
+	// @return 被调用的构造函数
 	@Nonnull
 	Constructor<?> getConstructor();
 

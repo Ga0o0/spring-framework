@@ -25,6 +25,7 @@ package org.aopalliance.aop;
  * @author Bob Lee
  * @author Juergen Hoeller
  */
+// 所有 AOP 基础结构异常的超类。Unchecked 异常是致命的，不应强制最终用户代码捕获它们。
 @SuppressWarnings("serial")
 public class AspectException extends RuntimeException {
 

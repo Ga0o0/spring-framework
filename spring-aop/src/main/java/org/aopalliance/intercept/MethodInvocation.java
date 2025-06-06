@@ -30,6 +30,9 @@ import javax.annotation.Nonnull;
  * @author Rod Johnson
  * @see MethodInterceptor
  */
+// 方法调用描述，在方法调用时传递给拦截器。
+//
+// <p>方法调用是一个连接点，可以被方法拦截器拦截。
 public interface MethodInvocation extends Invocation {
 
 	/**
@@ -38,6 +41,9 @@ public interface MethodInvocation extends Invocation {
 	 * {@link Joinpoint#getStaticPart()} method (same result).
 	 * @return the method being called
 	 */
+	// 获取正在调用的方法。
+	// <p>此方法是 {@link Joinpoint#getStaticPart()} 方法的友好实现（结果相同）。
+	// @return 正在调用的方法
 	@Nonnull
 	Method getMethod();
 

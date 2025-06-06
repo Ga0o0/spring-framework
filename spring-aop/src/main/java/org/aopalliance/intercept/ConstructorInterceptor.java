@@ -43,6 +43,22 @@ import javax.annotation.Nonnull;
  *
  * @author Rod Johnson
  */
+// 拦截新对象的构造。
+//
+// <p>用户应实现 {@link #construct(ConstructorInvocation)} 方法来修改原始行为。
+// 例如，以下类实现了一个单例拦截器（被拦截的类仅允许有一个唯一实例）：
+// <pre class=code>
+// class DebuggingInterceptor implements ConstructorInterceptor {
+//   Object instance=null;
+//
+//   Object construct(ConstructorInvocation i) throws Throwable {
+//     if(instance==null) {
+//       return instance=i.proceed();
+//     } else {
+//       throw new Exception("singleton does not allow multiple instance");
+//     }
+//   }
+// }
 public interface ConstructorInterceptor extends Interceptor {
 
 	/**

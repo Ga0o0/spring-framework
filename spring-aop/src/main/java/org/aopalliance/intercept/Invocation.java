@@ -26,6 +26,9 @@ import javax.annotation.Nonnull;
  *
  * @author Rod Johnson
  */
+// 此接口表示程序中的一次调用。
+//
+// <p>调用是一个连接点，可以被拦截器拦截。
 public interface Invocation extends Joinpoint {
 
 	/**
@@ -34,6 +37,8 @@ public interface Invocation extends Joinpoint {
 	 * array to change the arguments.
 	 * @return the argument of the invocation
 	 */
+	// 将参数作为数组对象获取。可以通过更改此数组中的元素值来更改参数。
+	// @return 调用的参数
 	@Nonnull
 	Object[] getArguments();
 

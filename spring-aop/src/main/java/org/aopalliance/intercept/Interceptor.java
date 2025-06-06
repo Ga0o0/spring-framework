@@ -54,6 +54,31 @@ import org.aopalliance.aop.Advice;
  * @author Rod Johnson
  * @see Joinpoint
  */
+// 此接口表示一个通用拦截器。
+//
+// <p>通用拦截器可以拦截基础程序中发生的运行时事件。这些事件由连接点具体化（reified in）。
+// 运行时连接点可以是调用、字段访问、异常……
+//
+// <p>此接口不可直接使用。请使用子接口来拦截特定事件。例如，以下类实现了一些特定的拦截器，以便实现调试器：
+//
+// <pre class=code>
+// class DebuggingInterceptor implements MethodInterceptor,
+//     ConstructorInterceptor {
+//
+//   Object invoke(MethodInvocation i) throws Throwable {
+//     debug(i.getMethod(), i.getThis(), i.getArgs());
+//     return i.proceed();
+//   }
+//
+//   Object construct(ConstructorInvocation i) throws Throwable {
+//     debug(i.getConstructor(), i.getThis(), i.getArgs());
+//     return i.proceed();
+//   }
+//
+//   void debug(AccessibleObject ao, Object this, Object value) {
+//     ...
+//   }
+// }
 public interface Interceptor extends Advice {
 
 }

@@ -23,6 +23,7 @@ package org.aopalliance.aop;
  * @author Rod Johnson
  * @version $Id: Advice.java,v 1.1 2004/03/19 17:02:16 johnsonr Exp $
  */
+// Advice(通知) 标记接口。实现可以是任何类型的通知，例如拦截器。
 public interface Advice {
 
 }
