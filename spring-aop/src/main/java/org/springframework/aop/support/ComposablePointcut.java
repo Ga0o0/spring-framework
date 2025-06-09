@@ -41,6 +41,14 @@ import org.springframework.util.Assert;
  * @since 11.11.2003
  * @see Pointcuts
  */
+// 用于构建切入点的便捷类。
+//
+// <p>所有方法都返回 {@code ComposablePointcut}，因此我们可以像以下示例一样使用简洁的惯用法。
+//
+// <pre class="code">Pointcut pc = new ComposablePointcut()
+//                      .union(classFilter)
+//                      .intersection(methodMatcher)
+//                      .intersection(pointcut);</pre>
 public class ComposablePointcut implements Pointcut, Serializable {
 
 	/** use serialVersionUID from Spring 1.2 for interoperability. */
@@ -112,6 +120,9 @@ public class ComposablePointcut implements Pointcut, Serializable {
 	 * @param other the ClassFilter to apply a union with
 	 * @return this composable pointcut (for call chaining)
 	 */
+	// 与给定的 ClassFilter 进行联合。
+	// @param other 要与之进行联合的 ClassFilter
+	// @return 此可组合切入点（用于调用链）
 	public ComposablePointcut union(ClassFilter other) {
 		this.classFilter = ClassFilters.union(this.classFilter, other);
 		return this;
@@ -122,6 +133,9 @@ public class ComposablePointcut implements Pointcut, Serializable {
 	 * @param other the ClassFilter to apply an intersection with
 	 * @return this composable pointcut (for call chaining)
 	 */
+	// 与给定的 ClassFilter 进行交集。
+	// @param other 要与之进行交集的 ClassFilter
+	// @return 此可组合切入点（用于调用链）
 	public ComposablePointcut intersection(ClassFilter other) {
 		this.classFilter = ClassFilters.intersection(this.classFilter, other);
 		return this;

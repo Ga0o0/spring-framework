@@ -63,6 +63,20 @@ import org.springframework.util.Assert;
  * @see #setTimeBetweenEvictionRunsMillis
  * @see #setMinEvictableIdleTimeMillis
  */
+// {@link org.springframework.aop.TargetSource} 实现，用于将对象保存在可配置的 Apache Commons2 Pool 中。
+//
+// <p>默认情况下，会创建一个 {@code GenericObjectPool} 实例。
+// 子类可以通过重写 {@code createObjectPool()} 方法来更改所使用的 {@code ObjectPool} 类型。
+//
+// <p>提供许多与 Commons Pool {@code GenericObjectPool} 类相同的配置属性；
+// 这些属性在构造期间会传递给 {@code GenericObjectPool}。
+// 如果创建此类的子类来更改 {@code ObjectPool} 实现类型，请传入与所选实现相关的配置属性值。
+//
+// <p>由于此类使用的 {@code PoolableObjectFactory} 实现未实现有意义的验证，
+// 因此明确未镜像 {@code testOnBorrow}、{@code testOnReturn} 和 {@code testWhileIdle} 属性。
+// 所有公开的 Commons Pool 属性都使用相应的 Commons Pool 默认值。
+//
+// <p>从 Spring 4.2 开始，与 Apache Commons Pool 2.4 兼容。
 @SuppressWarnings({"rawtypes", "unchecked", "serial"})
 public class CommonsPool2TargetSource extends AbstractPoolingTargetSource implements PooledObjectFactory<Object> {
 

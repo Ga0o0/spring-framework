@@ -31,6 +31,7 @@ import org.springframework.util.ObjectUtils;
  * @since 4.1
  * @deprecated since 6.0.10, as it is not used by the framework anymore
  */
+// 如果底层 {@link JCacheOperationSource} 具有针对给定方法的操作，则匹配的 {@code Pointcut}。
 @Deprecated(since = "6.0.10", forRemoval = true)
 @SuppressWarnings("serial")
 public abstract class JCacheOperationSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {

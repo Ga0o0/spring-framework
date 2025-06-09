@@ -42,6 +42,11 @@ import org.springframework.util.ObjectUtils;
  * @see #setPatterns
  * @see JdkRegexpMethodPointcut
  */
+// 一个便捷的正则表达式方法切入点类，用于保存 Advice，使其成为 {@link org.springframework.aop.Advisor}。
+//
+// <p>使用“pattern”和“patterns”传递属性配置此类。它们类似于 {@link AbstractRegexpMethodPointcut}
+// 的 pattern 和 pattern 属性。<p>可以委托给任何 {@link AbstractRegexpMethodPointcut} 子类。
+// 默认情况下，将使用 {@link JdkRegexpMethodPointcut}。要选择特定的一个，请重写 {@link #createPointcut} 方法。
 @SuppressWarnings("serial")
 public class RegexpMethodPointcutAdvisor extends AbstractGenericPointcutAdvisor {
 

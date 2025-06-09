@@ -35,6 +35,11 @@ package org.springframework.beans.factory;
  * @see BeanFactoryAware
  * @see InitializingBean
  */
+// 回调函数允许 Bean 感知其所属的 Bean {@link ClassLoader 类加载器}；即当前 Bean 工厂用来加载 Bean 类的类加载器。
+//
+// <p>该函数主要由框架类实现，这些框架类必须根据名称获取应用程序类，尽管它们本身可能由共享类加载器加载。
+//
+// <p>有关所有 Bean 生命周期方法的列表，请参阅 {@link BeanFactory BeanFactory javadocs}。
 public interface BeanClassLoaderAware extends Aware {
 
 	/**
@@ -47,6 +52,10 @@ public interface BeanClassLoaderAware extends Aware {
 	 * method or a custom init-method.
 	 * @param classLoader the owning class loader
 	 */
+	// 将 Bean {@link ClassLoader 类加载器} 提供给 Bean 实例的回调函数。
+	// <p>在 Bean 常规属性填充<i>之后</i>、初始化回调（例如 {@link InitializingBean InitializingBean 的}
+	// {@link InitializingBean#afterPropertiesSet()} 方法或自定义的 init 方法）<i>之前</i>调用。
+	// @param classLoader 所属的类加载器
 	void setBeanClassLoader(ClassLoader classLoader);
 
 }

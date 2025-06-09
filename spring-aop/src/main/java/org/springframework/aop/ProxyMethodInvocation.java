@@ -33,6 +33,9 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.aop.framework.ReflectiveMethodInvocation
  * @see org.springframework.aop.support.DelegatingIntroductionInterceptor
  */
+// AOP 联盟 {@link org.aopalliance.intercept.MethodInvocation} 接口的扩展，允许访问方法调用所通过的代理。
+//
+// <p>如有必要，例如，如果调用目标返回了自身，则可以使用代理替换返回值。
 public interface ProxyMethodInvocation extends MethodInvocation {
 
 	/**

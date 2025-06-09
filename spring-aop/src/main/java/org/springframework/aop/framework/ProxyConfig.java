@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @see AdvisedSupport
  */
+// 用于创建代理的配置的便捷超类，以确保所有代理创建者都具有一致的属性。
 public class ProxyConfig implements Serializable {
 
 	/** use serialVersionUID from Spring 1.2 for interoperability. */
@@ -57,6 +58,10 @@ public class ProxyConfig implements Serializable {
 	 * have been specified (and no interface autodetection is activated).
 	 * @see org.springframework.aop.TargetSource#getTargetClass()
 	 */
+	// 设置是否直接代理目标类，而不是仅代理特定接口。默认值为 “false”。
+	// <p>设置为 “true” 将强制代理 TargetSource 暴露的目标类。
+	// 如果目标类是接口，则会为该接口创建一个 JDK 代理。如果目标类是其他类，则会为该类创建一个 CGLIB 代理。
+	// <p>注意：根据具体代理工厂的配置，即使未指定接口（且未激活接口自动检测），proxy-target-class 行为也将适用。
 	public void setProxyTargetClass(boolean proxyTargetClass) {
 		this.proxyTargetClass = proxyTargetClass;
 	}
@@ -64,6 +69,7 @@ public class ProxyConfig implements Serializable {
 	/**
 	 * Return whether to proxy the target class directly as well as any interfaces.
 	 */
+	// 返回是否直接代理目标类以及任何接口。
 	public boolean isProxyTargetClass() {
 		return this.proxyTargetClass;
 	}
@@ -77,6 +83,9 @@ public class ProxyConfig implements Serializable {
 	 * enforces CGLIB proxies (similar to {@link #setProxyTargetClass})
 	 * but without any class validation checks (for final methods etc).
 	 */
+	// 设置代理是否应执行积极优化。“积极优化”的确切含义因代理而异，但通常需要权衡利弊。默认值为“false”。
+	// <p>使用 Spring 当前的代理选项，此标志可有效强制执行 CGLIB 代理（类似于 {@link #setProxyTargetClass}），
+	// 但不执行任何类验证检查（例如 final 方法）。
 	public void setOptimize(boolean optimize) {
 		this.optimize = optimize;
 	}
@@ -84,6 +93,7 @@ public class ProxyConfig implements Serializable {
 	/**
 	 * Return whether proxies should perform aggressive optimizations.
 	 */
+	// 返回代理是否应该执行积极优化。
 	public boolean isOptimize() {
 		return this.optimize;
 	}
@@ -94,6 +104,8 @@ public class ProxyConfig implements Serializable {
 	 * <p>Default is "false", meaning that any AOP proxy can be cast to
 	 * {@link Advised}.
 	 */
+	// 设置是否应阻止此配置创建的代理转换为 {@link Advised} 来查询代理状态。
+	// <p>默认值为“false”，表示任何 AOP 代理都可以转换为 {@link Advised}。
 	public void setOpaque(boolean opaque) {
 		this.opaque = opaque;
 	}
@@ -133,6 +145,8 @@ public class ProxyConfig implements Serializable {
 	 * useful for optimization, and useful when we don't want callers to
 	 * be able to manipulate configuration after casting to Advised.
 	 */
+	// 设置此配置是否应冻结。
+	// <p>当配置被冻结时，将无法进行任何建议更改。这对于优化很有用，并且当我们不希望调用者在转换为“Advised”状态后能够操作配置时也很有用。
 	public void setFrozen(boolean frozen) {
 		this.frozen = frozen;
 	}

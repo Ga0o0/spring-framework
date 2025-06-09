@@ -28,6 +28,8 @@ import org.springframework.aop.Pointcut;
  *
  * @author Rod Johnson
  */
+// 当我们想强制子类实现 MethodMatcher 接口，但子类又想作为切入点时，这是一个方便的超类。
+// getClassFilter() 方法也可以被重写，以自定义 ClassFilter 的行为。
 public abstract class DynamicMethodMatcherPointcut extends DynamicMethodMatcher implements Pointcut {
 
 	@Override

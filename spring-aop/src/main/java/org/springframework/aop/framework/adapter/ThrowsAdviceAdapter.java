@@ -31,6 +31,7 @@ import org.springframework.aop.ThrowsAdvice;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 适配器使 {@link org.springframework.aop.ThrowsAdvice} 能够在 Spring AOP 框架中使用。
 @SuppressWarnings("serial")
 class ThrowsAdviceAdapter implements AdvisorAdapter, Serializable {
 

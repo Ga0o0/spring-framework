@@ -37,6 +37,15 @@ import java.util.regex.PatternSyntaxException;
  * @author Rob Harrop
  * @since 1.1
  */
+// 基于 {@code java.util.regex} 包的正则表达式切入点。支持以下 JavaBean 属性：
+// <ul>
+// <li>pattern：用于匹配完全限定方法名的正则表达式
+// <li>patterns：可选属性，采用字符串形式的模式数组。结果将是这些模式的并集。
+// </ul>
+//
+// <p>注意：正则表达式必须匹配。
+// 例如，{@code .get.} 将匹配 com.mycom.Foo.getBar()。
+// {@code get.} 则不会匹配。
 @SuppressWarnings("serial")
 public class JdkRegexpMethodPointcut extends AbstractRegexpMethodPointcut {
 

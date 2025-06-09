@@ -46,6 +46,17 @@ import org.springframework.util.ClassUtils;
  * @see AdvisedSupport#setProxyTargetClass
  * @see AdvisedSupport#setInterfaces
  */
+// 默认的 {@link AopProxyFactory} 实现，创建 CGLIB 代理或 JDK 动态代理。
+//
+// <p>如果对于给定的 {@link AdvisedSupport} 实例，以下之一成立，则创建 CGLIB 代理：
+//
+// <ul>
+// <li>设置了 {@code Optimize} 标志
+// <li>设置了 {@code proxyTargetClass} 标志
+// <li>未指定代理接口
+// </ul>
+//
+// <p>通常，指定 {@code proxyTargetClass} 来强制使用 CGLIB 代理，或指定一个或多个接口来使用 JDK 动态代理。
 public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	/**
@@ -62,6 +73,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
 			Class<?> targetClass = config.getTargetClass();
 			if (targetClass == null) {
+				// TargetSource 无法确定目标类：创建代理需要接口或目标。
 				throw new AopConfigException("TargetSource cannot determine target class: " +
 						"Either an interface or a target is required for proxy creation.");
 			}
@@ -80,6 +92,7 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 	 * {@link org.springframework.aop.SpringProxy} interface specified
 	 * (or no proxy interfaces specified at all).
 	 */
+	// 确定所提供的 {@link AdvisedSupport} 是否仅指定了 {@link org.springframework.aop.SpringProxy} 接口（或者根本没有指定代理接口）。
 	private boolean hasNoUserSuppliedProxyInterfaces(AdvisedSupport config) {
 		Class<?>[] ifcs = config.getProxiedInterfaces();
 		return (ifcs.length == 0 || (ifcs.length == 1 && SpringProxy.class.isAssignableFrom(ifcs[0])));

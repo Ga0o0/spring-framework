@@ -28,6 +28,7 @@ import org.springframework.lang.Nullable;
  * @see AfterReturningAdvice
  * @see ThrowsAdvice
  */
+// 在方法调用之前调用的通知。此类通知无法阻止方法调用的进行，除非抛出 Throwable 异常。
 public interface MethodBeforeAdvice extends BeforeAdvice {
 
 	/**
@@ -40,6 +41,11 @@ public interface MethodBeforeAdvice extends BeforeAdvice {
 	 * allowed by the method signature. Otherwise the exception
 	 * will be wrapped as a runtime exception.
 	 */
+	// 在调用给定方法之前回调。
+	// @param method 被调用的方法
+	// @param args 方法的参数
+	// @param target 方法调用的目标。可以为 {@code null}。
+	// @throws 如果此对象希望中止调用，则为 Throwable。如果方法签名允许，则抛出的任何异常都将返回给调用者。否则，异常将被包装为运行时异常。
 	void before(Method method, Object[] args, @Nullable Object target) throws Throwable;
 
 }

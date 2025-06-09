@@ -50,6 +50,13 @@ import org.springframework.util.ObjectUtils;
  * @see ThreadLocalTargetSource
  * @see CommonsPool2TargetSource
  */
+// 基于 Spring {@link org.springframework.beans.factory.BeanFactory} 的
+// {@link org.springframework.aop.TargetSource} 实现的基类，委托给 Spring 管理的 Bean 实例。
+//
+// <p>例如，子类可以创建原型实例或延迟访问单例目标。有关具体策略，请参阅 {@link LazyInitTargetSource} 和
+// {@link AbstractPrototypeBasedTargetSource} 的子类。<p>基于 BeanFactory 的 TargetSource 是可序列化的。
+//
+// 这涉及断开当前目标的连接并转换为 {@link SingletonTargetSource}。
 public abstract class AbstractBeanFactoryBasedTargetSource implements TargetSource, BeanFactoryAware, Serializable {
 
 	/** use serialVersionUID from Spring 1.2.7 for interoperability. */

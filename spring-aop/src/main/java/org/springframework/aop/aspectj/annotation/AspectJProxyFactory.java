@@ -46,6 +46,7 @@ import org.springframework.util.ClassUtils;
  * @see #getProxy(ClassLoader)
  * @see org.springframework.aop.framework.ProxyFactory
  */
+// 基于 AspectJ 的代理工厂，允许以编程方式构建包含 AspectJ 方面（代码样式以及注释样式）的代理。
 @SuppressWarnings("serial")
 public class AspectJProxyFactory extends ProxyCreatorSupport {
 

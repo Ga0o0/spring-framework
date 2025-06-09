@@ -29,6 +29,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @see DefaultAopProxyFactory
  */
+// 已配置 AOP 代理的委托接口，允许创建实际的代理对象。
+//
+// <p>JDK 动态代理和 CGLIB 代理均提供开箱即用的实现，如 {@link DefaultAopProxyFactory} 所应用的。
 public interface AopProxy {
 
 	/**
@@ -38,6 +41,9 @@ public interface AopProxy {
 	 * @return the new proxy object (never {@code null})
 	 * @see Thread#getContextClassLoader()
 	 */
+	// 创建一个新的代理对象。
+	// <p>使用 AopProxy 的默认类加载器（如果创建代理需要）：通常是线程上下文类加载器。
+	// @return 新的代理对象（永远不会返回 {@code null}）
 	Object getProxy();
 
 	/**
@@ -50,6 +56,11 @@ public interface AopProxy {
 	 * (or {@code null} for the low-level proxy facility's default)
 	 * @return the new proxy object (never {@code null})
 	 */
+	// 创建一个新的代理对象。
+	// <p>使用给定的类加载器（如果创建代理需要）。
+	// {@code null} 将直接传递，从而指向低级代理工具的默认值，该默认值通常与 AopProxy 实现的 {@link #getProxy()} 方法选择的默认值不同。
+	// @param classLoader 用于创建代理的类加载器（或 {@code null} 表示低级代理工具的默认值）
+	// @return 新的代理对象（永远不会 {@code null}）
 	Object getProxy(@Nullable ClassLoader classLoader);
 
 	/**
@@ -59,6 +70,9 @@ public interface AopProxy {
 	 * @return the proxy class
 	 * @since 6.0
 	 */
+	// 确定代理类。
+	// @param classLoader 用于创建代理类的类加载器（或 {@code null} 用于低级代理设施的默认值）
+	// @return 代理类
 	Class<?> getProxyClass(@Nullable ClassLoader classLoader);
 
 }

@@ -83,6 +83,11 @@ import org.springframework.util.StringUtils;
  * @author Yanming Zhou
  * @since 2.0
  */
+// Spring {@link org.springframework.aop.Pointcut} 实现使用 AspectJ 织入器来评估切入点表达式。
+//
+// <p>切入点表达式的值是一个 AspectJ 表达式。它可以引用其他切入点，并使用组合和其他操作。
+//
+// <p>当然，由于这将由 Spring AOP 基于代理的模型处理，因此仅支持方法执行切入点。
 @SuppressWarnings("serial")
 public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 		implements ClassFilter, IntroductionAwareMethodMatcher, BeanFactoryAware {

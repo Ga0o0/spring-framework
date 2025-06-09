@@ -55,6 +55,22 @@ import org.springframework.util.Assert;
  * @see MethodBeforeAdviceInterceptor
  * @see AfterReturningAdviceInterceptor
  */
+// 用于包装抛出后通知的拦截器。
+//
+// <p>{@code ThrowsAdvice} 实现方法参数上的处理程序方法签名必须采用以下形式：<br>
+//
+// {@code void afterThrowing([Method, args, target], ThrowableSubclass);}
+//
+// <p>仅最后一个参数是必需的。
+//
+// <p>以下是一些有效方法的示例：
+//
+// <pre class="code">public void afterThrowing(Exception ex)</pre>
+// <pre class="code">public void afterThrowing(RemoteException)</pre>
+// <pre class="code">public void afterThrowing(Method method, Object[] args, Object target, Exception ex)</pre>
+// <pre class="code">public void afterThrowing(Method method, Object[] args, Object target, ServletException ex)</pre>
+//
+// <p>这是一个框架类，Spring 用户无需直接使用。
 public class ThrowsAdviceInterceptor implements MethodInterceptor, AfterAdvice {
 
 	private static final String AFTER_THROWING = "afterThrowing";

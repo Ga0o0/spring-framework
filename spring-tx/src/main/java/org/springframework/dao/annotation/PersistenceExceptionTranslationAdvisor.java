@@ -38,6 +38,8 @@ import org.springframework.dao.support.PersistenceExceptionTranslator;
  * @see org.springframework.dao.DataAccessException
  * @see org.springframework.dao.support.PersistenceExceptionTranslator
  */
+// Spring AOP 异常转换切面，用于 Repository 或 DAO 层。
+// 基于给定的 PersistenceExceptionTranslator，将原生持久化异常转换为 Spring 的 DataAccessException 层级结构。
 @SuppressWarnings("serial")
 public class PersistenceExceptionTranslationAdvisor extends AbstractPointcutAdvisor {
 

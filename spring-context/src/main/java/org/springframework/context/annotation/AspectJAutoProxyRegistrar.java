@@ -31,6 +31,8 @@ import org.springframework.core.type.AnnotationMetadata;
  * @since 3.1
  * @see EnableAspectJAutoProxy
  */
+// 根据给定的 @{@link EnableAspectJAutoProxy} 注释，根据当前 {@link BeanDefinitionRegistry}
+// 注册一个 {@link org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator AnnotationAwareAspectJAutoProxyCreator}。
 class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 
 	/**
@@ -38,12 +40,15 @@ class AspectJAutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 	 * of the @{@link EnableAspectJAutoProxy#proxyTargetClass()} attribute on the importing
 	 * {@code @Configuration} class.
 	 */
+	// 根据导入 {@code @Configuration} 类上的 @{@link EnableAspectJAutoProxy#proxyTargetClass()} 属性的值注册、升级和配置 AspectJ 自动代理创建器。
 	@Override
 	public void registerBeanDefinitions(
 			AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 
+		// 必要时注册 AnnotationAwareAspectJAutoProxyCreator
 		AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(registry);
 
+		// 注解 @EnableAspectJAutoProxy 的属性处理
 		AnnotationAttributes enableAspectJAutoProxy =
 				AnnotationConfigUtils.attributesFor(importingClassMetadata, EnableAspectJAutoProxy.class);
 		if (enableAspectJAutoProxy != null) {

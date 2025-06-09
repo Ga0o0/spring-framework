@@ -34,6 +34,7 @@ import org.springframework.util.ObjectUtils;
  * @author Sam Brannen
  * @since 2.5.5
  */
+// 实现 {@code Pointcut} 的内部类，如果底层 {@link TransactionAttributeSource} 具有给定方法的属性，则匹配。
 @SuppressWarnings("serial")
 final class TransactionAttributeSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {
 

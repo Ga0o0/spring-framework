@@ -40,6 +40,10 @@ import org.springframework.util.Assert;
  * @see #setAdviceBeanName
  * @see DefaultBeanFactoryPointcutAdvisor
  */
+// 基于抽象 BeanFactory 的 PointcutAdvisor，允许将任何 Advice 配置为对 BeanFactory 中 Advice Bean 的引用。
+//
+// <p>指定 Advice Bean 的名称而不是 Advice 对象本身（如果在 BeanFactory 中运行）可以在初始化时增强松耦合，
+// 以便在切入点实际匹配之前不初始化 Advice 对象。
 @SuppressWarnings("serial")
 public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 

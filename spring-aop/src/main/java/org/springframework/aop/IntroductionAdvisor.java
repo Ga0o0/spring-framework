@@ -29,6 +29,11 @@ package org.springframework.aop;
  * @since 04.04.2003
  * @see IntroductionInterceptor
  */
+// 执行一个或多个 AOP <b>introductions</b> 的通知器的父接口。-
+//
+// <p>此接口无法直接实现；子接口必须提供实现该引入的通知类型。
+//
+// <p>引入是通过 AOP 通知实现附加接口（目标未实现）。
 public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 
 	/**
@@ -38,6 +43,9 @@ public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 	 * matching doesn't make sense to introductions.
 	 * @return the class filter
 	 */
+	// 返回用于确定此引入应应用于哪些目标类的过滤器。
+	// <p>这表示切入点的类部分。请注意，方法匹配对引入没有意义。
+	// @return 类过滤器
 	ClassFilter getClassFilter();
 
 	/**
@@ -46,6 +54,8 @@ public interface IntroductionAdvisor extends Advisor, IntroductionInfo {
 	 * @throws IllegalArgumentException if the advised interfaces can't be
 	 * implemented by the introduction advice
 	 */
+	// 被通知的接口能否通过引入通知实现？在添加 IntroductionAdvisor 之前调用。
+	// @throws IllegalArgumentException 如果被通知的接口无法通过引入通知实现
 	void validateInterfaces() throws IllegalArgumentException;
 
 }

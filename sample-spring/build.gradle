@@ -14,6 +14,7 @@ dependencies {
     implementation project(":spring-test")
     implementation("jakarta.annotation:jakarta.annotation-api:2.1.1")
     implementation("jakarta.inject:jakarta.inject-api:2.0.1")
+    implementation("org.aspectj:aspectjweaver:1.9.24")
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }

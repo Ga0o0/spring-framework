@@ -44,6 +44,9 @@ import org.springframework.util.ObjectUtils;
  * @author Sam Brannen
  * @since 2.0
  */
+// AspectJPointcutAdvisor 的内部实现。
+//
+// <p>请注意，每个目标方法都会有一个此 advisor 的实例。
 @SuppressWarnings("serial")
 final class InstantiationModelAwarePointcutAdvisorImpl
 		implements InstantiationModelAwarePointcutAdvisor, AspectJPrecedenceInformation, Serializable {

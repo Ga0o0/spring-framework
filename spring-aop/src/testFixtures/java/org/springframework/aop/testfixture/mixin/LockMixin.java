@@ -28,6 +28,7 @@ import org.springframework.aop.support.DelegatingIntroductionInterceptor;
  * @author Rod Johnson
  * @since 10.07.2003
  */
+// Mixin 提供状态锁定功能。用于测试/演示 AOP mixin 支持，而非将其本身用作一个有用的拦截器。
 @SuppressWarnings("serial")
 public class LockMixin extends DelegatingIntroductionInterceptor implements Lockable {
 

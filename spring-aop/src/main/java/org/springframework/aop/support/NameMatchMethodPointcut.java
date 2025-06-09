@@ -43,6 +43,12 @@ import org.springframework.util.PatternMatchUtils;
  * @see #isMatch
  * @see JdkRegexpMethodPointcut
  */
+// 用于简单方法名称匹配的切入点 Bean，可替代正则表达式模式。
+//
+// <p>每个配置的方法名称可以是精确方法名称或方法名称模式（有关支持的模式样式的详细信息，
+// 请参阅 {@link #isMatch(String, String)}）。
+//
+// <p>不处理重载方法：所有具有给定名称的方法均符合条件。
 @SuppressWarnings("serial")
 public class NameMatchMethodPointcut extends StaticMethodMatcherPointcut implements Serializable {
 

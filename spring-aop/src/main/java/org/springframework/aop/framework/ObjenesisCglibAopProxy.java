@@ -35,6 +35,7 @@ import org.springframework.util.ReflectionUtils;
  * @author Juergen Hoeller
  * @since 4.0
  */
+// 基于 Objenesis 的 {@link CglibAopProxy} 扩展，无需调用类的构造函数即可创建代理实例。从 Spring 4 开始默认使用。
 @SuppressWarnings("serial")
 class ObjenesisCglibAopProxy extends CglibAopProxy {
 
@@ -47,6 +48,8 @@ class ObjenesisCglibAopProxy extends CglibAopProxy {
 	 * Create a new ObjenesisCglibAopProxy for the given AOP configuration.
 	 * @param config the AOP configuration as AdvisedSupport object
 	 */
+	// 为给定的 AOP 配置创建一个新的 ObjenesisCglibAopProxy。
+	// @param config 将 AOP 配置配置为 AdvisedSupport 对象
 	public ObjenesisCglibAopProxy(AdvisedSupport config) {
 		super(config);
 	}

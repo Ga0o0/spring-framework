@@ -35,6 +35,9 @@ import org.springframework.aop.TargetSource;
  * @since 13.03.2003
  * @see org.springframework.aop.framework.AdvisedSupport
  */
+// 持有 AOP 代理工厂配置的类需要实现的接口。此配置包含拦截器、其他通知、Advisor 以及代理接口。
+//
+// <p>任何从 Spring 获取的 AOP 代理都可以转换为此接口，以便对其 AOP 通知进行操作。
 public interface Advised extends TargetClassAware {
 
 	/**

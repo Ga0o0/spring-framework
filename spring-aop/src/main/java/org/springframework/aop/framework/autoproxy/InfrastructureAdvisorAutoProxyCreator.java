@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0.7
  */
+// 自动代理创建器仅考虑基础设施 Advisor beans，而忽略任何应用程序定义的 Advisors。
 @SuppressWarnings("serial")
 public class InfrastructureAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCreator {
 

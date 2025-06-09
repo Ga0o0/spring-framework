@@ -35,6 +35,8 @@ import org.springframework.util.Assert;
  * @see AfterReturningAdviceInterceptor
  * @see ThrowsAdviceInterceptor
  */
+// 用于包装 {@link MethodBeforeAdvice} 的拦截器。
+// <p>由 AOP 框架内部使用；应用程序开发人员不需要直接使用此类。
 @SuppressWarnings("serial")
 public class MethodBeforeAdviceInterceptor implements MethodInterceptor, BeforeAdvice, Serializable {
 

@@ -32,6 +32,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.5.1
  */
+// 需要由支持重载的 ClassLoader（例如基于 Groovy 的 ClassLoader）实现的接口。例如，Spring 的 CGLIB 代理工厂会检测该接口并做出缓存决策。
+//
+// <p>如果 ClassLoader <i>未</i> 实现此接口，则从该接口获取的所有类都应被视为不可重载（即可缓存）。
 public interface SmartClassLoader {
 
 	/**

@@ -35,6 +35,7 @@ import org.springframework.util.ObjectUtils;
  * @author Sam Brannen
  * @since 3.1
  */
+// 如果底层 {@link CacheOperationSource} 具有针对给定方法的操作，则匹配的 {@code Pointcut}。
 @SuppressWarnings("serial")
 final class CacheOperationSourcePointcut extends StaticMethodMatcherPointcut implements Serializable {
 

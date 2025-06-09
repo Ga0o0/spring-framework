@@ -28,6 +28,7 @@ import org.springframework.lang.Nullable;
  * @see MethodBeforeAdvice
  * @see ThrowsAdvice
  */
+// 返回后通知仅在方法正常返回时调用，抛出异常时不会调用。此类通知可以查看返回值，但无法更改它。
 public interface AfterReturningAdvice extends AfterAdvice {
 
 	/**
@@ -41,6 +42,12 @@ public interface AfterReturningAdvice extends AfterAdvice {
 	 * allowed by the method signature. Otherwise the exception
 	 * will be wrapped as a runtime exception.
 	 */
+	// 指定方法成功返回后的回调。
+	// @param returnValue 方法返回的值（如果有）
+	// @param method 被调用的方法
+	// @param args 方法的参数
+	// @param target 方法调用的目标。可以为 {@code null}。
+	// @throws 如果此对象希望中止调用，则为 Throwable。如果方法签名允许，任何抛出的异常都将返回给调用者。否则，异常将被包装为运行时异常。
 	void afterReturning(@Nullable Object returnValue, Method method, Object[] args, @Nullable Object target) throws Throwable;
 
 }

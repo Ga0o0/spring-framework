@@ -31,6 +31,9 @@ import org.springframework.beans.BeansException;
  * @see #setBeanFactory
  * @see #setTargetBeanName
  */
+// {@link org.springframework.aop.TargetSource} 实现，为每个请求创建目标 bean 的新实例，并在释放时（每个请求后）销毁每个实例。
+//
+// <p>从其包含的 {@link org.springframework.beans.factory.BeanFactory} 中获取 bean 实例。
 @SuppressWarnings("serial")
 public class PrototypeTargetSource extends AbstractPrototypeBasedTargetSource {
 

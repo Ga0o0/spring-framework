@@ -29,5 +29,6 @@ import org.springframework.aop.MethodMatcher;
  * @param interceptor the {@code MethodInterceptor}
  * @param matcher the {@code MethodMatcher}
  */
+// 内部框架记录，将 {@link MethodInterceptor} 实例与 {@link MethodMatcher} 结合起来用作顾问链中的元素。
 record InterceptorAndDynamicMethodMatcher(MethodInterceptor interceptor, MethodMatcher matcher) {
 }

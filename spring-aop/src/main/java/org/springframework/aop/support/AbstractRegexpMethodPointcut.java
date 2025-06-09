@@ -47,6 +47,16 @@ import org.springframework.util.ObjectUtils;
  * @since 1.1
  * @see JdkRegexpMethodPointcut
  */
+// 抽象基正则表达式切入点 Bean。JavaBean 属性包括：
+// <ul>
+// <li>pattern：用于匹配完全限定方法名的正则表达式。确切的正则表达式语法取决于子类（例如，Perl5 正则表达式）。
+// <li>patterns：可选属性，采用包含模式的字符串数组。结果将是这些模式的并集。
+// </ul>
+//
+// <p>注意：正则表达式必须匹配。例如，{@code .get.} 将匹配 com.mycom.Foo.getBar()。
+// {@code get.} 则不会匹配。
+//
+// <p>此基类可序列化。子类应将所有字段声明为瞬态；反序列化时将再次调用 {@link #initPatternRepresentation} 方法。
 @SuppressWarnings("serial")
 public abstract class AbstractRegexpMethodPointcut extends StaticMethodMatcherPointcut
 		implements Serializable {

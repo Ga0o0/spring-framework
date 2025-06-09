@@ -43,6 +43,12 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
  * @see ThreadLocalTargetSource
  * @see CommonsPool2TargetSource
  */
+// 动态 {@link org.springframework.aop.TargetSource} 实现的基类，
+// 用于创建新的原型 Bean 实例，以支持池化或每次调用新建一个实例的策略。
+//
+// <p>此类 TargetSource 必须在 {@link BeanFactory} 中运行，
+// 因为它需要调用 {@code getBean} 方法来创建新的原型实例。
+// 因此，此基类扩展了 {@link AbstractBeanFactoryBasedTargetSource}。
 @SuppressWarnings("serial")
 public abstract class AbstractPrototypeBasedTargetSource extends AbstractBeanFactoryBasedTargetSource {
 

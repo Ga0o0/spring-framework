@@ -57,6 +57,30 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.beans.factory.BeanFactory#getBean
  * @see #postProcessTargetObject
  */
+// {@link org.springframework.aop.TargetSource} 以惰性方式从
+// {@link org.springframework.beans.factory.BeanFactory} 访问单例 bean。
+//
+// <p>当初始化时需要代理引用，但实际目标对象直到第一次使用才初始化时，此方法非常有用。
+// 当目标 bean 定义在 {@link org.springframework.context.ApplicationContext}
+// （或积极预实例化单例 bean 的 {@code BeanFactory}）中时，也必须将其标记为“lazy-init”，
+// 否则它将在启动时由上述 {@code ApplicationContext}（或 {@code BeanFactory}）实例化。
+//
+// <p>例如：
+// <pre class="code">
+// <bean id="serviceTarget" class="example.MyService" lazy-init="true"> ... </bean>
+//
+// <bean id="service" class="org.springframework.aop.framework.ProxyFactoryBean">
+// 		<property name="targetSource">
+// 			<bean class="org.springframework.aop.target.LazyInitTargetSource">
+// 				<property name="targetBeanName"><idref local="serviceTarget"/></property>
+// 			</bean>
+// 		</property>
+// </bean>
+// </pre>
+//
+// 直到调用“service”代理上的方法时，“serviceTarget”bean才会初始化。
+//
+// <p>子类可以扩展此类并重写 {@link #postProcessTargetObject(Object)} 以在首次加载目标对象时执行一些额外的处理。
 @SuppressWarnings("serial")
 public class LazyInitTargetSource extends AbstractBeanFactoryBasedTargetSource {
 

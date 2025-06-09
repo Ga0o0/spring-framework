@@ -39,6 +39,7 @@ import org.springframework.util.ClassUtils;
  * @author Juergen Hoeller
  * @since 11.11.2003
  */
+// 简单的 {@link org.springframework.aop.IntroductionAdvisor} 实现，默认情况下适用于任何类。
 @SuppressWarnings("serial")
 public class DefaultIntroductionAdvisor implements IntroductionAdvisor, ClassFilter, Ordered, Serializable {
 

@@ -28,12 +28,19 @@ package org.springframework.aop;
  * @author Rod Johnson
  * @since 1.1.1
  */
+// 提供描述引入所需信息的接口。
+//
+// <p>{@link IntroductionAdvisor IntroductionAdvisors} 必须实现此接口。
+// 如果 {@link org.aopalliance.aop.Advice} 实现了此接口，则可以将其用作引入，而无需 {@link IntroductionAdvisor}。
+// 在这种情况下，建议是自描述的，不仅提供必要的行为，还描述其引入的接口。
 public interface IntroductionInfo {
 
 	/**
 	 * Return the additional interfaces introduced by this Advisor or Advice.
 	 * @return the introduced interfaces
 	 */
+	// 返回此 Advisor 或 Advice 引入的附加接口。
+	// @return 引入的接口
 	Class<?>[] getInterfaces();
 
 }

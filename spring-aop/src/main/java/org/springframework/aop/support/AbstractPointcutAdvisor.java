@@ -35,6 +35,8 @@ import org.springframework.util.ObjectUtils;
  * @since 1.1.2
  * @see AbstractGenericPointcutAdvisor
  */
+// {@link org.springframework.aop.PointcutAdvisor} 实现的抽象基类。
+// 可以创建子类，用于返回特定的切入点/建议，或者可自由配置的切入点/建议。
 @SuppressWarnings("serial")
 public abstract class AbstractPointcutAdvisor implements PointcutAdvisor, Ordered, Serializable {
 

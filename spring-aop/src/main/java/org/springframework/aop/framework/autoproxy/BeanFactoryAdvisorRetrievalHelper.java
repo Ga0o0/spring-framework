@@ -38,6 +38,7 @@ import org.springframework.util.Assert;
  * @since 2.0.2
  * @see AbstractAdvisorAutoProxyCreator
  */
+// 用于从 BeanFactory 检索标准 Spring Advisor 的助手，用于自动代理。
 public class BeanFactoryAdvisorRetrievalHelper {
 
 	private static final Log logger = LogFactory.getLog(BeanFactoryAdvisorRetrievalHelper.class);
@@ -64,6 +65,8 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	 * @return the list of {@link org.springframework.aop.Advisor} beans
 	 * @see #isEligibleBean
 	 */
+	// 在当前 bean 工厂中查找所有符合条件的 Advisor bean，忽略 FactoryBeans 并排除当前正在创建的 bean。
+	// @return {@link org.springframework.aop.Advisor} bean 列表
 	public List<Advisor> findAdvisorBeans() {
 		// Determine list of advisor bean names, if not cached already.
 		String[] advisorNames = this.cachedAdvisorBeanNames;

@@ -28,6 +28,9 @@ import org.springframework.aop.Advisor;
  * @author Rod Johnson
  * @author Rob Harrop
  */
+// Advisor 适配器注册表接口。
+//
+// <p><i>这是一个 SPI 接口，任何 Spring 用户都无需实现。</i>
 public interface AdvisorAdapterRegistry {
 
 	/**
@@ -43,6 +46,15 @@ public interface AdvisorAdapterRegistry {
 	 * @throws UnknownAdviceTypeException if no registered advisor adapter
 	 * can wrap the supposed advice
 	 */
+	// 返回一个包装了指定建议的 {@link Advisor}。
+	// <p>默认情况下至少应支持
+	// {@link org.aopalliance.intercept.MethodInterceptor}、
+	// {@link org.springframework.aop.MethodBeforeAdvice}、
+	// {@link org.springframework.aop.AfterReturningAdvice} 和
+	// {@link org.springframework.aop.ThrowsAdvice}。
+	// @param advice 一个应为建议的对象
+	// @return 一个包装了指定建议的 Advisor（永远不会为 {@code null}；如果建议参数是 Advisor，则按原样返回）
+	// @throws UnknownAdviceTypeException（如果没有注册的 advisor 适配器可以包装该建议）
 	Advisor wrap(Object advice) throws UnknownAdviceTypeException;
 
 	/**
@@ -55,6 +67,11 @@ public interface AdvisorAdapterRegistry {
 	 * @throws UnknownAdviceTypeException if the Advisor type is
 	 * not understood by any registered AdvisorAdapter
 	 */
+	// 返回一个 AOP Alliance MethodInterceptors 数组，以允许在基于拦截的框架中使用给定的 Advisor。
+	// <p>如果是 {@link org.springframework.aop.PointcutAdvisor}，则不必担心与 {@link Advisor} 关联的切入点：只需返回一个拦截器即可。
+	// @param advisor 用于查找拦截器的 Advisor
+	// @return 一个 MethodInterceptors 数组，用于公开此 Advisor 的行为
+	// @throws UnknownAdviceTypeException 如果任何已注册的 AdvisorAdapter 都无法理解此 Advisor 类型
 	MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException;
 
 	/**
@@ -63,6 +80,10 @@ public interface AdvisorAdapterRegistry {
 	 * automatically recognized by an {@code AdvisorAdapterRegistry} implementation.
 	 * @param adapter an AdvisorAdapter that understands particular Advisor or Advice types
 	 */
+	// 注册给定的 {@link AdvisorAdapter}。
+	// 注意，无需为 AOP Alliance Interceptors 或 Spring Advice 注册适配器：
+	// 这些适配器必须由 {@code AdvisorAdapterRegistry} 实现自动识别。
+	// @param adapter 一个能够识别特定 Advisor 或 Advice 类型的 AdvisorAdapter
 	void registerAdvisorAdapter(AdvisorAdapter adapter);
 
 }

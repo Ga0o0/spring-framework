@@ -32,6 +32,7 @@ import org.springframework.util.ConcurrentReferenceHashMap;
  * @see #isWorthTrying()
  * @see #newInstance(Class, boolean)
  */
+// {@link ObjenesisStd} / {@link ObjenesisBase} 的 Spring 特定变体，提供基于 {@code Class} 键而不是类名的缓存，并允许选择性地使用缓存。
 public class SpringObjenesis implements Objenesis {
 
 	/**

@@ -37,6 +37,11 @@ import org.springframework.aop.support.DefaultPointcutAdvisor;
  * @author Rob Harrop
  * @author Juergen Hoeller
  */
+// {@link AdvisorAdapterRegistry} 接口的默认实现。
+// 支持 {@link org.aopalliance.intercept.MethodInterceptor}、
+// {@link org.springframework.aop.MethodBeforeAdvice}、
+// {@link org.springframework.aop.AfterReturningAdvice} 和
+// {@link org.springframework.aop.ThrowsAdvice}。
 @SuppressWarnings("serial")
 public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Serializable {
 
@@ -46,6 +51,7 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 	/**
 	 * Create a new DefaultAdvisorAdapterRegistry, registering well-known adapters.
 	 */
+	// 创建一个新的DefaultAdvisorAdapterRegistry，注册知名的适配器。
 	public DefaultAdvisorAdapterRegistry() {
 		registerAdvisorAdapter(new MethodBeforeAdviceAdapter());
 		registerAdvisorAdapter(new AfterReturningAdviceAdapter());
@@ -62,12 +68,12 @@ public class DefaultAdvisorAdapterRegistry implements AdvisorAdapterRegistry, Se
 			throw new UnknownAdviceTypeException(adviceObject);
 		}
 		if (advice instanceof MethodInterceptor) {
-			// So well-known it doesn't even need an adapter.
+			// So well-known it doesn't even need an adapter. --> 译文：它如此知名，甚至不需要适配器。
 			return new DefaultPointcutAdvisor(advice);
 		}
 		for (AdvisorAdapter adapter : this.adapters) {
-			// Check that it is supported.
-			if (adapter.supportsAdvice(advice)) {
+			// Check that it is supported. --> 译文：检查它是否受支持。
+			if (adapter.supportsAdvice(advice)) { // invoke AdvisorAdapter.supportsAdvice()
 				return new DefaultPointcutAdvisor(advice);
 			}
 		}

@@ -44,6 +44,7 @@ import org.springframework.lang.Nullable;
  * @author Adrian Colyer
  * @since 2.0.3
  */
+// 给定一个 {@link Advised} 对象，为方法构建一个通知链，这是一种简单但有效的方法。始终会重建每个通知链；缓存功能可由子类提供。
 @SuppressWarnings("serial")
 public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializable {
 
@@ -60,6 +61,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 
 		// This is somewhat tricky... We have to process introductions first,
 		// but we need to preserve order in the ultimate list.
+		// --> 译文：这有点棘手......我们必须先处理 introductions，但我们需要在最终列表中保留顺序。
 		AdvisorAdapterRegistry registry = GlobalAdvisorAdapterRegistry.getInstance();
 		Advisor[] advisors = config.getAdvisors();
 		List<Object> interceptorList = new ArrayList<>(advisors.length);
@@ -68,7 +70,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 
 		for (Advisor advisor : advisors) {
 			if (advisor instanceof PointcutAdvisor pointcutAdvisor) {
-				// Add it conditionally.
+				// Add it conditionally. --> 译文：有条件地添加。
 				if (config.isPreFiltered() || pointcutAdvisor.getPointcut().getClassFilter().matches(actualClass)) {
 					MethodMatcher mm = pointcutAdvisor.getPointcut().getMethodMatcher();
 					boolean match;
@@ -86,6 +88,7 @@ public class DefaultAdvisorChainFactory implements AdvisorChainFactory, Serializ
 						if (mm.isRuntime()) {
 							// Creating a new object instance in the getInterceptors() method
 							// isn't a problem as we normally cache created chains.
+							// --> 译文：在 getInterceptors() 方法中创建一个新的对象实例不是问题，因为我们通常会缓存创建的链。
 							for (MethodInterceptor interceptor : interceptors) {
 								interceptorList.add(new InterceptorAndDynamicMethodMatcher(interceptor, mm));
 							}

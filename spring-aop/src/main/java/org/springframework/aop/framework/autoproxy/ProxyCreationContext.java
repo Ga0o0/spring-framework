@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @author Ramnivas Laddad
  * @since 2.5
  */
+// 当前代理创建上下文的持有者，由自动代理创建者（如 {@link AbstractAdvisorAutoProxyCreator}）公开。
 public final class ProxyCreationContext {
 
 	/** ThreadLocal holding the current proxied bean name during Advisor matching. */
@@ -51,6 +52,8 @@ public final class ProxyCreationContext {
 	 * Set the name of the currently proxied bean instance.
 	 * @param beanName the name of the bean, or {@code null} to reset it
 	 */
+	// 设置当前代理 Bean 实例的名称。
+	// @param beanName Bean 的名称，或 {@code null} 重置它
 	static void setCurrentProxiedBeanName(@Nullable String beanName) {
 		if (beanName != null) {
 			currentProxiedBeanName.set(beanName);

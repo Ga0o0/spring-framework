@@ -33,6 +33,10 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
  * @see #setAdvisorAdapterRegistry
  * @see AdvisorAdapter
  */
+// BeanPostProcessor 使用 {@link AdvisorAdapterRegistry}（默认情况下为 {@link GlobalAdvisorAdapterRegistry}）
+// 在 BeanFactory 中注册 {@link AdvisorAdapter} bean。
+//
+// <p>要使其工作，唯一的要求是它需要在应用程序上下文中定义，同时需要与需要被 Spring 的 AOP 框架“识别”的“非原生”Spring AdvisorAdapters 一起定义。
 public class AdvisorAdapterRegistrationManager implements BeanPostProcessor {
 
 	private AdvisorAdapterRegistry advisorAdapterRegistry = GlobalAdvisorAdapterRegistry.getInstance();

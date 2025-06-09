@@ -23,6 +23,7 @@ import java.io.Serializable;
  *
  * @author Rod Johnson
  */
+// 始终匹配的规范切入点实例。
 @SuppressWarnings("serial")
 final class TruePointcut implements Pointcut, Serializable {
 
@@ -31,6 +32,7 @@ final class TruePointcut implements Pointcut, Serializable {
 	/**
 	 * Enforce Singleton pattern.
 	 */
+	// 强制实施单例模式。
 	private TruePointcut() {
 	}
 

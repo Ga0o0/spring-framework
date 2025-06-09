@@ -35,6 +35,8 @@ import org.springframework.util.Assert;
  * @see AnnotationClassFilter
  * @see AnnotationMethodMatcher
  */
+// 简单的 {@link Pointcut} 查找 {@linkplain #forClassAnnotation 类} 或
+// {@linkplain #forMethodAnnotation 方法} 中存在的特定注释。
 public class AnnotationMatchingPointcut implements Pointcut {
 
 	private final ClassFilter classFilter;

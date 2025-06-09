@@ -82,6 +82,14 @@ import org.springframework.util.ReflectionUtils;
  * @see AdvisedSupport#setProxyTargetClass
  * @see DefaultAopProxyFactory
  */
+// Spring AOP 框架基于 CGLIB 的 {@link AopProxy} 实现。
+//
+// <p>此类对象应通过代理工厂获取，并由 {@link AdvisedSupport} 对象配置。此类位于 Spring AOP 框架内部，客户端代码无需直接使用。
+//
+// <p>{@link DefaultAopProxyFactory} 会在必要时自动创建基于 CGLIB 的代理，
+// 例如在代理目标类的情况下（详情请参阅 {@link DefaultAopProxyFactory 的 javadoc}）。
+//
+// <p>如果底层（目标）类是线程安全的，则使用此类创建的代理也是线程安全的。
 @SuppressWarnings("serial")
 class CglibAopProxy implements AopProxy, Serializable {
 
@@ -187,10 +195,10 @@ class CglibAopProxy implements AopProxy, Serializable {
 				}
 			}
 
-			// Validate the class, writing log messages as necessary.
+			// Validate the class, writing log messages as necessary. --> 译文：验证类，根据需要写入日志消息。
 			validateClassIfNecessary(proxySuperClass, classLoader);
 
-			// Configure CGLIB Enhancer...
+			// Configure CGLIB Enhancer... --> 译文：配置 CGLIB 增强器...
 			Enhancer enhancer = createEnhancer();
 			if (classLoader != null) {
 				enhancer.setClassLoader(classLoader);
@@ -211,6 +219,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 				types[x] = callbacks[x].getClass();
 			}
 			// fixedInterceptorMap only populated at this point, after getCallbacks call above
+			// --> 译文：在上述 getCallbacks 调用之后，fixedInterceptorMap 仅在此时填充
 			ProxyCallbackFilter filter = new ProxyCallbackFilter(
 					this.advised.getConfigurationOnlyCopy(), this.fixedInterceptorMap, this.fixedInterceptorOffset);
 			enhancer.setCallbackFilter(filter);
@@ -218,12 +227,14 @@ class CglibAopProxy implements AopProxy, Serializable {
 
 			// Generate the proxy class and create a proxy instance.
 			// ProxyCallbackFilter has method introspection capability with Advisor access.
+			// --> 译文：生成代理类并创建代理实例。ProxyCallbackFilter 具有方法自省功能，并支持 Advisor 访问。
 			try {
 				return (classOnly ? createProxyClass(enhancer) : createProxyClassAndInstance(enhancer, callbacks));
 			}
 			finally {
 				// Reduce ProxyCallbackFilter to key-only state for its class cache role
 				// in the CGLIB$CALLBACK_FILTER field, not leaking any Advisor state...
+				// --> 译文：将 ProxyCallbackFilter 减少为 CGLIB$CALLBACK_FILTER 字段中其类缓存角色的仅键状态，不会泄漏任何 Advisor 状态...
 				filter.advised.reduceToAdvisorKey();
 			}
 		}
@@ -233,7 +244,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 					ex);
 		}
 		catch (Throwable ex) {
-			// TargetSource.getTarget() failed
+			// TargetSource.getTarget() failed --> 译文：TargetSource.getTarget() 失败
 			throw new AopConfigException("Unexpected AOP exception", ex);
 		}
 	}
@@ -409,6 +420,9 @@ class CglibAopProxy implements AopProxy, Serializable {
 	 * {@code proxy} and also verifies that {@code null} is not returned as a primitive.
 	 * Also takes care of the conversion from {@code Mono} to Kotlin Coroutines if needed.
 	 */
+	// 处理返回值。
+	// 如有必要，将 {@code this} 的返回值包装为 {@code proxy}，并验证 {@code null} 是否未作为原语返回。
+	// 如有需要，还负责从 {@code Mono} 到 Kotlin 协程的转换。
 	@Nullable
 	private static Object processReturnType(
 			Object proxy, @Nullable Object target, Method method, Object[] arguments, @Nullable Object returnValue) {
@@ -697,29 +711,33 @@ class CglibAopProxy implements AopProxy, Serializable {
 			TargetSource targetSource = this.advised.getTargetSource();
 			try {
 				if (this.advised.exposeProxy) {
-					// Make invocation available if necessary.
+					// Make invocation available if necessary. --> 译文：必要时提供调用。
 					oldProxy = AopContext.setCurrentProxy(proxy);
 					setProxyContext = true;
 				}
 				// Get as late as possible to minimize the time we "own" the target, in case it comes from a pool...
+				// --> 译文：尽可能晚地行动，以减少我们 “拥有” 目标的时间，以防它来自一个池子……
 				target = targetSource.getTarget();
 				Class<?> targetClass = (target != null ? target.getClass() : null);
 				List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
 				Object retVal;
 				// Check whether we only have one InvokerInterceptor: that is,
 				// no real advice, but just reflective invocation of the target.
+				// --> 译文：检查我们是否只有一个 InvokerInterceptor：也就是说，没有真正的建议，而只是目标的反射调用。
 				if (chain.isEmpty()) {
 					// We can skip creating a MethodInvocation: just invoke the target directly.
 					// Note that the final invoker must be an InvokerInterceptor, so we know
 					// it does nothing but a reflective operation on the target, and no hot
 					// swapping or fancy proxying.
+					// --> 译文：我们可以跳过创建 MethodInvocation：直接调用目标。请注意，最终的调用者必须是 InvokerInterceptor，因此我们知道它只对目标进行反射操作，而没有热交换或花哨的代理。
 					Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
 					retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
 				}
 				else {
-					// We need to create a method invocation...
+					// We need to create a method invocation... --> 译文：我们需要创建一个方法调用...
 					retVal = new CglibMethodInvocation(proxy, target, method, args, targetClass, chain, methodProxy).proceed();
 				}
+				// 处理返回值。
 				return processReturnType(proxy, target, method, args, retVal);
 			}
 			finally {
@@ -753,6 +771,7 @@ class CglibAopProxy implements AopProxy, Serializable {
 	/**
 	 * Implementation of AOP Alliance MethodInvocation used by this AOP proxy.
 	 */
+	// 此 AOP 代理使用的 AOP Alliance MethodInvocation 的实现。
 	private static class CglibMethodInvocation extends ReflectiveMethodInvocation {
 
 		public CglibMethodInvocation(Object proxy, @Nullable Object target, Method method,
@@ -777,12 +796,15 @@ class CglibAopProxy implements AopProxy, Serializable {
 					// Propagate original exception if declared on the target method
 					// (with callers expecting it). Always propagate it for Kotlin code
 					// since checked exceptions do not have to be explicitly declared there.
+					// --> 译文：如果在目标方法上声明了原始异常（且调用者期望该异常），则传播该异常。
+					// 对于 Kotlin 代码，始终传播该异常，因为已检查异常无需在 Kotlin 代码中显式声明。
 					throw ex;
 				}
 				else {
 					// Checked exception thrown in the interceptor but not declared on the
 					// target method signature -> apply an UndeclaredThrowableException,
 					// aligned with standard JDK dynamic proxy behavior.
+					// --> 译文：拦截器中抛出的已检查异常但未在目标方法签名上声明 -> 应用 UndeclaredThrowableException，与标准 JDK 动态代理行为一致。
 					throw new UndeclaredThrowableException(ex);
 				}
 			}

@@ -29,6 +29,7 @@ import org.springframework.aop.Pointcut;
  * @author Rob Harrop
  * @see NameMatchMethodPointcut
  */
+// 方便的名称匹配方法切入点类，其中包含建议，使其成为顾问。
 @SuppressWarnings("serial")
 public class NameMatchMethodPointcutAdvisor extends AbstractGenericPointcutAdvisor {
 

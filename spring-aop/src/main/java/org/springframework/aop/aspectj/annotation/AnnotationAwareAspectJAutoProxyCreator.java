@@ -46,6 +46,13 @@ import org.springframework.util.Assert;
  * @since 2.0
  * @see org.springframework.aop.aspectj.annotation.AspectJAdvisorFactory
  */
+// {@link AspectJAwareAdvisorAutoProxyCreator} 子类，用于处理当前应用程序上下文中所有 AspectJ 注解切面以及 Spring Advisor。
+//
+// <p>任何带有 AspectJ 注解的类都会被自动识别，并且如果 Spring AOP 的基于代理的模型能够应用这些建议，则会应用这些建议。这涵盖了方法执行连接点。
+//
+// <p>如果使用了 <aop:include> 元素，则只有名称符合包含模式的 @AspectJ bean 才会被视为用于 Spring 自动代理的定义切面。
+//
+// <p>Spring Advisor 的处理遵循 {@link org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator} 中建立的规则。
 @SuppressWarnings("serial")
 public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorAutoProxyCreator {
 

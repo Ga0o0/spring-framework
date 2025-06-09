@@ -47,6 +47,11 @@ import org.springframework.util.PatternMatchUtils;
  * @see NameMatchMethodPointcut
  * @see JdkRegexpMethodPointcut
  */
+// 切入点和方法匹配器，可用作简单的 <b>cflow</b> 样式的切入点。
+//
+// <p>每个配置的方法名称模式可以是确切的方法名称或模式（有关支持的模式样式的详细信息，请参阅 {@link #isMatch(String, String)}）。
+//
+// <p>请注意，评估此类切入点比评估普通切入点慢 10-15 倍，但在某些情况下很有用。
 @SuppressWarnings("serial")
 public class ControlFlowPointcut implements Pointcut, ClassFilter, MethodMatcher, Serializable {
 

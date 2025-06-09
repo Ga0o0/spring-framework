@@ -38,6 +38,12 @@ import org.springframework.beans.BeansException;
  * @see InitializingBean
  * @see org.springframework.context.ApplicationContextAware
  */
+// 需要由希望了解其所属 {@link BeanFactory} 的 Bean 实现的接口。
+//
+// <p>例如，Bean 可以通过工厂查找协作 Bean（依赖项查找）。需要注意的是，
+// 大多数 Bean 会选择通过相应的 Bean 属性或构造函数参数接收协作 Bean 的引用（依赖项注入）。
+//
+// <p>有关所有 Bean 生命周期方法的列表，请参阅 {@link BeanFactory BeanFactory javadocs}。
 public interface BeanFactoryAware extends Aware {
 
 	/**
@@ -50,6 +56,10 @@ public interface BeanFactoryAware extends Aware {
 	 * @throws BeansException in case of initialization errors
 	 * @see BeanInitializationException
 	 */
+	// 将所属工厂提供给 Bean 实例的回调。
+	// <p>在填充常规 Bean 属性之后、初始化回调（例如 {@link InitializingBean#afterPropertiesSet()} 或自定义初始化方法）之前调用。
+	// @param beanFactory 所属 BeanFactory（永远不会为 {@code null}）。Bean 可以立即调用工厂方法。
+	// @throws BeansException 表示初始化错误
 	void setBeanFactory(BeanFactory beanFactory) throws BeansException;
 
 }

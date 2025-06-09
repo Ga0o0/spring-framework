@@ -52,6 +52,10 @@ import org.springframework.util.function.SingletonSupplier;
  * @see Async
  * @see AnnotationAsyncExecutionInterceptor
  */
+// 该 Advisor 程序通过 {@link Async} 注解激活异步方法执行。此注解可在实现类以及服务接口中的方法和类型级别使用。
+//
+// <p>此顾问程序还可检测 EJB 3.1 {@code jakarta.ejb.Asynchronous} 注解，并将其视为 Spring 自身的 {@code Async} 注解。
+// 此外，还可以通过 {@link #setAsyncAnnotationType "asyncAnnotationType"} 属性指定自定义异步注解类型。
 @SuppressWarnings("serial")
 public class AsyncAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
 

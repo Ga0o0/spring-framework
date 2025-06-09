@@ -956,6 +956,10 @@ public abstract class ClassUtils {
 	 * @return {@code true} if the class is a lambda implementation class
 	 * @since 5.3.19
 	 */
+	// 判断提供的 {@link Class} 是否为 JVM 生成的 Lambda 表达式或方法引用的实现类。
+	// <p>此方法会尽力基于在现代主流 JVM 上运行的检查来确定这一点。
+	// @param clazz 待检查的类
+	// @return {@code true} 如果该类是 Lambda 实现类
 	public static boolean isLambdaClass(Class<?> clazz) {
 		return (clazz.isSynthetic() && (clazz.getSuperclass() == Object.class) &&
 				(clazz.getInterfaces().length > 0) && clazz.getName().contains("$$Lambda"));

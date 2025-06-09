@@ -33,6 +33,11 @@ import org.aopalliance.aop.Advice;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 包含 AOP <b>advice</b>（在连接点执行的操作）和用于确定建议适用性的过滤器（例如切入点）的基本接口。
+// <i>此接口不供 Spring 用户使用，但允许通用地支持不同类型的建议。</i>
+//
+// <p>Spring AOP 基于通过方法 <b>interception</b> 传递的 <b>around advice</b>，符合 AOP 联盟拦截 API。
+// Advisor 接口支持不同类型的 advice，例如 <b>before</b> 和 <b>after</b> advice，这些建议无需使用拦截来实现。
 public interface Advisor {
 
 	/**
@@ -40,6 +45,7 @@ public interface Advisor {
 	 * {@link #getAdvice()} if no proper advice has been configured (yet).
 	 * @since 5.0
 	 */
+	// 如果尚未配置适当的建议，则从 {@link #getAdvice()} 返回空的 {@code Advice} 的通用占位符。
 	Advice EMPTY_ADVICE = new Advice() {};
 
 
@@ -52,6 +58,8 @@ public interface Advisor {
 	 * @see ThrowsAdvice
 	 * @see AfterReturningAdvice
 	 */
+	// 返回此方面的建议部分。建议可以是拦截器、前置建议、抛出建议等。
+	// @return 如果切入点匹配则应用的建议
 	Advice getAdvice();
 
 	/**
@@ -65,6 +73,11 @@ public interface Advisor {
 	 * <p>As of 6.0.10, the default implementation returns {@code true}.
 	 * @return whether this advice is associated with a particular target instance
 	 */
+	// 返回此建议是否与特定实例关联（例如，创建混合宏），或者是否与从同一 Spring bean 工厂获取的被建议类的所有实例共享。
+	// <p><b>请注意，框架当前未使用此方法。</b>典型的 Advisor 实现始终返回 {@code true}。
+	// 使用单例/原型 bean 定义或适当的编程代理创建，以确保 Advisor 具有正确的生命周期模型。
+	// <p>从 6.0.10 开始，默认实现返回 {@code true}。
+	// @return 此建议是否与特定目标实例关联
 	default boolean isPerInstance() {
 		return true;
 	}

@@ -48,6 +48,14 @@ import org.springframework.core.NamedThreadLocal;
  * @see ThreadLocalTargetSourceStats
  * @see org.springframework.beans.factory.DisposableBean#destroy()
  */
+// 对象池的替代方案。此 {@link org.springframework.aop.TargetSource} 使用一种线程模型，其中每个线程都有自己的目标副本。
+// 不存在目标争用。在运行的服务器上，目标对象的创建次数保持在最低限度。
+//
+// <p>应用程序代码的编写方式与普通池类似；调用者无法假设他们会在不同线程的调用中处理同一个实例。
+// 但是，在单线程操作期间可以依赖状态：例如，如果一个调用者对 AOP 代理进行重复调用。
+//
+// <p>线程绑定对象的清理在 BeanFactory 销毁时执行，如果可用，则调用其 {@code DisposableBean.destroy()} 方法。
+// 请注意，许多线程绑定对象可能会一直存在，直到应用程序实际关闭。
 @SuppressWarnings("serial")
 public class ThreadLocalTargetSource extends AbstractPrototypeBasedTargetSource
 		implements ThreadLocalTargetSourceStats, DisposableBean {

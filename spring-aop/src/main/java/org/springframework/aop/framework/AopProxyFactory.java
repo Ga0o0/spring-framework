@@ -41,6 +41,19 @@ package org.springframework.aop.framework;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 接口由能够基于 {@link AdvisedSupport} 配置对象创建 AOP 代理的工厂实现。
+//
+// <p>代理应遵守以下契约：
+// <ul>
+// <li>它们应实现配置指示应代理的所有接口。
+// <li>它们应实现 {@link Advised} 接口。
+// <li>它们应实现 equals 方法来比较代理接口、建议和目标。
+// <li>如果所有顾问和目标都是可序列化的，它们也应该是可序列化的。
+// <li>如果顾问和目标是线程安全的，它们也应该是线程安全的。
+// </ul>
+//
+// <p>代理可能允许或不允许进行建议更改。如果它们不允许建议更改（例如，因为配置被冻结），
+// 则代理应在尝试更改建议时抛出 {@link AopConfigException}。
 public interface AopProxyFactory {
 
 	/**
@@ -50,6 +63,10 @@ public interface AopProxyFactory {
 	 * @return the corresponding AOP proxy
 	 * @throws AopConfigException if the configuration is invalid
 	 */
+	// 为给定的 AOP 配置创建一个 {@link AopProxy}。
+	// @param config 以 AdvisedSupport 对象的形式返回 AOP 配置
+	// @return 相应的 AOP 代理
+	// 如果配置无效，则抛出 AopConfigException
 	AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException;
 
 }

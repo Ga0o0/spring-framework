@@ -31,6 +31,7 @@ import org.springframework.util.ObjectUtils;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 当没有目标（或仅知道目标类）时，规范 {@code TargetSource}，并且行为仅由接口和顾问提供。
 public final class EmptyTargetSource implements TargetSource, Serializable {
 
 	/** use serialVersionUID from Spring 1.2 for interoperability. */
@@ -44,6 +45,7 @@ public final class EmptyTargetSource implements TargetSource, Serializable {
 	/**
 	 * The canonical (Singleton) instance of this {@link EmptyTargetSource}.
 	 */
+	// 此 {@link EmptyTargetSource} 的规范（单例）实例。
 	public static final EmptyTargetSource INSTANCE = new EmptyTargetSource(null, true);
 
 

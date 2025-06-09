@@ -27,16 +27,20 @@ import org.springframework.aop.PointcutAdvisor;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// Spring AOP Advisors 实现的接口，用于包装可能具有延迟初始化策略的 AspectJ 切面。
+// 例如，perThis 实例化模型意味着通知的延迟初始化。
 public interface InstantiationModelAwarePointcutAdvisor extends PointcutAdvisor {
 
 	/**
 	 * Return whether this advisor is lazily initializing its underlying advice.
 	 */
+	// 返回此 advisor 是否正在延迟初始化其底层建议。
 	boolean isLazy();
 
 	/**
 	 * Return whether this advisor has already instantiated its advice.
 	 */
+	// 返回该 advisor 是否已经实例化其建议。
 	boolean isAdviceInstantiated();
 
 }

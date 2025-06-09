@@ -24,6 +24,7 @@ import java.lang.reflect.Method;
  *
  * @author Rod Johnson
  */
+// 匹配所有方法的规范 MethodMatcher 实例。
 @SuppressWarnings("serial")
 final class TrueMethodMatcher implements MethodMatcher, Serializable {
 
@@ -33,6 +34,7 @@ final class TrueMethodMatcher implements MethodMatcher, Serializable {
 	/**
 	 * Enforce Singleton pattern.
 	 */
+	// 强制实施单例模式。
 	private TrueMethodMatcher() {
 	}
 
@@ -64,6 +66,7 @@ final class TrueMethodMatcher implements MethodMatcher, Serializable {
 	 * instance on deserialization, protecting Singleton pattern.
 	 * Alternative to overriding {@code equals()}.
 	 */
+	// 支持序列化所必需的。反序列化时替换为规范实例，保护单例模式。替代覆盖 {@code equals()} 的方法。
 	private Object readResolve() {
 		return INSTANCE;
 	}

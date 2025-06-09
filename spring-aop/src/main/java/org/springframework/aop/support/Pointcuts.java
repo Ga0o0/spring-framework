@@ -92,6 +92,7 @@ public abstract class Pointcuts {
 	/**
 	 * Pointcut implementation that matches bean property setters.
 	 */
+	// 与 bean 属性设置器匹配的切入点实现。
 	@SuppressWarnings("serial")
 	private static class SetterPointcut extends StaticMethodMatcherPointcut implements Serializable {
 

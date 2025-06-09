@@ -50,6 +50,15 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @see #findCandidateAdvisors
  */
+// 通用自动代理创建器，根据检测到的每个 bean 的 Advisor 为特定 bean 构建 AOP 代理。
+//
+// <p>子类可以重写 {@link #findCandidateAdvisors()} 方法，以返回适用于任何对象的自定义 Advisor 列表。
+// 子类还可以重写继承的 {@link #shouldSkip} 方法，以从自动代理中排除某些对象。
+//
+// <p>需要排序的 Advisor 或建议应使用 {@link org.springframework.core.annotation.Order @Order}
+// 注解或实现 {@link org.springframework.core.Ordered} 接口。
+// 此类使用 {@link AnnotationAwareOrderComparator} 对 Advisor 进行排序。
+// 未使用 {@code @Order} 注解或未实现 {@code Ordered} 接口的 Advisor 将被视为无序的；它们将以未定义的顺序出现在 Advisor 链的末尾。
 @SuppressWarnings("serial")
 public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyCreator {
 
@@ -77,6 +86,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	protected Object[] getAdvicesAndAdvisorsForBean(
 			Class<?> beanClass, String beanName, @Nullable TargetSource targetSource) {
 
+		// 查找所有符合条件的 Advisor 来自动代理此类。
 		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName);
 		if (advisors.isEmpty()) {
 			return DO_NOT_PROXY;
@@ -94,8 +104,14 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see #sortAdvisors
 	 * @see #extendAdvisors
 	 */
+	// 查找所有符合条件的 Advisor 来自动代理此类。
+	// @param beanClass 指定要查找 Advisor 的类
+	// @param beanName 当前代理的 bean 的名称
+	// @return 返回空列表，如果不存在切入点或拦截器，则返回 null 值
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
+		// 查找所有用于自动代理的候选 Advisors。
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
+		// 搜索给定的候选 Advisor，找到所有适用于指定 Bean 的 Advisor。
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
 		extendAdvisors(eligibleAdvisors);
 		if (!eligibleAdvisors.isEmpty()) {
@@ -114,6 +130,8 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * Find all candidate Advisors to use in auto-proxying.
 	 * @return the List of candidate Advisors
 	 */
+	// 查找所有用于自动代理的候选顾问。
+	// @return 候选顾问列表
 	protected List<Advisor> findCandidateAdvisors() {
 		Assert.state(this.advisorRetrievalHelper != null, "No BeanFactoryAdvisorRetrievalHelper available");
 		return this.advisorRetrievalHelper.findAdvisorBeans();
@@ -128,9 +146,15 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @return the List of applicable Advisors
 	 * @see ProxyCreationContext#getCurrentProxiedBeanName()
 	 */
+	// 搜索给定的候选 Advisor，找到所有适用于指定 Bean 的 Advisor。
+	// @param candidatesAdvisors 候选 Advisor
+	// @param beanClass 目标 Bean 类
+	// @param beanName 目标 Bean 名称
+	// @return 适用 Advisor 列表
 	protected List<Advisor> findAdvisorsThatCanApply(
 			List<Advisor> candidateAdvisors, Class<?> beanClass, String beanName) {
 
+		// 设置当前代理 Bean 实例的名称。
 		ProxyCreationContext.setCurrentProxiedBeanName(beanName);
 		try {
 			return AopUtils.findAdvisorsThatCanApply(candidateAdvisors, beanClass);

@@ -35,6 +35,10 @@ import org.springframework.util.Assert;
  * @see #requiresRefresh()
  * @see #setRefreshCheckDelay
  */
+// 可刷新的 TargetSource，用于从 BeanFactory 获取最新的目标 Bean。
+//
+// <p>可以子类化并重写 {@code requireRefresh()} 以抑制不必要的刷新。
+// 默认情况下，每次经过“refreshCheckDelay”后都会执行刷新。
 public class BeanFactoryRefreshableTargetSource extends AbstractRefreshableTargetSource {
 
 	private final BeanFactory beanFactory;

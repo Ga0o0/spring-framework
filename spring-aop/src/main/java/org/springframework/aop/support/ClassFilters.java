@@ -69,6 +69,10 @@ public abstract class ClassFilters {
 	 * @return a distinct ClassFilter that matches all classes that both
 	 * of the given ClassFilter match
 	 */
+	// 匹配所有与给定 ClassFilter 匹配的类。
+	// @param cf1 第一个 ClassFilter
+	// @param cf2 第二个 ClassFilter
+	// @return 一个不同的 ClassFilter，该 ClassFilter 匹配所有与给定 ClassFilter 匹配的类。
 	public static ClassFilter intersection(ClassFilter cf1, ClassFilter cf2) {
 		Assert.notNull(cf1, "First ClassFilter must not be null");
 		Assert.notNull(cf2, "Second ClassFilter must not be null");
@@ -142,6 +146,7 @@ public abstract class ClassFilters {
 	/**
 	 * ClassFilter implementation for an intersection of the given ClassFilters.
 	 */
+	// 给定 ClassFilters 交集的 ClassFilter 实现。
 	@SuppressWarnings("serial")
 	private static class IntersectionClassFilter implements ClassFilter, Serializable {
 

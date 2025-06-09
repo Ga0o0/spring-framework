@@ -101,6 +101,10 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 	 * @param beanClass the class of the bean
 	 * @param proxyFactory the ProxyFactory for the bean
 	 */
+	// 检查给定 bean 类的接口，并在适当的情况下将其应用于 {@link ProxyFactory}。
+	// <p>调用 {@link #isConfigurationCallbackInterface} 和 {@link #isInternalLanguageInterface} 来筛选合理的代理接口，否则回退到目标类的代理。
+	// @param beanClass bean 的类
+	// @param proxyFactory bean 的 ProxyFactory
 	protected void evaluateProxyInterfaces(Class<?> beanClass, ProxyFactory proxyFactory) {
 		Class<?>[] targetInterfaces = ClassUtils.getAllInterfacesForClass(beanClass, getProxyClassLoader());
 		boolean hasReasonableProxyInterface = false;
@@ -113,6 +117,7 @@ public class ProxyProcessorSupport extends ProxyConfig implements Ordered, BeanC
 		}
 		if (hasReasonableProxyInterface) {
 			// Must allow for introductions; can't just set interfaces to the target's interfaces only.
+			// --> 译文：必须允许 introductions；不能仅将接口设置为目标的接口。
 			for (Class<?> ifc : targetInterfaces) {
 				proxyFactory.addInterface(ifc);
 			}

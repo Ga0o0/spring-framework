@@ -96,6 +96,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	/**
 	 * This suffix in a value in an interceptor list indicates to expand globals.
 	 */
+	// 拦截器列表中的值中的后缀表示扩展全局变量。
 	public static final String GLOBAL_SUFFIX = "*";
 
 
@@ -600,6 +601,7 @@ public class ProxyFactoryBean extends ProxyCreatorSupport
 	 * Used in the interceptor chain where we need to replace a bean with a prototype
 	 * on creating a proxy.
 	 */
+	// 在拦截器链中使用，我们需要在创建代理时用原型替换 bean。
 	private static class PrototypePlaceholderAdvisor implements Advisor, Serializable {
 
 		private final String beanName;

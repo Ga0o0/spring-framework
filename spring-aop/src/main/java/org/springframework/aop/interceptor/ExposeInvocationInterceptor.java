@@ -41,6 +41,12 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 将当前 {@link org.aopalliance.intercept.MethodInvocation} 暴露为线程本地对象的拦截器。
+// 我们偶尔需要这样做；例如，当切入点（例如 AspectJ 表达式切入点）需要了解完整的调用上下文时。
+//
+// <p>除非确实需要，否则请勿使用此拦截器。目标对象通常不应了解 Spring AOP，因为这会创建对 Spring API 的依赖。目标对象应尽可能使用普通的 POJO。
+//
+// <p>如果使用此拦截器，通常会将其放在拦截器链中的第一个位置。
 @SuppressWarnings("serial")
 public final class ExposeInvocationInterceptor implements MethodInterceptor, PriorityOrdered, Serializable {
 

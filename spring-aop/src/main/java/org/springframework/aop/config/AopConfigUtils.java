@@ -43,6 +43,10 @@ import org.springframework.util.Assert;
  * @since 2.5
  * @see AopNamespaceUtils
  */
+// 用于处理 AOP 自动代理创建器注册的实用程序类。
+//
+// <p>只需注册一个自动代理创建器，但有多个具体实现可用。
+// 此类提供了一个简单的升级协议，允许调用者请求特定的自动代理创建器，并知道该创建器（<i>或其更强大的变体</i>）将被注册为后处理器。
 public abstract class AopConfigUtils {
 
 	/**
@@ -54,6 +58,7 @@ public abstract class AopConfigUtils {
 	/**
 	 * Stores the auto proxy creator classes in escalation order.
 	 */
+	// 按升级顺序存储自动代理创建者类。
 	private static final List<Class<?>> APC_PRIORITY_LIST = new ArrayList<>(3);
 
 	static {
@@ -120,11 +125,13 @@ public abstract class AopConfigUtils {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
+		// AUTO_PROXY_CREATOR_BEAN_NAME = "org.springframework.aop.config.internalAutoProxyCreator"
 		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
 				int requiredPriority = findPriorityForClass(cls);
+				// 升级处理
 				if (currentPriority < requiredPriority) {
 					apcDefinition.setBeanClassName(cls.getName());
 				}

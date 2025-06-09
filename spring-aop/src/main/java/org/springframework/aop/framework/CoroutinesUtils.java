@@ -30,6 +30,7 @@ import org.springframework.lang.Nullable;
  * @author Sebastien Deleuze
  * @since 6.1
  */
+// 包可见类旨在避免运行时对 Kotlin 和 Coroutines 的硬依赖。
 abstract class CoroutinesUtils {
 
 	static Object asFlow(@Nullable Object publisher) {

@@ -32,6 +32,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// {@code AspectJPointcutAdvisor} 将 {@link AbstractAspectJAdvice} 适配到 {@link PointcutAdvisor} 接口。
 public class AspectJPointcutAdvisor implements PointcutAdvisor, Ordered {
 
 	private final AbstractAspectJAdvice advice;

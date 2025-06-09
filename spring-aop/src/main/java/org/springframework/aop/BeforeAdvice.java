@@ -27,6 +27,9 @@ import org.aopalliance.aop.Advice;
  * @author Rod Johnson
  * @see AfterAdvice
  */
+// 用于前置通知的通用标记接口，例如 {@link MethodBeforeAdvice}。
+//
+// <p>Spring 仅支持方法前置通知。虽然不太可能改变，但此 API 旨在允许将来根据需要支持字段前置通知。
 public interface BeforeAdvice extends Advice {
 
 }

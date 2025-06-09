@@ -165,6 +165,7 @@ public abstract class AopUtils {
 	 * Determine whether the given method is an "equals" method.
 	 * @see java.lang.Object#equals
 	 */
+	// 确定给定的方法是否是 “equals” 方法。
 	public static boolean isEqualsMethod(@Nullable Method method) {
 		return ReflectionUtils.isEqualsMethod(method);
 	}
@@ -318,6 +319,10 @@ public abstract class AopUtils {
 	 * @return sublist of Advisors that can apply to an object of the given class
 	 * (may be the incoming List as-is)
 	 */
+	// 确定适用于给定类的 {@code candidatesAdvisors} 列表中的子列表。
+	// @param candidatesAdvisors 需要评估的 Advisors
+	// @param clazz 目标类
+	// @return 可应用于给定类对象的 Advisors 子列表（可以是传入的 List 原样）
 	public static List<Advisor> findAdvisorsThatCanApply(List<Advisor> candidateAdvisors, Class<?> clazz) {
 		if (candidateAdvisors.isEmpty()) {
 			return candidateAdvisors;
@@ -350,20 +355,29 @@ public abstract class AopUtils {
 	 * @throws Throwable if thrown by the target method
 	 * @throws org.springframework.aop.AopInvocationException in case of a reflection error
 	 */
+	// 通过反射调用给定目标，作为 AOP 方法调用的一部分。
+	// @param target 目标对象
+	// @param method 要调用的方法
+	// @param args 方法的参数
+	// @return 调用结果（如果有）
+	// @throws Throwable（如果目标方法抛出）
+	// @throws org.springframework.aop.AopInvocationException（如果发生反射错误）
 	@Nullable
 	public static Object invokeJoinpointUsingReflection(@Nullable Object target, Method method, Object[] args)
 			throws Throwable {
 
-		// Use reflection to invoke the method.
+		// Use reflection to invoke the method. --> 译文：使用反射来调用该方法。
 		try {
+			// 查找提供的 bridge Method 的本地原始方法。
 			Method originalMethod = BridgeMethodResolver.findBridgedMethod(method);
 			ReflectionUtils.makeAccessible(originalMethod);
 			return (coroutinesReactorPresent && KotlinDetector.isSuspendingFunction(originalMethod) ?
+					// originalMethod.invoke(target, args) -> java.lang.reflect.Method.invoke()
 					KotlinDelegate.invokeSuspendingFunction(originalMethod, target, args) : originalMethod.invoke(target, args));
 		}
 		catch (InvocationTargetException ex) {
 			// Invoked method threw a checked exception.
-			// We must rethrow it. The client won't see the interceptor.
+			// We must rethrow it. The client won't see the interceptor. --> 译文：调用的方法抛出了已检查异常。我们必须重新抛出该异常。客户端将无法看到该拦截器。
 			throw ex.getTargetException();
 		}
 		catch (IllegalArgumentException ex) {

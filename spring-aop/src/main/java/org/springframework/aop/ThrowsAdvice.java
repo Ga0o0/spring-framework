@@ -48,6 +48,25 @@ package org.springframework.aop;
  * @see AfterReturningAdvice
  * @see MethodBeforeAdvice
  */
+// 用于抛出通知的标记接口。
+//
+// <p>此接口没有任何方法，因为方法通过反射调用。实现类必须实现以下形式的方法：
+//
+// <pre class="code">void afterThrowing([Method, args, target], ThrowableSubclass);</pre>
+//
+// <p>一些有效方法的示例如下：
+//
+// <pre class="code">public void afterThrowing(Exception ex)</pre>
+// <pre class="code">public void afterThrowing(RemoteException)</pre>
+// <pre class="code">public void afterThrowing(Method method, Object[] args, Object target, Exception ex)</pre>
+// <pre class="code">public void afterThrowing(Method method, Object[] args, Object target, ServletException ex)</pre>
+//
+// 前三个参数是可选的，并且仅在我们需要有关连接点的更多信息时才有用，例如在 AspectJ <b>after-throwing</b> 通知中。
+//
+// <p><b>注意：</b>如果 throws-advice 方法自身抛出异常，它将覆盖原始异常（即更改抛给用户的异常）。
+// 覆盖的异常通常是 RuntimeException；它与任何方法签名兼容。
+// 但是，如果 throws-advice 方法抛出已检查异常，则它必须与目标方法声明的异常相匹配，因此在某种程度上与特定的目标方法签名耦合。
+// <b>请勿抛出与目标方法签名不兼容的未声明的已检查异常！</b>
 public interface ThrowsAdvice extends AfterAdvice {
 
 }

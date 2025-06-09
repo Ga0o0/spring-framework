@@ -56,6 +56,23 @@ import java.lang.reflect.Method;
  * @see Pointcut
  * @see ClassFilter
  */
+// 作为 {@link Pointcut} 的一部分：检查目标方法是否有资格获得建议。
+//
+// <p>可以<b>静态</b>或在<b>运行时</b>（动态）评估 {@code MethodMatcher}。静态匹配涉及方法和（可能的）方法属性。
+// 动态匹配还会提供特定调用的参数，并将运行先前建议的任何效果应用于连接点。
+//
+// <p>如果实现从其 {@link #isRuntime()} 方法返回 {@code false}，则可以静态执行评估，并且对于此方法的所有调用，结果都将相同，无论它们的参数是什么。
+// 这意味着，如果 {@link #isRuntime()} 方法返回 {@code false}，则永远不会调用 3 参数 {@link #matches(Method, Class, Object[])} 方法。
+//
+// <p>如果一个实现从其 2-arg {@link #matches(Method, Class)} 方法返回 {@code true}，
+// 并且其 {@link #isRuntime()} 方法返回 {@code true}，则 3-arg {@link #matches(Method, Class, Object[])}
+// 方法将在<i>每次潜在执行相关建议之前立即</i>调用，以决定是否应该运行该建议。
+// 所有先前的建议（例如拦截器链中的早期拦截器）都将运行，因此它们在参数或 {@code ThreadLocal} 状态中产生的任何状态更改都将在评估时可用。
+//
+// <p><strong>警告</strong>：此接口的具体实现必须提供 {@link Object#equals(Object)}、{@link Object#hashCode()} 和
+// {@link Object#toString()} 的正确实现，以便允许匹配器用于缓存场景 - 例如，在由 CGLIB 生成的代理中。
+// 从 Spring Framework 6.0.13 开始，{@code toString()} 实现必须生成一个唯一的字符串表示，
+// 该表示必须与实现 {@code equals()} 的逻辑一致。有关示例，请参阅框架内此接口的具体实现。
 public interface MethodMatcher {
 
 	/**
@@ -67,6 +84,12 @@ public interface MethodMatcher {
 	 * @param targetClass the target class
 	 * @return whether this method matches statically
 	 */
+	// 执行静态检查以确定给定方法是否匹配。
+	// <p>如果此方法返回 {@code false} 或 {@link #isRuntime()} 返回 {@code false}，
+	// 则不会进行运行时检查（即不会调用 {@link #matches(Method, Class, Object[])}）。
+	// @param method 候选方法
+	// @param targetClass 目标类
+	// @return 此方法是否静态匹配
 	boolean matches(Method method, Class<?> targetClass);
 
 	/**
@@ -78,6 +101,11 @@ public interface MethodMatcher {
 	 * @return whether a runtime match via {@link #matches(Method, Class, Object[])}
 	 * is required if static matching passed
 	 */
+	// 这个 {@code MethodMatcher} 是动态的吗？
+	// 也就是说，即使 {@link #matches(Method, Class)} 返回 {@code true}，
+	// 也必须在运行时通过 {@link #matches(Method, Class, Object[])} 方法进行最终检查吗？
+	// <p>可以在创建 AOP 代理时调用，并且不需要在每次方法调用之前再次调用。
+	// @return 如果静态匹配通过，是否需要通过 {@link #matches(Method, Class, Object[])} 进行运行时匹配
 	boolean isRuntime();
 
 	/**
@@ -94,12 +122,19 @@ public interface MethodMatcher {
 	 * @return whether there's a runtime match
 	 * @see #matches(Method, Class)
 	 */
+	// 检查此方法是否存在运行时（动态）匹配，该方法必须静态匹配。
+	// <p>仅当 {@link #matches(Method, Class)} 对于给定方法和目标类返回 {@code true}，
+	// 并且 {@link #isRuntime()} 返回 {@code true} 时，才会调用此方法。
+	// <p>在建议可能运行之前立即调用，在建议链中较早的任何建议运行之后。
+	// @param method 候选方法@param targetClass 目标类
+	// @param args 方法的参数@return 是否存在运行时匹配
 	boolean matches(Method method, Class<?> targetClass, Object... args);
 
 
 	/**
 	 * Canonical instance of a {@code MethodMatcher} that matches all methods.
 	 */
+	// 匹配所有方法的 {@code MethodMatcher} 的规范实例。
 	MethodMatcher TRUE = TrueMethodMatcher.INSTANCE;
 
 }

@@ -32,6 +32,7 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 方便的 Advisor 基类，同时也是静态切入点。如果 Advice 和子类都是可序列化的，则可序列化。
 @SuppressWarnings("serial")
 public abstract class StaticMethodMatcherPointcutAdvisor extends StaticMethodMatcherPointcut
 		implements PointcutAdvisor, Ordered, Serializable {

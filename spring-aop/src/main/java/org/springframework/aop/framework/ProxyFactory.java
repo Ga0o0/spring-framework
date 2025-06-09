@@ -32,6 +32,8 @@ import org.springframework.util.ClassUtils;
  * @author Rob Harrop
  * @since 14.03.2003
  */
+// 用于编程式使用的 AOP 代理工厂，无需在 Bean 工厂中声明式设置。
+// 此类提供了一种在自定义用户代码中获取和配置 AOP 代理实例的简单方法。
 @SuppressWarnings("serial")
 public class ProxyFactory extends ProxyCreatorSupport {
 
@@ -93,6 +95,9 @@ public class ProxyFactory extends ProxyCreatorSupport {
 	 * (if necessary for proxy creation).
 	 * @return the proxy object
 	 */
+	// 根据此工厂中的设置创建一个新的代理。
+	// <p>可重复调用。如果我们添加或移除了接口，效果会有所不同。可以添加和移除拦截器。
+	// <p>使用默认类加载器：通常是线程上下文类加载器（如果创建代理需要）。@return 代理对象
 	public Object getProxy() {
 		return createAopProxy().getProxy();
 	}
@@ -106,6 +111,11 @@ public class ProxyFactory extends ProxyCreatorSupport {
 	 * (or {@code null} for the low-level proxy facility's default)
 	 * @return the proxy object
 	 */
+	// 根据此工厂中的设置创建一个新的代理。
+	// <p>可重复调用。如果我们添加或删除了接口，效果会有所不同。可以添加和删除拦截器。
+	// <p>使用给定的类加载器（如果创建代理需要）。
+	// @param classLoader 用于创建代理的类加载器（或 {@code null} 表示低级代理工具的默认值）
+	// @return 代理对象
 	public Object getProxy(@Nullable ClassLoader classLoader) {
 		return createAopProxy().getProxy(classLoader);
 	}
@@ -117,6 +127,9 @@ public class ProxyFactory extends ProxyCreatorSupport {
 	 * @return the proxy class
 	 * @since 6.0
 	 */
+	// 根据此工厂中的设置确定代理类。
+	// @param classLoader 用于创建代理类的类加载器（或 {@code null}，表示低级代理工具的默认值）
+	// @return 代理类
 	public Class<?> getProxyClass(@Nullable ClassLoader classLoader) {
 		return createAopProxy().getProxyClass(classLoader);
 	}

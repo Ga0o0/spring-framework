@@ -28,6 +28,7 @@ import org.springframework.lang.Nullable;
  * @author Rob Harrop
  * @since 2.0
  */
+// Spring AOP Advisor 可用于任何 AspectJ 切入点表达式。
 @SuppressWarnings("serial")
 public class AspectJExpressionPointcutAdvisor extends AbstractGenericPointcutAdvisor implements BeanFactoryAware {
 

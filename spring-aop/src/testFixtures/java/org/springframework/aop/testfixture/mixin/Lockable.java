@@ -21,6 +21,7 @@ package org.springframework.aop.testfixture.mixin;
  *
  * @author Rod Johnson
  */
+// 用于混合的简单界面。
 public interface Lockable {
 
 	void lock();

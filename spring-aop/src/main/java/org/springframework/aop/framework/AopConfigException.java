@@ -24,6 +24,7 @@ import org.springframework.core.NestedRuntimeException;
  * @author Rod Johnson
  * @since 13.03.2003
  */
+// 由于 AOP 配置参数不合法而引发的异常。
 @SuppressWarnings("serial")
 public class AopConfigException extends NestedRuntimeException {
 

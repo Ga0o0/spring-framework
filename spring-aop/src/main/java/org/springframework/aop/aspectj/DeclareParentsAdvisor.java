@@ -33,6 +33,7 @@ import org.springframework.aop.support.DelegatingIntroductionInterceptor;
  * @author Ramnivas Laddad
  * @since 2.0
  */
+// 引入 advisor 委托给给定对象。为 DeclareParents 注解实现 AspectJ 注解样式的行为。
 public class DeclareParentsAdvisor implements IntroductionAdvisor {
 
 	private final Advice advice;

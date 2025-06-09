@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// advisor 链的工厂接口。
 public interface AdvisorChainFactory {
 
 	/**
@@ -38,6 +39,11 @@ public interface AdvisorChainFactory {
 	 * target object, in which case the method's declaring class is the next best option)
 	 * @return a List of MethodInterceptors (may also include InterceptorAndDynamicMethodMatchers)
 	 */
+	// 为给定的 advisor 链配置确定一个{@link org.aopalliance.intercept.MethodInterceptor} 对象列表。
+	// @param config 以Advised对象形式存在的AOP配置
+	// @param method 被代理的方法
+	// @param targetClass 目标类（可以为{@code null}，表示没有目标对象的代理，在这种情况下，方法的声明类是次优选择）
+	// @return MethodInterceptors列表（也可以包含InterceptorAndDynamicMethodMatchers）
 	List<Object> getInterceptorsAndDynamicInterceptionAdvice(Advised config, Method method, @Nullable Class<?> targetClass);
 
 }

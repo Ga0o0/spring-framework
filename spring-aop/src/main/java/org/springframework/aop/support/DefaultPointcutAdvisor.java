@@ -35,6 +35,9 @@ import org.springframework.lang.Nullable;
  * @see #setPointcut
  * @see #setAdvice
  */
+// 便捷的切入点驱动 Advisor 实现。
+//
+// <p>这是最常用的 Advisor 实现。它可以与任何切入点和通知类型一起使用，但引入除外。通常无需继承此类，也无需实现自定义 Advisor。
 @SuppressWarnings("serial")
 public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor implements Serializable {
 
@@ -46,6 +49,8 @@ public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor imple
 	 * <p>Advice must be set before using setter methods.
 	 * Pointcut will normally be set also, but defaults to {@code Pointcut.TRUE}.
 	 */
+	// 创建一个空的 DefaultPointcutAdvisor。
+	// <p>使用 setter 方法之前必须设置 Advice。Pointcut 通常也会设置，但默认为 {@code Pointcut.TRUE}。
 	public DefaultPointcutAdvisor() {
 	}
 
@@ -54,6 +59,9 @@ public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor imple
 	 * <p>{@code Pointcut.TRUE} will be used as Pointcut.
 	 * @param advice the Advice to use
 	 */
+	// 创建一个匹配所有方法的 DefaultPointcutAdvisor。
+	// <p>{@code Pointcut.TRUE} 将用作 Pointcut。
+	// @param advice 要使用的 Advice
 	public DefaultPointcutAdvisor(Advice advice) {
 		this(Pointcut.TRUE, advice);
 	}
@@ -63,6 +71,9 @@ public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor imple
 	 * @param pointcut the Pointcut targeting the Advice
 	 * @param advice the Advice to run when Pointcut matches
 	 */
+	// 创建一个 DefaultPointcutAdvisor，指定 Pointcut 和 Advice。
+	// @param pointcut 指向 Advice 的 Pointcut
+	// @param advice 当 Pointcut 匹配时要运行的 Advice
 	public DefaultPointcutAdvisor(Pointcut pointcut, Advice advice) {
 		this.pointcut = pointcut;
 		setAdvice(advice);
@@ -74,6 +85,8 @@ public class DefaultPointcutAdvisor extends AbstractGenericPointcutAdvisor imple
 	 * <p>Default is {@code Pointcut.TRUE}.
 	 * @see #setAdvice
 	 */
+	// 指定针对 advice 的切入点。
+	// <p>默认值为 {@code Pointcut.TRUE}。
 	public void setPointcut(@Nullable Pointcut pointcut) {
 		this.pointcut = (pointcut != null ? pointcut : Pointcut.TRUE);
 	}

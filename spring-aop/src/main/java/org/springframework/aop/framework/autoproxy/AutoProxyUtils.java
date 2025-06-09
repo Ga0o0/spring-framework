@@ -108,6 +108,10 @@ public abstract class AutoProxyUtils {
 	 * @param targetClass the corresponding target class
 	 * @since 4.2.3
 	 */
+	// 如果可能，为指定的 bean 公开给定的目标类。
+	// @param beanFactory 包含该 bean 的 ConfigurableListableBeanFactory
+	// @param beanName bean 的名称
+	// @param targetClass 对应的目标类
 	static void exposeTargetClass(
 			ConfigurableListableBeanFactory beanFactory, @Nullable String beanName, Class<?> targetClass) {
 
@@ -125,6 +129,10 @@ public abstract class AutoProxyUtils {
 	 * @since 5.1
 	 * @see AutowireCapableBeanFactory#ORIGINAL_INSTANCE_SUFFIX
 	 */
+	// 根据 {@link AutowireCapableBeanFactory#ORIGINAL_INSTANCE_SUFFIX}
+	// 判断给定的 bean 名称是否为“原始实例”，并跳过任何代理尝试。
+	// @param beanName bean 的名称
+	// @param beanClass 对应的 bean 类
 	static boolean isOriginalInstance(String beanName, Class<?> beanClass) {
 		if (!StringUtils.hasLength(beanName) || beanName.length() !=
 				beanClass.getName().length() + AutowireCapableBeanFactory.ORIGINAL_INSTANCE_SUFFIX.length()) {

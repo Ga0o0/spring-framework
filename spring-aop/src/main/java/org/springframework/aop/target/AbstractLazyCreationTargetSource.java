@@ -40,6 +40,13 @@ import org.springframework.lang.Nullable;
  * @see #isInitialized()
  * @see #createObject()
  */
+// {@link org.springframework.aop.TargetSource} 实现将延迟创建用户管理的对象。
+//
+// <p>用户通过实现 {@link #createObject()} 方法来控制延迟创建目标对象的操作。
+// 此 {@code TargetSource} 将在首次访问代理时调用此方法。
+//
+// <p>当你需要将某个依赖项的引用传递给对象，但实际上并不希望在第一次使用之前创建该依赖项时，
+// 这种方法非常有用。一个典型的场景是连接到远程资源。
 public abstract class AbstractLazyCreationTargetSource implements TargetSource {
 
 	/** Logger available to subclasses. */

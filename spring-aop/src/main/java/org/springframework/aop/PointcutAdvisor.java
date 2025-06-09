@@ -23,11 +23,14 @@ package org.springframework.aop;
  *
  * @author Rod Johnson
  */
+// 所有由切入点驱动的 Advisor 的超级接口。
+// 这几乎涵盖了除引入型 Advisor 之外的所有 Advisor，因为引入型 Advisor 不适用方法级匹配。
 public interface PointcutAdvisor extends Advisor {
 
 	/**
 	 * Get the Pointcut that drives this advisor.
 	 */
+	// 获取驱动该 advisor 的切入点。
 	Pointcut getPointcut();
 
 }

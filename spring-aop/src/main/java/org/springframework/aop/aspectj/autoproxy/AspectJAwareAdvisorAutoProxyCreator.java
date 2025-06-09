@@ -43,6 +43,8 @@ import org.springframework.util.ClassUtils;
  * @author Ramnivas Laddad
  * @since 2.0
  */
+// @link org.springframework.aop.framework.autoproxy.AbstractAdvisorAutoProxyCreator} 子类，
+// 它公开 AspectJ 的调用上下文，并且当多条 advice 来自同一方面时，理解 AspectJ 的建议优先规则。
 @SuppressWarnings("serial")
 public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCreator {
 

@@ -80,6 +80,10 @@ public final class AopContext {
 	 * @return the old proxy, which may be {@code null} if none was bound
 	 * @see #currentProxy()
 	 */
+	// 通过 {@code currentProxy()} 方法使给定的代理可用。
+	// <p>请注意，调用者应谨慎保留旧值。
+	// @param proxy 要公开的代理（或 {@code null} 重置它）
+	// @return 旧代理，如果没有绑定，则可能为 {@code null}。
 	@Nullable
 	static Object setCurrentProxy(@Nullable Object proxy) {
 		Object old = currentProxy.get();

@@ -23,6 +23,7 @@ import org.springframework.aop.support.DefaultIntroductionAdvisor;
  *
  * @author Rod Johnson
  */
+// 与 LockMixin 一起使用的 Advisor。适用于所有类。
 @SuppressWarnings("serial")
 public class LockMixinAdvisor extends DefaultIntroductionAdvisor {
 

@@ -37,6 +37,9 @@ import org.springframework.lang.Nullable;
  * @see #requiresRefresh()
  * @see #freshTarget()
  */
+// 抽象 {@link org.springframework.aop.TargetSource} 实现，包装了一个可刷新的目标对象。子类可以判断是否需要刷新，并需要提供新的目标对象。
+//
+// <p>实现 {@link Refreshable} 接口，以便能够明确控制刷新状态。
 public abstract class AbstractRefreshableTargetSource implements TargetSource, Refreshable {
 
 	/** Logger available to subclasses. */

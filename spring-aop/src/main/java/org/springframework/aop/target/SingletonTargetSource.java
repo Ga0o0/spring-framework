@@ -36,6 +36,10 @@ import org.springframework.util.ObjectUtils;
  * @author Juergen Hoeller
  * @see org.springframework.aop.framework.AdvisedSupport#setTarget(Object)
  */
+// 实现 {@link org.springframework.aop.TargetSource} 接口，用于保存给定对象。
+// 这是 Spring AOP 框架使用的 TargetSource 接口的默认实现。通常无需在应用程序代码中创建此类的对象。
+//
+// <p>此类是可序列化的。但是，SingletonTargetSource 的实际可序列化性取决于目标是否可序列化。
 public class SingletonTargetSource implements TargetSource, Serializable {
 
 	/** use serialVersionUID from Spring 1.2 for interoperability. */
@@ -51,6 +55,8 @@ public class SingletonTargetSource implements TargetSource, Serializable {
 	 * Create a new SingletonTargetSource for the given target.
 	 * @param target the target object
 	 */
+	// 为给定目标创建一个新的 SingletonTargetSource。
+	// @param target 目标对象
 	public SingletonTargetSource(Object target) {
 		Assert.notNull(target, "Target object must not be null");
 		this.target = target;

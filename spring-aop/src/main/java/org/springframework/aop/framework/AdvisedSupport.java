@@ -64,6 +64,15 @@ import org.springframework.util.ObjectUtils;
  * @author Sam Brannen
  * @see org.springframework.aop.framework.AopProxy
  */
+// AOP 代理配置管理器的基类。
+//
+// <p>这些本身不是 AOP 代理，但此类的子类通常是工厂，可直接从中获取 AOP 代理实例。
+//
+// <p>此类使子类摆脱了 Advice 和 Advisor 的管理工作，但实际上并未实现由子类提供的代理创建方法。
+//
+// <p>此类可序列化；子类无需如此。
+//
+// <p>此类用于保存代理的快照。
 public class AdvisedSupport extends ProxyConfig implements Advised {
 
 	/** use serialVersionUID from Spring 2.0 for interoperability. */
@@ -78,6 +87,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 
 	/** Package-protected to allow direct access for efficiency. */
+	// 包保护允许直接访问以提高效率。
 	TargetSource targetSource = EMPTY_TARGET_SOURCE;
 
 	/** Whether the Advisors are already filtered for the specific target class. */
@@ -90,12 +100,14 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * Interfaces to be implemented by the proxy. Held in List to keep the order
 	 * of registration, to create JDK proxy with specified order of interfaces.
 	 */
+	// 代理需要实现的接口。保存在 List 中以保持注册顺序，从而创建按指定接口顺序排列的 JDK 代理。
 	private List<Class<?>> interfaces = new ArrayList<>();
 
 	/**
 	 * List of Advisors. If an Advice is added, it will be wrapped
 	 * in an Advisor before being added to this List.
 	 */
+	// Advisors 列表。如果添加了 Advice，它将被包装在顾问中，然后再添加到此列表中。
 	private List<Advisor> advisors = new ArrayList<>();
 
 	/**
@@ -104,9 +116,11 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * @since 6.0.10
 	 * @see #reduceToAdvisorKey
 	 */
+	// 最小 {@link AdvisorKeyEntry} 实例列表，在减少时分配给 {@link #advisors} 字段。
 	private List<Advisor> advisorKey = this.advisors;
 
 	/** Cache with Method as key and advisor chain List as value. */
+	// 以方法为键、以顾问链列表为值的缓存。
 	@Nullable
 	private transient Map<MethodCacheKey, List<Object>> methodCache;
 
@@ -145,6 +159,8 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * @see #setTargetSource
 	 * @see org.springframework.aop.target.SingletonTargetSource
 	 */
+	// 将给定对象设置为目标。
+	// <p>将为该对象创建一个 SingletonTargetSource。
 	public void setTarget(Object target) {
 		setTargetSource(new SingletonTargetSource(target));
 	}
@@ -224,6 +240,8 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * Add a new proxied interface.
 	 * @param ifc the additional interface to proxy
 	 */
+	// 添加新的代理接口。
+	// @param ifc 要代理的附加接口
 	public void addInterface(Class<?> ifc) {
 		Assert.notNull(ifc, "Interface must not be null");
 		if (!ifc.isInterface()) {
@@ -368,7 +386,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 	private void validateIntroductionAdvisor(IntroductionAdvisor advisor) {
 		advisor.validateInterfaces();
-		// If the advisor passed validation, we can make the change.
+		// If the advisor passed validation, we can make the change. --> 译文：如果 advisor 通过验证，我们就可以进行更改。
 		for (Class<?> ifc : advisor.getInterfaces()) {
 			addInterface(ifc);
 		}
@@ -377,6 +395,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	private void addAdvisorInternal(int pos, Advisor advisor) throws AopConfigException {
 		Assert.notNull(advisor, "Advisor must not be null");
 		if (isFrozen()) {
+			// 无法添加顾问：配置已冻结。
 			throw new AopConfigException("Cannot add advisor: Configuration is frozen.");
 		}
 		if (pos > this.advisors.size()) {
@@ -405,16 +424,17 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/**
 	 * Cannot add introductions this way unless the advice implements IntroductionInfo.
 	 */
+	// 除非建议实现 IntroductionInfo，否则无法通过这种方式添加介绍。
 	@Override
 	public void addAdvice(int pos, Advice advice) throws AopConfigException {
 		Assert.notNull(advice, "Advice must not be null");
 		if (advice instanceof IntroductionInfo introductionInfo) {
 			// We don't need an IntroductionAdvisor for this kind of introduction:
-			// It's fully self-describing.
+			// It's fully self-describing. --> 译文：对于这种 introduction，我们不需要 IntroductionAdvisor：它是完全自我描述的。
 			addAdvisor(pos, new DefaultIntroductionAdvisor(advice, introductionInfo));
 		}
 		else if (advice instanceof DynamicIntroductionAdvice) {
-			// We need an IntroductionAdvisor for this kind of introduction.
+			// We need an IntroductionAdvisor for this kind of introduction. --> 译文：我们需要一个 IntroductionAdvisor 来进行这种介绍。
 			throw new AopConfigException("DynamicIntroductionAdvice may only be added as part of IntroductionAdvisor");
 		}
 		else {
@@ -487,10 +507,14 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	 * @param targetClass the target class
 	 * @return a List of MethodInterceptors (may also include InterceptorAndDynamicMethodMatchers)
 	 */
+	// 根据此配置，为给定方法确定一个 {@link org.aopalliance.intercept.MethodInterceptor} 对象列表。
+	// @param method 代理方法
+	// @param targetClass 目标类
+	// @return MethodInterceptors 列表（也可能包含 InterceptorAndDynamicMethodMatchers）
 	public List<Object> getInterceptorsAndDynamicInterceptionAdvice(Method method, @Nullable Class<?> targetClass) {
 		List<Object> cachedInterceptors;
 		if (this.methodCache != null) {
-			// Method-specific cache for method-specific pointcuts
+			// Method-specific cache for method-specific pointcuts --> 译文：方法特定切入点的特定方法缓存
 			MethodCacheKey cacheKey = new MethodCacheKey(method);
 			cachedInterceptors = this.methodCache.get(cacheKey);
 			if (cachedInterceptors == null) {
@@ -500,9 +524,10 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 			}
 		}
 		else {
-			// Shared cache since there are no method-specific advisors (see below).
+			// Shared cache since there are no method-specific advisors (see below). --> 译文：由于没有特定于方法的 advisors，因此共享缓存（见下文）。
 			cachedInterceptors = this.cachedInterceptors;
 			if (cachedInterceptors == null) {
+				// 为给定的 advisor 链配置确定一个{@link org.aopalliance.intercept.MethodInterceptor} 对象列表。
 				cachedInterceptors = this.advisorChainFactory.getInterceptorsAndDynamicInterceptionAdvice(
 						this, method, targetClass);
 				this.cachedInterceptors = cachedInterceptors;
@@ -514,6 +539,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	/**
 	 * Invoked when advice has changed.
 	 */
+	// 当 advice 发生变化时调用。
 	protected void adviceChanged() {
 		this.methodCache = null;
 		this.cachedInterceptors = null;
@@ -521,6 +547,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 
 		// Initialize method cache if necessary; otherwise,
 		// cachedInterceptors is going to be shared (see above).
+		// --> 译文：如果有必要，初始化方法缓存；否则，cachedInterceptors 将被共享（见上文）。
 		for (Advisor advisor : this.advisors) {
 			if (advisor instanceof PointcutAdvisor) {
 				this.methodCache = new ConcurrentHashMap<>();

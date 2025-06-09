@@ -51,6 +51,18 @@ import org.springframework.lang.Nullable;
  * @see #releaseTarget
  * @see #destroy
  */
+// 池化 {@link org.springframework.aop.TargetSource} 实现的抽象基类，
+// 该实现维护一个目标实例池，每次方法调用时从池中获取和释放一个目标对象。
+// 此抽象基类独立于具体的池化技术；具体示例请参见子类 {@link CommonsPool2TargetSource}。
+//
+// <p>子类必须根据所选的对象池实现 {@link #getTarget} 和 {@link #releaseTarget} 方法。
+// 继承自 {@link AbstractPrototypeBasedTargetSource} 的 {@link #newPrototypeInstance()} 方法可用于创建对象并将其放入池中。
+//
+// <p>子类还必须实现来自 {@link PoolingConfig} 接口的一些监控方法。
+// {@link #getPoolingConfigMixin()} 方法通过 IntroductionAdvisor 将这些统计信息提供给代理对象。
+//
+// <p>此类实现 {@link org.springframework.beans.factory.DisposableBean} 接口，
+// 以强制子类实现 {@link #destroy()} 方法，关闭其对象池。
 @SuppressWarnings("serial")
 public abstract class AbstractPoolingTargetSource extends AbstractPrototypeBasedTargetSource
 		implements PoolingConfig, DisposableBean {
