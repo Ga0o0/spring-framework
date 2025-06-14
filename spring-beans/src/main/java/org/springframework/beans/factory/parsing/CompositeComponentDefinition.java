@@ -31,6 +31,7 @@ import org.springframework.util.Assert;
  * @since 2.0.1
  * @see #getNestedComponents()
  */
+// {@link ComponentDefinition} 实现包含一个或多个嵌套的 {@link ComponentDefinition} 实例，将它们聚合到一个命名的组件组中。
 public class CompositeComponentDefinition extends AbstractComponentDefinition {
 
 	private final String name;

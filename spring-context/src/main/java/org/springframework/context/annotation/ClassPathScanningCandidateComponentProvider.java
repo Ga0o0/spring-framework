@@ -90,6 +90,15 @@ import org.springframework.util.ClassUtils;
  * @see ScannedGenericBeanDefinition
  * @see CandidateComponentsIndex
  */
+// 组件提供程序从指定的基础包开始扫描候选组件。
+// 如果可用，可以使用 {@linkplain CandidateComponentsIndex 组件索引}，否则扫描类路径。
+//
+// <p>候选组件通过应用排除和包含过滤器来识别。
+// 支持针对使用 {@link Indexed} 注解的注解/目标类型的 {@link AnnotationTypeFilter} 和
+// {@link AssignableTypeFilter} 包含过滤器：如果指定了任何其他包含过滤器，则忽略索引，改用类路径扫描。
+//
+// <p>此实现基于 Spring 的 {@link org.springframework.core.type.classreading.MetadataReader MetadataReader} 工具，
+// 由 ASM {@link org.springframework.asm.ClassReader ClassReader} 支持。
 @SuppressWarnings("removal") // components index
 public class ClassPathScanningCandidateComponentProvider implements EnvironmentCapable, ResourceLoaderAware {
 
@@ -406,6 +415,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	private boolean indexSupportsIncludeFilter(TypeFilter filter) {
 		if (filter instanceof AnnotationTypeFilter annotationTypeFilter) {
 			Class<? extends Annotation> annotationType = annotationTypeFilter.getAnnotationType();
+			// AnnotationUtils.isAnnotationDeclaredLocally() -> 确定指定的注释是否在提供的 annotationType 上本地声明（即直接存在）。
 			return (AnnotationUtils.isAnnotationDeclaredLocally(Indexed.class, annotationType) ||
 					annotationType.getName().startsWith("jakarta.") ||
 					annotationType.getName().startsWith("javax."));

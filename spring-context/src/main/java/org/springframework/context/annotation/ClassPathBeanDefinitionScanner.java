@@ -61,7 +61,8 @@ import org.springframework.util.PatternMatchUtils;
  * @see org.springframework.stereotype.Service
  * @see org.springframework.stereotype.Controller
  */
-// 一个 Bean 定义扫描器，用于检测类路径中的候选 Bean，并将相应的 Bean 定义注册到指定的注册表（{@code BeanFactory} 或 {@code ApplicationContext}）。
+// 一个 Bean 定义扫描器，用于检测类路径中的候选 Bean，并将相应的 Bean 定义注册到指定的注册表
+// （{@code BeanFactory} 或 {@code ApplicationContext}）。
 //
 // <p>候选类通过可配置的类型过滤器检测。默认过滤器包含使用 Spring 的
 // {@link org.springframework.stereotype.Component @Component}、
@@ -69,7 +70,8 @@ import org.springframework.util.PatternMatchUtils;
 // {@link org.springframework.stereotype.Service @Service} 或
 // {@link org.springframework.stereotype.Controller @Controller} 构造型注解的类。
 //
-// <p>如果可用，也支持 Jakarta EE 的 {@link jakarta.annotation.ManagedBean} 和 JSR-330 的 {@link jakarta.inject.Named} 注解。
+// <p>如果可用，也支持 Jakarta EE 的 {@link jakarta.annotation.ManagedBean} 和
+// JSR-330 的 {@link jakarta.inject.Named} 注解。
 public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateComponentProvider {
 
 	private final BeanDefinitionRegistry registry;
