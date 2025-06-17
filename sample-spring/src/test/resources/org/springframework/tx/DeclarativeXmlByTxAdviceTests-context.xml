@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+		https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx
+		https://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop
+		https://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<bean id="txManager" class="org.springframework.tx.SimpleTransactionManager" />
+
+	<!-- this is the service object that we want to make transactional -->
+	<bean id="innerService" class="org.springframework.tx.DeclarativeXmlByTxAdviceTests.InnerService"/>
+	<bean id="outerService" class="org.springframework.tx.DeclarativeXmlByTxAdviceTests.OuterService">
+		<property name="innerService" ref="innerService" />
+	</bean>
+	
+	<!-- the transactional advice (what 'happens'; see the <aop:advisor/> bean below) -->
+	<tx:advice id="txAdvice" transaction-manager="txManager">
+		<tx:attributes>
+			<tx:method name="doSomething" propagation="REQUIRED"/>
+		</tx:attributes>
+	</tx:advice>
+
+	<aop:config>
+		<aop:pointcut id="serviceOperation" expression="execution(* org.springframework.tx.DeclarativeXmlByTxAdviceTests.*Service.*(..))"/>
+		<aop:advisor pointcut-ref="serviceOperation" advice-ref="txAdvice" />
+	</aop:config>
+
+</beans>
