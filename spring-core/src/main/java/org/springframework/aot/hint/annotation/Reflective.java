@@ -39,6 +39,10 @@ import org.springframework.core.annotation.AliasFor;
  * @see ReflectiveRuntimeHintsRegistrar
  * @see RegisterReflectionForBinding @RegisterReflectionForBinding
  */
+// 指示被注解的元素需要反射。
+//
+// <p>当此注解存在时（无论是直接存在还是以元注解形式存在），都会触发针对被注解元素配置的 {@linkplain ReflectiveProcessor 处理器}。
+// 默认情况下，系统会为被注解的元素注册一个反射提示，以便在必要时发现并调用该提示。
 @Target({ElementType.ANNOTATION_TYPE, ElementType.TYPE, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -47,6 +51,7 @@ public @interface Reflective {
 	/**
 	 * Alias for {@link #processors()}.
 	 */
+	// {@link #processors()} 的别名。
 	@AliasFor("processors")
 	Class<? extends ReflectiveProcessor>[] value() default SimpleReflectiveProcessor.class;
 
@@ -54,6 +59,7 @@ public @interface Reflective {
 	 * {@link ReflectiveProcessor} implementations to invoke against the
 	 * annotated element.
 	 */
+	// {@link ReflectiveProcessor} 实现来调用注释元素。
 	@AliasFor("value")
 	Class<? extends ReflectiveProcessor>[] processors() default SimpleReflectiveProcessor.class;
 

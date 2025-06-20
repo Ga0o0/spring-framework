@@ -48,6 +48,8 @@ import org.springframework.util.ReflectionUtils;
  * @author Sebastien Deleuze
  * @since 6.0
  */
+// 注册必要的反射提示，以便指定的类型可以在运行时绑定。字段、构造函数、属性和记录组件均已注册，
+// 但 {@code java.} 包中的一组类型除外，这些类型仅注册了类型。类型在属性和记录组件上以传递方式发现，泛型类型也已注册。
 public class BindingReflectionHintsRegistrar {
 
 	private static final String KOTLIN_COMPANION_SUFFIX = "$Companion";

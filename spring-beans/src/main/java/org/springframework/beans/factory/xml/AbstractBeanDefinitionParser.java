@@ -48,6 +48,12 @@ import org.springframework.util.StringUtils;
  * @author Dave Syer
  * @since 2.0
  */
+// 抽象 {@link BeanDefinitionParser} 实现提供了许多便捷方法和一个
+// {@link AbstractBeanDefinitionParser#parseInternal 模板方法}，子类必须重写这些方法才能提供实际的解析逻辑。
+//
+// <p>如果您想要将任意复杂的 XML 解析为一个或多个 {@link BeanDefinition BeanDefinitions}，请使用此 {@link BeanDefinitionParser} 实现。
+// 如果您只想将一些 XML 解析为单个 {@code BeanDefinition}，则不妨考虑此类更简单的便捷扩展，
+// 即 {@link AbstractSingleBeanDefinitionParser} 和 {@link AbstractSimpleBeanDefinitionParser}。
 public abstract class AbstractBeanDefinitionParser implements BeanDefinitionParser {
 
 	/** Constant for the "id" attribute. */
@@ -60,9 +66,11 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	@Override
 	@Nullable
 	public final BeanDefinition parse(Element element, ParserContext parserContext) {
+		// 中心模板方法，用于将提供的 Element 解析为一个或多个 BeanDefinition。
 		AbstractBeanDefinition definition = parseInternal(element, parserContext);
 		if (definition != null && !parserContext.isNested()) {
 			try {
+				// 解析提供的 BeanDefinition 的 ID。
 				String id = resolveId(element, definition, parserContext);
 				if (!StringUtils.hasText(id)) {
 					parserContext.getReaderContext().error(
@@ -70,6 +78,7 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 									+ "' when used as a top-level tag", element);
 				}
 				String[] aliases = null;
+				// 确定元素的 “name” 属性是否应解析为 Bean 定义别名，即替代的 Bean 定义名称。
 				if (shouldParseNameAsAliases()) {
 					String name = element.getAttribute(NAME_ATTRIBUTE);
 					if (StringUtils.hasLength(name)) {
@@ -106,9 +115,18 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	 * @throws BeanDefinitionStoreException if no unique name could be generated
 	 * for the given bean definition
 	 */
+	// 解析提供的 {@link BeanDefinition} 的 ID。
+	// <p>使用 {@link #shouldGenerateId generation} 时，会自动生成名称。
+	// 否则，会从“id”属性中提取 ID，并可能使用 {@link #shouldGenerateIdAsFallback() fallback} 回退到生成的 ID。
+	// @param element 构建 bean 定义的元素
+	// @param definition 需要注册的 bean 定义
+	// @param parserContext 封装解析过程当前状态的对象；提供对 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 的访问
+	// @return 解析后的 ID
+	// @throws BeanDefinitionStoreException 如果无法为给定的 bean 定义生成唯一名称
 	protected String resolveId(Element element, AbstractBeanDefinition definition, ParserContext parserContext)
 			throws BeanDefinitionStoreException {
 
+		// 是否应该生成 ID，而不是从传入的 Element 中读取？
 		if (shouldGenerateId()) {
 			return parserContext.getReaderContext().generateBeanName(definition);
 		}
@@ -135,7 +153,14 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	 * @param registry the registry that the bean is to be registered with
 	 * @see BeanDefinitionReaderUtils#registerBeanDefinition(BeanDefinitionHolder, BeanDefinitionRegistry)
 	 */
+	// 使用提供的 {@link BeanDefinitionRegistry registry} 注册提供的 {@link BeanDefinitionHolder bean}。
+	// <p>子类可以覆盖此方法来控制提供的 {@link BeanDefinitionHolder bean} 是否实际注册，或者注册更多 bean。
+	// <p>默认实现仅在 {@code isNested} 参数为 {@code false} 时才使用提供的
+	// {@link BeanDefinitionRegistry registry} 注册提供的 {@link BeanDefinitionHolder bean}，因为通常不希望将内部 bean 注册为顶级 bean。
+	// @param definition 要注册的 bean 定义
+	// @param registry 要注册 bean 的注册表
 	protected void registerBeanDefinition(BeanDefinitionHolder definition, BeanDefinitionRegistry registry) {
+		// 将指定的 bean 定义注册到指定的 bean 工厂。
 		BeanDefinitionReaderUtils.registerBeanDefinition(definition, registry);
 	}
 
@@ -150,6 +175,10 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	 * @see #parse(org.w3c.dom.Element, ParserContext)
 	 * @see #postProcessComponentDefinition(org.springframework.beans.factory.parsing.BeanComponentDefinition)
 	 */
+	// 中心模板方法，用于将提供的 {@link Element} 解析为一个或多个 {@link BeanDefinition BeanDefinitions}。
+	// @param element 需要解析为一个或多个 {@link BeanDefinition BeanDefinitions} 的元素
+	// @param parserContext 封装解析过程当前状态的对象；提供对 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry} 的访问
+	// @return 解析提供的 {@link Element} 后生成的主 {@link BeanDefinition}
 	@Nullable
 	protected abstract AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext);
 
@@ -160,6 +189,10 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	 * won't even check for an "id" attribute in this case.
 	 * @return whether the parser should always generate an id
 	 */
+	// 是否应该生成 ID，而不是从传入的 {@link Element} 中读取？
+	// <p>默认禁用；子类可以重写此标记以启用 ID 生成。
+	// 请注意，此标志表示<i>始终</i>生成 ID；在这种情况下，解析器甚至不会检查“id”属性。
+	// @return 解析器是否应始终生成 ID
 	protected boolean shouldGenerateId() {
 		return false;
 	}
@@ -183,6 +216,9 @@ public abstract class AbstractBeanDefinitionParser implements BeanDefinitionPars
 	 * @return whether the parser should evaluate the "name" attribute as aliases
 	 * @since 4.1.5
 	 */
+	// 确定元素的“name”属性是否应解析为 Bean 定义别名，即替代的 Bean 定义名称。
+	// <p>默认实现返回 {@code true}。
+	// @return 解析器是否应将“name”属性评估为别名
 	protected boolean shouldParseNameAsAliases() {
 		return true;
 	}

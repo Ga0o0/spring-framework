@@ -31,6 +31,8 @@ import org.springframework.transaction.TransactionStatus;
  * @author Juergen Hoeller
  * @since 2.0.4
  */
+// 指定基本事务执行操作的接口。
+// 由 {@link TransactionTemplate} 实现。它不常直接使用，但有助于增强可测试性，因为它易于模拟或存根。
 public interface TransactionOperations {
 
 	/**
@@ -45,6 +47,13 @@ public interface TransactionOperations {
 	 * @throws RuntimeException if thrown by the TransactionCallback
 	 * @see #executeWithoutResult(Consumer)
 	 */
+	// 在事务中执行给定回调对象指定的操作。
+	// <p>允许返回在事务中创建的结果对象，即一个领域对象或一个领域对象集合。
+	// 回调抛出的 RuntimeException 异常将被视为强制回滚的致命异常。此类异常将传播给模板的调用者。
+	// @param action 指定事务操作的回调对象
+	// @return 回调返回的结果对象，如果没有则返回 {@code null}
+	// @throws TransactionException（如果发生初始化、回滚或系统错误）
+	// @throws RuntimeException（如果由 TransactionCallback 抛出）
 	@Nullable
 	<T> T execute(TransactionCallback<T> action) throws TransactionException;
 
@@ -63,6 +72,12 @@ public interface TransactionOperations {
 	 * @see #execute(TransactionCallback)
 	 * @see TransactionCallbackWithoutResult
 	 */
+	// 在事务中执行给定 {@link Runnable} 指定的操作。
+	// <p>如果您需要从回调返回对象或在回调中访问 {@link org.springframework.transaction.TransactionStatus}，请改用 {@link #execute(TransactionCallback)}。
+	// <p>此变体类似于使用 {@link TransactionCallbackWithoutResult}，但针对常见情况简化了签名 - 并且可方便地与 Java 8 lambda 表达式一起使用。
+	// @param action 指定事务操作的 Runnable
+	// @throws TransactionException（如果发生初始化、回滚或系统错误）
+	// @throws RuntimeException（如果由 Runnable 抛出）
 	default void executeWithoutResult(Consumer<TransactionStatus> action) throws TransactionException {
 		execute(status -> {
 			action.accept(status);
@@ -85,6 +100,10 @@ public interface TransactionOperations {
 	 * @see AbstractPlatformTransactionManager#SYNCHRONIZATION_NEVER
 	 * @see TransactionTemplate
 	 */
+	// 返回 {@code TransactionOperations} 接口的实现，该实现执行给定的 {@link TransactionCallback}，而无需实际事务。
+	// <p>用于测试：该行为相当于使用没有实际事务（PROPAGATION_SUPPORTS）和没有同步（SYNCHRONIZATION_NEVER）的事务管理器运行。
+	// <p>对于具有实际事务处理的 {@link TransactionOperations} 实现，请使用 {@link TransactionTemplate} 和
+	// 适当的 {@link org.springframework.transaction.PlatformTransactionManager}。
 	static TransactionOperations withoutTransaction() {
 		return WithoutTransactionOperations.INSTANCE;
 	}

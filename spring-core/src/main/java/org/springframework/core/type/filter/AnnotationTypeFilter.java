@@ -42,6 +42,11 @@ import org.springframework.util.ClassUtils;
  * @author Sam Brannen
  * @since 2.5
  */
+// 一个简单的 {@link TypeFilter}，用于匹配具有给定注解的类，并检查继承的注解。
+//
+// <p>默认情况下，匹配逻辑与 {@link AnnotationUtils#getAnnotation(java.lang.reflect.AnnotatedElement, Class)} 相同，
+// 支持单层元注解的 <em>present</em> 或 <em>meta-present</em> 注解。
+// 可以禁用元注解搜索。同样，也可以选择启用接口注解搜索。有关详情，请参阅此类中的各种构造函数。
 public class AnnotationTypeFilter extends AbstractTypeHierarchyTraversingFilter {
 
 	private final Class<? extends Annotation> annotationType;

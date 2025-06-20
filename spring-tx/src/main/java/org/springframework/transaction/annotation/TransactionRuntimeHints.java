@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
  * @since 6.0
  * @see TransactionBeanRegistrationAotProcessor
  */
+// {@link RuntimeHintsRegistrar} 实现，为事务管理注册运行时提示。
 class TransactionRuntimeHints implements RuntimeHintsRegistrar {
 
 	@Override

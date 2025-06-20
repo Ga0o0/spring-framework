@@ -54,12 +54,14 @@ public interface Ordered {
 	 * Useful constant for the highest precedence value.
 	 * @see java.lang.Integer#MIN_VALUE
 	 */
+	// 表示最高优先级值的有用常量。
 	int HIGHEST_PRECEDENCE = Integer.MIN_VALUE;
 
 	/**
 	 * Useful constant for the lowest precedence value.
 	 * @see java.lang.Integer#MAX_VALUE
 	 */
+	// 最低优先值的有用常数。
 	int LOWEST_PRECEDENCE = Integer.MAX_VALUE;
 
 
@@ -74,6 +76,9 @@ public interface Ordered {
 	 * @see #HIGHEST_PRECEDENCE
 	 * @see #LOWEST_PRECEDENCE
 	 */
+	// 获取此对象的顺序值。
+	// <p>值越高，优先级越低。因此，值最低的对象优先级最高（有点类似于 Servlet {@code load-on-startup} 的值）。
+	// <p>相同的顺序值将导致受影响对象的排序位置任意。
 	int getOrder();
 
 }

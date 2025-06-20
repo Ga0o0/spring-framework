@@ -41,6 +41,7 @@ import org.springframework.util.CollectionUtils;
  * @since 3.1
  * @see EnableTransactionManagement
  */
+// 抽象基础 {@code @Configuration} 类提供通用结构以启用 Spring 的注释驱动的事务管理功能。
 @Configuration
 public abstract class AbstractTransactionManagementConfiguration implements ImportAware {
 
@@ -50,6 +51,7 @@ public abstract class AbstractTransactionManagementConfiguration implements Impo
 	/**
 	 * Default transaction manager, as configured through a {@link TransactionManagementConfigurer}.
 	 */
+	// 默认事务管理器，通过 {@link TransactionManagementConfigurer} 配置。
 	@Nullable
 	protected TransactionManager txManager;
 

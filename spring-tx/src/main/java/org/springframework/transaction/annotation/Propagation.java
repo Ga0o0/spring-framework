@@ -27,6 +27,7 @@ import org.springframework.transaction.TransactionDefinition;
  * @author Juergen Hoeller
  * @since 1.2
  */
+// 表示与 {@link Transactional} 注释一起使用的事务传播行为的枚举，对应于 {@link TransactionDefinition} 接口。
 public enum Propagation {
 
 	/**
@@ -34,6 +35,9 @@ public enum Propagation {
 	 * Analogous to EJB transaction attribute of the same name.
 	 * <p>This is the default setting of a transaction annotation.
 	 */
+	// 支持当前事务，如果不存在则创建一个新的。
+	// 类似于同名的 EJB 事务属性。
+	// <p>这是事务注解的默认设置。
 	REQUIRED(TransactionDefinition.PROPAGATION_REQUIRED),
 
 	/**
@@ -47,12 +51,18 @@ public enum Propagation {
 	 * the actual synchronization configuration of the transaction manager.
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setTransactionSynchronization
 	 */
+	// 支持当前事务，如果不存在则以非事务方式执行。
+	// 类似于同名的 EJB 事务属性。
+	// <p>注意：对于具有事务同步功能的事务管理器，{@code SUPPORTS} 与完全没有事务略有不同，因为它定义了同步将适用的事务范围。
+	// 因此，相同的资源（JDBC 连接、Hibernate 会话等）将在整个指定范围内共享。请注意，这取决于事务管理器的实际同步配置。
 	SUPPORTS(TransactionDefinition.PROPAGATION_SUPPORTS),
 
 	/**
 	 * Support a current transaction, throw an exception if none exists.
 	 * Analogous to EJB transaction attribute of the same name.
 	 */
+	// 支持当前事务，如果不存在则抛出异常。
+	// 类似于同名的 EJB 事务属性。
 	MANDATORY(TransactionDefinition.PROPAGATION_MANDATORY),
 
 	/**
@@ -65,6 +75,11 @@ public enum Propagation {
 	 * made available to it (which is server-specific in standard Jakarta EE).
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	// 创建新事务，并暂停当前事务（如果存在）。
+	// 类似于 EJB 中同名的事务属性。
+	// <p><b>注意：</b>实际的事务暂停功能并非在所有事务管理器上都能开箱即用。
+	// 这尤其适用于 {@link org.springframework.transaction.jta.JtaTransactionManager}，
+	// 它需要 {@code jakarta.transaction.TransactionManager} 可用（在标准 Jakarta EE 中，它是特定于服务器的）。
 	REQUIRES_NEW(TransactionDefinition.PROPAGATION_REQUIRES_NEW),
 
 	/**
@@ -77,12 +92,19 @@ public enum Propagation {
 	 * made available to it (which is server-specific in standard Jakarta EE).
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	// 以非事务方式执行，如果存在当前事务，则暂停该事务。
+	// 类似于同名的 EJB 事务属性。
+	// <p><b>注意：</b>实际的事务暂停功能并非在所有事务管理器上都能开箱即用。
+	// 这尤其适用于 {@link org.springframework.transaction.jta.JtaTransactionManager}，
+	// 它需要 {@code jakarta.transaction.TransactionManager} 可用（在标准 Jakarta EE 中，它是特定于服务器的）。
 	NOT_SUPPORTED(TransactionDefinition.PROPAGATION_NOT_SUPPORTED),
 
 	/**
 	 * Execute non-transactionally, throw an exception if a transaction exists.
 	 * Analogous to EJB transaction attribute of the same name.
 	 */
+	// 以非事务方式执行，如果存在事务则抛出异常。
+	// 类似于同名的 EJB 事务属性。
 	NEVER(TransactionDefinition.PROPAGATION_NEVER),
 
 	/**
@@ -94,6 +116,10 @@ public enum Propagation {
 	 * transactions as well.
 	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager
 	 */
+	// 如果当前事务存在，则在嵌套事务中执行，否则行为类似于 {@code REQUIRED}。
+	// EJB 中没有类似的功能。
+	// <p>注意：实际创建嵌套事务仅适用于特定的事务管理器。
+	// 默认情况下，这仅适用于 JDBC DataSourceTransactionManager。某些 JTA 提供程序可能也支持嵌套事务。
 	NESTED(TransactionDefinition.PROPAGATION_NESTED);
 
 

@@ -31,6 +31,7 @@ import org.springframework.core.annotation.AnnotatedElementUtils;
  * @since 4.2
  * @see TransactionalApplicationListenerMethodAdapter
  */
+// {@link EventListenerFactory} 实现，处理 {@link TransactionalEventListener} 注释方法。
 public class TransactionalEventListenerFactory implements EventListenerFactory, Ordered {
 
 	private int order = 50;

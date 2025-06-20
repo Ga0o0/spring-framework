@@ -179,6 +179,11 @@ public abstract class AnnotationUtils {
 	 * @since 5.2
 	 * @see #isCandidateClass(Class, String)
 	 */
+	// 判断给定的类是否是一个携带指定的注解（在类型、方法或字段级别）的候选项。
+	// @param clazz 指定要自省的类
+	// @param commentType 指定可搜索的注解类型
+	// @return {@code false} 如果已知该类在任何级别都没有此类注解；否则，{@code true}。
+	// 如果此处返回 {@code true}，调用者通常会执行完整的方法/字段自省。
 	public static boolean isCandidateClass(Class<?> clazz, @Nullable Class<? extends Annotation> annotationType) {
 		return (annotationType != null && isCandidateClass(clazz, annotationType.getName()));
 	}
@@ -701,6 +706,12 @@ public abstract class AnnotationUtils {
 	 * @see java.lang.Class#getDeclaredAnnotations()
 	 * @see java.lang.Class#getDeclaredAnnotation(Class)
 	 */
+	// 确定指定的 {@code commentType} 的注释是否在提供的 {@code clazz} 上本地声明（即<em>直接存在</em>）。
+	// <p>提供的 {@link Class} 可以表示任何类型。<p>不会搜索元注释。
+	// <p>注意：此方法<strong>不</strong>确定注释是否为 {@linkplain java.lang.annotation.Inherited 继承。
+	// @param commentType 要查找的注释类型
+	// @param clazz 要检查注释的类
+	// @return {@code true}，如果指定的 {@code commentType} 的注释<em>直接存在</em>
 	public static boolean isAnnotationDeclaredLocally(Class<? extends Annotation> annotationType, Class<?> clazz) {
 		return MergedAnnotations.from(clazz).get(annotationType).isDirectlyPresent();
 	}

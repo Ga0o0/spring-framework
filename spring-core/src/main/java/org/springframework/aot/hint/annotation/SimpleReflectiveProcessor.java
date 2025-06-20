@@ -32,6 +32,8 @@ import org.springframework.aot.hint.ReflectionHints;
  * @author Stephane Nicoll
  * @since 6.0
  */
+// 一个简单的 {@link ReflectiveProcessor} 实现，它只为带注解的类型注册一个反射提示。
+// 可以对其进行子类化，以针对给定的 {@link AnnotatedElement} 类型自定义处理。
 public class SimpleReflectiveProcessor implements ReflectiveProcessor {
 
 	@Override

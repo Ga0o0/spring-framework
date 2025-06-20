@@ -35,6 +35,8 @@ import org.springframework.transaction.config.TransactionManagementConfigUtils;
  * @see EnableTransactionManagement
  * @see TransactionManagementConfigurationSelector
  */
+// {@code @Configuration} 类注册了必要的 Spring 基础结构 bean，以便为 JTA 1.2 {@link jakarta.transaction.Transactional}
+// 注释以及 Spring 自己的 {@link org.springframework.transaction.annotation.Transactional} 注释启用基于 AspectJ 的注释驱动的事务管理。
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class AspectJJtaTransactionManagementConfiguration extends AspectJTransactionManagementConfiguration {

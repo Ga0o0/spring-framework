@@ -27,6 +27,7 @@ import org.springframework.transaction.TransactionDefinition;
  * @author Juergen Hoeller
  * @since 1.2
  */
+// 表示与 {@link Transactional @Transactional} 注释一起使用的事务隔离级别的枚举，对应于 {@link TransactionDefinition} 接口。
 public enum Isolation {
 
 	/**
@@ -34,6 +35,8 @@ public enum Isolation {
 	 * <p>All other levels correspond to the JDBC isolation levels.
 	 * @see java.sql.Connection
 	 */
+	// 使用底层数据存储的默认隔离级别。
+	// <p>所有其他级别均对应于 JDBC 隔离级别。
 	DEFAULT(TransactionDefinition.ISOLATION_DEFAULT),
 
 	/**
@@ -45,6 +48,8 @@ public enum Isolation {
 	 * transaction will have retrieved an invalid row.
 	 * @see java.sql.Connection#TRANSACTION_READ_UNCOMMITTED
 	 */
+	// 一个常量，指示可能发生脏读、不可重复读和幻读。
+	// <p>此级别允许一个事务更改的行在该行的任何更改提交之前被另一个事务读取（即“脏读”）。如果任何更改被回滚，则第二个事务将检索到无效行。
 	READ_UNCOMMITTED(TransactionDefinition.ISOLATION_READ_UNCOMMITTED),
 
 	/**
@@ -54,6 +59,8 @@ public enum Isolation {
 	 * changes in it.
 	 * @see java.sql.Connection#TRANSACTION_READ_COMMITTED
 	 */
+	// 一个常量，表示阻止脏读；可能会发生不可重复读和幻像读。
+	//* <p>此级别仅禁止事务读取包含未提交更改的行。
 	READ_COMMITTED(TransactionDefinition.ISOLATION_READ_COMMITTED),
 
 	/**
@@ -65,6 +72,9 @@ public enum Isolation {
 	 * getting different values the second time (a "non-repeatable read").
 	 * @see java.sql.Connection#TRANSACTION_REPEATABLE_READ
 	 */
+	// 一个常量，指示阻止脏读和不可重复读；可能会发生幻读。
+	// <p>此级别禁止事务读取包含未提交更改的行，也禁止出现以下情况：
+	// 一个事务读取某行，另一个事务修改该行，然后第一个事务重新读取该行，第二次读取时获得不同的值（“不可重复读”）。
 	REPEATABLE_READ(TransactionDefinition.ISOLATION_REPEATABLE_READ),
 
 	/**
@@ -78,6 +88,10 @@ public enum Isolation {
 	 * in the second read.
 	 * @see java.sql.Connection#TRANSACTION_SERIALIZABLE
 	 */
+	// 指示阻止脏读、不可重复读和幻读的常量。
+	// <p>此级别包含 {@link #REPEATABLE_READ} 中的禁止操作，并进一步禁止以下情况：
+	// 一个事务读取满足 {@code WHERE} 条件的所有行，第二个事务插入满足该 {@code WHERE} 条件的行，
+	// 然后第一个事务根据相同条件重新读取，并在第二次读取中检索额外的“幻读”行。
 	SERIALIZABLE(TransactionDefinition.ISOLATION_SERIALIZABLE);
 
 

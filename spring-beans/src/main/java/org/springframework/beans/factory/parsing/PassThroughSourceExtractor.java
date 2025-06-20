@@ -33,6 +33,11 @@ import org.springframework.lang.Nullable;
  * @author Rob Harrop
  * @since 2.0
  */
+// 简单的 {@link SourceExtractor} 实现，仅传递候选源元数据对象进行附加。
+//
+// <p>使用此实现意味着工具将获得对其提供的底层配置源元数据的原始访问权限。
+//
+// <p>此实现<strong>不应</strong>在生产应用程序中使用，因为它可能会在内存中（不必要地）保留过多的元数据。
 public class PassThroughSourceExtractor implements SourceExtractor {
 
 	/**
@@ -40,6 +45,9 @@ public class PassThroughSourceExtractor implements SourceExtractor {
 	 * @param sourceCandidate the source metadata
 	 * @return the supplied {@code sourceCandidate}
 	 */
+	// 直接返回提供的 {@code sourceCandidate}。
+	// @param sourceCandidate 源元数据
+	// @return 提供的 {@code sourceCandidate}
 	@Override
 	public Object extractSource(Object sourceCandidate, @Nullable Resource definingResource) {
 		return sourceCandidate;

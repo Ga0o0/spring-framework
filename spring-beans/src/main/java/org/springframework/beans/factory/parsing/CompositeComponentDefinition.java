@@ -47,6 +47,9 @@ public class CompositeComponentDefinition extends AbstractComponentDefinition {
 	 * @param name the name of the composite component
 	 * @param source the source element that defines the root of the composite component
 	 */
+	// 创建一个新的 CompositeComponentDefinition。
+	// @param name 复合组件的名称
+	// @param source 定义复合组件根元素的源元素
 	public CompositeComponentDefinition(String name, @Nullable Object source) {
 		Assert.notNull(name, "Name must not be null");
 		this.name = name;

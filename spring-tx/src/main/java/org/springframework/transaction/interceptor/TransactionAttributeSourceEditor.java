@@ -46,6 +46,15 @@ import org.springframework.util.StringUtils;
  * @since 26.04.2003
  * @see TransactionAttributeEditor
  */
+// 将字符串转换为 {@link TransactionAttributeSource} 的属性编辑器。事务属性字符串必须可由本包中的 {@link TransactionAttributeEditor} 解析。
+//
+// <p>字符串采用属性语法，格式如下：<br> {@code FQCN.methodName=<事务属性字符串>}
+//
+// <p>例如：<br> {@code com.mycompany.mycode.MyClass.myMethod=PROPAGATION_MANDATORY,ISOLATION_DEFAULT}
+//
+// <p><b>注意：</b>指定的类必须是定义方法的类；如果实现接口，则为接口类名。
+//
+// <p>注意：将注册给定名称的所有重载方法。不支持显式注册某些重载方法。支持“xxx”映射，例如“notify”对应“notify”和“notifyAll”。
 public class TransactionAttributeSourceEditor extends PropertyEditorSupport {
 
 	@Override

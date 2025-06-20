@@ -67,6 +67,9 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 	 * of the advisor.
 	 * @see #getAdvice()
 	 */
+	// 指定此 advisor 应引用的通知 bean 的名称。
+	// <p>首次访问此 advisor 的通知时，将获取指定 bean 的实例。
+	// 此 advisor 最多只会获取一个通知 bean 实例，并在 advisor 的整个生命周期内缓存该实例。
 	public void setAdviceBeanName(@Nullable String adviceBeanName) {
 		this.adviceBeanName = adviceBeanName;
 	}
@@ -74,6 +77,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 	/**
 	 * Return the name of the advice bean that this advisor refers to, if any.
 	 */
+	// 返回此 advisor 引用的建议 bean 的名称（如果有）。
 	@Nullable
 	public String getAdviceBeanName() {
 		return this.adviceBeanName;
@@ -99,6 +103,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 	 * avoiding lazy resolution in {@link #getAdvice()}.
 	 * @since 3.1
 	 */
+	// 直接指定目标建议的特定实例，避免在 {@link #getAdvice()} 中进行延迟解析。
 	public void setAdvice(Advice advice) {
 		synchronized (this.adviceMonitor) {
 			this.advice = advice;
@@ -116,7 +121,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 		Assert.state(this.beanFactory != null, "BeanFactory must be set to resolve 'adviceBeanName'");
 
 		if (this.beanFactory.isSingleton(this.adviceBeanName)) {
-			// Rely on singleton semantics provided by the factory.
+			// Rely on singleton semantics provided by the factory. --> 译文：依赖工厂提供的单例语义。
 			advice = this.beanFactory.getBean(this.adviceBeanName, Advice.class);
 			this.advice = advice;
 			return advice;
@@ -125,6 +130,7 @@ public abstract class AbstractBeanFactoryPointcutAdvisor extends AbstractPointcu
 			// No singleton guarantees from the factory -> let's lock locally but
 			// reuse the factory's singleton lock, just in case a lazy dependency
 			// of our advice bean happens to trigger the singleton lock implicitly...
+			// --> 译文：工厂没有单例保证 -> 让我们在本地锁定但重用工厂的单例锁，以防我们的建议 bean 的惰性依赖恰好隐式触发单例锁...
 			synchronized (this.adviceMonitor) {
 				advice = this.advice;
 				if (advice == null) {

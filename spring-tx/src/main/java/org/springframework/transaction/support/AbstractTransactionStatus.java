@@ -44,6 +44,11 @@ import org.springframework.transaction.TransactionUsageException;
  * @see SimpleTransactionStatus
  * @see DefaultTransactionStatus
  */
+// {@link org.springframework.transaction.TransactionStatus} 接口的抽象基实现。
+//
+// <p>预实现了本地仅回滚和已完成标志的处理，并委托给底层 {@link org.springframework.transaction.SavepointManager}。同时提供了在事务中保存保存点的选项。
+//
+// <p>不假设任何特定的内部事务处理，例如底层事务对象，也不假设任何事务同步机制。
 public abstract class AbstractTransactionStatus implements TransactionStatus {
 
 	private boolean rollbackOnly = false;
@@ -83,6 +88,8 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	 * <p>Will only return "true" if the application called {@code setRollbackOnly}
 	 * on this TransactionStatus object.
 	 */
+	// 通过检查此 TransactionStatus 来确定仅回滚标志。
+	// <p>仅当应用程序在此 TransactionStatus 对象上调用 {@code setRollbackOnly} 时才返回“true”。
 	public boolean isLocalRollbackOnly() {
 		return this.rollbackOnly;
 	}
@@ -99,6 +106,7 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	/**
 	 * Mark this transaction as completed, that is, committed or rolled back.
 	 */
+	// 将此事务标记为已完成，即已提交或已回滚。
 	public void setCompleted() {
 		this.completed = true;
 	}
@@ -122,6 +130,7 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	 * Set a savepoint for this transaction. Useful for PROPAGATION_NESTED.
 	 * @see org.springframework.transaction.TransactionDefinition#PROPAGATION_NESTED
 	 */
+	// 为该事务设置一个保存点。用于 PROPAGATION_NESTED。
 	protected void setSavepoint(@Nullable Object savepoint) {
 		this.savepoint = savepoint;
 	}
@@ -129,6 +138,7 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	/**
 	 * Get the savepoint for this transaction, if any.
 	 */
+	// 获取此事务的保存点（如果有）。
 	@Nullable
 	protected Object getSavepoint() {
 		return this.savepoint;
@@ -139,6 +149,8 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	 * @throws org.springframework.transaction.NestedTransactionNotSupportedException
 	 * if the underlying transaction does not support savepoints
 	 */
+	// 创建一个保存点并保存到事务中。
+	// 如果底层事务不支持保存点，则抛出 org.springframework.transaction.NestedTransactionNotSupportedException
 	public void createAndHoldSavepoint() throws TransactionException {
 		setSavepoint(getSavepointManager().createSavepoint());
 	}
@@ -147,20 +159,23 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	 * Roll back to the savepoint that is held for the transaction
 	 * and release the savepoint right afterwards.
 	 */
+	// 回滚到为事务保留的保存点，然后立即释放保存点。
 	public void rollbackToHeldSavepoint() throws TransactionException {
-		Object savepoint = getSavepoint();
+		Object savepoint = getSavepoint(); // 获取此事务的保存点（如果有）。
 		if (savepoint == null) {
+			// 无法回滚到保存点 - 没有与当前事务关联的保存点
 			throw new TransactionUsageException(
 					"Cannot roll back to savepoint - no savepoint associated with current transaction");
 		}
-		getSavepointManager().rollbackToSavepoint(savepoint);
-		getSavepointManager().releaseSavepoint(savepoint);
-		setSavepoint(null);
+		getSavepointManager().rollbackToSavepoint(savepoint); // 回滚到指定的保存点。
+		getSavepointManager().releaseSavepoint(savepoint); // 显式释放指定的保存点。
+		setSavepoint(null); // 为该事务设置一个保存点。
 	}
 
 	/**
 	 * Release the savepoint that is held for the transaction.
 	 */
+	// 释放为事务保留的保存点。
 	public void releaseHeldSavepoint() throws TransactionException {
 		Object savepoint = getSavepoint();
 		if (savepoint == null) {
@@ -193,6 +208,7 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	 * @see #getSavepointManager()
 	 * @see SavepointManager#rollbackToSavepoint(Object)
 	 */
+	// 如果可能的话，此实现将委托给底层事务的 SavepointManager。
 	@Override
 	public void rollbackToSavepoint(Object savepoint) throws TransactionException {
 		getSavepointManager().rollbackToSavepoint(savepoint);
@@ -204,6 +220,7 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	 * @see #getSavepointManager()
 	 * @see SavepointManager#releaseSavepoint(Object)
 	 */
+	// 如果可能的话，此实现将委托给底层事务的 SavepointManager。
 	@Override
 	public void releaseSavepoint(Object savepoint) throws TransactionException {
 		getSavepointManager().releaseSavepoint(savepoint);
@@ -215,6 +232,9 @@ public abstract class AbstractTransactionStatus implements TransactionStatus {
 	 * @throws org.springframework.transaction.NestedTransactionNotSupportedException
 	 * if the underlying transaction does not support savepoints
 	 */
+	// 如果可能，返回底层事务的 SavepointManager。
+	// <p>默认实现总是抛出 NestedTransactionNotSupportedException。
+	// @throws org.springframework.transaction.NestedTransactionNotSupportedException 如果底层事务不支持 Savepoint
 	protected SavepointManager getSavepointManager() {
 		throw new NestedTransactionNotSupportedException("This transaction does not support savepoints");
 	}

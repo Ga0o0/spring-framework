@@ -65,6 +65,29 @@ import org.springframework.aot.hint.RuntimeHintsRegistrar;
  * @see org.springframework.aot.hint.annotation.Reflective
  * @see org.springframework.aot.hint.annotation.RegisterReflectionForBinding
  */
+// 指示应处理一个或多个 {@link RuntimeHintsRegistrar} 实现。
+//
+// <p>与使用 {@code META-INF/spring/aot.factories} 声明 {@link RuntimeHintsRegistrar} 不同，
+// 此注解允许更灵活的注册，只有当带注解的组件或 bean 方法实际在 bean 工厂中注册时才会处理。
+// 为了说明此行为，请考虑以下示例：
+//
+// <pre class="code">
+// @Configuration
+// public class MyConfiguration {
+// 		@Bean
+// 		@ImportRuntimeHints(MyHints.class)
+// 		@Conditional(MyCondition.class)
+// 		public MyService myService() {
+// 			return new MyService();
+// 		}
+// }</pre>
+//
+// <p>如果处理上述配置类，则仅当 {@code MyCondition} 匹配时才会贡献 {@code MyHints}。
+// 如果条件不匹配，则 {@code MyService} 将不会被定义为 bean，并且提示也不会被处理。
+//
+// <p>{@code @ImportRuntimeHints} 也可应用于任何使用 <em>Spring TestContext Framework</em> 加载 {@code ApplicationContext} 的测试类。
+//
+// <p>如果多个组件或测试类引用相同的 {@link RuntimeHintsRegistrar} 实现，则对于给定的 Bean 工厂处理或测试套件，注册器只会被调用一次。
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -73,6 +96,7 @@ public @interface ImportRuntimeHints {
 	/**
 	 * {@link RuntimeHintsRegistrar} implementations to process.
 	 */
+	// {@link RuntimeHintsRegistrar} 实现来处理。
 	Class<? extends RuntimeHintsRegistrar>[] value();
 
 }

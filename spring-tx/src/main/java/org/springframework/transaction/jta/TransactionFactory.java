@@ -37,6 +37,10 @@ import org.springframework.lang.Nullable;
  * @see SimpleTransactionFactory
  * @see JtaTransactionManager
  */
+// 基于指定事务特性创建 JTA {@link jakarta.transaction.Transaction} 对象的策略接口。
+//
+// <p>默认实现 {@link SimpleTransactionFactory} 仅包装了标准 JTA
+// {@link jakarta.transaction.TransactionManager}。此策略接口允许更复杂的实现，以适应特定于供应商的 JTA 扩展。
 public interface TransactionFactory {
 
 	/**
@@ -49,6 +53,12 @@ public interface TransactionFactory {
 	 * @throws SystemException if the transaction manager failed to create the
 	 * transaction
 	 */
+	// 根据给定的名称和超时创建一个活动的事务对象。
+	// @param name 事务名称（可能是 {@code null}）
+	// @param timeout 事务超时（默认超时可能是 -1）
+	// @return 活动事务对象（从不 {@code null}）
+	// @throws NotSupportedException 如果事务管理器不支持指定类型的事务
+	// @throws SystemException 如果事务管理器无法创建事务
 	Transaction createTransaction(@Nullable String name, int timeout) throws NotSupportedException, SystemException;
 
 	/**
@@ -61,6 +71,9 @@ public interface TransactionFactory {
 	 * @see jakarta.resource.spi.ResourceAdapter#endpointActivation
 	 * @see jakarta.resource.spi.endpoint.MessageEndpointFactory#isDeliveryTransacted
 	 */
+	// 确定底层事务管理器是否支持由资源适配器管理的 XA 事务（即无需显式 XA 资源登记）。
+	// <p>通常为 {@code false}。由 {@link org.springframework.jca.endpoint.AbstractMessageEndpointFactory}
+	// 检查，以区分无效配置和有效的资源适配器管理的事务。
 	boolean supportsResourceAdapterManagedTransactions();
 
 }

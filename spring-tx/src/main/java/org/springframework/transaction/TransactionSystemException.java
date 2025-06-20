@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 24.03.2003
  */
+// 当遇到一般事务系统错误（例如提交或回滚）时抛出异常。
 @SuppressWarnings("serial")
 public class TransactionSystemException extends TransactionException {
 
@@ -58,6 +59,9 @@ public class TransactionSystemException extends TransactionException {
 	 * @throws IllegalStateException if this TransactionSystemException already holds an
 	 * application exception
 	 */
+	// 设置在此事务异常之前引发的应用程序异常，尽管覆盖了 TransactionSystemException，仍保留原始异常。
+	// @param ex 应用程序异常
+	// @throws IllegalStateException 如果此 TransactionSystemException 已经包含应用程序异常
 	public void initApplicationException(Throwable ex) {
 		Assert.notNull(ex, "Application exception must not be null");
 		if (this.applicationException != null) {

@@ -40,6 +40,15 @@ import org.springframework.transaction.TransactionException;
  * @see TransactionTemplate
  * @see org.springframework.transaction.interceptor.TransactionInterceptor
  */
+// 扩展了 {@link org.springframework.transaction.PlatformTransactionManager} 接口，
+// 公开了一个用于在事务中执行指定回调的方法。
+//
+// <p>此接口的实现者会自动优先使用回调，而不是通过编程方式调用 {@code getTransaction}、{@code commit} 和 {@code rollback}。
+// 调用代码可以检查给定的事务管理器是否实现了此接口，并选择准备回调，而不是显式地进行事务划分控制。
+//
+// <p>Spring 的 {@link TransactionTemplate} 和
+// {@link org.springframework.transaction.interceptor.TransactionInterceptor}
+// 会自动检测并使用此 PlatformTransactionManager 变体。
 public interface CallbackPreferringPlatformTransactionManager extends PlatformTransactionManager {
 
 	/**
@@ -54,6 +63,14 @@ public interface CallbackPreferringPlatformTransactionManager extends PlatformTr
 	 * @throws TransactionException in case of initialization, rollback, or system errors
 	 * @throws RuntimeException if thrown by the TransactionCallback
 	 */
+	// 在事务中执行给定回调对象指定的操作。
+	// <p>允许返回在事务中创建的结果对象，即域对象或域对象集合。
+	// 回调抛出的 RuntimeException 被视为强制回滚的致命异常。此类异常将传播给模板的调用者。
+	// @param definition 用于包装回调的事务的定义
+	// @param callback 指定事务操作的回调对象
+	// @return 回调返回的结果对象，如果没有则返回 {@code null}
+	// @throws TransactionException（如果发生初始化、回滚或系统错误）
+	// @throws RuntimeException（如果由 TransactionCallback 抛出）
 	@Nullable
 	<T> T execute(@Nullable TransactionDefinition definition, TransactionCallback<T> callback)
 			throws TransactionException;

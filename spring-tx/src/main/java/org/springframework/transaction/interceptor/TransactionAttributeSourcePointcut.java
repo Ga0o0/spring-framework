@@ -78,6 +78,7 @@ final class TransactionAttributeSourcePointcut extends StaticMethodMatcherPointc
 	 * {@link ClassFilter} that delegates to {@link TransactionAttributeSource#isCandidateClass}
 	 * for filtering classes whose methods are not worth searching to begin with.
 	 */
+	// {@link ClassFilter} 委托给 {@link TransactionAttributeSource#isCandidateClass} 来过滤那些方法不值得搜索的类。
 	private final class TransactionAttributeSourceClassFilter implements ClassFilter {
 
 		@Override

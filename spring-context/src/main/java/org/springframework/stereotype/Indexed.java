@@ -84,6 +84,51 @@ import java.lang.annotation.Target;
  * @author Stephane Nicoll
  * @since 5.0
  */
+// 指示带注释的元素代表索引的构造型。
+//
+// <p>{@code CandidateComponentsIndex} 是类路径扫描的替代方案，它使用编译时生成的元数据文件。
+// 索引允许根据构造型检索候选组件（即完全限定名称）。此注释指示生成器索引带注释元素所在的元素，
+// 或者索引该元素是否实现或扩展自带注释的元素。构造型是带注释元素的完全限定名称。
+//
+// <p>考虑使用此注释进行元注释的默认 {@link Component} 注释。
+// 如果组件使用 {@link Component} 注释，则将使用 {@code org.springframework.stereotype.Component} 构造型将该组件的条目添加到索引中。
+//
+// <p>此注释也适用于元注释。考虑这个自定义注释：
+// <pre class="code">
+// package com.example;
+//
+// @Target(ElementType.TYPE)
+// @Retention(RetentionPolicy.RUNTIME)
+// @Documented
+// @Indexed
+// @Service
+// public @interface PrivilegedService { ... }
+// </pre>
+//
+// 如果上述注解存在于某个类型上，它将使用两个构造型进行索引：
+// {@code org.springframework.stereotype.Component} 和 {@code com.example.PrivilegedService}。
+// 虽然 {@link Service} 没有直接使用 {@code Indexed} 注解，但它使用 {@link Component} 进行元注解。
+//
+// <p>还可以通过在某个接口上添加 {@code @Indexed} 来索引该接口的所有实现或给定类的所有子类。考虑这个基本接口：
+// <pre class="code">
+// package com.example;
+//
+// @Indexed
+// public interface AdminService { ... }
+// </pre>
+//
+// 现在，考虑这个 {@code AdminService} 在某处的实现：
+//
+// <pre class="code">
+// package com.example.foo;
+//
+// import com.example.AdminService;
+//
+// public ConfigurationAdminService implements AdminService { ... }
+// </pre>
+//
+// 由于此类实现了一个已索引的接口，它将自动包含在 {@code com.example.AdminService} 构造型中。
+// 如果层次结构中存在更多 {@code @Indexed} 接口和/或超类，则该类将映射到所有它们的构造型。
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

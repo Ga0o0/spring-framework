@@ -37,10 +37,13 @@ import org.springframework.transaction.config.TransactionManagementConfigUtils;
  * @see TransactionManagementConfigurationSelector
  * @see AspectJJtaTransactionManagementConfiguration
  */
+// {@code @Configuration} 类注册了必要的 Spring 基础结构 bean，
+// 以便为 Spring 自己的 {@link org.springframework.transaction.annotation.Transactional} 注释启用基于 AspectJ 的注释驱动的事务管理。
 @Configuration
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class AspectJTransactionManagementConfiguration extends AbstractTransactionManagementConfiguration {
 
+	// TRANSACTION_ASPECT_BEAN_NAME = org.springframework.transaction.config.internalTransactionAspect
 	@Bean(name = TransactionManagementConfigUtils.TRANSACTION_ASPECT_BEAN_NAME)
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public AnnotationTransactionAspect transactionAspect() {

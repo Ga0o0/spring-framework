@@ -85,17 +85,26 @@ public abstract class BeanFactoryAnnotationUtils {
 	 * @throws BeansException if the bean could not be created
 	 * @see BeanFactoryUtils#beanOfTypeIncludingAncestors(ListableBeanFactory, Class)
 	 */
+	// 从给定的 {@code BeanFactory} 获取一个类型为 {@code T} 的 bean，
+	// 该 bean 声明了一个与给定限定符匹配的限定符（例如，通过 {@code <qualifier>} 或 {@code @Qualifier}），或者其 bean 名称与给定限定符匹配。
+	// @param beanFactory 获取目标 bean 的工厂（也用于搜索祖先）
+	// @param beanType 要检索的 bean 类型
+	// @param qualifier 用于在多个 bean 匹配项中进行选择的限定符
+	// @return 匹配的 {@code T} 类型的 bean（从不返回 {@code null}）
+	// @throws NoUniqueBeanDefinitionException 如果找到多个匹配的 {@code T} 类型的 bean
+	// @throws NoSuchBeanDefinitionException 如果未找到匹配的 {@code T} 类型的 bean
+	// @throws BeansException 如果无法创建 bean
 	public static <T> T qualifiedBeanOfType(BeanFactory beanFactory, Class<T> beanType, String qualifier)
 			throws BeansException {
 
 		Assert.notNull(beanFactory, "BeanFactory must not be null");
 
 		if (beanFactory instanceof ListableBeanFactory lbf) {
-			// Full qualifier matching supported.
+			// Full qualifier matching supported. --> 译文：支持完整限定符匹配。
 			return qualifiedBeanOfType(lbf, beanType, qualifier);
 		}
 		else if (beanFactory.containsBean(qualifier)) {
-			// Fallback: target bean at least found by bean name.
+			// Fallback: target bean at least found by bean name. --> 译文：后备：至少通过 bean 名称找到目标 bean。
 			return beanFactory.getBean(qualifier, beanType);
 		}
 		else {
@@ -114,6 +123,11 @@ public abstract class BeanFactoryAnnotationUtils {
 	 * @param qualifier the qualifier for selecting between multiple bean matches
 	 * @return the matching bean of type {@code T} (never {@code null})
 	 */
+	// 从给定的 {@code BeanFactory} 获取一个类型为 {@code T} 的 bean，并声明一个与给定限定符匹配的限定符（例如 {@code <qualifier>} 或 {@code @Qualifier}）。
+	// @param bf 要从中获取目标 bean 的工厂
+	// @param beanType 要检索的 bean 类型
+	// @param qualifier 用于在多个 bean 匹配项中进行选择的限定符
+	// @return 匹配的 {@code T} 类型的 bean（永不返回 {@code null}）
 	private static <T> T qualifiedBeanOfType(ListableBeanFactory bf, Class<T> beanType, String qualifier) {
 		String[] candidateBeans = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(bf, beanType);
 		String matchingBean = null;

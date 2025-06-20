@@ -42,6 +42,7 @@ import org.springframework.util.StringUtils;
  * @see JtaTransactionAnnotationParser
  * @see Ejb3TransactionAnnotationParser
  */
+// 用于解析 Spring 的 {@link Transactional} 注解的策略实现。
 @SuppressWarnings("serial")
 public class SpringTransactionAnnotationParser implements TransactionAnnotationParser, Serializable {
 
@@ -56,6 +57,7 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 		AnnotationAttributes attributes = AnnotatedElementUtils.findMergedAnnotationAttributes(
 				element, Transactional.class, false, false);
 		if (attributes != null) {
+			// 根据 @Transactional 注解来封装一个 NameMatchTransactionAttributeSource
 			return parseTransactionAnnotation(attributes);
 		}
 		else {
@@ -67,6 +69,8 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 		return parseTransactionAnnotation(AnnotationUtils.getAnnotationAttributes(ann, false, false));
 	}
 
+	// 类似于 TxAdviceBeanDefinitionParser#parseAttributeSource() 处理 NameMatchTransactionAttributeSource 的逻辑
+	// 根据 @Transactional 注解来封装一个 NameMatchTransactionAttributeSource
 	protected TransactionAttribute parseTransactionAnnotation(AnnotationAttributes attributes) {
 		RuleBasedTransactionAttribute rbta = new RuleBasedTransactionAttribute();
 
@@ -85,16 +89,21 @@ public class SpringTransactionAnnotationParser implements TransactionAnnotationP
 		rbta.setQualifier(attributes.getString("value"));
 		rbta.setLabels(Set.of(attributes.getStringArray("label")));
 
+		// 回滚和不回滚规则列表
 		List<RollbackRuleAttribute> rollbackRules = new ArrayList<>();
+		// 处理属性 rollbackFor，并封装成 RollbackRuleAttribute
 		for (Class<?> rbRule : attributes.getClassArray("rollbackFor")) {
 			rollbackRules.add(new RollbackRuleAttribute(rbRule));
 		}
+		// 处理属性 rollbackForClassName，并封装成 RollbackRuleAttribute
 		for (String rbRule : attributes.getStringArray("rollbackForClassName")) {
 			rollbackRules.add(new RollbackRuleAttribute(rbRule));
 		}
+		// 处理属性 noRollbackFor，并封装成 NoRollbackRuleAttribute
 		for (Class<?> rbRule : attributes.getClassArray("noRollbackFor")) {
 			rollbackRules.add(new NoRollbackRuleAttribute(rbRule));
 		}
+		// 处理属性 noRollbackForClassName，并封装成 NoRollbackRuleAttribute
 		for (String rbRule : attributes.getStringArray("noRollbackForClassName")) {
 			rollbackRules.add(new NoRollbackRuleAttribute(rbRule));
 		}

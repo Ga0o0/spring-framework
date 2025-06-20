@@ -61,6 +61,18 @@ import org.springframework.util.Assert;
  * @see #setTransactionManager
  * @see org.springframework.transaction.PlatformTransactionManager
  */
+// 简化编程式事务划分和事务异常处理的模板类。
+//
+// <p>核心方法是 {@link #execute}，它支持实现 {@link TransactionCallback} 接口的事务代码。
+// 此模板处理事务生命周期和可能的异常，因此 TransactionCallback 实现和调用代码都无需显式处理事务。
+//
+// <p>典型用途：允许编写使用 JDBC DataSource 等资源但自身不具备事务感知能力的低级数据访问对象。
+// 相反，它们可以隐式地参与由使用此类的更高级别应用服务处理的事务，并通过内部类回调对象调用低级服务。
+//
+// <p>可以通过使用事务管理器引用直接实例化在服务实现中使用，也可以在应用程序上下文中进行准备并将其作为 bean 引用传递给服务。
+// 注意：事务管理器应始终在应用程序上下文中配置为 bean：在第一种情况下，直接传递给服务；在第二种情况下，传递给准备好的模板。
+//
+// <p>支持通过名称设置传播行为和隔离级别，方便在上下文定义中进行配置。
 @SuppressWarnings("serial")
 public class TransactionTemplate extends DefaultTransactionDefinition
 		implements TransactionOperations, InitializingBean {

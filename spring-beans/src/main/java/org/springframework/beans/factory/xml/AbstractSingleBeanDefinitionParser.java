@@ -45,6 +45,13 @@ import org.springframework.lang.Nullable;
  * @see #getBeanClassName
  * @see #doParse
  */
+// 那些只需解析和定义单个 {@code BeanDefinition} 的 {@link BeanDefinitionParser} 实现的基类。
+//
+//<p>如果您想要从任意复杂的 XML 元素创建单个 Bean 定义，请扩展此解析器类。
+// 如果您想要从相对简单的自定义 XML 元素创建单个 Bean 定义，则可能需要考虑扩展 {@link AbstractSimpleBeanDefinitionParser}。
+//
+// <p>生成的 {@code BeanDefinition} 将自动注册到 {@link org.springframework.beans.factory.support.BeanDefinitionRegistry}。
+// 您的工作只是将自定义 XML {@link Element} {@link #doParse parse} 为单个 {@code BeanDefinition}。
 public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDefinitionParser {
 
 	/**
@@ -58,6 +65,11 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 	 * {@link #getBeanClass(org.w3c.dom.Element)} is {@code null}
 	 * @see #doParse
 	 */
+	// 为 {@link #getBeanClass bean Class} 创建 {@link BeanDefinitionBuilder} 实例，并将其传递给 {@link #doParse} 策略方法。
+	// @param element 待解析为单个 BeanDefinition 的元素
+	// @param parserContext 封装解析过程当前状态的对象
+	// @return 解析所提供 {@link Element} 后生成的 BeanDefinition
+	// @throws IllegalStateException 如果 {@link #getBeanClass(org.w3c.dom.Element)} 返回的 Bean {@link Class} 为 {@code null}
 	@Override
 	protected final AbstractBeanDefinition parseInternal(Element element, ParserContext parserContext) {
 		BeanDefinitionBuilder builder = BeanDefinitionBuilder.genericBeanDefinition();
@@ -78,13 +90,14 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 		builder.getRawBeanDefinition().setSource(parserContext.extractSource(element));
 		BeanDefinition containingBd = parserContext.getContainingBeanDefinition();
 		if (containingBd != null) {
-			// Inner bean definition must receive same scope as containing bean.
+			// Inner bean definition must receive same scope as containing bean. --> 译文：内部 bean 定义必须具有与包含 bean 相同的范围。
 			builder.setScope(containingBd.getScope());
 		}
 		if (parserContext.isDefaultLazyInit()) {
-			// Default-lazy-init applies to custom bean definitions as well.
+			// Default-lazy-init applies to custom bean definitions as well. --> 译文：Default-lazy-init 也适用于自定义 bean 定义。
 			builder.setLazyInit(true);
 		}
+		// 解析提供的 Element 并根据需要填充提供的 BeanDefinitionBuilder。
 		doParse(element, parserContext, builder);
 		return builder.getBeanDefinition();
 	}
@@ -142,6 +155,11 @@ public abstract class AbstractSingleBeanDefinitionParser extends AbstractBeanDef
 	 * @param builder used to define the {@code BeanDefinition}
 	 * @see #doParse(Element, BeanDefinitionBuilder)
 	 */
+	// 解析提供的 {@link Element} 并根据需要填充提供的 {@link BeanDefinitionBuilder}。
+	// <p>默认实现委托给不带 ParserContext 参数的 {@code doParse} 版本。
+	// @param element 正在解析的 XML 元素
+	// @param parserContext 封装解析过程当前状态的对象
+	// @param builder 用于定义 {@code BeanDefinition}
 	protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
 		doParse(element, builder);
 	}

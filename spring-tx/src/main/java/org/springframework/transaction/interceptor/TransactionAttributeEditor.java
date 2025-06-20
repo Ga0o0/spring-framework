@@ -39,6 +39,16 @@ import org.springframework.util.StringUtils;
  * @since 24.04.2003
  * @see org.springframework.transaction.TransactionDefinition
  */
+// 用于 {@link TransactionAttribute} 对象的 PropertyEditor。接受以下格式的字符串：
+//
+// <p>{@code PROPAGATION_NAME, ISOLATION_NAME, readOnly, timeout_NNNN,+Exception1,-Exception2}
+//
+// <p>其中仅需要传播代码。例如：<p>{@code PROPAGATION_MANDATORY, ISOLATION_DEFAULT}
+//
+// <p>令牌可以是<strong>任意</strong>顺序。传播和隔离代码必须使用 TransactionDefinition 类中常量的名称。
+// 超时值以秒为单位。如果未指定超时，事务管理器将应用特定于特定事务管理器的默认超时。
+//
+// <p>异常名称子字符串前的“+”表示即使抛出此异常，事务也应该提交；“-”表示事务应该回滚。
 public class TransactionAttributeEditor extends PropertyEditorSupport {
 
 	/**

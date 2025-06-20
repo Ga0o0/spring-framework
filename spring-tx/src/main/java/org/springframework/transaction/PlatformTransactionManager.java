@@ -44,6 +44,14 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.ReactiveTransactionManager
  * @see ConfigurableTransactionManager
  */
+// 这是 Spring 命令式事务基础架构的核心接口。
+// 应用程序可以直接使用它，但它并非主要用作 API：通常，应用程序会使用 TransactionTemplate 或通过 AOP 进行声明式事务划分。
+//
+// <p>对于实现者，建议从提供的 {@link org.springframework.transaction.support.AbstractPlatformTransactionManager} 类派生，
+// 该类预先实现了定义的传播行为并负责事务同步处理。子类必须实现针对底层事务特定状态的模板方法，例如：begin、suspend、resume、commit。
+//
+// <p>此策略接口的一个经典实现是 {@link org.springframework.transaction.jta.JtaTransactionManager}。
+// 然而，在常见的单资源场景中，Spring 的 JDBC、JPA、JMS 等特定事务管理器是首选。
 public interface PlatformTransactionManager extends TransactionManager {
 
 	/**
@@ -69,6 +77,14 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * @see TransactionDefinition#getTimeout
 	 * @see TransactionDefinition#isReadOnly
 	 */
+	// 根据指定的传播行为，返回当前活动的事务或创建一个新的事务。
+	// <p>请注意，隔离级别或超时等参数仅适用于新事务，因此在参与活动事务时会被忽略。
+	// <p>此外，并非所有事务管理器都支持所有事务定义设置：正确的事务管理器实现应在遇到不支持的设置时抛出异常。
+	// <p>上述规则的一个例外是只读标志，如果未显式指定只读模式，则应忽略该标志。本质上，只读标志只是对潜在优化的一个提示。
+	// @param definition TransactionDefinition 实例（默认值为 {@code null}），描述传播行为、隔离级别、超时等。
+	// @return 表示新事务或当前事务的事务状态对象
+	// @throws TransactionException 如果出现查找、创建或系统错误
+	// @throws IllegalTransactionStateException 如果给定的事务定义无法执行（例如，如果当前活动的事务与指定的传播行为冲突）
 	TransactionStatus getTransaction(@Nullable TransactionDefinition definition) throws TransactionException;
 
 	/**
@@ -95,6 +111,16 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * is already completed (that is, committed or rolled back)
 	 * @see TransactionStatus#setRollbackOnly
 	 */
+	// 提交给定事务，并考虑其状态。如果事务已通过编程标记为“仅回滚”，则执行回滚。
+	// <p>如果事务不是新事务，则省略提交，以便正确参与周围事务。如果先前的事务已被暂停以便能够创建新事务，则在提交新事务后恢复先前的事务。
+	// <p>请注意，提交调用完成时，无论是正常执行还是抛出异常，事务都必须完全完成并清理。在这种情况下不应进行回滚调用。
+	// <p>根据具体的事务管理器设置，{@code commit} 也可能会传播 {@link org.springframework.dao.DataAccessException}，
+	// 无论是从提交前的刷新还是从实际的提交步骤传播。
+	// @param 由 {@code getTransaction} 方法返回的状态对象
+	// @throws UnexpectedRollbackException，如果事务协调器启动了意外回滚
+	// @throws HeuristicCompletionException，如果事务协调器方面的启发式决策导致事务失败
+	// @throws TransactionSystemException，如果提交或系统错误（通常由基本资源故障引起）
+	// @throws IllegalTransactionStateException，如果给定的事务已经完成（即提交或回滚）
 	void commit(TransactionStatus status) throws TransactionException;
 
 	/**
@@ -115,6 +141,14 @@ public interface PlatformTransactionManager extends TransactionManager {
 	 * @throws IllegalTransactionStateException if the given transaction
 	 * is already completed (that is, committed or rolled back)
 	 */
+	// 执行指定事务的回滚。
+	// <p>如果该事务不是新事务，只需将其设置为仅回滚即可正确参与周围事务。如果先前的事务已暂停以便创建新事务，则回滚新事务后恢复先前的事务。
+	// <p><b>如果提交引发了异常，请勿在事务上调用回滚。</b>即使发生提交异常，提交返回时事务也已完成并被清理。
+	// 因此，提交失败后调用回滚将导致 IllegalTransactionStateException。
+	// <p>根据具体的事务管理器设置，{@code rollback} 也可能会传播 {@link org.springframework.dao.DataAccessException}。
+	// @param status {@code getTransaction} 方法返回的对象
+	// @throws TransactionSystemException（如果发生回滚或系统错误（通常由基本资源故障引起））
+	// @throws IllegalTransactionStateException（如果给定事务已完成（即已提交或回滚））
 	void rollback(TransactionStatus status) throws TransactionException;
 
 }

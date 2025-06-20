@@ -41,6 +41,7 @@ import static org.springframework.core.annotation.MergedAnnotations.SearchStrate
  * @author Andy Wilkinson
  * @since 6.0
  */
+// 处理 {@link Reflective @Reflective} 注释的元素。
 public class ReflectiveRuntimeHintsRegistrar {
 
 	private final Map<Class<? extends ReflectiveProcessor>, ReflectiveProcessor> processors = new HashMap<>();

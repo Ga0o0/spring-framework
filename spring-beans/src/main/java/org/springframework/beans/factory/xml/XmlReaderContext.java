@@ -42,6 +42,8 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// {@link org.springframework.beans.factory.parsing.ReaderContext} 的扩展，专用于与 {@link XmlBeanDefinitionReader} 配合使用。
+// 提供对 {@link XmlBeanDefinitionReader} 中配置的 {@link NamespaceHandlerResolver} 的访问。
 public class XmlReaderContext extends ReaderContext {
 
 	private final XmlBeanDefinitionReader reader;
@@ -139,6 +141,7 @@ public class XmlReaderContext extends ReaderContext {
 	 * @see XmlBeanDefinitionReader#getBeanNameGenerator()
 	 * @see org.springframework.beans.factory.support.BeanNameGenerator#generateBeanName
 	 */
+	// 调用给定 bean 定义的 bean 名称生成器。
 	public String generateBeanName(BeanDefinition beanDefinition) {
 		return this.reader.getBeanNameGenerator().generateBeanName(beanDefinition, getRegistry());
 	}
@@ -150,6 +153,7 @@ public class XmlReaderContext extends ReaderContext {
 	 * @see org.springframework.beans.factory.support.BeanNameGenerator#generateBeanName
 	 * @see BeanDefinitionRegistry#registerBeanDefinition
 	 */
+	// 为给定的 bean 定义调用 bean 名称生成器，并在生成的名称下注册 bean 定义。
 	public String registerWithGeneratedName(BeanDefinition beanDefinition) {
 		String generatedName = generateBeanName(beanDefinition);
 		getRegistry().registerBeanDefinition(generatedName, beanDefinition);

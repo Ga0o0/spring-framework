@@ -25,6 +25,9 @@ package org.springframework.transaction;
  * @author Juergen Hoeller
  * @since 5.2
  */
+// 事务当前状态的通用表示。
+// 作为 {@link TransactionStatus} 和 {@link ReactiveTransaction} 的基接口，
+// 并且从 6.1 版本开始还作为 {@link TransactionExecutionListener} 的事务表示。
 public interface TransactionExecution {
 
 	/**
@@ -35,6 +38,9 @@ public interface TransactionExecution {
 	 * @since 6.1
 	 * @see TransactionDefinition#getName()
 	 */
+	// 返回事务的定义名称（可能为空字符串）。
+	// <p>对于 Spring 的声明式事务，默认暴露的名称为 {@code 完全限定类名 + "." + 方法名}。
+	// <p>默认实现返回空字符串。
 	default String getTransactionName() {
 		return "";
 	}
@@ -49,6 +55,9 @@ public interface TransactionExecution {
 	 * @see #isNested()
 	 * @see #isReadOnly()
 	 */
+	// 返回是否存在实际处于活动状态的事务：
+	// 这涵盖新事务以及参与现有事务的情况，仅当未在实际事务中运行时才返回 {@code false}。
+	// <p>默认实现返回 {@code true}。
 	default boolean hasTransaction() {
 		return true;
 	}
@@ -70,6 +79,12 @@ public interface TransactionExecution {
 	 * @see #isNested()
 	 * @see TransactionStatus#hasSavepoint()
 	 */
+	// 返回事务管理器是否将当前事务视为新事务；否则，则将其视为参与现有事务，或者可能根本不在实际事务中运行。
+	// <p>这主要用于事务管理器状态处理。对于应用程序，建议使用 {@link #hasTransaction()}，因为这通常在语义上是合适的。
+	// <p>“新”状态可能因事务管理器而异，例如，对于实际嵌套事务，返回 {@code true}；
+	// 但如果显式公开了保存点管理（例如在 {@link TransactionStatus} 上），则对于基于保存点的嵌套事务范围，可能返回 {@code false}。
+	// {@link #isNested()} 提供了对任何类型嵌套执行的组合检查。
+	// <p>默认实现返回 {@code true}。
 	default boolean isNewTransaction() {
 		return true;
 	}
@@ -82,6 +97,8 @@ public interface TransactionExecution {
 	 * @see #isNewTransaction()
 	 * @see TransactionDefinition#PROPAGATION_NESTED
 	 */
+	// 如果此事务以嵌套方式在另一个事务中执行，则返回。
+	// <p>默认实现返回 {@code false}。
 	default boolean isNested() {
 		return false;
 	}
@@ -92,6 +109,8 @@ public interface TransactionExecution {
 	 * @since 6.1
 	 * @see TransactionDefinition#isReadOnly()
 	 */
+	// 如果此事务定义为只读事务，则返回。
+	// <p>默认实现返回 {@code false}。
 	default boolean isReadOnly() {
 		return false;
 	}
@@ -103,6 +122,8 @@ public interface TransactionExecution {
 	 * <p>The default implementation throws an UnsupportedOperationException.
 	 * @see #isRollbackOnly()
 	 */
+	// 将事务设置为仅回滚。这将指示事务管理器，事务的唯一可能结果是回滚，而不是抛出异常（该异常反过来会触发回滚）。
+	// <p>默认实现会抛出 UnsupportedOperationException。
 	default void setRollbackOnly() {
 		throw new UnsupportedOperationException("setRollbackOnly not supported");
 	}
@@ -113,6 +134,8 @@ public interface TransactionExecution {
 	 * <p>The default implementation returns {@code false}.
 	 * @see #setRollbackOnly()
 	 */
+	// 返回事务是否已被标记为仅回滚（由应用程序或事务基础结构标记）。
+	// <p>默认实现返回 {@code false}。
 	default boolean isRollbackOnly() {
 		return false;
 	}
@@ -122,6 +145,8 @@ public interface TransactionExecution {
 	 * whether it has already been committed or rolled back.
 	 * <p>The default implementation returns {@code false}.
 	 */
+	// 返回此事务是否已完成，即是否已提交或回滚。
+	// <p>默认实现返回 {@code false}。
 	default boolean isCompleted() {
 		return false;
 	}

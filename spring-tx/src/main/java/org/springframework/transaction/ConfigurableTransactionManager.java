@@ -27,6 +27,7 @@ import java.util.Collection;
  * @see PlatformTransactionManager
  * @see ReactiveTransactionManager
  */
+// 事务管理器实现的通用配置接口。为 {@link TransactionExecutionListener} 提供注册功能。
 public interface ConfigurableTransactionManager extends TransactionManager {
 
 	/**
@@ -34,12 +35,14 @@ public interface ConfigurableTransactionManager extends TransactionManager {
 	 * from this transaction manager.
 	 * @see #addListener
 	 */
+	// 设置此事务管理器的开始/提交/回滚回调的事务执行监听器。
 	void setTransactionExecutionListeners(Collection<TransactionExecutionListener> listeners);
 
 	/**
 	 * Return the registered transaction execution listeners for this transaction manager.
 	 * @see #setTransactionExecutionListeners
 	 */
+	// 返回此事务管理器已注册的事务执行监听器。
 	Collection<TransactionExecutionListener> getTransactionExecutionListeners();
 
 	/**
@@ -47,6 +50,7 @@ public interface ConfigurableTransactionManager extends TransactionManager {
 	 * from this transaction manager.
 	 * @see #getTransactionExecutionListeners()
 	 */
+	// 方便地注册此事务管理器的开始/提交/回滚回调的指定监听器。
 	default void addListener(TransactionExecutionListener listener) {
 		getTransactionExecutionListeners().add(listener);
 	}

@@ -35,6 +35,10 @@ import org.springframework.util.Assert;
  * @author Sam Brannen
  * @since 08.05.2003
  */
+// {@link TransactionDefinition} 接口的默认实现，提供 bean 风格的配置和合理的默认值
+// （PROPAGATION_REQUIRED、ISOLATION_DEFAULT、TIMEOUT_DEFAULT、readOnly=false）。
+//
+// <p>{@link TransactionTemplate} 和 {@link org.springframework.transaction.interceptor.DefaultTransactionAttribute} 的基类。
 @SuppressWarnings("serial")
 public class DefaultTransactionDefinition implements TransactionDefinition, Serializable {
 
@@ -140,6 +144,9 @@ public class DefaultTransactionDefinition implements TransactionDefinition, Seri
 	 * @see #setPropagationBehavior
 	 * @see #PROPAGATION_REQUIRED
 	 */
+	// 通过 {@link TransactionDefinition} 中相应常量的名称设置传播行为；例如，{@code "PROPAGATION_REQUIRED"}。
+	// @param ConstantName 常量的名称
+	// @throws IllegalArgumentException 如果提供的值无法解析为 {@code PROPAGATION_} 常量之一或为 {@code null}
 	public final void setPropagationBehaviorName(String constantName) throws IllegalArgumentException {
 		Assert.hasText(constantName, "'constantName' must not be null or blank");
 		Integer propagationBehavior = propagationConstants.get(constantName);
@@ -182,6 +189,9 @@ public class DefaultTransactionDefinition implements TransactionDefinition, Seri
 	 * @see #setIsolationLevel
 	 * @see #ISOLATION_DEFAULT
 	 */
+	// 通过 {@link TransactionDefinition} 中相应常量的名称设置隔离级别 - 例如，{@code "ISOLATION_DEFAULT"}。
+	// @param ConstantName 常量的名称
+	// 如果提供的值无法解析为 {@code ISOLATION_} 常量之一或为 {@code null}，则抛出 IllegalArgumentException 异常
 	public final void setIsolationLevelName(String constantName) throws IllegalArgumentException {
 		Assert.hasText(constantName, "'constantName' must not be null or blank");
 		Integer isolationLevel = isolationConstants.get(constantName);
@@ -251,6 +261,11 @@ public class DefaultTransactionDefinition implements TransactionDefinition, Seri
 	 * A transaction manager which cannot interpret the read-only hint will
 	 * <i>not</i> throw an exception when asked for a read-only transaction.
 	 */
+	// 设置是否优化为只读事务。默认值为“false”。
+	// <p>只读标志适用于任何事务上下文，无论是由实际资源事务支持 ({@link #PROPAGATION_REQUIRED}/ {@link #PROPAGATION_REQUIRES_NEW})，
+	// 还是在资源级别以非事务方式操作 ({@link #PROPAGATION_SUPPORTS})。
+	// 在后一种情况下，该标志仅适用于应用程序内的托管资源，例如 Hibernate {@code Session}。
+	// <p>这仅作为对实际事务子系统的提示；它<i>不一定</i>会导致写入访问尝试失败。无法解释只读提示的事务管理器在请求只读事务时<i>不会</i>抛出异常。
 	public final void setReadOnly(boolean readOnly) {
 		this.readOnly = readOnly;
 	}

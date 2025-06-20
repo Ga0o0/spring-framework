@@ -35,6 +35,7 @@ import org.springframework.transaction.interceptor.TransactionAttribute;
  * @see SpringTransactionAnnotationParser
  * @see JtaTransactionAnnotationParser
  */
+// 用于解析 EJB3 的 {@link jakarta.ejb.TransactionAttribute} 注解的策略实现。
 @SuppressWarnings("serial")
 public class Ejb3TransactionAnnotationParser implements TransactionAnnotationParser, Serializable {
 

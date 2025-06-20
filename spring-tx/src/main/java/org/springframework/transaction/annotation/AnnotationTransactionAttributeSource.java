@@ -52,6 +52,11 @@ import org.springframework.util.ClassUtils;
  * @see org.springframework.transaction.interceptor.TransactionInterceptor#setTransactionAttributeSource
  * @see org.springframework.transaction.interceptor.TransactionProxyFactoryBean#setTransactionAttributeSource
  */
+// 实现 {@link org.springframework.transaction.interceptor.TransactionAttributeSource} 接口，用于处理 JDK 1.5+ 注解格式的事务元数据。
+//
+// <p>该类读取 Spring JDK 1.5+ 的 {@link Transactional} 注解，并将相应的事务属性暴露给 Spring 的事务基础架构。
+// 此外，还支持 JTA 1.2 的 {@link jakarta.transaction.Transactional} 和 EJB3 的 {@link jakarta.ejb.TransactionAttribute} 注解（如果存在）。
+// 该类也可以作为自定义 TransactionAttributeSource 的基类，或通过 {@link TransactionAnnotationParser} 策略进行自定义。
 @SuppressWarnings("serial")
 public class AnnotationTransactionAttributeSource extends AbstractFallbackTransactionAttributeSource
 		implements Serializable {
@@ -76,6 +81,8 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 * public methods that carry the {@code Transactional} annotation
 	 * or the EJB3 {@link jakarta.ejb.TransactionAttribute} annotation.
 	 */
+	// 创建一个默认的 AnnotationTransactionAttributeSource，
+	// 支持带有 {@code Transactional} 注释或 EJB3 {@link jakarta.ejb.TransactionAttribute} 注释的公共方法。
 	public AnnotationTransactionAttributeSource() {
 		this(true);
 	}
@@ -89,15 +96,23 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 * with proxy-based AOP), or protected/private methods as well
 	 * (typically used with AspectJ class weaving)
 	 */
+	// 创建自定义 AnnotationTransactionAttributeSource，
+	// 支持带有 {@code Transactional} 注释或
+	// EJB3 {@link jakarta.ejb.TransactionAttribute} 注释的公共方法。
+	// @param publicMethodsOnly 是否仅支持带有 {@code Transactional} 注释的公共方法（通常用于基于代理的 AOP），
+	// 或者也支持受保护/私有方法（通常用于 AspectJ 类编织）
 	public AnnotationTransactionAttributeSource(boolean publicMethodsOnly) {
 		this.publicMethodsOnly = publicMethodsOnly;
 		if (jta12Present || ejb3Present) {
 			this.annotationParsers = new LinkedHashSet<>(4);
+			// 用于解析 Spring 的 @Transactional 注解的策略实现。
 			this.annotationParsers.add(new SpringTransactionAnnotationParser());
 			if (jta12Present) {
+				// 用于解析 JTA 1.2 的 @jakarta.transaction.Transactional 注解的策略实现。
 				this.annotationParsers.add(new JtaTransactionAnnotationParser());
 			}
 			if (ejb3Present) {
+				// 用于解析 EJB3 的 @jakarta.ejb.TransactionAttribute 注解的策略实现。
 				this.annotationParsers.add(new Ejb3TransactionAnnotationParser());
 			}
 		}
@@ -169,6 +184,12 @@ public class AnnotationTransactionAttributeSource extends AbstractFallbackTransa
 	 * @param element the annotated method or class
 	 * @return the configured transaction attribute, or {@code null} if none was found
 	 */
+	// 确定给定方法或类的事务属性。
+	// <p>此实现委托已配置的 {@link TransactionAnnotationParser TransactionAnnotationParsers}
+	// 将已知注解解析为 Spring 的元数据属性类。如果非事务性，则返回 {@code null}。
+	// <p>可以重写以支持带有事务元数据的自定义注解。
+	// @param element 带注解的方法或类
+	// @return 已配置的事务属性，如果未找到，则返回 {@code null}
 	@Nullable
 	protected TransactionAttribute determineTransactionAttribute(AnnotatedElement element) {
 		for (TransactionAnnotationParser parser : this.annotationParsers) {

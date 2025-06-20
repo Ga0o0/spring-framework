@@ -1183,6 +1183,10 @@ public abstract class ClassUtils {
 	 * @return the qualified name of the method
 	 * @since 4.3.4
 	 */
+	// 返回给定方法的限定名，由完全限定接口/类名 + "." + 方法名组成。
+	// @param method 方法
+	// @param clazz 调用该方法的 clazz（可以为 {@code null} 以指示方法的声明类）
+	// @return 方法的限定名
 	public static String getQualifiedMethodName(Method method, @Nullable Class<?> clazz) {
 		Assert.notNull(method, "Method must not be null");
 		return (clazz != null ? clazz : method.getDeclaringClass()).getName() + '.' + method.getName();
@@ -1505,6 +1509,12 @@ public abstract class ClassUtils {
 	 * @param method the method to check
 	 * @return {@code true} if the method can be considered as user-declared; {@code false} otherwise
 	 */
+	// 确定给定方法是否由用户声明，或者至少指向用户声明的方法。
+	// <p>检查 {@link Method#isSynthetic()}（针对实现方法）以及 {@code GroovyObject} 接口（针对接口方法；
+	// 在实现类中，{@code GroovyObject} 方法的实现无论如何都会被标记为合成）。
+	// 请注意，尽管桥接方法 ({@link Method#isBridge()}) 是合成的，但它们仍被视为用户级方法，因为它们最终指向用户声明的泛型方法。
+	// @param method 要检查的方法
+	// @return {@code true} 如果该方法可以被视为用户声明的；否则为 {@code false}
 	public static boolean isUserLevelMethod(Method method) {
 		Assert.notNull(method, "Method must not be null");
 		return (method.isBridge() || (!method.isSynthetic() && !isGroovyObjectMethod(method)));

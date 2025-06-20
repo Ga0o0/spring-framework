@@ -41,6 +41,15 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.support.DefaultTransactionDefinition
  * @see org.springframework.transaction.interceptor.TransactionAttribute
  */
+// 定义符合 Spring 规范的事务属性的接口。该接口基于类似于 EJB CMT 属性的传播行为定义。
+//
+// <p>请注意，除非实际启动了新事务，否则隔离级别和超时设置不会应用。
+// 由于只有 {@link #PROPAGATION_REQUIRED}、{@link #PROPAGATION_REQUIRES_NEW} 和
+// {@link #PROPAGATION_NESTED} 会导致这种情况，因此在其他情况下指定这些设置通常没有意义。
+// 此外，请注意，并非所有事务管理器都支持这些高级功能，因此在给定非默认值时可能会引发相应的异常。
+//
+// <p>{@linkplain #isReadOnly() 只读标志} 适用于任何事务上下文，无论是由实际资源事务支持还是在资源级别以非事务方式操作。
+// 在后一种情况下，该标志仅适用于应用程序内的托管资源，例如 Hibernate {@code Session}。
 public interface TransactionDefinition {
 
 	/**
@@ -49,6 +58,8 @@ public interface TransactionDefinition {
 	 * <p>This is typically the default setting of a transaction definition
 	 * and typically defines a transaction synchronization scope.
 	 */
+	// 支持当前事务；如果不存在则创建新事务。
+	// 类似于 EJB 中同名的事务属性。<p>这通常是事务定义的默认设置，通常用于定义事务同步范围。
 	int PROPAGATION_REQUIRED = 0;
 
 	/**
@@ -70,6 +81,13 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setTransactionSynchronization
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#SYNCHRONIZATION_ON_ACTUAL_TRANSACTION
 	 */
+	// 支持当前事务；如果不存在事务，则以非事务方式执行。类似于同名的 EJB 事务属性。
+	// <p><b>注意：</b>对于具有事务同步功能的事务管理器，{@code PROPAGATION_SUPPORTS} 与完全没有事务略有不同，因为它定义了同步可能适用的事务范围。
+	// 因此，相同的资源（JDBC {@code Connection}、Hibernate {@code Session} 等）将在整个指定范围内共享。
+	// 请注意，确切的行为取决于事务管理器的实际同步配置。
+	// <p>通常，请谨慎使用 {@code PROPAGATION_SUPPORTS}。特别是，不要在 {@code PROPAGATION_SUPPORTS} 范围内依赖
+	// {@code PROPAGATION_REQUIRED} 或 {@code PROPAGATION_REQUIRES_NEW}（这可能会导致运行时同步冲突）。
+	// 如果这种嵌套不可避免，请确保适当地配置事务管理器（通常切换到“实际事务同步”）。
 	int PROPAGATION_SUPPORTS = 1;
 
 	/**
@@ -78,6 +96,8 @@ public interface TransactionDefinition {
 	 * <p>Note that transaction synchronization within a {@code PROPAGATION_MANDATORY}
 	 * scope will always be driven by the surrounding transaction.
 	 */
+	// 支持当前事务；如果当前事务不存在，则抛出异常。类似于 EJB 中同名的事务属性。
+	// <p>请注意，{@code PROPAGATION_MANDATORY} 范围内的事务同步始终由周围的事务驱动。
 	int PROPAGATION_MANDATORY = 2;
 
 	/**
@@ -93,6 +113,11 @@ public interface TransactionDefinition {
 	 * and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	// 创建一个新事务，如果存在则暂停当前事务。类似于同名的 EJB 事务属性。
+	// <p><b>注意：</b>实际的事务暂停功能并非在所有事务管理器上都能开箱即用。
+	// 这尤其适用于 {@link org.springframework.transaction.jta.JtaTransactionManager}，
+	// 它需要 {@code jakarta.transaction.TransactionManager} 对其可用（在标准 Jakarta EE 中，它是特定于服务器的）。
+	// <p>{@code PROPAGATION_REQUIRES_NEW} 作用域始终定义其自身的事务同步。现有同步将被适当地暂停和恢复。
 	int PROPAGATION_REQUIRES_NEW = 3;
 
 	/**
@@ -108,6 +133,11 @@ public interface TransactionDefinition {
 	 * will be suspended and resumed appropriately.
 	 * @see org.springframework.transaction.jta.JtaTransactionManager#setTransactionManager
 	 */
+	// 不支持当前事务；始终以非事务方式执行。类似于同名的 EJB 事务属性。
+	// <p><b>注意：</b>实际事务暂停功能并非在所有事务管理器上都能开箱即用。
+	// 这尤其适用于 {@link org.springframework.transaction.jta.JtaTransactionManager}，
+	// 它需要 {@code jakarta.transaction.TransactionManager} 对其可用（在标准 Jakarta EE 中，它是特定于服务器的）。
+	// <p>请注意，事务同步在 {@code PROPAGATION_NOT_SUPPORTED} 范围内<i>不可用</i>。现有同步将被暂停并相应地恢复。
 	int PROPAGATION_NOT_SUPPORTED = 4;
 
 	/**
@@ -116,6 +146,8 @@ public interface TransactionDefinition {
 	 * <p>Note that transaction synchronization is <i>not</i> available within a
 	 * {@code PROPAGATION_NEVER} scope.
 	 */
+	// 不支持当前事务；如果当前事务存在，则抛出异常。类似于 EJB 中同名的事务属性。
+	// <p>请注意，事务同步在 {@code PROPAGATION_NEVER} 作用域内<i>不可用</i>。
 	int PROPAGATION_NEVER = 5;
 
 	/**
@@ -129,6 +161,9 @@ public interface TransactionDefinition {
 	 * nested transactions as well.
 	 * @see org.springframework.jdbc.datasource.DataSourceTransactionManager
 	 */
+	// 如果当前事务存在，则在嵌套事务中执行，否则行为类似于 {@link #PROPAGATION_REQUIRED}。EJB 中没有类似的功能。
+	// <p><b>注意：</b> 嵌套事务的实际创建仅适用于特定的事务管理器。默认情况下，这仅适用于使用 JDBC 3.0 及以上驱动程序的 JDBC
+	// {@link org.springframework.jdbc.datasource.DataSourceTransactionManager}。某些 JTA 提供程序可能也支持嵌套事务。
 	int PROPAGATION_NESTED = 6;
 
 
@@ -137,6 +172,8 @@ public interface TransactionDefinition {
 	 * <p>All other levels correspond to the JDBC isolation levels.
 	 * @see java.sql.Connection
 	 */
+	// 使用底层数据存储区的默认隔离级别。
+	// <p>所有其他级别均对应于 JDBC 隔离级别。
 	int ISOLATION_DEFAULT = -1;
 
 	/**
@@ -148,6 +185,8 @@ public interface TransactionDefinition {
 	 * retrieved an invalid row.
 	 * @see java.sql.Connection#TRANSACTION_READ_UNCOMMITTED
 	 */
+	// 表示可能发生脏读、不可重复读和幻读。
+	// <p>此级别允许一个事务更改的行在提交任何更改之前被另一个事务读取（即“脏读”）。如果任何更改被回滚，则第二个事务将检索到无效行。
 	int ISOLATION_READ_UNCOMMITTED = 1;  // same as java.sql.Connection.TRANSACTION_READ_UNCOMMITTED;
 
 	/**
@@ -157,6 +196,8 @@ public interface TransactionDefinition {
 	 * changes in it.
 	 * @see java.sql.Connection#TRANSACTION_READ_COMMITTED
 	 */
+	// 表示阻止脏读；可能会发生不可重复读和幻读。
+	// <p>此级别仅禁止事务读取包含未提交更改的行。
 	int ISOLATION_READ_COMMITTED = 2;  // same as java.sql.Connection.TRANSACTION_READ_COMMITTED;
 
 	/**
@@ -168,6 +209,9 @@ public interface TransactionDefinition {
 	 * getting different values the second time (a "non-repeatable read").
 	 * @see java.sql.Connection#TRANSACTION_REPEATABLE_READ
 	 */
+	// 表示阻止脏读和不可重复读；可能会发生幻读。
+	// <p>此级别禁止事务读取包含未提交更改的行，也禁止出现以下情况：
+	// 一个事务读取某行，另一个事务修改该行，然后第一个事务重新读取该行，第二次读取时获得不同的值（“不可重复读”）。
 	int ISOLATION_REPEATABLE_READ = 4;  // same as java.sql.Connection.TRANSACTION_REPEATABLE_READ;
 
 	/**
@@ -181,6 +225,10 @@ public interface TransactionDefinition {
 	 * in the second read.
 	 * @see java.sql.Connection#TRANSACTION_SERIALIZABLE
 	 */
+	// 表示阻止脏读、不可重复读和幻读。
+	// <p>此级别包含 {@link #ISOLATION_REPEATABLE_READ} 中的禁止操作，并进一步禁止以下情况：
+	// 一个事务读取满足 {@code WHERE} 条件的所有行，第二个事务插入满足该 {@code WHERE} 条件的行，
+	// 然后第一个事务根据相同条件重新读取，并在第二次读取中检索额外的“幻读”行。
 	int ISOLATION_SERIALIZABLE = 8;  // same as java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
 
@@ -188,6 +236,7 @@ public interface TransactionDefinition {
 	 * Use the default timeout of the underlying transaction system,
 	 * or none if timeouts are not supported.
 	 */
+	// 使用底层事务系统的默认超时，如果不支持超时，则使用无。
 	int TIMEOUT_DEFAULT = -1;
 
 
@@ -200,6 +249,9 @@ public interface TransactionDefinition {
 	 * @see #PROPAGATION_REQUIRED
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isActualTransactionActive()
 	 */
+	// 返回传播行为。
+	// <p>必须返回 {@link TransactionDefinition 此接口上定义的 {@code PROPAGATION_XXX} 常量之一。
+	// <p>默认值为 {@link #PROPAGATION_REQUIRED}。@return 传播行为
 	default int getPropagationBehavior() {
 		return PROPAGATION_REQUIRED;
 	}
@@ -222,6 +274,14 @@ public interface TransactionDefinition {
 	 * @see #ISOLATION_DEFAULT
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setValidateExistingTransaction
 	 */
+	// 返回隔离级别。
+	// <p>必须返回 {@link TransactionDefinition 此接口} 上定义的 {@code ISOLATION_XXX} 常量之一。
+	// 这些常量旨在与 {@link java.sql.Connection} 上相同常量的值匹配。
+	// <p>专为与 {@link #PROPAGATION_REQUIRED} 或 {@link #PROPAGATION_REQUIRES_NEW} 配合使用而设计，因为它仅适用于新启动的事务。
+	// 如果您希望在参与具有不同隔离级别的现有事务时拒绝隔离级别声明，请考虑将事务管理器上的“validateExistingTransactions”标志切换为“true”。
+	// <p>默认值为 {@link #ISOLATION_DEFAULT}。
+	// 请注意，不支持自定义隔离级别的事务管理器在给定除 {@link #ISOLATION_DEFAULT} 之外的任何其他级别时都会抛出异常。
+	// @return 隔离级别
 	default int getIsolationLevel() {
 		return ISOLATION_DEFAULT;
 	}
@@ -237,6 +297,12 @@ public interface TransactionDefinition {
 	 * <p>The default is {@link #TIMEOUT_DEFAULT}.
 	 * @return the transaction timeout
 	 */
+	// 返回事务超时时间。
+	// <p>必须返回秒数，或 {@link #TIMEOUT_DEFAULT}。
+	// <p>专为与 {@link #PROPAGATION_REQUIRED} 或 {@link #PROPAGATION_REQUIRES_NEW} 配合使用而设计，因为它仅适用于新启动的事务。
+	// <p>请注意，不支持超时的事务管理器在给定除 {@link #TIMEOUT_DEFAULT} 之外的任何其他超时时间时将引发异常。
+	// <p>默认值为 {@link #TIMEOUT_DEFAULT}。
+	// @return 事务超时
 	default int getTimeout() {
 		return TIMEOUT_DEFAULT;
 	}
@@ -258,6 +324,12 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.support.TransactionSynchronization#beforeCommit(boolean)
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isCurrentTransactionReadOnly()
 	 */
+	// 返回是否优化为只读事务。
+	// <p>只读标志适用于任何事务上下文，无论是由实际资源事务 ({@link #PROPAGATION_REQUIRED}/ {@link #PROPAGATION_REQUIRES_NEW}) 支持，还
+	// 是在资源级别以非事务方式操作 ({@link #PROPAGATION_SUPPORTS})。在后一种情况下，该标志仅适用于应用程序内的托管资源，
+	// 例如 Hibernate {@code Session}。<p>这仅作为对实际事务子系统的提示；它<i>不一定</i>会导致写访问尝试失败。
+	// 无法解释只读提示的事务管理器在被要求进行只读事务时<i>不会</i>抛出异常。
+	// @return {@code true} 表示事务要优化为只读（默认为 {@code false}）。
 	default boolean isReadOnly() {
 		return false;
 	}
@@ -272,6 +344,10 @@ public interface TransactionDefinition {
 	 * @see org.springframework.transaction.interceptor.TransactionAspectSupport
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#getCurrentTransactionName()
 	 */
+	// 返回此事务的名称。可以为 {@code null}。
+	// <p>如果适用，这将用作事务监视器中显示的事务名称。
+	// <p>对于 Spring 的声明式事务，公开的名称将为 {@code 完全限定类名 + "." + 方法名}（默认）。
+	// @return 此事务的名称（默认为 {@code null}）
 	@Nullable
 	default String getName() {
 		return null;
@@ -287,6 +363,8 @@ public interface TransactionDefinition {
 	 * instead.
 	 * @since 5.2
 	 */
+	// 返回一个不可修改的、具有默认值的 {@code TransactionDefinition}。
+	// <p>如需自定义，请使用可修改的 {@link org.springframework.transaction.support.DefaultTransactionDefinition}。
 	static TransactionDefinition withDefaults() {
 		return StaticTransactionDefinition.INSTANCE;
 	}

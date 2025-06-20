@@ -27,6 +27,7 @@ import java.util.EventListener;
  * @since 2.0
  * @see ReaderContext
  */
+// 在 bean 定义读取过程中接收组件、别名和导入注册的回调的接口。
 public interface ReaderEventListener extends EventListener {
 
 	/**
@@ -43,18 +44,23 @@ public interface ReaderEventListener extends EventListener {
 	 * @param componentDefinition a descriptor for the new component
 	 * @see BeanComponentDefinition
 	 */
+	// 通知给定的组件已经注册。
 	void componentRegistered(ComponentDefinition componentDefinition);
 
 	/**
 	 * Notification that the given alias has been registered.
 	 * @param aliasDefinition a descriptor for the new alias
 	 */
+	// 指定别名已注册的通知。
+	// @param aliasDefinition 新别名的描述符
 	void aliasRegistered(AliasDefinition aliasDefinition);
 
 	/**
 	 * Notification that the given import has been processed.
 	 * @param importDefinition a descriptor for the import
 	 */
+	// 指定导入已被处理的通知。
+	// @param importDefinition 导入的描述符
 	void importProcessed(ImportDefinition importDefinition);
 
 }

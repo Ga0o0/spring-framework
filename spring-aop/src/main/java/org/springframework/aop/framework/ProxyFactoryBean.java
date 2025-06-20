@@ -89,6 +89,25 @@ import org.springframework.util.ObjectUtils;
  * @see org.springframework.aop.Advisor
  * @see Advised
  */
+// {@link org.springframework.beans.factory.FactoryBean} 实现，
+// 用于基于 Spring {@link org.springframework.beans.factory.BeanFactory} 中的 bean 构建 AOP 代理。
+//
+// <p>{@link org.aopalliance.intercept.MethodInterceptor MethodInterceptors} 和
+// {@link org.springframework.aop.Advisor Advisors} 由当前 bean 工厂中的 bean 名称列表标识，并通过“interceptorNames”属性指定。
+// 列表中的最后一项可以是目标 bean 的名称，也可以是 {@link org.springframework.aop.TargetSource}；
+// 不过，通常情况下，最好使用“targetName”/“target”/“targetSource”属性。
+//
+// <p>全局拦截器和顾问可以在工厂级别添加。指定的拦截器和顾问会在拦截器列表中展开，其中包含一个“xxx”条目，用于将给定的前缀与 bean 名称匹配。
+// 例如，“global”将匹配“globalBean1”和“globalBean2”；而“”将匹配所有已定义的拦截器。
+// 如果匹配的拦截器实现了 {@link org.springframework.core.Ordered} 接口，则根据其返回的顺序值进行应用。
+//
+// <p>如果指定了代理接口，则创建 JDK 代理；如果没有指定，则为实际目标类创建 CGLIB 代理。
+// 请注意，后者仅在目标类没有 final 方法时才有效，因为会在运行时创建动态子类。
+//
+// <p>可以将从此工厂获取的代理强制转换为 {@link Advised}，或者获取 ProxyFactoryBean 引用并以编程方式对其进行操作。
+// 这不适用于现有的独立原型引用。但是，它适用于随后从工厂获取的原型。对拦截的更改将立即对单例（包括现有引用）生效。
+// 但是，要更改接口或目标，必须从工厂获取新的实例。这意味着从工厂获取的单例实例不具有相同的对象标识。
+// 但是，它们具有相同的拦截器和目标，并且更改任何引用都会更改所有对象。
 @SuppressWarnings("serial")
 public class ProxyFactoryBean extends ProxyCreatorSupport
 		implements FactoryBean<Object>, BeanClassLoaderAware, BeanFactoryAware {

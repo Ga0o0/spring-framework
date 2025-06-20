@@ -33,11 +33,15 @@ import org.springframework.util.Assert;
  * @since 3.1
  * @param <A> annotation containing {@linkplain #getAdviceModeAttributeName() AdviceMode attribute}
  */
+// 方便的 {@link ImportSelector} 实现基类，根据注释中的 {@link AdviceMode} 值选择导入（例如 {@code @Enable*} 注释）。
+//
+// @param <A> 注释包含 {@linkplain #getAdviceModeAttributeName() AdviceMode 属性}
 public abstract class AdviceModeImportSelector<A extends Annotation> implements ImportSelector {
 
 	/**
 	 * The default advice mode attribute name.
 	 */
+	// 默认建议模式属性名称。
 	public static final String DEFAULT_ADVICE_MODE_ATTRIBUTE_NAME = "mode";
 
 
@@ -46,6 +50,8 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 	 * generic type {@code A}. The default is {@value #DEFAULT_ADVICE_MODE_ATTRIBUTE_NAME},
 	 * but subclasses may override in order to customize.
 	 */
+	// 泛型类型 {@code A} 指定的注释的 {@link AdviceMode} 属性名称。
+	// 默认值为 {@value #DEFAULT_ADVICE_MODE_ATTRIBUTE_NAME}，但子类可以重写该属性以进行自定义。
 	protected String getAdviceModeAttributeName() {
 		return DEFAULT_ADVICE_MODE_ATTRIBUTE_NAME;
 	}
@@ -62,9 +68,15 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 	 * on the importing {@code @Configuration} class or if {@link #selectImports(AdviceMode)}
 	 * returns {@code null}
 	 */
+	// 此实现从通用元数据中解析注释类型，并验证 (a) 注释确实存在于导入的 {@code @Configuration} 类中，
+	// 以及 (b) 给定的注释具有类型为 {@link AdviceMode} 的 {@linkplain #getAdviceModeAttributeName() 建议模式属性}。
+	// <p>然后调用 {@link #selectImports(AdviceMode)} 方法，允许具体实现以安全便捷的方式选择导入。
+	// @throws IllegalArgumentException 如果导入的 {@code @Configuration} 类中不存在预期的注释 {@code A}，
+	// 或者 {@link #selectImports(AdviceMode)} 返回 {@code null}
 	@Override
 	public final String[] selectImports(AnnotationMetadata importingClassMetadata) {
 		Class<?> annType = GenericTypeResolver.resolveTypeArgument(getClass(), AdviceModeImportSelector.class);
+		// AdviceModeImportSelector 的无法解析的类型参数
 		Assert.state(annType != null, "Unresolvable type argument for AdviceModeImportSelector");
 
 		AnnotationAttributes attributes = AnnotationConfigUtils.attributesFor(importingClassMetadata, annType);
@@ -92,6 +104,11 @@ public abstract class AdviceModeImportSelector<A extends Annotation> implements 
 	 * @return array containing classes to import (empty array if none;
 	 * {@code null} if the given {@code AdviceMode} is unknown)
 	 */
+	// 根据给定的 {@code AdviceMode} 确定应导入哪些类。
+	// <p>从此方法返回 {@code null} 表示无法处理 {@code AdviceMode} 或该 {@code AdviceMode} 未知，
+	// 应抛出 {@code IllegalArgumentException}。
+	// @param adviceMode 是通过泛型指定的注释的 {@linkplain #getAdviceModeAttributeName() 建议模式属性} 的值。
+	// @return 包含要导入的类的数组（如果没有，则为空数组；如果给定的 {@code AdviceMode} 未知，则为 {@code null}）
 	@Nullable
 	protected abstract String[] selectImports(AdviceMode adviceMode);
 

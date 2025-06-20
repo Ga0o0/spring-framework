@@ -23,6 +23,7 @@ package org.springframework.transaction;
  * @author Juergen Hoeller
  * @since 1.1
  */
+// 尝试暂停现有事务但底层后端不支持事务暂停时抛出异常。
 @SuppressWarnings("serial")
 public class TransactionSuspensionNotSupportedException extends CannotCreateTransactionException {
 

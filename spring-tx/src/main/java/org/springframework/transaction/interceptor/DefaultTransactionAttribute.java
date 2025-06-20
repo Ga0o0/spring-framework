@@ -35,6 +35,8 @@ import org.springframework.util.StringValueResolver;
  * @author Mark Paluch
  * @since 16.03.2003
  */
+// Spring 的通用事务属性实现。
+// 默认情况下，在运行时（而非受检）发生异常时进行回滚。
 @SuppressWarnings("serial")
 public class DefaultTransactionAttribute extends DefaultTransactionDefinition implements TransactionAttribute {
 
@@ -94,6 +96,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * e.g. indicating where the attribute is applying.
 	 * @since 4.3.4
 	 */
+	// 为此事务属性设置描述符，例如指示该属性的应用位置。
 	public void setDescriptor(@Nullable String descriptor) {
 		this.descriptor = descriptor;
 	}
@@ -115,6 +118,7 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * @see #setTimeout
 	 * @see #resolveAttributeStrings
 	 */
+	// 将要应用的超时时间（如果有）设置为解析为秒数的字符串值。
 	public void setTimeoutString(@Nullable String timeoutString) {
 		this.timeoutString = timeoutString;
 	}
@@ -182,6 +186,11 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * intentionally declared as business exceptions, leading to a commit by default.
 	 * @see org.springframework.transaction.support.TransactionTemplate#execute
 	 */
+	// 默认行为与 EJB 相同：在未检查异常（{@link RuntimeException}）上回滚，假设任何业务规则之外的意外结果。
+	// 此外，我们还会尝试回滚 {@link Error}，这显然也是一个意外结果。相比之下，已检查异常被视为业务异常，
+	// 因此是事务业务方法的常规预期结果，即一种仍然允许定期完成资源操作的替代返回值。
+	// <p>这与 TransactionTemplate 的默认行为基本一致，只是 TransactionTemplate 还会在未声明的已检查异常（一个极端情况）上回滚。
+	// 对于声明式事务，我们期望已检查异常被有意声明为业务异常，从而默认导致提交。
 	@Override
 	public boolean rollbackOn(Throwable ex) {
 		return (ex instanceof RuntimeException || ex instanceof Error);
@@ -195,6 +204,8 @@ public class DefaultTransactionAttribute extends DefaultTransactionDefinition im
 	 * @param resolver the embedded value resolver to apply, if any
 	 * @since 5.3
 	 */
+	// 解析定义为可解析字符串的属性值：{@link #setTimeoutString}、{@link #setQualifier}、{@link #setLabels}。这通常用于解析 “${...}” 占位符。
+	// @param resolver 要应用的嵌入值解析器（如果有）
 	public void resolveAttributeStrings(@Nullable StringValueResolver resolver) {
 		String timeoutString = this.timeoutString;
 		if (StringUtils.hasText(timeoutString)) {

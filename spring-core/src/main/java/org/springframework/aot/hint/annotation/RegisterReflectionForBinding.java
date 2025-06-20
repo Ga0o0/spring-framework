@@ -62,6 +62,29 @@ import org.springframework.core.annotation.AliasFor;
  * @see org.springframework.aot.hint.BindingReflectionHintsRegistrar
  * @see Reflective @Reflective
  */
+// 指示注释属性中指定的类需要一些反射提示以用于绑定或基于反射的序列化目的。
+// 对于指定的每个类，都会注册有关构造函数、字段、属性、记录组件（包括在属性和记录组件上传递使用的类型）的提示。
+// 必须在 {@code value} 或 {@code classes} 注释属性中指定至少一个类。
+//
+// <p>带注释的元素可以是配置类 &mdash; 例如：
+//
+// <pre class="code">
+// @Configuration
+// @RegisterReflectionForBinding({Foo.class, Bar.class})
+// public class MyConfig {
+// 		// ...
+// }</pre>
+//
+// <p>带注释的元素可以是任何 Spring bean 类或方法 &mdash;例如：
+//
+// <pre class="code">
+// @Service
+// public class MyService {
+// 		@RegisterReflectionForBinding(Baz.class)
+// 		public void process() { // ... }
+// }</pre>
+//
+// <p>带注释的元素也可以是任何使用 <em>Spring TestContext Framework</em> 加载 {@code ApplicationContext} 的测试类。
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

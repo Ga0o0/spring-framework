@@ -60,6 +60,10 @@ public class TransactionalApplicationListenerMethodAdapter extends ApplicationLi
 	 * @param targetClass the target class that the method is declared on
 	 * @param method the listener method to invoke
 	 */
+	// 构造一个新的 TransactionalApplicationListenerMethodAdapter。
+	// @param beanName 调用侦听器方法的 bean 的名称
+	// @param targetClass 声明该方法的目标类
+	// @param method 要调用的侦听器方法
 	public TransactionalApplicationListenerMethodAdapter(String beanName, Class<?> targetClass, Method method) {
 		super(beanName, targetClass, method);
 		TransactionalEventListener eventAnn =

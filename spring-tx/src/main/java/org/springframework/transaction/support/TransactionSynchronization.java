@@ -42,15 +42,26 @@ import org.springframework.core.Ordered;
  * @see AbstractPlatformTransactionManager
  * @see org.springframework.jdbc.datasource.DataSourceUtils#CONNECTION_SYNCHRONIZATION_ORDER
  */
+// 事务同步回调接口。由 AbstractPlatformTransactionManager 支持。
+//
+// <p>TransactionSynchronization 实现可以实现 Ordered 接口来影响其执行顺序。未实现 Ordered 接口的同步将被附加到同步链的末尾。
+//
+// <p>Spring 自身执行的系统同步使用特定的顺序值，允许与其执行顺序进行细粒度的交互（如有必要）。
+//
+// <p>实现 {@link Ordered} 接口，以便以声明方式控制同步的执行顺序（自 5.3 版本起）。
+// 默认的 {@link #getOrder() order} 为 {@link Ordered#LOWEST_PRECEDENCE}，表示较晚执行；返回较低的值表示较早执行。
 public interface TransactionSynchronization extends Ordered, Flushable {
 
 	/** Completion status in case of proper commit. */
+	// 正确提交的情况下的完成状态。
 	int STATUS_COMMITTED = 0;
 
 	/** Completion status in case of proper rollback. */
+	// 正确回滚情况下的完成状态。
 	int STATUS_ROLLED_BACK = 1;
 
 	/** Completion status in case of heuristic mixed completion or system errors. */
+	// 启发式混合完成或系统错误时的完成状态。
 	int STATUS_UNKNOWN = 2;
 
 
@@ -68,6 +79,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * Supposed to unbind resources from TransactionSynchronizationManager if managing any.
 	 * @see TransactionSynchronizationManager#unbindResource
 	 */
+	// 暂停此同步。如果正在管理任何资源，则应将其与 TransactionSynchronizationManager 解除绑定。
 	default void suspend() {
 	}
 
@@ -76,6 +88,7 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * Supposed to rebind resources to TransactionSynchronizationManager if managing any.
 	 * @see TransactionSynchronizationManager#bindResource
 	 */
+	// 恢复此同步。应将管理的任何资源重新绑定到 TransactionSynchronizationManager。
 	default void resume() {
 	}
 
@@ -116,6 +129,10 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * @see #beforeCommit
 	 * @see #afterCompletion
 	 */
+	// 在事务提交/回滚之前调用。可以在事务完成<i>之前</i>执行资源清理。
+	// <p>此方法将在 {@code beforeCommit} 之后调用，即使 {@code beforeCommit} 抛出异常也是如此。
+	// 此回调允许在事务完成之前关闭资源，无论结果如何。如果发生错误，
+	// @throws RuntimeException 将被<b>记录但不会传播</b>（注意：请勿在此处抛出 TransactionException 子类！）
 	default void beforeCompletion() {
 	}
 
@@ -155,6 +172,12 @@ public interface TransactionSynchronization extends Ordered, Flushable {
 	 * @see #STATUS_UNKNOWN
 	 * @see #beforeCompletion
 	 */
+	// 在事务提交/回滚后调用。可以在事务完成后执行资源清理。
+	// <p><b>注意：</b>事务可能已经提交或回滚，但事务资源可能仍然处于活动状态且可访问。
+	// 因此，此时触发的任何数据访问代码仍将“参与”原始事务，从而允许执行一些清理操作（之后不再提交！），除非它明确声明需要在单独的事务中运行。
+	// 因此：<b>对从此处调用的任何事务操作使用 {@code PROPAGATION_REQUIRES_NEW}。</b>
+	// @param status 完成状态取决于 {@code STATUS_} 常量。
+	// @throws RuntimeException（如果发生错误）；将<b>记录但不会传播</b>（注意：请勿在此处抛出 TransactionException 子类！）
 	default void afterCompletion(int status) {
 	}
 

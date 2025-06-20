@@ -36,6 +36,8 @@ import org.springframework.core.type.AnnotationMetadata;
  * @see org.springframework.cache.annotation.EnableCaching
  * @see org.springframework.transaction.annotation.EnableTransactionManagement
  */
+// 根据将 {@code mode} 和 {@code proxyTargetClass} 属性设置为正确值的 {@code @Enable} 注释，
+// 根据当前 {@link BeanDefinitionRegistry} 适当地注册一个自动代理创建器。
 public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 
 	private final Log logger = LogFactory.getLog(getClass());
@@ -55,23 +57,35 @@ public class AutoProxyRegistrar implements ImportBeanDefinitionRegistrar {
 	 * {@code proxyTargetClass} attributes, the APC can be registered and configured all
 	 * the same.
 	 */
+	// 根据给定的注册表注册、升级和配置标准自动代理创建器 (APC)。
+	// 其工作原理是查找导入的 {@code @Configuration} 类上声明的、同时具有 {@code mode} 和 {@code proxyTargetClass} 属性的最近的注解。
+	// 如果 {@code mode} 设置为 {@code PROXY}，则注册 APC；
+	// 如果 {@code proxyTargetClass} 设置为 {@code true}，则强制 APC 使用子类 (CGLIB) 代理。
+	// <p>多个 {@code @Enable} 注解同时公开 {@code mode} 和 {@code proxyTargetClass} 属性。
+	// 需要注意的是，这些功能中的大多数最终共享一个 {@linkplain AopConfigUtils#AUTO_PROXY_CREATOR_BEAN_NAME 的 APC}。
+	// 因此，此实现并不“关心”它找到哪个注释——只要它公开正确的 {@code mode} 和 {@code proxyTargetClass} 属性，就可以以相同的方式注册和配置 APC。
 	@Override
 	public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
 		boolean candidateFound = false;
+		// 获取类上的注解
 		Set<String> annTypes = importingClassMetadata.getAnnotationTypes();
 		for (String annType : annTypes) {
+			// 获取注解的属性
 			AnnotationAttributes candidate = AnnotationConfigUtils.attributesFor(importingClassMetadata, annType);
 			if (candidate == null) {
 				continue;
 			}
+			// 处理相关注解属性
 			Object mode = candidate.get("mode");
 			Object proxyTargetClass = candidate.get("proxyTargetClass");
 			if (mode != null && proxyTargetClass != null && AdviceMode.class == mode.getClass() &&
 					Boolean.class == proxyTargetClass.getClass()) {
 				candidateFound = true;
 				if (mode == AdviceMode.PROXY) {
+					// 注册 InfrastructureAdvisorAutoProxyCreator 的 BeanDefinition
 					AopConfigUtils.registerAutoProxyCreatorIfNecessary(registry);
-					if ((Boolean) proxyTargetClass) {
+					if ((Boolean) proxyTargetClass) { // proxyTargetClass == true
+						// 为上面的 BeanDefinition 注册一个属性 proxyTargetClass，值为 true
 						AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
 						return;
 					}

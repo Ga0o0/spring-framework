@@ -36,6 +36,9 @@ import org.springframework.util.Assert;
  * @see jakarta.transaction.TransactionManager#begin()
  * @see jakarta.transaction.TransactionManager#getTransaction()
  */
+// {@link TransactionFactory} 策略接口的默认实现，简单包装了一个标准 JTA {@link jakarta.transaction.TransactionManager}。
+//
+// <p>不支持事务名称；直接忽略任何指定的名称。
 public class SimpleTransactionFactory implements TransactionFactory {
 
 	private final TransactionManager transactionManager;
@@ -45,6 +48,8 @@ public class SimpleTransactionFactory implements TransactionFactory {
 	 * Create a new SimpleTransactionFactory for the given TransactionManager.
 	 * @param transactionManager the JTA TransactionManager to wrap
 	 */
+	// 为给定的 TransactionManager 创建一个新的 SimpleTransactionFactory。
+	// @param transactionManager 要包装的 JTA TransactionManager
 	public SimpleTransactionFactory(TransactionManager transactionManager) {
 		Assert.notNull(transactionManager, "TransactionManager must not be null");
 		this.transactionManager = transactionManager;

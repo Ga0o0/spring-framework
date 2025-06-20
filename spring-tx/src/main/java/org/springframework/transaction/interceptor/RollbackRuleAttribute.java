@@ -55,6 +55,23 @@ import org.springframework.util.Assert;
  * @since 09.04.2003
  * @see NoRollbackRuleAttribute
  */
+// 确定给定异常是否应导致回滚的规则。
+//
+// <p>可以应用多个这样的规则来确定在抛出异常后事务是否应提交或回滚。
+//
+// <p>每个规则都基于一种异常类型或异常模式，分别通过 {@link #RollbackRuleAttribute(Class)}
+// 或 {@link #RollbackRuleAttribute(String)} 提供。
+//
+// <p>当使用异常类型定义回滚规则时，该类型将用于匹配抛出的异常类型及其超类型，从而提供类型安全性并避免使用模式时可能发生的任何意外匹配。
+// 例如，{@code jakarta.servlet.ServletException.class} 的值将仅匹配类型为
+// {@code jakarta.servlet.ServletException} 及其子类的抛出异常。
+//
+// <p>当回滚规则使用异常模式定义时，该模式可以是完全限定类名，也可以是异常类型（必须是 Throwable 的子类）的完全限定类名的子字符串，
+// 目前不支持通配符。例如，值 {@code "jakarta.servlet.ServletException"} 或 {@code "ServletException"}
+// 将匹配 {@code jakarta.servlet.ServletException} 及其子类。
+//
+// <p>有关回滚规则语义、模式以及与基于模式的规则可能出现的意外匹配相关的警告的更多详细信息，
+// 请参阅 {@link org.springframework.transaction.annotation.Transactional @Transactional} 的 javadoc。
 @SuppressWarnings("serial")
 public class RollbackRuleAttribute implements Serializable{
 
@@ -62,6 +79,7 @@ public class RollbackRuleAttribute implements Serializable{
 	 * The {@linkplain RollbackRuleAttribute rollback rule} for
 	 * {@link RuntimeException RuntimeExceptions}.
 	 */
+	// {@link RuntimeException RuntimeExceptions} 的 {@linkplain RollbackRuleAttribute 回滚规则}。
 	public static final RollbackRuleAttribute ROLLBACK_ON_RUNTIME_EXCEPTIONS =
 			new RollbackRuleAttribute(RuntimeException.class);
 
@@ -72,6 +90,7 @@ public class RollbackRuleAttribute implements Serializable{
 	 * potentially resulting in unintentional matches for similarly named exception
 	 * types and nested exception types.
 	 */
+	// 异常模式：用于根据异常名称在抛出的异常的类层次结构中搜索匹配项，具有零类型安全性，并且可能导致类似名称的异常类型和嵌套异常类型的意外匹配。
 	private final String exceptionPattern;
 
 	/**
@@ -79,6 +98,7 @@ public class RollbackRuleAttribute implements Serializable{
 	 * a thrown exception's class hierarchy.
 	 * @since 6.0
 	 */
+	// 异常类型：用于在抛出的异常的类层次结构中搜索匹配项时确保类型安全。
 	@Nullable
 	private final Class<? extends Throwable> exceptionType;
 
@@ -96,6 +116,11 @@ public class RollbackRuleAttribute implements Serializable{
 	 * @throws IllegalArgumentException if the supplied {@code exceptionType} is
 	 * not a {@code Throwable} type or is {@code null}
 	 */
+	// 为给定的 {@code exceptionType} 创建 {@code RollbackRuleAttribute} 类的新实例。
+	// <p>这是构建与提供的异常类型及其子类匹配且类型安全的回滚规则的首选方法。
+	// <p>有关回滚规则语义的更多详细信息，请参阅 {@link org.springframework.transaction.annotation.Transactional @Transactional} 的 javadoc。
+	// @param exceptionType 异常类型；必须是 {@link Throwable} 或 {@code Throwable} 的子类
+	// @throws IllegalArgumentException，如果提供的 {@code exceptionType} 不是 {@code Throwable} 类型或为 {@code null}
 	@SuppressWarnings("unchecked")
 	public RollbackRuleAttribute(Class<?> exceptionType) {
 		Assert.notNull(exceptionType, "'exceptionType' cannot be null");
@@ -121,6 +146,12 @@ public class RollbackRuleAttribute implements Serializable{
 	 * @throws IllegalArgumentException if the supplied {@code exceptionPattern}
 	 * is {@code null} or empty
 	 */
+	// 为给定的 {@code exceptionPattern} 创建 {@code RollbackRuleAttribute} 类的新实例。
+	// <p>有关回滚规则语义、模式和可能出现的意外匹配警告的更多详细信息，请参阅
+	// {@link org.springframework.transaction.annotation.Transactional @Transactional} 的 javadoc。
+	// <p>为了提高类型安全性并避免意外匹配，请改用 {@link #RollbackRuleAttribute(Class)}。
+	// @param exceptionPattern 异常名称模式；也可以是完全包限定的类名
+	// @throws IllegalArgumentException 如果提供的 {@code exceptionPattern} 为 {@code null} 或为空
 	public RollbackRuleAttribute(String exceptionPattern) {
 		Assert.hasText(exceptionPattern, "'exceptionPattern' cannot be null or empty");
 		this.exceptionPattern = exceptionPattern;
@@ -132,6 +163,7 @@ public class RollbackRuleAttribute implements Serializable{
 	 * Get the configured exception name pattern that this rule uses for matching.
 	 * @see #getDepth(Throwable)
 	 */
+	// 获取此规则用于匹配的已配置异常名称模式。
 	public String getExceptionName() {
 		return this.exceptionPattern;
 	}
@@ -154,6 +186,17 @@ public class RollbackRuleAttribute implements Serializable{
 	 * will return a depth signifying a match at the corresponding level in the
 	 * class hierarchy as if there had been a direct match.
 	 */
+	// 返回超类匹配的深度，具有以下语义。
+	// <ul>
+	// <li>{@code -1} 表示此规则与提供的 {@code 异常} 不匹配。</li>
+	// <li>{@code 0} 表示此规则直接与提供的 {@code 异常} 匹配。</li>
+	// <li>任何其他正值均表示此规则与超类层次结构中提供的 {@code 异常} 匹配，
+	// 其中该值是提供的 {@code 异常} 与此规则直接匹配的异常之间在类层次结构中的级别数。</li>
+	// </ul>
+	// <p>在比较与给定异常匹配的回滚规则时，匹配深度较低的规则胜出。
+	// 例如，直接匹配 ({@codedepth == 0}) 胜过超类层次结构中的匹配 ({@codedepth> 0})。
+	// <p>当通过 {@link #RollbackRuleAttribute(String)} 使用异常模式构造时，
+	// 针对嵌套异常类型或类似命名的异常类型的匹配将返回一个深度，表示在类层次结构中相应级别的匹配，就好像存在直接匹配一样。
 	public int getDepth(Throwable exception) {
 		return getDepth(exception.getClass(), 0);
 	}

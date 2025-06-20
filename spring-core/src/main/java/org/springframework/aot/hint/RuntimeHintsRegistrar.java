@@ -33,6 +33,11 @@ import org.springframework.lang.Nullable;
  * @author Stephane Nicoll
  * @since 6.0
  */
+// 基于部署单元的 {@link ClassLoader} 注册 {@link RuntimeHints} 的契约。
+// 如果可能，实现应使用指定的 {@link ClassLoader} 来确定是否需要提供提示。
+//
+// <p>此接口的实现可以通过使用 {@link org.springframework.context.annotation.ImportRuntimeHints @ImportRuntimeHints} 动态注册，
+// 也可以使用此接口的完全限定类名作为键在 {@code META-INF/spring/aot.factories} 中静态注册。实现需要一个标准的无参数构造函数。
 @FunctionalInterface
 public interface RuntimeHintsRegistrar {
 

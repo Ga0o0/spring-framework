@@ -35,6 +35,8 @@ import org.springframework.util.ClassUtils;
  * @see TransactionManagementConfigUtils#TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
  * @see TransactionManagementConfigUtils#JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME
  */
+// 根据导入 {@code @Configuration} 类上的 {@link EnableTransactionManagement#mode} 的值
+// 选择应使用 {@link AbstractTransactionManagementConfiguration} 的哪个实现。
 public class TransactionManagementConfigurationSelector extends AdviceModeImportSelector<EnableTransactionManagement> {
 
 	/**
@@ -43,6 +45,8 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 	 * and {@code ASPECTJ} values of {@link EnableTransactionManagement#mode()},
 	 * respectively.
 	 */
+	// 分别为 {@link EnableTransactionManagement#mode()} 的 {@code PROXY} 和 {@code ASPECTJ} 值
+	// 返回 {@link ProxyTransactionManagementConfiguration} 或 {@code AspectJ(Jta)TransactionManagementConfiguration}。
 	@Override
 	protected String[] selectImports(AdviceMode adviceMode) {
 		return switch (adviceMode) {
@@ -54,7 +58,9 @@ public class TransactionManagementConfigurationSelector extends AdviceModeImport
 
 	private String determineTransactionAspectClass() {
 		return (ClassUtils.isPresent("jakarta.transaction.Transactional", getClass().getClassLoader()) ?
+				// JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME = org.springframework.transaction.aspectj.AspectJJtaTransactionManagementConfiguration
 				TransactionManagementConfigUtils.JTA_TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME :
+				// TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME = org.springframework.transaction.aspectj.AspectJTransactionManagementConfiguration
 				TransactionManagementConfigUtils.TRANSACTION_ASPECT_CONFIGURATION_CLASS_NAME);
 	}
 

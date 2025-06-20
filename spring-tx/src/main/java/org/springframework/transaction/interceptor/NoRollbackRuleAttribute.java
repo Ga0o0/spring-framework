@@ -24,6 +24,7 @@ package org.springframework.transaction.interceptor;
  * @author Sam Brannen
  * @since 09.04.2003
  */
+// {@link RollbackRuleAttribute} 的标记子类具有与 {@code RollbackRuleAttribute} 超类相反的行为。
 @SuppressWarnings("serial")
 public class NoRollbackRuleAttribute extends RollbackRuleAttribute {
 
@@ -36,6 +37,9 @@ public class NoRollbackRuleAttribute extends RollbackRuleAttribute {
 	 * not a {@code Throwable} type or is {@code null}
 	 * @see RollbackRuleAttribute#RollbackRuleAttribute(Class)
 	 */
+	// 为给定的 {@code exceptionType} 创建 {@code NoRollbackRuleAttribute} 类的新实例。
+	// @param exceptionType 异常类型；必须是 {@link Throwable} 或 {@code Throwable} 的子类
+	// @throws IllegalArgumentException 如果提供的 {@code exceptionType} 不是 {@code Throwable} 类型或为 {@code null}
 	public NoRollbackRuleAttribute(Class<?> exceptionType) {
 		super(exceptionType);
 	}
@@ -49,6 +53,9 @@ public class NoRollbackRuleAttribute extends RollbackRuleAttribute {
 	 * is {@code null} or empty
 	 * @see RollbackRuleAttribute#RollbackRuleAttribute(String)
 	 */
+	// 为提供的 {@code exceptionPattern} 创建 {@code NoRollbackRuleAttribute} 类的新实例。
+	// @param exceptionPattern 异常名称模式；也可以是完全包限定的类名。
+	// @throws IllegalArgumentException 如果提供的 {@code exceptionPattern} 为 {@code null} 或为空
 	public NoRollbackRuleAttribute(String exceptionPattern) {
 		super(exceptionPattern);
 	}

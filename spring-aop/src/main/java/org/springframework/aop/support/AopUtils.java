@@ -115,6 +115,10 @@ public abstract class AopUtils {
 	 * @see org.springframework.aop.TargetClassAware#getTargetClass()
 	 * @see org.springframework.aop.framework.AopProxyUtils#ultimateTargetClass(Object)
 	 */
+	// 确定给定 bean 实例的目标类，该类可能是 AOP 代理。
+	// <p>如果是 AOP 代理，则返回目标类；否则返回普通类。
+	// @param candidates 要检查的实例（可能是 AOP 代理）
+	// @return 目标类（或给定对象的普通类作为后备；永远不会返回 {@code null}）
 	public static Class<?> getTargetClass(Object candidate) {
 		Assert.notNull(candidate, "Candidate object must not be null");
 		Class<?> result = null;
@@ -212,6 +216,14 @@ public abstract class AopUtils {
 	 * @see org.springframework.util.ClassUtils#getMostSpecificMethod
 	 * @see org.springframework.core.BridgeMethodResolver#getMostSpecificMethod
 	 */
+	// 给定一个方法（可能来自接口）和当前 AOP 调用中使用的目标类，如果存在则查找相应的目标方法。
+	// 例如，方法可能是 {@code IFoo.bar()}，目标类可能是 {@code DefaultFoo}。
+	// 在这种情况下，方法可能是 {@code DefaultFoo.bar()}。这样就可以找到该方法的属性。
+	// <p><b>注意：</b>与 {@link org.springframework.util.ClassUtils#getMostSpecificMethod} 不同，
+	// 此方法解析桥接方法，以便从<i>原始</i>方法定义中检索属性。
+	// @param method 待调用的方法，可能来自接口
+	// @param targetClass 当前调用的目标类（可以为 {@code null} 或甚至未实现该方法）
+	// @return 具体的目标方法，如果 {@code targetClass} 未实现原始方法，则返回原始方法
 	public static Method getMostSpecificMethod(Method method, @Nullable Class<?> targetClass) {
 		Class<?> specificTargetClass = (targetClass != null ? ClassUtils.getUserClass(targetClass) : null);
 		return BridgeMethodResolver.getMostSpecificMethod(method, specificTargetClass);

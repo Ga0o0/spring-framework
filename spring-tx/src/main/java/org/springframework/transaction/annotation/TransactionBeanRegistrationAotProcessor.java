@@ -41,6 +41,7 @@ import org.springframework.util.ReflectionUtils;
  * @since 6.0
  * @see TransactionRuntimeHints
  */
+// AOT {@code BeanRegistrationAotProcessor} 检测注释元素上是否存在 {@link Transactional @Transactional} 并创建所需的反射提示。
 class TransactionBeanRegistrationAotProcessor implements BeanRegistrationAotProcessor {
 
 	private static final String JAKARTA_TRANSACTIONAL_CLASS_NAME = "jakarta.transaction.Transactional";

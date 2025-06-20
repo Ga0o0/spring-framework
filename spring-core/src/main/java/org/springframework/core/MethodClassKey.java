@@ -29,6 +29,7 @@ import org.springframework.util.ObjectUtils;
  * @author Juergen Hoeller
  * @since 4.3
  */
+// 针对特定目标类的方法的通用键类，包括 {@link #toString()} 表示和 {@link Comparable} 支持（如 Java 8 中对自定义 {@code HashMap} 键的建议）。
 public final class MethodClassKey implements Comparable<MethodClassKey> {
 
 	private final Method method;
@@ -43,6 +44,9 @@ public final class MethodClassKey implements Comparable<MethodClassKey> {
 	 * @param targetClass the target class that the method will be invoked
 	 * on (may be {@code null} if identical to the declaring class)
 	 */
+	// 为给定方法和目标类创建一个键对象。
+	// @param method 要包装的方法（不能为 null）
+	// @param targetClass 将调用该方法的目标类（如果与声明类相同，则可以为 null）
 	public MethodClassKey(Method method, @Nullable Class<?> targetClass) {
 		this.method = method;
 		this.targetClass = targetClass;

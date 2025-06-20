@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
  * @since 2.0
  * @see ReaderEventListener#importProcessed(ImportDefinition)
  */
+// 表示在解析过程中已经处理的导入。
 public class ImportDefinition implements BeanMetadataElement {
 
 	private final String importedResource;

@@ -26,6 +26,7 @@ import org.springframework.aop.MethodMatcher;
  *
  * @author Rod Johnson
  */
+// 静态方法匹配器的便捷抽象超类，它不关心运行时的参数。
 public abstract class StaticMethodMatcher implements MethodMatcher {
 
 	@Override
@@ -35,7 +36,7 @@ public abstract class StaticMethodMatcher implements MethodMatcher {
 
 	@Override
 	public final boolean matches(Method method, Class<?> targetClass, Object... args) {
-		// should never be invoked because isRuntime() returns false
+		// should never be invoked because isRuntime() returns false --> 译文：永远不应调用，因为 isRuntime() 返回 false
 		throw new UnsupportedOperationException("Illegal MethodMatcher usage");
 	}
 

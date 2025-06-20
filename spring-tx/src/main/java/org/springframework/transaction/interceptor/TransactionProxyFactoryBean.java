@@ -111,6 +111,57 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @see TransactionInterceptor
  * @see org.springframework.aop.framework.ProxyFactoryBean
  */
+// 用于简化声明式事务处理的代理工厂 Bean。
+// 这是标准 AOP {@link org.springframework.aop.framework.ProxyFactoryBean} 的便捷替代方案，该方案带有单独的 {@link TransactionInterceptor} 定义。
+//
+// <p><strong>历史提示：</strong>
+// 此类最初设计用于涵盖声明式事务划分的典型情况：即使用事务代理包装单例目标对象，并代理该目标实现的所有接口。
+// 然而，在 Spring 2.0 及更高版本中，此处提供的功能已被更便捷的 {@code tx:} XML 命名空间取代。
+// 请参阅 Spring 参考文档中的<a href="https://docs.spring.io/spring/docs/current/spring-framework-reference/data-access.html#transaction-declarative">声明式事务管理</a>部分，
+// 以了解在 Spring 应用程序中管理事务的现代选项。由于这些原因，<strong>用户应该倾向于使用 {@code tx:} XML 命名空间
+// 以及 @{@link org.springframework.transaction.annotation.Transactional Transactional} 和
+// @{@link org.springframework.transaction.annotation.EnableTransactionManagement EnableTransactionManagement} 注释。</strong>
+//
+// <p>需要指定三个主要属性：
+// <ul>
+// <li>“transactionManager”：要使用的 {@link PlatformTransactionManager} 实现（例如，{@link org.springframework.transaction.jta.JtaTransactionManager} 实例）
+// <li>“target”：应该为其创建事务代理的目标对象
+// <li>“transactionAttributes”：每个目标方法名称（或方法名称模式）的事务属性（例如，传播行为和“readOnly”标志）
+// </ul>
+//
+// <p>如果未明确设置“transactionManager”属性，并且此 {@link FactoryBean} 正在 {@link ListableBeanFactory} 中，
+// 将从 {@link BeanFactory} 获取一个匹配的 {@link PlatformTransactionManager} 类型的 bean。
+//
+// <p>与 {@link TransactionInterceptor} 不同，事务属性被指定为属性，方法名称作为键，事务属性描述符作为值。方法名称始终应用于目标类。
+//
+// <p>在内部，使用一个 {@link TransactionInterceptor} 实例，但此类的用户无需关心。可选地，可以指定一个方法切入点来触发底层 {@link TransactionInterceptor} 的条件调用。
+//
+// <p>可以设置 “preInterceptors” 和 “postInterceptors” 属性，以将其他拦截器添加到组合中，
+// 例如 {@link org.springframework.aop.interceptor.PerformanceMonitorInterceptor}。
+//
+// <p><b>提示：</b>此类通常与父/子 bean 定义一起使用。通常，你会在一个抽象的父 Bean 定义中定义事务管理器和默认事务属性（用于方法名称模式），
+// 并为特定的目标对象派生具体的子 Bean 定义。这将最大限度地减少每个 Bean 定义的工作量。
+//
+// <pre class="code">
+// <bean id="baseTransactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+// 		<property name="transactionManager" ref="transactionManager"/>
+// 		<property name="transactionAttributes">
+// 			<props>
+// 				<prop key="insert">PROPAGATION_REQUIRED</prop>
+// 				<prop key="update">PROPAGATION_REQUIRED</prop>
+// 				<prop key="">PROPAGATION_REQUIRED,readOnly</prop>
+// 			</props>
+// 		</property>
+// </bean>
+//
+// <bean id="myProxy" parent="baseTransactionProxy">
+// 		<property name="target" ref="myTarget"/>
+// </bean>
+//
+// <bean id="yourProxy" parent="baseTransactionProxy">
+// 		<property name="target" ref="yourTarget"/>
+// </bean>
+// </pre>
 @SuppressWarnings("serial")
 public class TransactionProxyFactoryBean extends AbstractSingletonProxyFactoryBean
 		implements BeanFactoryAware {

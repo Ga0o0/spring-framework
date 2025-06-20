@@ -30,6 +30,8 @@ import org.springframework.beans.BeanMetadataElement;
  * @see org.springframework.beans.factory.xml.DocumentDefaultsDefinition
  * @see ReaderEventListener#defaultsRegistered(DefaultsDefinition)
  */
+// 默认定义的标记接口，扩展 BeanMetadataElement 以继承源暴露。
+// <p>具体实现通常基于 “文档默认值”，例如在 XML 文档中的根标记级别指定。
 public interface DefaultsDefinition extends BeanMetadataElement {
 
 }

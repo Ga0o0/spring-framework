@@ -119,6 +119,54 @@ import org.springframework.transaction.TransactionDefinition;
  * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute
  * @see org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
  */
+// 描述单个方法或类的事务属性。
+//
+// <p>当此注解在类级别声明时，它将默认应用于声明类及其子类的所有方法。
+// 请注意，它不适用于类层次结构中的祖先类；继承的方法需要在本地重新声明才能参与子类级别的注解。
+// 有关方法可见性约束的详细信息，请参阅参考手册中的
+// <a href="https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html#transaction-declarative-annotations-method-visibility">事务管理</a>部分。
+//
+// <p>此注解通常直接与 Spring 的 {@link org.springframework.transaction.interceptor.RuleBasedTransactionAttribute} 类相当，
+// 实际上 {@link AnnotationTransactionAttributeSource} 将直接将此注解的属性
+// 转换为 {@code RuleBasedTransactionAttribute} 中的属性，以便 Spring 的事务支持代码不必了解注解。
+//
+// <h3>属性语义</h3>
+//
+// <p>如果此注解中未配置自定义回滚规则，则事务将在 {@link RuntimeException} 和 {@link Error} 上回滚，但不会在受检异常上回滚。
+//
+// <p>回滚规则确定在抛出给定异常时是否应回滚事务，并且规则基于类型或模式。
+// 可以通过 {@link #rollbackFor}/{@link #noRollbackFor} 和
+// {@link #rollbackForClassName}/{@link #noRollbackForClassName} 配置自定义规则，它们分别允许将规则指定为类型或模式。
+//
+// <p>当回滚规则使用异常类型定义时，该类型将用于匹配抛出异常的类型及其超类型，从而提供类型安全性并避免使用模式时可能发生的任何意外匹配。
+// 例如，{@code jakarta.servlet.ServletException.class} 的值将仅匹配抛出的 {@code jakarta.servlet.ServletException} 类型及其子类的异常。
+//
+// <p>当回滚规则使用异常模式定义时，该模式可以是异常类型的完全限定类名或完全限定类名的子字符串（必须是 {@code Throwable} 的子类），目前不支持通配符。
+// 例如，{@code "jakarta.servlet.ServletException"} 或 {@code "ServletException"} 的值将匹配 {@code jakarta.servlet.ServletException} 及其子类。
+//
+// <p><strong>警告：</strong>您必须仔细考虑模式的具体性以及是否包含包信息（包信息并非强制性要求）。
+// 例如，{@code "Exception"} 几乎可以匹配任何内容，并且可能会隐藏其他规则。
+// 如果 {@code "Exception"} 旨在为所有已检查异常定义规则，则 {@code "java.lang.Exception"} 是正确的。
+// 如果异常名称更加独特，例如 {@code "BaseBusinessException"}，则可能无需使用异常模式的完全限定类名。
+// 此外，通过模式定义的回滚规则可能会导致名称相似的异常和嵌套类意外匹配。
+// 这是因为，如果抛出的异常名称包含为回滚规则配置的异常模式，则抛出的异常会被视为与给定基于模式的回滚规则匹配。
+// 例如，给定一个配置为匹配 {@code “com.example.CustomException”} 的规则，
+// 该规则将匹配名为 {@code com.example.CustomExceptionV2} 的异常（与 {@code CustomException} 位于同一包中但带有附加后缀的异常）
+// 或名为 {@code com.example.CustomException$AnotherException} 的异常（在 {@code CustomException} 中声明为嵌套类的异常）。
+//
+// <p>有关此注解中其他属性的语义的具体信息，请参阅 {@link org.springframework.transaction.TransactionDefinition} 和
+// {@link org.springframework.transaction.interceptor.TransactionAttribute} javadoc。
+//
+// <h3>事务管理</h3>
+//
+// <p>此注解通常与由 {@link org.springframework.transaction.PlatformTransactionManager} 管理的线程绑定事务一起使用，
+// 将事务公开给当前执行线程内的所有数据访问操作。 <b>注意：此注解不会传播到方法内新启动的线程。</b>
+//
+// <p>或者，此注解可以划分由 {@link org.springframework.transaction.ReactiveTransactionManager} 管理的响应式事务，
+// 该事务使用 Reactor 上下文而非线程局部变量。因此，所有参与的数据访问操作都需要在同一个响应式管道中的同一个 Reactor 上下文中执行。
+//
+// <p><b>注意：使用 {@code ReactiveTransactionManager} 配置时，所有事务划分的方法都应返回一个响应式管道。</b>
+// 空方法或常规返回类型需要与常规 {@code PlatformTransactionManager} 关联，例如通过 {@link #transactionManager()}。
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
@@ -130,6 +178,7 @@ public @interface Transactional {
 	 * Alias for {@link #transactionManager}.
 	 * @see #transactionManager
 	 */
+	// {@link #transactionManager} 的别名。
 	@AliasFor("transactionManager")
 	String value() default "";
 
@@ -144,6 +193,9 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.PlatformTransactionManager
 	 * @see org.springframework.transaction.ReactiveTransactionManager
 	 */
+	// 指定事务的<em>限定符</em>值。
+	// <p>可用于确定目标事务管理器，匹配特定 {@link org.springframework.transaction.TransactionManager TransactionManager}
+	// bean 定义的限定符值（或 bean 名称）。
 	@AliasFor("value")
 	String transactionManager() default "";
 
@@ -157,6 +209,9 @@ public @interface Transactional {
 	 * @since 5.3
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#getLabels()
 	 */
+	// 定义零 (0) 个或多个事务标签。
+	// <p>标签可用于描述事务，并可由各个事务管理器进行评估。标签可以仅用于描述目的，也可以映射到预定义的事务管理器特定选项。
+	// <p>有关如何评估事务标签的详细信息，请参阅实际事务管理器实现的文档。
 	String[] label() default {};
 
 	/**
@@ -164,6 +219,8 @@ public @interface Transactional {
 	 * <p>Defaults to {@link Propagation#REQUIRED}.
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getPropagationBehavior()
 	 */
+	// 事务传播类型。
+	// <p>默认为 {@link Propagation#REQUIRED}。
 	Propagation propagation() default Propagation.REQUIRED;
 
 	/**
@@ -178,6 +235,10 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getIsolationLevel()
 	 * @see org.springframework.transaction.support.AbstractPlatformTransactionManager#setValidateExistingTransaction
 	 */
+	// 事务隔离级别。
+	// <p>默认为 {@link Isolation#DEFAULT}。
+	// <p>专为与 {@link Propagation#REQUIRED} 或 {@link Propagation#REQUIRES_NEW} 配合使用而设计，因为它仅适用于新启动的事务。
+	// 如果您希望在参与具有不同隔离级别的现有事务时拒绝隔离级别声明，请考虑在事务管理器上将“validateExistingTransactions”标志切换为“true”。
 	Isolation isolation() default Isolation.DEFAULT;
 
 	/**
@@ -189,6 +250,10 @@ public @interface Transactional {
 	 * @return the timeout in seconds
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getTimeout()
 	 */
+	// 此事务的超时时间（以秒为单位）。
+	//* <p>默认为底层事务系统的默认超时时间。
+	//* <p>专为与 {@link Propagation#REQUIRED} 或 {@link Propagation#REQUIRES_NEW} 配合使用而设计，因为它仅适用于新启动的事务。
+	//* @return 超时时间（以秒为单位）。
 	int timeout() default TransactionDefinition.TIMEOUT_DEFAULT;
 
 	/**
@@ -201,6 +266,10 @@ public @interface Transactional {
 	 * @since 5.3
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#getTimeout()
 	 */
+	// 此事务的超时时间（以秒为单位）。
+	//* <p>默认为底层事务系统的默认超时时间。
+	//* <p>专为与 {@link Propagation#REQUIRED} 或 {@link Propagation#REQUIRES_NEW} 配合使用而设计，因为它仅适用于新启动的事务。
+	//* @return 以字符串值（例如占位符）形式返回超时时间（以秒为单位）
 	String timeoutString() default "";
 
 	/**
@@ -215,6 +284,9 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.interceptor.TransactionAttribute#isReadOnly()
 	 * @see org.springframework.transaction.support.TransactionSynchronizationManager#isCurrentTransactionReadOnly()
 	 */
+	// 一个布尔标志，如果事务实际上是只读的，则可以设置为 {@code true}，以便在运行时进行相应的优化。
+	// <p>默认为 {@code false}。<p>这仅作为对实际事务子系统的提示；它<i>不一定</i>会导致写入访问尝试失败。
+	// 无法解释只读提示的事务管理器在被请求进行只读事务时<i>不会</i>抛出异常，而是会默默忽略该提示。
 	boolean readOnly() default false;
 
 	/**
@@ -233,6 +305,11 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.interceptor.RollbackRuleAttribute#RollbackRuleAttribute(Class)
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
 	 */
+	// 定义零 (0) 个或多个异常 {@linkplain Class types}，这些异常必须是 {@link Throwable} 的子类，用于指示哪些异常类型必须导致事务回滚。
+	// <p>默认情况下，事务将在 {@link RuntimeException} 和 {@link Error} 上回滚，但不会在已检查的异常（业务异常）上回滚。
+	// 有关详细说明，请参阅 {@link org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)}。
+	// <p>这是构建回滚规则的首选方法（与 {@link #rollbackForClassName} 相反），以类型安全的方式匹配异常类型及其子类。
+	// 有关回滚规则语义的更多详细信息，请参阅 {@linkplain Transactional class-level javadocs}。
 	Class<? extends Throwable>[] rollbackFor() default {};
 
 	/**
@@ -246,6 +323,8 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.interceptor.RollbackRuleAttribute#RollbackRuleAttribute(String)
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
 	 */
+	// 定义零 (0) 个或多个异常名称模式（这些异常必须是 {@link Throwable} 的子类），指示哪些异常类型必须导致事务回滚。
+	// <p>有关回滚规则语义、模式以及可能出现的意外匹配警告的更多详细信息，请参阅 {@linkplain Transactional 类级 javadocs}。
 	String[] rollbackForClassName() default {};
 
 	/**
@@ -260,6 +339,9 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.interceptor.NoRollbackRuleAttribute#NoRollbackRuleAttribute(Class)
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
 	 */
+	// 定义零 (0) 个或多个异常 {@link Class 类型}，这些类型必须是 {@link Throwable} 的子类，用于指示哪些异常类型<b>不能</b>导致事务回滚。
+	// <p>这是构建回滚规则的首选方法（与 {@link #noRollbackForClassName} 相对），以类型安全的方式匹配异常类型及其子类。
+	// 有关回滚规则语义的更多详细信息，请参阅 {@linkplain Transactional 类级 javadocs}。
 	Class<? extends Throwable>[] noRollbackFor() default {};
 
 	/**
@@ -273,6 +355,8 @@ public @interface Transactional {
 	 * @see org.springframework.transaction.interceptor.NoRollbackRuleAttribute#NoRollbackRuleAttribute(String)
 	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
 	 */
+	// 定义零 (0) 个或多个异常名称模式（这些异常必须是 {@link Throwable} 的子类），指示哪些异常类型<b>不能</b>导致事务回滚。
+	// <p>有关回滚规则语义、模式以及可能出现的意外匹配警告的更多详细信息，请参阅 {@linkplain Transactional 类级 javadocs}。
 	String[] noRollbackForClassName() default {};
 
 }

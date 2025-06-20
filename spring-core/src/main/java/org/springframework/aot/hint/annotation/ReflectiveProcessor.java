@@ -31,6 +31,9 @@ import org.springframework.aot.hint.ReflectionHints;
  * @since 6.0
  * @see Reflective @Reflective
  */
+// 处理 {@link AnnotatedElement} 并为其注册必要的反射提示。
+//
+// <p>{@code ReflectiveProcessor} 实现通过 {@link Reflective#processors() @Reflective(processors = ...)} 注册。
 public interface ReflectiveProcessor {
 
 	/**
@@ -38,6 +41,9 @@ public interface ReflectiveProcessor {
 	 * @param hints the reflection hints instance to use
 	 * @param element the element to process
 	 */
+	// 针对指定的 {@link AnnotatedElement} 注册 {@link ReflectionHints}。
+	// @param hints 指定要使用的反射提示实例
+	// @param element 指定要处理的元素
 	void registerReflectionHints(ReflectionHints hints, AnnotatedElement element);
 
 }

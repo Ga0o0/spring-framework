@@ -102,6 +102,7 @@ public abstract class TransactionSynchronizationUtils {
 	 * Trigger {@code beforeCompletion} callbacks on all currently registered synchronizations.
 	 * @see TransactionSynchronization#beforeCompletion()
 	 */
+	// 在所有当前注册的同步上触发 {@code beforeCompletion} 回调。
 	public static void triggerBeforeCompletion() {
 		for (TransactionSynchronization synchronization : TransactionSynchronizationManager.getSynchronizations()) {
 			try {
@@ -163,6 +164,9 @@ public abstract class TransactionSynchronizationUtils {
 	 * @see TransactionSynchronization#STATUS_ROLLED_BACK
 	 * @see TransactionSynchronization#STATUS_UNKNOWN
 	 */
+	// 实际调用给定的 Spring TransactionSynchronization 对象的 {@code afterCompletion} 方法。
+	// @param synchronizations TransactionSynchronization 对象列表
+	// @param completionStatus 根据 TransactionSynchronization 接口中的常量确定完成状态
 	public static void invokeAfterCompletion(@Nullable List<TransactionSynchronization> synchronizations,
 			int completionStatus) {
 

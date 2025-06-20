@@ -27,6 +27,7 @@ import org.springframework.util.Assert;
  * @since 2.0
  * @see ReaderEventListener#aliasRegistered(AliasDefinition)
  */
+// 表示在解析过程中已注册的别名。
 public class AliasDefinition implements BeanMetadataElement {
 
 	private final String beanName;

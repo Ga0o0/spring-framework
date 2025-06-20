@@ -23,6 +23,7 @@ package org.springframework.transaction;
  * @since 5.2
  * @see TransactionDefinition#withDefaults()
  */
+// 静态的不可修改的事务定义。
 final class StaticTransactionDefinition implements TransactionDefinition {
 
 	static final StaticTransactionDefinition INSTANCE = new StaticTransactionDefinition();

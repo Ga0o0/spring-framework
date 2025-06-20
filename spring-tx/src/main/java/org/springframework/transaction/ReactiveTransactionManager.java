@@ -34,6 +34,8 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.PlatformTransactionManager
  * @see ConfigurableTransactionManager
  */
+// 这是 Spring 响应式事务基础架构的核心接口。
+// 应用程序可以直接使用它，但它主要并非一个 API：通常，应用程序会使用事务操作符或通过 AOP 进行声明式事务划分。
 public interface ReactiveTransactionManager extends TransactionManager {
 
 	/**

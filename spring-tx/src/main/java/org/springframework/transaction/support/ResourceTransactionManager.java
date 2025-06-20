@@ -33,6 +33,12 @@ import org.springframework.transaction.PlatformTransactionManager;
  * @since 2.0.4
  * @see TransactionSynchronizationManager
  */
+// 扩展了 {@link org.springframework.transaction.PlatformTransactionManager} 接口，
+// 用于指示一个原生资源事务管理器，该管理器仅对单个目标资源进行操作。
+// 此类事务管理器与 JTA 事务管理器的不同之处在于，它们不使用 XA 事务注册机制来管理任意数量的资源，
+// 而是专注于利用原生的强大功能和单一目标资源的简易性。
+//
+// <p>此接口主要用于事务管理器的抽象自省，提示客户端它们被赋予了哪种事务管理器，以及该事务管理器正在操作哪些具体的资源。
 public interface ResourceTransactionManager extends PlatformTransactionManager {
 
 	/**
@@ -44,6 +50,9 @@ public interface ResourceTransactionManager extends PlatformTransactionManager {
 	 * @see TransactionSynchronizationManager#bindResource
 	 * @see TransactionSynchronizationManager#getResource
 	 */
+	// 返回此事务管理器所操作的资源工厂，例如 JDBC DataSource 或 JMS ConnectionFactory。
+	// <p>此目标资源工厂通常用作 {@link TransactionSynchronizationManager} 每个线程的资源绑定的资源键。
+	// @return 目标资源工厂（永不返回 {@code null}）
 	Object getResourceFactory();
 
 }

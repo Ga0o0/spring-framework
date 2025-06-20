@@ -51,6 +51,14 @@ import org.springframework.transaction.TransactionManager;
  * @see org.springframework.aop.framework.ProxyFactoryBean
  * @see org.springframework.aop.framework.ProxyFactory
  */
+// AOP Alliance MethodInterceptor 使用通用 Spring 事务基础架构
+// ({@link org.springframework.transaction.PlatformTransactionManager}/
+// {@link org.springframework.transaction.ReactiveTransactionManager}) 进行声明式事务管理。
+//
+// <p>它派生自 {@link TransactionAspectSupport} 类，该类集成了 Spring 底层事务 API。
+// TransactionInterceptor 只需按正确顺序调用相关的超类方法，例如 {@link #invokeWithinTransaction}。
+//
+// <p>TransactionInterceptor 是线程安全的。
 @SuppressWarnings("serial")
 public class TransactionInterceptor extends TransactionAspectSupport implements MethodInterceptor, Serializable {
 
@@ -61,6 +69,8 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 	 * @see #setTransactionAttributes(java.util.Properties)
 	 * @see #setTransactionAttributeSource(TransactionAttributeSource)
 	 */
+	// 创建一个新的 TransactionInterceptor。
+	// <p>仍然需要设置事务管理器和事务属性。
 	public TransactionInterceptor() {
 	}
 
@@ -72,6 +82,9 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 	 * @see #setTransactionManager
 	 * @see #setTransactionAttributeSource
 	 */
+	// 创建一个新的 TransactionInterceptor。
+	// @param ptm 执行实际事务管理的默认事务管理器
+	// @param tas 用于查找事务属性的属性源
 	public TransactionInterceptor(TransactionManager ptm, TransactionAttributeSource tas) {
 		setTransactionManager(ptm);
 		setTransactionAttributeSource(tas);
@@ -86,6 +99,12 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 	 * @deprecated as of 5.2.5, in favor of
 	 * {@link #TransactionInterceptor(TransactionManager, TransactionAttributeSource)}
 	 */
+	// 创建一个新的 TransactionInterceptor。
+	// @param ptm 执行实际事务管理的默认事务管理器
+	// @param tas 用于查找事务属性的属性源
+	// @see #setTransactionManager
+	// @see #setTransactionAttributeSource
+	// @deprecated 自 5.2.5 起，支持 {@link #TransactionInterceptor(TransactionManager, TransactionAttributeSource)}
 	@Deprecated
 	public TransactionInterceptor(PlatformTransactionManager ptm, TransactionAttributeSource tas) {
 		setTransactionManager(ptm);
@@ -100,6 +119,12 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 	 * @see #setTransactionAttributes(java.util.Properties)
 	 * @deprecated as of 5.2.5, in favor of {@link #setTransactionAttributes(Properties)}
 	 */
+	// 创建一个新的 TransactionInterceptor。
+	// @param ptm 执行实际事务管理的默认事务管理器
+	// @param attribute 属性格式的事务属性
+	// @see #setTransactionManager
+	// @see #setTransactionAttributes(java.util.Properties)
+	// @deprecated 自 5.2.5 起，支持 {@link #setTransactionAttributes(Properties)}
 	@Deprecated
 	public TransactionInterceptor(PlatformTransactionManager ptm, Properties attributes) {
 		setTransactionManager(ptm);
@@ -113,9 +138,10 @@ public class TransactionInterceptor extends TransactionAspectSupport implements 
 		// Work out the target class: may be {@code null}.
 		// The TransactionAttributeSource should be passed the target class
 		// as well as the method, which may be from an interface.
+		// --> 译文：确定目标类：可能是 {@code null}。TransactionAttributeSource 应该传递目标类以及方法，该方法可能来自接口。
 		Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
 
-		// Adapt to TransactionAspectSupport's invokeWithinTransaction...
+		// Adapt to TransactionAspectSupport's invokeWithinTransaction... --> 译文：适配 TransactionAspectSupport 的 invokeWithinTransaction...
 		return invokeWithinTransaction(invocation.getMethod(), targetClass, invocation::proceed);
 	}
 

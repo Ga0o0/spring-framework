@@ -30,6 +30,7 @@ import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
  * @see TransactionInterceptor
  * @see TransactionAttributeSourceAdvisor
  */
+// 由 {@link TransactionAttributeSource} 驱动的 Advisor，用于为事务性方法包含事务 advice bean。
 @SuppressWarnings("serial")
 public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFactoryPointcutAdvisor {
 
@@ -42,6 +43,7 @@ public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFa
 	 * set on the transaction interceptor itself.
 	 * @see TransactionInterceptor#setTransactionAttributeSource
 	 */
+	// 设置用于查找事务属性的事务属性源。这通常应该与事务拦截器本身上设置的源引用相同。
 	public void setTransactionAttributeSource(TransactionAttributeSource transactionAttributeSource) {
 		this.pointcut.setTransactionAttributeSource(transactionAttributeSource);
 	}
@@ -50,6 +52,8 @@ public class BeanFactoryTransactionAttributeSourceAdvisor extends AbstractBeanFa
 	 * Set the {@link ClassFilter} to use for this pointcut.
 	 * Default is {@link ClassFilter#TRUE}.
 	 */
+	// 设置此切入点使用的 {@link ClassFilter}。
+	// 默认值为 {@link ClassFilter#TRUE}。
 	public void setClassFilter(ClassFilter classFilter) {
 		this.pointcut.setClassFilter(classFilter);
 	}

@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 用于简单模式匹配的实用方法，特别是针对 Spring 的典型 {@code xxx*}、{@code *xxx}、{@code *xxx*} 和 {@code xxx*yyy} 模式样式。
 public abstract class PatternMatchUtils {
 
 	/**
@@ -36,6 +37,11 @@ public abstract class PatternMatchUtils {
 	 * @param str the String to match
 	 * @return whether the String matches the given pattern
 	 */
+	// 将字符串与给定的模式进行匹配，支持直接相等以及以下简单模式样式：{@code xxx*}、{@code *xxx}、{@code *xxx*} 和 {@code xxx*yyy}（包含任意数量的模式部分）。
+	// <p>如果提供的字符串或模式为 {@code null}，则返回 {@code false}。
+	// @param pattern 要匹配的模式
+	// @param str 要匹配的字符串
+	// @return 字符串是否与给定的模式匹配
 	public static boolean simpleMatch(@Nullable String pattern, @Nullable String str) {
 		return simpleMatch(pattern, str, false);
 	}

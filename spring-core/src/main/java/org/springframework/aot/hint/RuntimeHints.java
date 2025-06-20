@@ -31,6 +31,11 @@ package org.springframework.aot.hint;
  * @author Janne Valkealahti
  * @since 6.0
  */
+// 收集可用于优化应用程序运行时的提示。
+//
+// <p>可以针对类型的单个成员以及更广泛的 {@linkplain MemberCategory 成员类别} 记录反射的使用情况。可以使用模式或资源包的基名指定对资源的访问。
+//
+// <p>还可以记录需要对代理进行 Java 序列化的提示。
 public class RuntimeHints {
 
 	private final ReflectionHints reflection = new ReflectionHints();

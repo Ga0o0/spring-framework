@@ -213,6 +213,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * Modify a PropertyValue object held in this object.
 	 * Indexed from 0.
 	 */
+	// 修改此对象中保存的 PropertyValue 对象。索引从 0 开始。
 	public void setPropertyValueAt(PropertyValue pv, int i) {
 		this.propertyValueList.set(i, pv);
 	}
@@ -222,6 +223,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * the current {@link PropertyValue} if merging is supported and enabled.
 	 * @see Mergeable
 	 */
+	// 如果支持并启用合并，则将提供的“新”{@link PropertyValue} 的值与当前 {@link PropertyValue} 的值合并。
 	private PropertyValue mergeIfRequired(PropertyValue newPv, PropertyValue currentPv) {
 		Object value = newPv.getValue();
 		if (value instanceof Mergeable mergeable) {

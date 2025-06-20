@@ -34,6 +34,10 @@ import org.springframework.transaction.TransactionStatus;
  * @see TransactionTemplate
  * @see CallbackPreferringPlatformTransactionManager
  */
+// 事务代码的回调接口。与 {@link TransactionTemplate} 的 {@code execute} 方法一起使用，通常作为方法实现中的匿名类。
+//
+// <p>通常用于将对事务无关数据访问服务的各种调用组装到具有事务划分的更高级别的服务方法中。
+// 或者，也可以考虑使用声明式事务划分（例如，通过 Spring 的 {@link org.springframework.transaction.annotation.Transactional} 注解）。
 @FunctionalInterface
 public interface TransactionCallback<T> {
 
@@ -52,6 +56,12 @@ public interface TransactionCallback<T> {
 	 * @see TransactionTemplate#execute
 	 * @see CallbackPreferringPlatformTransactionManager#execute
 	 */
+	// 在事务上下文中由 {@link TransactionTemplate#execute} 调用。
+	// 无需关注事务本身，但它可以通过给定的状态对象检索和影响当前事务的状态，例如设置仅回滚。
+	// <p>允许返回在事务中创建的结果对象，例如一个域对象或一个域对象集合。
+	// 回调抛出的 RuntimeException 被视为强制回滚的应用程序异常。
+	// 任何此类异常都将传播给模板的调用者，除非回滚出现问题，在这种情况下将抛出 TransactionException。
+	// @param status 关联的事务状态 @return 结果对象，或 {@code null}
 	@Nullable
 	T doInTransaction(TransactionStatus status);
 

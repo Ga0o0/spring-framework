@@ -30,6 +30,7 @@ import org.springframework.transaction.jta.JtaTransactionManager;
  * @author Christian Dupuis
  * @since 2.5
  */
+// <tx:jta-transaction-manager/> XML 配置元素的解析器。
 public class JtaTransactionManagerBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
 
 	@Override
@@ -39,6 +40,7 @@ public class JtaTransactionManagerBeanDefinitionParser extends AbstractSingleBea
 
 	@Override
 	protected String resolveId(Element element, AbstractBeanDefinition definition, ParserContext parserContext) {
+		// DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager"
 		return TxNamespaceHandler.DEFAULT_TRANSACTION_MANAGER_BEAN_NAME;
 	}
 

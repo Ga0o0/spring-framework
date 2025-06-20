@@ -36,6 +36,8 @@ import org.springframework.util.ObjectUtils;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 使用构建器模式以编程方式构建 {@link org.springframework.beans.factory.config.BeanDefinition BeanDefinitions}。
+// 主要用于实现 Spring 2.0 {@link org.springframework.beans.factory.xml.NamespaceHandler NamespaceHandlers}。
 public final class BeanDefinitionBuilder {
 
 	/**
@@ -173,6 +175,7 @@ public final class BeanDefinitionBuilder {
 	 * Return the current BeanDefinition object in its raw (unvalidated) form.
 	 * @see #getBeanDefinition()
 	 */
+	// 以原始（未验证）形式返回当前 BeanDefinition 对象。
 	public AbstractBeanDefinition getRawBeanDefinition() {
 		return this.beanDefinition;
 	}
@@ -180,6 +183,7 @@ public final class BeanDefinitionBuilder {
 	/**
 	 * Validate and return the created BeanDefinition object.
 	 */
+	// 验证并返回创建的BeanDefinition对象。
 	public AbstractBeanDefinition getBeanDefinition() {
 		this.beanDefinition.validate();
 		return this.beanDefinition;

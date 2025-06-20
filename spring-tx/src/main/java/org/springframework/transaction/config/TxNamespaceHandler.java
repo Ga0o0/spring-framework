@@ -37,13 +37,19 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// {@code NamespaceHandler} 允许使用 XML 或注解配置声明式事务管理。
+//
+// <p>此命名空间处理程序是 Spring 事务管理工具的核心功能，提供两种声明式事务管理方法。
+//
+// <p>一种方法使用 XML 中通过 {@code <tx:advice>} 元素定义的事务语义，
+// 另一种方法结合使用注解和 {@code <tx:annotation-driven>} 元素。这两种方法在 Spring 参考手册中都有详细的说明。
 public class TxNamespaceHandler extends NamespaceHandlerSupport {
 
 	static final String TRANSACTION_MANAGER_ATTRIBUTE = "transaction-manager";
 
 	static final String DEFAULT_TRANSACTION_MANAGER_BEAN_NAME = "transactionManager";
 
-
+	// 读取 <tx:advice id="" transaction-manager=""/> 元素的属性 transaction-manager 的值；默认为 transactionManager
 	static String getTransactionManagerName(Element element) {
 		return (element.hasAttribute(TRANSACTION_MANAGER_ATTRIBUTE) ?
 				element.getAttribute(TRANSACTION_MANAGER_ATTRIBUTE) : DEFAULT_TRANSACTION_MANAGER_BEAN_NAME);
@@ -52,8 +58,11 @@ public class TxNamespaceHandler extends NamespaceHandlerSupport {
 
 	@Override
 	public void init() {
+		// <tx:advice id="" transaction-manager=""/>
 		registerBeanDefinitionParser("advice", new TxAdviceBeanDefinitionParser());
+		// <tx:annotation-driven/>
 		registerBeanDefinitionParser("annotation-driven", new AnnotationDrivenBeanDefinitionParser());
+		// <tx:jta-transaction-manager/>
 		registerBeanDefinitionParser("jta-transaction-manager", new JtaTransactionManagerBeanDefinitionParser());
 	}
 

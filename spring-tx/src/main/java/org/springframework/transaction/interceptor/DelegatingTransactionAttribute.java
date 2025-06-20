@@ -32,6 +32,8 @@ import org.springframework.transaction.support.DelegatingTransactionDefinition;
  * @author Mark Paluch
  * @since 1.2
  */
+// {@link TransactionAttribute} 实现，将所有调用委托给指定的目标 {@link TransactionAttribute} 实例。
+// 之所以说它抽象，是因为它旨在被子类化，并由子类重写某些特定方法，而这些方法不应简单地委托给目标实例。
 @SuppressWarnings("serial")
 public abstract class DelegatingTransactionAttribute extends DelegatingTransactionDefinition
 		implements TransactionAttribute, Serializable {
@@ -43,6 +45,8 @@ public abstract class DelegatingTransactionAttribute extends DelegatingTransacti
 	 * Create a DelegatingTransactionAttribute for the given target attribute.
 	 * @param targetAttribute the target TransactionAttribute to delegate to
 	 */
+	// 为给定的目标属性创建一个 DelegatingTransactionAttribute。
+	// @param targetAttribute 要委托给的目标 TransactionAttribute
 	public DelegatingTransactionAttribute(TransactionAttribute targetAttribute) {
 		super(targetAttribute);
 		this.targetAttribute = targetAttribute;

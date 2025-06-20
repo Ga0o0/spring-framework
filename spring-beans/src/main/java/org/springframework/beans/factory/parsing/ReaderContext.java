@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 在 bean 定义读取过程中传递的上下文，封装所有相关配置和状态。
 public class ReaderContext {
 
 	private final Resource resource;
@@ -167,6 +168,7 @@ public class ReaderContext {
 	/**
 	 * Fire a component-registered event.
 	 */
+	// 触发组件注册的事件。
 	public void fireComponentRegistered(ComponentDefinition componentDefinition) {
 		this.eventListener.componentRegistered(componentDefinition);
 	}
@@ -209,6 +211,9 @@ public class ReaderContext {
 	 * @see #getSourceExtractor()
 	 * @see SourceExtractor#extractSource
 	 */
+	// 调用给定源对象的源提取器。
+	// @param sourceCandidate 原始源对象
+	// @return 要存储的源对象，或 {@code null} 表示无。
 	@Nullable
 	public Object extractSource(Object sourceCandidate) {
 		return this.sourceExtractor.extractSource(sourceCandidate, this.resource);

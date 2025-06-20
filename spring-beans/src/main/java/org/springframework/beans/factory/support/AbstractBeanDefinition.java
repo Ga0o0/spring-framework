@@ -960,6 +960,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/**
 	 * Return property values for this bean (never {@code null}).
 	 */
+	// 返回此 bean 的属性值（永远不会为 {@code null}）。
 	@Override
 	public MutablePropertyValues getPropertyValues() {
 		MutablePropertyValues pvs = this.propertyValues;

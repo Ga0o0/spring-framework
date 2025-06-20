@@ -34,6 +34,7 @@ import org.springframework.lang.Nullable;
  * @param <K> the key type
  * @param <V> the value type
  */
+// 用于保存托管 Map 值的标签集合类，其中可能包括运行时 bean 引用（将解析为 bean 对象）。
 @SuppressWarnings("serial")
 public class ManagedMap<K, V> extends LinkedHashMap<K, V> implements Mergeable, BeanMetadataElement {
 
@@ -81,6 +82,8 @@ public class ManagedMap<K, V> extends LinkedHashMap<K, V> implements Mergeable, 
 	 * Set the configuration source {@code Object} for this metadata element.
 	 * <p>The exact type of the object will depend on the configuration mechanism used.
 	 */
+	// 为此元数据元素设置配置源 {@code Object}。
+	// <p>对象的具体类型取决于所使用的配置机制。
 	public void setSource(@Nullable Object source) {
 		this.source = source;
 	}

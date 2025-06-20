@@ -46,6 +46,11 @@ import org.springframework.util.StringValueResolver;
  * @author Juergen Hoeller
  * @since 1.1
  */
+// {@link TransactionAttributeSource} 的抽象实现，用于缓存方法的属性并实现以下回退策略：
+// 1. 特定目标方法；2. 目标类；3. 声明方法；4. 声明类/接口。
+//
+// <p>如果目标方法未关联任何事务属性，则默认使用目标类的事务属性。任何与目标方法关联的事务属性都会完全覆盖类事务属性。
+// 如果在目标类中未找到任何事务属性，则将检查调用方法所通过的接口（如果使用 JDK 代理）。
 public abstract class AbstractFallbackTransactionAttributeSource
 		implements TransactionAttributeSource, EmbeddedValueResolverAware {
 
@@ -53,6 +58,7 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * Canonical value held in cache to indicate no transaction attribute was
 	 * found for this method, and we don't need to look again.
 	 */
+	// 缓存中保存的规范值指示未找到此方法的事务属性，我们不需要再次查找。
 	@SuppressWarnings("serial")
 	private static final TransactionAttribute NULL_TRANSACTION_ATTRIBUTE = new DefaultTransactionAttribute() {
 		@Override
@@ -77,6 +83,8 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * <p>As this base class is not marked Serializable, the cache will be recreated
 	 * after serialization - provided that the concrete subclass is Serializable.
 	 */
+	// TransactionAttributes 的缓存，以特定目标类上的方法为键。
+	// <p>由于此基类未标记为可序列化，因此缓存将在序列化后重新创建 - 前提是具体子类是可序列化的。
 	private final Map<Object, TransactionAttribute> attributeCache = new ConcurrentHashMap<>(1024);
 
 
@@ -94,6 +102,11 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * @return a TransactionAttribute for this method, or {@code null} if the method
 	 * is not transactional
 	 */
+	// 确定此方法调用的事务属性。
+	// <p>如果未找到方法属性，则默认为类的事务属性。
+	// @param method 当前调用的方法（永不为 null）
+	// @param targetClass 本次调用的目标类（可以为 null）
+	// @return 此方法的 TransactionAttribute 属性，如果方法不是事务性的，则返回 null
 	@Override
 	@Nullable
 	public TransactionAttribute getTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
@@ -101,6 +114,7 @@ public abstract class AbstractFallbackTransactionAttributeSource
 			return null;
 		}
 
+		// 为给定方法和目标类确定缓存键。 -> MethodClassKey
 		Object cacheKey = getCacheKey(method, targetClass);
 		TransactionAttribute cached = this.attributeCache.get(cacheKey);
 
@@ -110,9 +124,12 @@ public abstract class AbstractFallbackTransactionAttributeSource
 		else {
 			TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 			if (txAttr != null) {
+				// 返回给定方法的限定名，由完全限定接口/类名 + "." + 方法名组成。
 				String methodIdentification = ClassUtils.getQualifiedMethodName(method, targetClass);
 				if (txAttr instanceof DefaultTransactionAttribute dta) {
+					// 为此事务属性设置描述符，例如指示该属性的应用位置。
 					dta.setDescriptor(methodIdentification);
+					// 解析定义为可解析字符串的属性值：timeoutString、qualifier、labels。
 					dta.resolveAttributeStrings(this.embeddedValueResolver);
 				}
 				if (logger.isTraceEnabled()) {
@@ -135,7 +152,13 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * @param targetClass the target class (may be {@code null})
 	 * @return the cache key (never {@code null})
 	 */
+	// 为给定方法和目标类确定缓存键。
+	// <p>重载方法的键值不能相同。同一方法的不同实例必须生成相同的键值。
+	// @param method 方法（不可为 null）
+	// @param targetClass 目标类（可以为 null）
+	// @return 缓存键（不可为 null）
 	protected Object getCacheKey(Method method, @Nullable Class<?> targetClass) {
+		// 为给定方法和目标类创建一个键对象。
 		return new MethodClassKey(method, targetClass);
 	}
 
@@ -146,36 +169,41 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * @since 4.1.8
 	 * @see #getTransactionAttribute
 	 */
+	// 与 {@link #getTransactionAttribute} 签名相同，但不缓存结果。{@link #getTransactionAttribute} 实际上是此方法的缓存装饰器。
+	// <p>从 4.1.8 开始，此方法可以被覆盖。
 	@Nullable
 	protected TransactionAttribute computeTransactionAttribute(Method method, @Nullable Class<?> targetClass) {
-		// Don't allow non-public methods, as configured.
+		// Don't allow non-public methods, as configured. --> 译文：按照配置，不允许非公共方法。
 		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
 			return null;
 		}
 
 		// The method may be on an interface, but we need attributes from the target class.
 		// If the target class is null, the method will be unchanged.
+		// --> 译文：该方法可能位于接口上，但我们需要目标类的属性。如果目标类为 null，则该方法将保持不变。
+		// 1. 给定一个方法（可能来自接口）和当前 AOP 调用中使用的目标类，如果存在则查找相应的目标方法。
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
-		// First try is the method in the target class.
+		// First try is the method in the target class. --> 译文：首先尝试的是目标类中的方法。
 		TransactionAttribute txAttr = findTransactionAttribute(specificMethod);
 		if (txAttr != null) {
 			return txAttr;
 		}
 
-		// Second try is the transaction attribute on the target class.
+		// Second try is the transaction attribute on the target class. --> 译文：第二次尝试是目标类上的事务属性。
 		txAttr = findTransactionAttribute(specificMethod.getDeclaringClass());
+		// ClassUtils.isUserLevelMethod(method) -> 确定给定方法是否由用户声明，或者至少指向用户声明的方法。
 		if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 			return txAttr;
 		}
 
 		if (specificMethod != method) {
-			// Fallback is to look at the original method.
+			// Fallback is to look at the original method. --> 译文：Fallback 就是看一下原来的方法。
 			txAttr = findTransactionAttribute(method);
 			if (txAttr != null) {
 				return txAttr;
 			}
-			// Last fallback is the class of the original method.
+			// Last fallback is the class of the original method. --> 译文：最后的回退是原始方法的类。
 			txAttr = findTransactionAttribute(method.getDeclaringClass());
 			if (txAttr != null && ClassUtils.isUserLevelMethod(method)) {
 				return txAttr;
@@ -192,6 +220,9 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * @param clazz the class to retrieve the attribute for
 	 * @return all transaction attribute associated with this class, or {@code null} if none
 	 */
+	// 子类需要实现此方法，以返回给定类的事务属性（如果有）。
+	// @param clazz 要检索属性的类
+	// @return 与此类关联的所有事务属性，如果没有，则返回 {@code null}
 	@Nullable
 	protected abstract TransactionAttribute findTransactionAttribute(Class<?> clazz);
 
@@ -201,6 +232,9 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * @param method the method to retrieve the attribute for
 	 * @return all transaction attribute associated with this method, or {@code null} if none
 	 */
+	// 子类需要实现此方法，以返回给定方法的事务属性（如果有）。
+	// @param method 检索属性的方法
+	// @return 与此方法关联的所有事务属性，如果没有，则返回 {@code null}。
 	@Nullable
 	protected abstract TransactionAttribute findTransactionAttribute(Method method);
 
@@ -208,6 +242,8 @@ public abstract class AbstractFallbackTransactionAttributeSource
 	 * Should only public methods be allowed to have transactional semantics?
 	 * <p>The default implementation returns {@code false}.
 	 */
+	// 是否应该只允许公共方法具有事务语义？
+	// <p>默认实现返回 {@code false}。
 	protected boolean allowPublicMethodsOnly() {
 		return false;
 	}

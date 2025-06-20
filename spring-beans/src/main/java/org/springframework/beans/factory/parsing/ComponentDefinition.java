@@ -74,6 +74,35 @@ import org.springframework.beans.factory.config.BeanReference;
  * @see BeanComponentDefinition
  * @see ReaderEventListener#componentRegistered(ComponentDefinition)
  */
+// 描述一组 {@link BeanDefinition BeanDefinitions} 和 {@link BeanReference BeanReferences} 在某些配置上下文中呈现的逻辑视图的接口。
+//
+// <p>随着 {@link org.springframework.beans.factory.xml.NamespaceHandler 可插入自定义 XML 标签} 的引入，
+// 现在可以为单个逻辑配置实体（在本例中为 XML 标签）创建多个 {@link BeanDefinition BeanDefinitions} 和
+// {@link BeanReference RuntimeBeanReferences}，从而为最终用户提供更简洁的配置和更大的便利。
+// 因此，不能再假设每个配置实体（例如 XML 标签）都映射到一个 {@link BeanDefinition}。
+// 对于希望提供可视化或支持 Spring 应用配置的工具供应商和其他用户来说，重要的是要有某种机制将
+// {@link org.springframework.beans.factory.BeanFactory} 中的 {@link BeanDefinition BeanDefinitions} 与配置数据绑定，
+// 以便最终用户能够理解其含义。因此，{@link org.springframework.beans.factory.xml.NamespaceHandler}
+// 实现能够以 {@code ComponentDefinition} 的形式为每个正在配置的逻辑实体发布事件。
+// 第三方可以 {@link ReaderEventListener 订阅这些事件}，从而实现以用户为中心的 Bean 元数据视图。
+//
+// <p>每个 {@code ComponentDefinition} 都有一个特定于配置的 {@link #getSource 源对象}。
+// 对于基于 XML 的配置，通常是包含用户提供的配置信息的 {@link org.w3c.dom.Node}。
+// 除此之外，每个包含在 {@code ComponentDefinition} 中的 {@link BeanDefinition} 都有其自己的 {@link BeanDefinition#getSource() 源对象}，
+// 该对象可能指向不同的、更具体的配置数据集。此外，Bean 元数据的各个部分（例如 {@link org.springframework.beans.PropertyValue PropertyValues}）
+// 也可能具有源对象，从而提供更详细的信息。源对象的提取由 {@link SourceExtractor} 处理，该函数可根据需要进行自定义。
+//
+// <p>虽然可以通过 {@link #getBeanReferences} 直接访问重要的 {@link BeanReference BeanReferences}，
+// 但工具可能希望检查所有 {@link BeanDefinition BeanDefinitions} 以收集完整的 {@link BeanReference BeanReferences} 集合。
+// 实现需要提供所有 {@link BeanReference BeanReferences}，这些是验证整个逻辑实体的配置所必需的，也是提供完整的用户配置可视化所必需的。
+// 某些 {@link BeanReference BeanReferences} 对于验证或配置的用户视图并不重要，因此可以省略。
+// 工具可能希望显示通过提供的 {@link BeanDefinition BeanDefinitions} 获取的任何其他 {@link BeanReference BeanReferences}，但这并不是典型情况。
+//
+// <p>工具可以通过检查 {@link BeanDefinition#getRole 角色标识符} 来确定所包含的 {@link BeanDefinition BeanDefinitions} 的重要性。
+// 该角色本质上是向工具提示配置提供程序认为 {@link BeanDefinition} 对最终用户的重要性。
+// 预计工具将<strong>不会</strong>显示给定 {@code ComponentDefinition} 的所有 {@link BeanDefinition BeanDefinitions}，
+// 而是选择根据角色进行过滤。工具可以选择使此过滤可由用户配置。应特别注意 {@link BeanDefinition#ROLE_INFRASTRUCTURE INFRASTRUCTURE 角色标识符}。
+// 使用此角色分类的 {@link BeanDefinition BeanDefinitions} 对最终用户完全不重要，仅出于内部实现原因才需要。
 public interface ComponentDefinition extends BeanMetadataElement {
 
 	/**

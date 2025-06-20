@@ -37,6 +37,9 @@ import org.springframework.util.ObjectUtils;
  * @see BeanDefinition#getPropertyValues
  * @see org.springframework.beans.MutablePropertyValues#addPropertyValue
  */
+// 用于指定类型字符串值的容器。可以添加到 bean 定义中，以便明确指定字符串值的目标类型，例如用于集合元素。
+//
+// <p>此容器仅存储字符串值和目标类型。实际的转换将由 bean 工厂执行。
 public class TypedStringValue implements BeanMetadataElement, Comparable<TypedStringValue> {
 
 	@Nullable
@@ -58,6 +61,8 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	 * Create a new {@link TypedStringValue} for the given String value.
 	 * @param value the String value
 	 */
+	// 为给定的字符串值创建一个新的 {@link TypedStringValue}。
+	// @param value 字符串值
 	public TypedStringValue(@Nullable String value) {
 		setValue(value);
 	}
@@ -90,6 +95,8 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	 * <p>Only necessary for manipulating a registered value,
 	 * for example in BeanFactoryPostProcessors.
 	 */
+	// 设置字符串值。
+	// <p>仅在操作已注册的值时才需要，例如在 BeanFactoryPostProcessors 中。
 	public void setValue(@Nullable String value) {
 		this.value = value;
 	}
@@ -175,6 +182,8 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	 * Set the configuration source {@code Object} for this metadata element.
 	 * <p>The exact type of the object will depend on the configuration mechanism used.
 	 */
+	// 为此元数据元素设置配置源 {@code Object}。
+	// <p>对象的具体类型取决于所使用的配置机制。
 	public void setSource(@Nullable Object source) {
 		this.source = source;
 	}

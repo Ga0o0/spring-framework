@@ -45,20 +45,26 @@ public abstract class AopNamespaceUtils {
 	/**
 	 * The {@code proxy-target-class} attribute as found on AOP-related XML tags.
 	 */
+	// 在 AOP 相关的 XML 标签上发现的 {@code proxy-target-class} 属性。
 	public static final String PROXY_TARGET_CLASS_ATTRIBUTE = "proxy-target-class";
 
 	/**
 	 * The {@code expose-proxy} attribute as found on AOP-related XML tags.
 	 */
+	// 在 AOP 相关的 XML 标签上发现的 {@code reveal-proxy} 属性。
 	private static final String EXPOSE_PROXY_ATTRIBUTE = "expose-proxy";
 
 
 	public static void registerAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
 
+		// 1. 构建 BeanDefinition，BeanClassName 为 InfrastructureAdvisorAutoProxyCreator
 		BeanDefinition beanDefinition = AopConfigUtils.registerAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
-		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
+		// 2. 使用 BeanDefinition.getPropertyValues().add() 给 beanDefinition 添加两个属性：proxyTargetClass/exposeProxy
+		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement); // 必要时使用类代理
+		// 3. 向 ParserContext 注册 beanDefinition ；
+		// org.springframework.aop.config.internalAutoProxyCreator：InfrastructureAdvisorAutoProxyCreator
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}
 
@@ -82,12 +88,16 @@ public abstract class AopNamespaceUtils {
 
 	private static void useClassProxyingIfNecessary(BeanDefinitionRegistry registry, @Nullable Element sourceElement) {
 		if (sourceElement != null) {
+			// PROXY_TARGET_CLASS_ATTRIBUTE = "proxy-target-class"
 			boolean proxyTargetClass = Boolean.parseBoolean(sourceElement.getAttribute(PROXY_TARGET_CLASS_ATTRIBUTE));
 			if (proxyTargetClass) {
+				// 强制 AutoProxyCreator 使用类代理
 				AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
 			}
+			// EXPOSE_PROXY_ATTRIBUTE = "expose-proxy"
 			boolean exposeProxy = Boolean.parseBoolean(sourceElement.getAttribute(EXPOSE_PROXY_ATTRIBUTE));
 			if (exposeProxy) {
+				// 强制 AutoProxyCreator 公开代理
 				AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);
 			}
 		}
