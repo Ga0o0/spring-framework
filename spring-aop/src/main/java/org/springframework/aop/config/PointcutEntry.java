@@ -24,6 +24,7 @@ import org.springframework.beans.factory.parsing.ParseState;
  * @author Mark Fisher
  * @since 2.0
  */
+// {@link ParseState} 条目代表一个切入点。
 public class PointcutEntry implements ParseState.Entry {
 
 	private final String name;

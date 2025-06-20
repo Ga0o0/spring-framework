@@ -52,6 +52,26 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 为 {@code aop} 命名空间提供 {@code NamespaceHandler}。
+//
+// <p>为 {@code <aop:config>} 标签提供 {@link org.springframework.beans.factory.xml.BeanDefinitionParser}。
+// {@code config} 标签可以包含嵌套的 {@code pointcut}、{@code advisor} 和 {@code aspect} 标签。
+//
+// <p>{@code pointcut} 标签允许使用简单的语法创建命名的 {@link AspectJExpressionPointcut} bean：
+//
+// <pre class="code">
+// <aop:pointcut id="getNameCalls" Expression="execution( ..ITestBean.getName(..))"/>
+// </pre>
+//
+// <p>使用 {@code advisor} 标签，您可以配置 {@link org.springframework.aop.Advisor}，
+// 并将其自动应用于 {@link org.springframework.beans.factory.BeanFactory} 中所有相关的 bean。
+// {@code advisor} 标签支持内联和引用的 {@link org.springframework.aop.Pointcut Pointcuts}：
+//
+// <pre class="code">
+// <aop:advisor id="getAgeAdvisor" pointcut="execution( ..ITestBean.getAge(..))" advice-ref="getAgeCounter"/>
+//
+// <aop:advisor id="getNameAdvisor" pointcut-ref="getNameCalls" advice-ref="getNameCounter"/>
+// </pre>
 public class AopNamespaceHandler extends NamespaceHandlerSupport {
 
 	/**
@@ -59,6 +79,8 @@ public class AopNamespaceHandler extends NamespaceHandlerSupport {
 	 * '{@code config}', '{@code spring-configured}', '{@code aspectj-autoproxy}'
 	 * and '{@code scoped-proxy}' tags.
 	 */
+	// 为 '{@code config}'、'{@code spring-configured}'、'{@code aspectj-autoproxy}'
+	// 和 '{@code scoped-proxy}' 标签注册 {@link BeanDefinitionParser BeanDefinitionParsers}。
 	@Override
 	public void init() {
 		// In 2.0 XSD as well as in 2.5+ XSDs

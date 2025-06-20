@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
  * @see BeanDefinition#getPropertyValues()
  * @see org.springframework.beans.factory.BeanFactory#getBean
  */
+// 当属性值对象引用工厂中的另一个 bean 名称时，使用不可变的占位符类，在运行时进行解析。
 public class RuntimeBeanNameReference implements BeanReference {
 
 	private final String beanName;
@@ -41,6 +42,8 @@ public class RuntimeBeanNameReference implements BeanReference {
 	 * Create a new RuntimeBeanNameReference to the given bean name.
 	 * @param beanName name of the target bean
 	 */
+	// 创建一个新的 RuntimeBeanNameReference 到给定的 bean 名称。
+	// @param beanName 目标 bean 的名称
 	public RuntimeBeanNameReference(String beanName) {
 		Assert.hasText(beanName, "'beanName' must not be empty");
 		this.beanName = beanName;

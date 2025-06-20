@@ -32,6 +32,9 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 基于 {@link ArrayDeque} 的简单结构，用于跟踪解析过程中的逻辑位置。{@link Entry 条目} 在解析阶段的每个时间点都会以特定于读取器的方式添加到 ArrayDeque 中。
+//
+// <p>调用 {@link #toString()} 将呈现解析阶段当前逻辑位置的树形视图。此表示形式旨在用于错误消息。
 public final class ParseState {
 
 	/**

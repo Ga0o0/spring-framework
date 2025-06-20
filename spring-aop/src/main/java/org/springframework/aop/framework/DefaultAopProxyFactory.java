@@ -70,13 +70,19 @@ public class DefaultAopProxyFactory implements AopProxyFactory, Serializable {
 
 	@Override
 	public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {
+		// config.isOptimize() -> 代理是否应该执行积极优化；ProxyConfig.optimize；默认值为 false
+		// config.isProxyTargetClass() -> 是否直接代理目标类以及任何接口；即：ProxyConfig#proxyTargetClass；默认值为 false
+		// hasNoUserSuppliedProxyInterfaces(config) -> 确定所提供的 AdvisedSupport 是否仅指定了 SpringProxy 接口（或者根本没有指定代理接口）。即：AdvisedSupport#interfaces（代理需要实现的接口）== 0
 		if (config.isOptimize() || config.isProxyTargetClass() || hasNoUserSuppliedProxyInterfaces(config)) {
-			Class<?> targetClass = config.getTargetClass();
+			Class<?> targetClass = config.getTargetClass(); // TargetSource#getTargetClass()
 			if (targetClass == null) {
 				// TargetSource 无法确定目标类：创建代理需要接口或目标。
 				throw new AopConfigException("TargetSource cannot determine target class: " +
 						"Either an interface or a target is required for proxy creation.");
 			}
+			// targetClass.isInterface() -> 此 Class 对象是否表示接口类型。
+			// Proxy.isProxyClass(targetClass) -> 如果给定类是代理类，则返回 true。
+			// ClassUtils.isLambdaClass(targetClass) -> 判断提供的 Class 是否为 JVM 生成的 Lambda 表达式或方法引用的实现类。
 			if (targetClass.isInterface() || Proxy.isProxyClass(targetClass) || ClassUtils.isLambdaClass(targetClass)) {
 				return new JdkDynamicAopProxy(config);
 			}

@@ -1130,6 +1130,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * by the application itself (for example, an infrastructure bean such
 	 * as a helper for auto-proxying, created through {@code <aop:config>}).
 	 */
+	// 设置此 bean 定义是否为“合成”，即不是由应用程序本身定义的（例如，通过 {@code <aop:config>} 创建的基础设施 bean，如自动代理的助手）。
 	public void setSynthetic(boolean synthetic) {
 		this.synthetic = synthetic;
 	}

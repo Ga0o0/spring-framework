@@ -33,6 +33,7 @@ import org.springframework.util.ClassUtils;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// {@link AspectInstanceFactory} 的实现，使用配置的 bean 名称从 {@link org.springframework.beans.factory.BeanFactory} 定位方面。
 public class SimpleBeanFactoryAwareAspectInstanceFactory implements AspectInstanceFactory, BeanFactoryAware {
 
 	@Nullable

@@ -41,6 +41,9 @@ import org.springframework.util.ObjectUtils;
  * @since 09.11.2003
  * @see BeanDefinition#getConstructorArgumentValues
  */
+// 构造函数参数值的持有者，通常作为 bean 定义的一部分。
+//
+// <p>支持构造函数参数列表中特定索引的值，以及按类型进行泛型参数匹配。
 public class ConstructorArgumentValues {
 
 	private final Map<Integer, ValueHolder> indexedArgumentValues = new LinkedHashMap<>();
@@ -87,6 +90,9 @@ public class ConstructorArgumentValues {
 	 * @param index the index in the constructor argument list
 	 * @param value the argument value
 	 */
+	// 为构造函数参数列表中的给定索引添加一个参数值。
+	// @param index 构造函数参数列表中的索引
+	// @param value 参数值
 	public void addIndexedArgumentValue(int index, @Nullable Object value) {
 		addIndexedArgumentValue(index, new ValueHolder(value));
 	}
@@ -188,6 +194,9 @@ public class ConstructorArgumentValues {
 	 * rather than matched multiple times.
 	 * @param value the argument value
 	 */
+	// 添加一个要按类型匹配的泛型参数值。
+	// <p>注意：单个泛型参数值只会使用一次，而不会匹配多次。
+	// @param value 参数值
 	public void addGenericArgumentValue(@Nullable Object value) {
 		this.genericArgumentValues.add(new ValueHolder(value));
 	}

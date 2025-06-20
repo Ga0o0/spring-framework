@@ -234,6 +234,7 @@ public final class BeanDefinitionBuilder {
 	 * Add a reference to a named bean as a constructor arg.
 	 * @see #addConstructorArgValue(Object)
 	 */
+	// 添加对命名 bean 的引用作为构造函数参数。
 	public BeanDefinitionBuilder addConstructorArgReference(String beanName) {
 		this.beanDefinition.getConstructorArgumentValues().addIndexedArgumentValue(
 				this.constructorArgIndex++, new RuntimeBeanReference(beanName));

@@ -31,6 +31,7 @@ import org.springframework.util.StringUtils;
  * @author Rob Harrop
  * @since 2.0
  */
+// {@link FactoryBean} 实现，在指定的 bean 上定位 {@link Method}。
 public class MethodLocatingFactoryBean implements FactoryBean<Method>, BeanFactoryAware {
 
 	@Nullable

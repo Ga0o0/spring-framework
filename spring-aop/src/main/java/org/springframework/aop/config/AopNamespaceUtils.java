@@ -71,6 +71,7 @@ public abstract class AopNamespaceUtils {
 	public static void registerAspectJAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
 
+		// register AspectJAwareAdvisorAutoProxyCreator
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);

@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
  * @see org.springframework.beans.factory.BeanFactory#getBean(String)
  * @see org.springframework.beans.factory.BeanFactory#getBean(Class)
  */
+// 当属性值对象引用工厂中的另一个 bean 时，使用不可变的占位符类，在运行时进行解析。
 public class RuntimeBeanReference implements BeanReference {
 
 	private final String beanName;
@@ -46,6 +47,8 @@ public class RuntimeBeanReference implements BeanReference {
 	 * Create a new RuntimeBeanReference to the given bean name.
 	 * @param beanName name of the target bean
 	 */
+	// 创建一个新的 RuntimeBeanReference 到给定的 bean 名称。
+	// @param beanName 目标 bean 的名称
 	public RuntimeBeanReference(String beanName) {
 		this(beanName, false);
 	}

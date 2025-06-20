@@ -30,6 +30,9 @@ import org.springframework.beans.factory.config.BeanReference;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// {@link ComponentDefinition} 的基本实现，提供委托给 {@link #getName} 的 {@link #getDescription} 的基本实现。
+// 此外，还提供了委托给 {@link #getDescription} 的 {@link #toString} 的基本实现，以符合推荐的实现策略。
+// 此外，还提供了返回空数组的 {@link #getInnerBeanDefinitions} 和 {@link #getBeanReferences} 的默认实现。
 public abstract class AbstractComponentDefinition implements ComponentDefinition {
 
 	/**

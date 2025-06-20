@@ -91,6 +91,7 @@ public class AdvisedSupport extends ProxyConfig implements Advised {
 	TargetSource targetSource = EMPTY_TARGET_SOURCE;
 
 	/** Whether the Advisors are already filtered for the specific target class. */
+	// Advisors 是否已针对特定目标类别进行筛选。
 	private boolean preFiltered = false;
 
 	/** The AdvisorChainFactory to use. */

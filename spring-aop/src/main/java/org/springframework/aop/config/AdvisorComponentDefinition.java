@@ -33,6 +33,8 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// {@link org.springframework.beans.factory.parsing.ComponentDefinition} 弥补了
+// 由 {@code <aop:advisor>} 标签配置的顾问 bean 定义和组件定义基础结构之间的差距。
 public class AdvisorComponentDefinition extends AbstractComponentDefinition {
 
 	private final String advisorBeanName;
