@@ -28,6 +28,7 @@ import org.springframework.transaction.TransactionStatus;
  * @since 28.03.2003
  * @see TransactionTemplate
  */
+// 用于实现 TransactionCallback 的简单便捷类。允许实现不带结果的 doInTransaction 版本，即无需 return 语句。
 public abstract class TransactionCallbackWithoutResult implements TransactionCallback<Object> {
 
 	@Override
@@ -51,6 +52,11 @@ public abstract class TransactionCallbackWithoutResult implements TransactionCal
 	 * @param status associated transaction status
 	 * @see TransactionTemplate#execute
 	 */
+	// 由事务上下文中的 {@code TransactionTemplate.execute} 调用。
+	// 它本身无需关心事务，但它可以通过给定的状态对象检索和影响当前事务的状态，例如设置仅回滚。
+	// <p>回调抛出的运行时异常 (RuntimeException) 被视为强制回滚的应用程序异常。异常会传播给模板的调用者。
+	// <p>使用 JTA 时请注意：JTA 事务仅适用于事务型 JNDI 资源，因此如果实现需要事务支持，则需要使用此类资源。
+	// @param status 关联的事务状态
 	protected abstract void doInTransactionWithoutResult(TransactionStatus status);
 
 }

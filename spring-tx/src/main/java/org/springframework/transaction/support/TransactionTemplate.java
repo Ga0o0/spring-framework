@@ -146,13 +146,14 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 			return cpptm.execute(this, action);
 		}
 		else {
+			// 根据指定的传播行为返回当前活动的事务或创建一个新事务。
 			TransactionStatus status = this.transactionManager.getTransaction(this);
 			T result;
 			try {
 				result = action.doInTransaction(status);
 			}
 			catch (RuntimeException | Error ex) {
-				// Transactional code threw application exception -> rollback
+				// Transactional code threw application exception -> rollback --> 译文：事务代码引发应用程序异常 -> 回滚
 				rollbackOnException(status, ex);
 				throw ex;
 			}
@@ -161,6 +162,7 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 				rollbackOnException(status, ex);
 				throw new UndeclaredThrowableException(ex, "TransactionCallback threw undeclared checked exception");
 			}
+			// 提交给定的事务
 			this.transactionManager.commit(status);
 			return result;
 		}
@@ -172,6 +174,10 @@ public class TransactionTemplate extends DefaultTransactionDefinition
 	 * @param ex the thrown application exception or error
 	 * @throws TransactionException in case of a rollback error
 	 */
+	// 执行回滚，并正确处理回滚异常。
+	// @param status 表示事务的对象
+	// @param ex 抛出的应用程序异常或错误
+	// @throws TransactionException 表示发生回滚错误
 	private void rollbackOnException(TransactionStatus status, Throwable ex) throws TransactionException {
 		Assert.state(this.transactionManager != null, "No PlatformTransactionManager set");
 
