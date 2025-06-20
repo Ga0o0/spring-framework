@@ -64,9 +64,11 @@ public abstract class AopConfigUtils {
 
 	static {
 		// Set up the escalation list...
+		// (1) AutoProxyRegistrar(@EnableCaching/@EnableTransactionManagement)
+		// (2) Parser(<cache:annotation-driven/>/<tx:annotation-driven/>)
 		APC_PRIORITY_LIST.add(InfrastructureAdvisorAutoProxyCreator.class);
-		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);
-		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);
+		APC_PRIORITY_LIST.add(AspectJAwareAdvisorAutoProxyCreator.class);   	// <aop:config/>
+		APC_PRIORITY_LIST.add(AnnotationAwareAspectJAutoProxyCreator.class);	// @EnableAspectJAutoProxy/<aop:aspectj-autoproxy />
 	}
 
 

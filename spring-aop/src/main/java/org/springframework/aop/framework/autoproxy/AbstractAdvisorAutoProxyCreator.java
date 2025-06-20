@@ -112,13 +112,14 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		// 查找所有用于自动代理的候选 Advisors。
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
 		// 搜索给定的候选 Advisor，找到所有适用于指定 Bean 的 Advisor。
-		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);
+		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName); // apply ClassFilter/MethodMatcher
 		extendAdvisors(eligibleAdvisors);
 		if (!eligibleAdvisors.isEmpty()) {
 			try {
 				eligibleAdvisors = sortAdvisors(eligibleAdvisors);
 			}
 			catch (BeanCreationException ex) {
+				// Advisor 排序失败，并创建了意外的 Bean，这可能是由于自定义使用了 Ordered 接口。请考虑改用 @Order 注解。
 				throw new AopConfigException("Advisor sorting failed with unexpected bean creation, probably due " +
 						"to custom use of the Ordered interface. Consider using the @Order annotation instead.", ex);
 			}
@@ -157,6 +158,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 		// 设置当前代理 Bean 实例的名称。
 		ProxyCreationContext.setCurrentProxiedBeanName(beanName);
 		try {
+			// apply ClassFilter/MethodMatcher
 			return AopUtils.findAdvisorsThatCanApply(candidateAdvisors, beanClass);
 		}
 		finally {
@@ -170,6 +172,9 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @param beanName the name of the Advisor bean
 	 * @return whether the bean is eligible
 	 */
+	// 返回具有给定名称的 Advisor bean 是否有资格进行代理。
+	// @param beanName Advisor bean 的名称
+	// @return 该 bean 是否有资格
 	protected boolean isEligibleAdvisorBean(String beanName) {
 		return true;
 	}
@@ -183,6 +188,9 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @see org.springframework.core.annotation.Order
 	 * @see org.springframework.core.annotation.AnnotationAwareOrderComparator
 	 */
+	// 根据顺序对顾问进行排序。子类可以选择重写此方法来自定义排序策略。
+	// @param advisors 源顾问列表
+	// @return 排序后的顾问列表
 	protected List<Advisor> sortAdvisors(List<Advisor> advisors) {
 		AnnotationAwareOrderComparator.sort(advisors);
 		return advisors;
@@ -197,6 +205,11 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * @param candidateAdvisors the Advisors that have already been identified as
 	 * applying to a given bean
 	 */
+	// 子类可以重写扩展钩子，以便根据迄今为止获得的已排序的 Advisor 来注册其他 Advisor。
+	// <p>默认实现为空。
+	// <p>通常用于添加 Advisor，以公开后续 Advisor 所需的上下文信息。
+	// @param candidatesAdvisors 已确定为
+	// 应用于给定 bean 的 Advisor
 	protected void extendAdvisors(List<Advisor> candidateAdvisors) {
 	}
 
@@ -213,6 +226,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * Subclass of BeanFactoryAdvisorRetrievalHelper that delegates to
 	 * surrounding AbstractAdvisorAutoProxyCreator facilities.
 	 */
+	// BeanFactoryAdvisorRetrievalHelper 的子类，委托给周围的 AbstractAdvisorAutoProxyCreator 设施。
 	private class BeanFactoryAdvisorRetrievalHelperAdapter extends BeanFactoryAdvisorRetrievalHelper {
 
 		public BeanFactoryAdvisorRetrievalHelperAdapter(ConfigurableListableBeanFactory beanFactory) {

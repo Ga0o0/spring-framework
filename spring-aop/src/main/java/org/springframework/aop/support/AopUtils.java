@@ -251,6 +251,12 @@ public abstract class AopUtils {
 	 * for this bean includes any introductions
 	 * @return whether the pointcut can apply on any method
 	 */
+	// 给定的切入点是否适用于给定的类？
+	// <p>这是一个重要的测试，因为它可以用来优化类的切入点。
+	// @param pc 要检查的静态或动态切入点
+	// @param targetClass 要测试的类
+	// @param hasIntroductions 此 bean 的 advisor 链是否包含任何引入
+	// @return 切入点是否可以应用于任何方法
 	public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
 		Assert.notNull(pc, "Pointcut must not be null");
 		if (!pc.getClassFilter().matches(targetClass)) {
@@ -259,7 +265,7 @@ public abstract class AopUtils {
 
 		MethodMatcher methodMatcher = pc.getMethodMatcher();
 		if (methodMatcher == MethodMatcher.TRUE) {
-			// No need to iterate the methods if we're matching any method anyway...
+			// No need to iterate the methods if we're matching any method anyway... --> 译文：如果我们匹配任何方法，则无需迭代方法......
 			return true;
 		}
 
@@ -296,6 +302,10 @@ public abstract class AopUtils {
 	 * @param targetClass class we're testing
 	 * @return whether the pointcut can apply on any method
 	 */
+	// 给定的 advisor 是否适用于给定的类？这是一个重要的测试，因为它可以用来优化某个类的 advisor。
+	// @param advisor 需要检查的 advisor
+	// @param targetClass 我们正在测试的类
+	// @return 切入点是否可以应用于任何方法
 	public static boolean canApply(Advisor advisor, Class<?> targetClass) {
 		return canApply(advisor, targetClass, false);
 	}
@@ -310,6 +320,12 @@ public abstract class AopUtils {
 	 * any introductions
 	 * @return whether the pointcut can apply on any method
 	 */
+	// 给定的 advisor 是否适用于给定的类？
+	// <p>这是一个重要的测试，因为它可以用来优化类的 advisor。此版本还考虑了引入（用于 IntroductionAwareMethodMatchers）。
+	// @param advisor 需要检查的 advisor
+	// @param targetClass 我们正在测试的类
+	// @param hasIntroductions 此 bean 的 advisor 链是否包含任何引入
+	// @return 切入点是否可以应用于任何方法
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
 		if (advisor instanceof IntroductionAdvisor ia) {
 			return ia.getClassFilter().matches(targetClass);
@@ -318,7 +334,7 @@ public abstract class AopUtils {
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
 		else {
-			// It doesn't have a pointcut so we assume it applies.
+			// It doesn't have a pointcut so we assume it applies. --> 译文：它没有切入点，因此我们假设它适用。
 			return true;
 		}
 	}

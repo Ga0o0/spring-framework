@@ -83,7 +83,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 
 		List<Advisor> advisors = new ArrayList<>();
 		for (String name : advisorNames) {
-			if (isEligibleBean(name)) {
+			if (isEligibleBean(name)) { // 判断指定名称的切面 bean 是否符合条件。
 				if (this.beanFactory.isCurrentlyInCreation(name)) {
 					if (logger.isTraceEnabled()) {
 						logger.trace("Skipping currently created advisor '" + name + "'");
@@ -121,6 +121,10 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	 * @param beanName the name of the aspect bean
 	 * @return whether the bean is eligible
 	 */
+	// 判断指定名称的切面 bean 是否符合条件。
+	// <p>默认实现始终返回 {@code true}。
+	// @param beanName 切面 bean 的名称
+	// @return 判断 bean 是否符合条件
 	protected boolean isEligibleBean(String beanName) {
 		return true;
 	}

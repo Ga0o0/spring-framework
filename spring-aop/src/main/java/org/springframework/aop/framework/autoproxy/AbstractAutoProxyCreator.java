@@ -118,6 +118,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * Convenience constant for subclasses: Return value for "do not proxy".
 	 * @see #getAdvicesAndAdvisorsForBean
 	 */
+	// 子类的便利常量：“不代理”的返回值。
 	@Nullable
 	protected static final Object[] DO_NOT_PROXY = null;
 
