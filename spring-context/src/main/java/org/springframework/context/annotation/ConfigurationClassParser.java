@@ -320,7 +320,7 @@ class ConfigurationClassParser {
 		// 1. 确定底层元素是否定义了 @Component 注解。
 		if (configClass.getMetadata().isAnnotated(Component.class.getName())) {
 			// Recursively process any member (nested) classes first --> 译文：首先递归处理任何成员（嵌套）类
-			processMemberClasses(configClass, sourceClass, filter);
+			processMemberClasses(configClass, sourceClass, filter); // 处理内部类
 		}
 
 		// 2. 处理任何 @PropertySource 注释
@@ -341,14 +341,14 @@ class ConfigurationClassParser {
 		// 3. 首先搜索本地声明的 @ComponentScan 注释。
 		Set<AnnotationAttributes> componentScans = AnnotationConfigUtils.attributesForRepeatable(
 				sourceClass.getMetadata(), ComponentScan.class, ComponentScans.class,
-				MergedAnnotation::isDirectlyPresent);
+				MergedAnnotation::isDirectlyPresent); // 注解直接存在于源中
 
 		// Fall back to searching for @ComponentScan meta-annotations (which indirectly
 		// includes locally declared composed annotations).
 		// --> 译文：回退到搜索 @ComponentScan 元注解（间接包含本地声明的组合注解）。
 		if (componentScans.isEmpty()) {
 			componentScans = AnnotationConfigUtils.attributesForRepeatable(sourceClass.getMetadata(),
-					ComponentScan.class, ComponentScans.class, MergedAnnotation::isMetaPresent);
+					ComponentScan.class, ComponentScans.class, MergedAnnotation::isMetaPresent); // 注解层次结构中的某个位置已用作元注解的注解
 		}
 
 		if (!componentScans.isEmpty() &&
@@ -518,6 +518,7 @@ class ConfigurationClassParser {
 	/**
 	 * Returns {@code @Import} classes, considering all meta-annotations.
 	 */
+	// 返回 {@code @Import} 类，考虑所有元注释。
 	private Set<SourceClass> getImports(SourceClass sourceClass) throws IOException {
 		Set<SourceClass> imports = new LinkedHashSet<>();
 		Set<SourceClass> visited = new LinkedHashSet<>();
@@ -538,6 +539,13 @@ class ConfigurationClassParser {
 	 * @param visited used to track visited classes to prevent infinite recursion
 	 * @throws IOException if there is any problem reading metadata from the named class
 	 */
+	// 以递归方式收集所有已声明的 {@code @Import} 值。
+	// 与大多数元注解不同，可以使用不同的值声明多个 {@code @Import}；通常，仅从类上的第一个元注解返回值是不够的。
+	// <p>例如，除了源自 {@code @Enable} 注解的元导入之外，{@code @Configuration} 类通常还会声明直接 {@code @Import}。
+	// @param sourceClass 要搜索的类
+	// @param imports 迄今为止收集到的导入
+	// @param visitor 用于跟踪访问过的类以防止无限递归
+	// @throws IOException（如果从指定类读取元数据时出现任何问题）
 	private void collectImports(SourceClass sourceClass, Set<SourceClass> imports, Set<SourceClass> visited)
 			throws IOException {
 
@@ -1004,7 +1012,7 @@ class ConfigurationClassParser {
 			Object sourceToProcess = this.source;
 			if (sourceToProcess instanceof Class<?> sourceClass) {
 				try {
-					Class<?>[] declaredClasses = sourceClass.getDeclaredClasses();
+					Class<?>[] declaredClasses = sourceClass.getDeclaredClasses(); // 查找嵌套类（内部类）
 					List<SourceClass> members = new ArrayList<>(declaredClasses.length);
 					for (Class<?> declaredClass : declaredClasses) {
 						members.add(asSourceClass(declaredClass, DEFAULT_EXCLUSION_FILTER));

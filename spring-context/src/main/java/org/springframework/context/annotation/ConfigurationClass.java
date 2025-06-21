@@ -105,6 +105,9 @@ final class ConfigurationClass {
 	 * @param clazz the underlying {@link Class} to represent
 	 * @param beanName name of the {@code @Configuration} class bean
 	 */
+	// 使用给定名称创建一个新的 {@link ConfigurationClass}。
+	// @param clazz 表示底层 {@link Class}
+	// @param beanName {@code @Configuration} 类 bean 的名称
 	ConfigurationClass(Class<?> clazz, String beanName) {
 		Assert.notNull(beanName, "Bean name must not be null");
 		this.metadata = AnnotationMetadata.introspect(clazz);

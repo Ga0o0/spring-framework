@@ -59,6 +59,8 @@ public interface InstanceSupplier<T> extends ThrowingSupplier<T> {
 	 * another means.
 	 * @return the factory method used to create the instance, or {@code null}
 	 */
+	// 返回此供应商用于创建实例的工厂方法，如果未知或此供应商使用其他方式，则返回 {@code null}。
+	// @return 用于创建实例的工厂方法，或 {@code null}
 	@Nullable
 	default Method getFactoryMethod() {
 		return null;

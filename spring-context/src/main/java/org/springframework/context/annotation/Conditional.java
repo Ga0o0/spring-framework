@@ -63,7 +63,8 @@ import java.lang.annotation.Target;
 // <p>{@code @Conditional} 批注可以按以下任一方式使用：
 // <ul>
 // <li>作为直接或间接使用 {@code @Component} 批注的任何类上的类型级别批注，包括 {@link Configuration @Configuration} 类</li>
-// <li>作为元批注，用于组成自定义构造型批注</li> <li>作为任何 {@link Bean @Bean} 方法上的方法级别批注</li>
+// <li>作为元批注，用于组成自定义构造型批注</li>
+// <li>作为任何 {@link Bean @Bean} 方法上的方法级别批注</li>
 // </ul>
 //
 // <p>如果 {@code @Configuration} 类标有 {@code @Conditional}，

@@ -543,6 +543,9 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 * @since 5.0
 	 * @see #registerBean(String, Class, Supplier, BeanDefinitionCustomizer...)
 	 */
+	// 从给定的 bean 类注册一个 bean，可选择自定义其 bean 定义元数据（通常声明为 lambda 表达式）。
+	// @param beanClass bean 的类（解析要自动装配的公共构造函数，可能只是默认构造函数）
+	// @param customizers 一个或多个回调用于自定义工厂的 {@link BeanDefinition}，例如设置 lazy-init 或 primary 标志
 	public final <T> void registerBean(Class<T> beanClass, BeanDefinitionCustomizer... customizers) {
 		registerBean(null, beanClass, null, customizers);
 	}
@@ -597,6 +600,13 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag
 	 * @since 5.0
 	 */
+	// 从给定的 bean 类注册一个 bean，使用给定的供应商获取新实例（通常声明为 lambda 表达式或方法引用），
+	// 可选地自定义其 bean 定义元数据（同样通常声明为 lambda 表达式）。
+	// <p>可以覆盖此方法以适应所有 {@code registerBean} 方法的注册机制（因为它们都委托给此方法）。
+	// @param beanName bean 的名称（可以为 {@code null}）
+	// @param beanClass bean 的类
+	// @param supply 用于创建 bean 实例的回调（如果为 {@code null}，则解析为自动装配的公共构造函数）
+	// @param customizers 一个或多个用于自定义工厂的 {@link BeanDefinition} 的回调，例如设置 lazy-init 或 primary 标志
 	public <T> void registerBean(@Nullable String beanName, Class<T> beanClass,
 			@Nullable Supplier<T> supplier, BeanDefinitionCustomizer... customizers) {
 
@@ -605,6 +615,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 			beanDefinition.setInstanceSupplier(supplier);
 		}
 		for (BeanDefinitionCustomizer customizer : customizers) {
+			// invoke BeanDefinitionCustomizer#customize()
 			customizer.customize(beanDefinition);
 		}
 
@@ -617,6 +628,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	 * {@link RootBeanDefinition} subclass for {@code #registerBean} based
 	 * registrations with flexible autowiring for public constructors.
 	 */
+	// {@link RootBeanDefinition} 用于基于 {@code #registerBean} 的注册的子类，可为公共构造函数提供灵活的自动装配功能。
 	@SuppressWarnings("serial")
 	private static class ClassDerivedBeanDefinition extends RootBeanDefinition {
 

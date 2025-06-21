@@ -118,7 +118,7 @@ class ConditionEvaluator {
 			if (condition instanceof ConfigurationCondition configurationCondition) {
 				requiredPhase = configurationCondition.getConfigurationPhase();
 			}
-			// invoke Condition#matches()
+			// important :::: invoke Condition#matches()
 			if ((requiredPhase == null || requiredPhase == phase) && !condition.matches(this.context, metadata)) {
 				return true;
 			}

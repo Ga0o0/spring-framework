@@ -61,9 +61,9 @@ import java.lang.annotation.Target;
  * @see Configuration
  * @see org.springframework.stereotype.Component
  */
-// 指示 Bean 是否延迟初始化。<
+// 指示 Bean 是否延迟初始化。
 //
-// p>可用于任何直接或间接使用 {@link org.springframework.stereotype.Component @Component} 注解的类，或使用 {@link Bean @Bean} 注解的方法。
+// <p>可用于任何直接或间接使用 {@link org.springframework.stereotype.Component @Component} 注解的类，或使用 {@link Bean @Bean} 注解的方法。
 //
 // <p>如果 {@code @Component} 或 {@code @Bean} 定义中不存在此注解，则将进行即时初始化。如果存在且设置为 {@code true}，
 // 则 {@code @Bean} 或 {@code @Component} 将不会初始化，直到被其他 Bean 引用或从其所在的

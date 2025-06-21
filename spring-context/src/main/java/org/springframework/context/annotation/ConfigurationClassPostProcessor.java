@@ -400,7 +400,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 
 		for (String beanName : candidateNames) {
 			// 返回指定 Bean 名称的 BeanDefinition。
-			BeanDefinition beanDef = registry.getBeanDefinition(beanName);
+			BeanDefinition beanDef = registry.getBeanDefinition(beanName); // org.springframework.context.annotation.ConfigurationClassPostProcessor.configurationClass
 			if (beanDef.getAttribute(ConfigurationClassUtils.CONFIGURATION_CLASS_ATTRIBUTE) != null) {
 				// Bean 定义已经被处理为配置类
 				if (logger.isDebugEnabled()) {

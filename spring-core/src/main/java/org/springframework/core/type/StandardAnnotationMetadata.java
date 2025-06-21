@@ -80,6 +80,17 @@ public class StandardAnnotationMetadata extends StandardClassMetadata implements
 	 * from {@link #getAnnotations()} rather than {@link #getAnnotationAttributes(String)}
 	 * if {@code nestedAnnotationsAsMap} is {@code false}
 	 */
+	// 为给定的类创建一个新的 {@link StandardAnnotationMetadata} 包装器，提供以
+	// {@link org.springframework.core.annotation.AnnotationAttributes} 形式
+	// 返回任何嵌套注释或注释数组的选项，而不是实际的 {@link Annotation} 实例。
+	// @param introspectedClass 要自省的类
+	// @param nestedAnnotationsAsMap 返回嵌套注释和注释数组作为
+	// {@link org.springframework.core.annotation.AnnotationAttributes}，
+	// 以与基于 ASM 的 {@link AnnotationMetadata} 实现兼容@since 3.1.1
+	// @deprecated since 5.2 赞成使用工厂方法 {@link AnnotationMetadata#introspect(Class)}。
+	// 如果 {@code nestedAnnotationsAsMap} 为 {@code false}，则使用 {@link #getAnnotations()} 中
+	// 的 {@link MergedAnnotation#asMap(org.springframework.core.annotation.MergedAnnotation.Adapt...) MergedAnnotation.asMap}
+	// 而不是 {@link #getAnnotationAttributes(String)}
 	@Deprecated
 	public StandardAnnotationMetadata(Class<?> introspectedClass, boolean nestedAnnotationsAsMap) {
 		super(introspectedClass);

@@ -46,6 +46,16 @@ import java.lang.annotation.Target;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 当前 Bean 所依赖的 Bean。任何指定的 Bean 都保证先于此 Bean 由容器创建。
+// 当 Bean 不通过属性或构造函数参数显式地依赖于另一个 Bean，而是依赖于另一个 Bean 初始化的副作用时，此方法很少使用。
+//
+// <p>depends-on 声明既可以指定初始化时的依赖关系，也可以在单例 Bean 的情况下指定相应的销毁时依赖关系。
+// 与给定 Bean 定义依赖关系的 Bean 会先被销毁，然后再销毁给定 Bean 本身。因此，depends-on 声明还可以控制关闭顺序。
+//
+// <p>可以用于任何直接或间接使用 {@link org.springframework.stereotype.Component} 注解的类，或使用 {@link Bean} 注解的方法。
+//
+// <p>除非使用组件扫描，否则在类级别使用 {@link DependsOn} 无效。
+// 如果通过 XML 声明了带有 {@link DependsOn} 注释的类，则会忽略 {@link DependsOn} 注释元数据，而改为遵循 {@code <bean depends-on="..."/>}。
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

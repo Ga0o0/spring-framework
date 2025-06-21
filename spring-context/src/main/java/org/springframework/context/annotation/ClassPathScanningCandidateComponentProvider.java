@@ -184,6 +184,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @see #findCandidateComponents(String)
 	 * @see #DEFAULT_RESOURCE_PATTERN
 	 */
+	// 设置扫描类路径时使用的资源模式。此值将附加到每个基础包名称。
 	public void setResourcePattern(String resourcePattern) {
 		Assert.notNull(resourcePattern, "'resourcePattern' must not be null");
 		this.resourcePattern = resourcePattern;

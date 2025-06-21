@@ -36,6 +36,9 @@ import org.springframework.util.Assert;
  * @since 2.5
  * @see org.springframework.context.annotation.Scope
  */
+// {@link ScopeMetadataResolver} 实现默认检查 Bean 类上是否存在 Spring 的 {@link Scope @Scope} 注解。
+//
+// <p>可通过 {@link #setScopeAnnotationType(Class)} 配置所检查注解的具体类型。
 public class AnnotationScopeMetadataResolver implements ScopeMetadataResolver {
 
 	private final ScopedProxyMode defaultProxyMode;

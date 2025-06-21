@@ -367,6 +367,13 @@ public interface MergedAnnotations extends Iterable<MergedAnnotation<Annotation>
 	 * annotations for the supplied element
 	 * @see #search(SearchStrategy)
 	 */
+	// 创建一个新的 {@link MergedAnnotations} 实例，其中包含来自指定元素的所有注释和元注释，
+	// 并且取决于 {@link SearchStrategy}，相关的继承元素。
+	// @param element 源元素
+	// @param searchStrategy 要使用的搜索策略
+	// @param repeatableContainers 元素注释或元注释可能使用的可重复容器
+	// @param commentFilter 用于限制所考虑的注释的注释过滤器
+	// @return 一个 {@code MergedAnnotations} 实例，其中包含所提供元素的合并注释
 	static MergedAnnotations from(AnnotatedElement element, SearchStrategy searchStrategy,
 			RepeatableContainers repeatableContainers, AnnotationFilter annotationFilter) {
 

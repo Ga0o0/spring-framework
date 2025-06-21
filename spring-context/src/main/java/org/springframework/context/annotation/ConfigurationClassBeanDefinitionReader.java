@@ -165,7 +165,7 @@ class ConfigurationClassBeanDefinitionReader {
 		AnnotationMetadata metadata = configClass.getMetadata();
 		AnnotatedGenericBeanDefinition configBeanDef = new AnnotatedGenericBeanDefinition(metadata);
 
-		// 解析与提供的 Bean {@code 定义} 对应的 {@link ScopeMetadata}。
+		// 解析与提供的 Bean {@code definition} 对应的 {@link ScopeMetadata}。
 		ScopeMetadata scopeMetadata = scopeMetadataResolver.resolveScopeMetadata(configBeanDef);
 		configBeanDef.setScope(scopeMetadata.getScopeName());
 		// 为给定的 bean 定义生成 bean 名称。

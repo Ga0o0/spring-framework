@@ -38,13 +38,16 @@ import org.springframework.lang.Nullable;
  * @author Mark Fisher
  * @since 2.5
  */
+// 能够感知遍历层次结构的类型过滤器。
+//
+// <p>当需要基于整个类/接口层次结构进行匹配时，此过滤器非常有用。所采用的算法采用快速成功策略：如果在任何时候声明匹配，则不会执行进一步处理。
 public abstract class AbstractTypeHierarchyTraversingFilter implements TypeFilter {
 
 	protected final Log logger = LogFactory.getLog(getClass());
 
-	private final boolean considerInherited;
+	private final boolean considerInherited; // 考虑继承
 
-	private final boolean considerInterfaces;
+	private final boolean considerInterfaces; // 考虑接口
 
 
 	protected AbstractTypeHierarchyTraversingFilter(boolean considerInherited, boolean considerInterfaces) {

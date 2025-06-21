@@ -163,6 +163,8 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	 * @param beanClass the class of the bean to instantiate
 	 * @see #setBeanClass
 	 */
+	// 为单例创建一个新的 RootBeanDefinition。
+	// @param beanClass 需要实例化的 bean 的类
 	public RootBeanDefinition(@Nullable Class<?> beanClass) {
 		setBeanClass(beanClass);
 	}

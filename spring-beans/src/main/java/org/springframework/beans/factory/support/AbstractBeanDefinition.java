@@ -828,6 +828,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #setConstructorArgumentValues(ConstructorArgumentValues)
 	 * @see #setPropertyValues(MutablePropertyValues)
 	 */
+	// 指定用于创建 Bean 实例的回调，作为声明式工厂方法的替代。
+	// <p>如果设置了此类回调，它将覆盖任何其他构造函数或工厂方法元数据。但是，Bean 属性填充和潜在的注解驱动注入仍将照常应用。
 	public void setInstanceSupplier(@Nullable Supplier<?> instanceSupplier) {
 		this.instanceSupplier = instanceSupplier;
 	}
@@ -885,6 +887,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * This the name of the bean to call the specified factory method on.
 	 * @see #setFactoryMethodName
 	 */
+	// 指定要使用的工厂 bean（如果有）。这是要调用指定工厂方法的 bean 的名称。
 	@Override
 	public void setFactoryBeanName(@Nullable String factoryBeanName) {
 		this.factoryBeanName = factoryBeanName;

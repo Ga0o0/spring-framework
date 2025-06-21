@@ -24,12 +24,14 @@ package org.springframework.beans.factory.config;
  * @since 5.0
  * @see org.springframework.beans.factory.support.BeanDefinitionBuilder#applyCustomizers
  */
+// 用于自定义给定 bean 定义的回调。设计用于与 lambda 表达式或方法引用一起使用。
 @FunctionalInterface
 public interface BeanDefinitionCustomizer {
 
 	/**
 	 * Customize the given bean definition.
 	 */
+	// 定制给定的 bean 定义。
 	void customize(BeanDefinition bd);
 
 }

@@ -49,6 +49,15 @@ import org.springframework.core.annotation.AliasFor;
  * @see Configuration
  * @see Import
  */
+// 指示一个或多个包含要导入的 bean 定义的资源。
+//
+// <p>与 {@link Import @Import} 类似，此注解提供的功能类似于 Spring XML 中的 {@code <import/>} 元素。
+// 它通常用于设计由 {@link AnnotationConfigApplicationContext} 引导的 {@link Configuration @Configuration} 类，但仍需要某些 XML 功能（例如命名空间）。
+//
+// <p>默认情况下，如果 {@link #value} 属性的参数以 {@code ".groovy"} 结尾，则将使用
+// {@link org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader GroovyBeanDefinitionReader} 进行处理；
+// 否则，将使用 {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader XmlBeanDefinitionReader} 来解析 Spring {@code <beans/>} XML 文件。
+// 或者，可以声明 {@link #reader} 属性，允许用户选择自定义 {@link BeanDefinitionReader} 实现。
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
@@ -72,6 +81,9 @@ public @interface ImportResource {
 	 * @see #value
 	 * @see #reader
 	 */
+	// 要从中导入的资源位置。
+	// <p>支持资源加载前缀，例如 {@code classpath:}、{@code file:} 等。
+	// <p>有关如何处理资源的详细信息，请参阅 {@link #reader} 的 Javadoc。
 	@AliasFor("value")
 	String[] locations() default {};
 
@@ -85,6 +97,10 @@ public @interface ImportResource {
 	 * {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader XmlBeanDefinitionReader}.
 	 * @see #value
 	 */
+	// {@link BeanDefinitionReader} 实现，用于处理通过 {@link #value} 属性指定的资源。
+	// <p>默认情况下，读取器将适应指定的资源路径：{@code ".groovy"} 文件将使用
+	// {@link org.springframework.beans.factory.groovy.GroovyBeanDefinitionReader GroovyBeanDefinitionReader} 进行处理；
+	// 而所有其他资源将使用 {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader XmlBeanDefinitionReader} 进行处理。
 	Class<? extends BeanDefinitionReader> reader() default BeanDefinitionReader.class;
 
 }

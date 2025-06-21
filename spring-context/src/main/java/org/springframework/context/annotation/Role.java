@@ -46,6 +46,13 @@ import org.springframework.beans.factory.config.BeanDefinition;
  * @see BeanDefinition#ROLE_SUPPORT
  * @see Bean
  */
+// 指示给定 bean 的 “角色” 提示。
+//
+// <p>可用于任何直接或间接使用 {@link org.springframework.stereotype.Component} 注解的类，或使用 {@link Bean} 注解的方法。
+//
+// <p>如果组件或 Bean 定义中不存在此注解，则将应用 {@link BeanDefinition#ROLE_APPLICATION} 的默认值。
+//
+// <p>如果 Role 出现在 {@link Configuration @Configuration} 类中，则指示配置类 bean 定义的角色，并且不会级联到其中定义的所有 @{@code Bean} 方法。此行为与 @{@link Lazy} 注解的行为不同。
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

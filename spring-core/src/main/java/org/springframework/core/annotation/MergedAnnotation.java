@@ -58,7 +58,7 @@ import org.springframework.lang.Nullable;
  * @see MergedAnnotations
  * @see MergedAnnotationPredicates
  */
-// 从 {@link MergedAnnotations} 集合返回的单个合并注释。呈现注释视图，其中的属性值可能已从不同的源值“合并”。
+// 从 {@link MergedAnnotations} 集合返回的单个合并注解。呈现注解视图，其中的属性值可能已从不同的源值“合并”。
 //
 // <p>可以使用各种 {@code get} 方法访问属性值。例如，要访问 {@code int} 属性，可以使用 {@link #getInt(String)} 方法。
 //
@@ -96,6 +96,10 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * or {@link Inherited @Inherited}.
 	 * @return {@code true} if the annotation is directly present
 	 */
+	// 确定注解是否直接存在于源中。
+	// <p>直接存在的注解是指用户明确声明的注解，而不是 {@linkplain #isMetaPresent() meta-present}
+	// 或 {@link Inherited @Inherited} 的注解。
+	// @return 如果注解直接存在，则返回 {@code true}
 	boolean isDirectlyPresent();
 
 	/**
@@ -105,6 +109,9 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * the annotation hierarchy.
 	 * @return {@code true} if the annotation is meta-present
 	 */
+	// 确定注解是否在源上存在元注解。
+	// <p>元注解是指用户未明确声明，但在注解层次结构中的某个位置已用作元注解的注解。
+	// @return 如果注解存在元注解，则返回 {@code true}
 	boolean isMetaPresent();
 
 	/**
@@ -462,9 +469,9 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * not be applied.
 	 * @return a non-merged view of the annotation
 	 */
-	// 创建注释的新视图，用于公开未合并的属性值。
+	// 创建注解的新视图，用于公开未合并的属性值。
 	// <p>此视图中的方法将返回仅应用别名镜像规则的属性值。{@link #getMetaSource() meta-source} 属性的别名将不被应用。
-	// @return 注释的未合并视图
+	// @return 注解的未合并视图
 	MergedAnnotation<A> withNonMergedAttributes();
 
 	/**
@@ -650,7 +657,7 @@ public interface MergedAnnotation<A extends Annotation> {
 		 * Adapt nested annotation or annotation arrays to maps rather
 		 * than synthesizing the values.
 		 */
-		// 将嵌套注释或注释数组适配为映射，而不是合成值。
+		// 将嵌套注解或注解数组适配为映射，而不是合成值。
 		ANNOTATION_TO_MAP;
 
 		protected final boolean isIn(Adapt... adaptations) {
