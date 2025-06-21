@@ -68,9 +68,12 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * @param original the PropertyValues to copy
 	 * @see #addPropertyValues(PropertyValues)
 	 */
+	// 深拷贝构造函数。保证 PropertyValue 引用彼此独立，但无法深拷贝当前被各个 PropertyValue 对象引用的对象。
+	// @param original 要复制的 PropertyValue 对象
 	public MutablePropertyValues(@Nullable PropertyValues original) {
 		// We can optimize this because it's all new:
 		// There is no replacement of existing property values.
+		// --> 译文：我们可以对其进行优化，因为一切都是全新的：现有属性值不会被替换。
 		if (original != null) {
 			PropertyValue[] pvs = original.getPropertyValues();
 			this.propertyValueList = new ArrayList<>(pvs.length);
@@ -120,6 +123,8 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * <p>This is an accessor for optimized access to all PropertyValue objects.
 	 * It is not intended for typical programmatic use.
 	 */
+	// 返回底层 PropertyValue 对象列表的原始形式。虽然可以直接修改返回的列表，但不建议这样做。
+	// <p>这是一个用于优化访问所有 PropertyValue 对象的访问器。它不适用于典型的程序化使用。
 	public List<PropertyValue> getPropertyValueList() {
 		return this.propertyValueList;
 	}
@@ -365,6 +370,7 @@ public class MutablePropertyValues implements PropertyValues, Serializable {
 	 * Return whether this holder contains converted values only ({@code true}),
 	 * or whether the values still need to be converted ({@code false}).
 	 */
+	// 返回此容器是否仅包含已转换的值（{@code true}），或者这些值是否仍需要转换（{@code false}）。
 	public boolean isConverted() {
 		return this.converted;
 	}

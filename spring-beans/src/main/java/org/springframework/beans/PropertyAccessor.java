@@ -33,6 +33,9 @@ import org.springframework.lang.Nullable;
  * @see PropertyAccessorFactory#forBeanPropertyAccess
  * @see PropertyAccessorFactory#forDirectFieldAccess
  */
+// 用于访问命名属性（例如对象的 bean 属性或对象中的字段）的类的通用接口。
+//
+// <p>作为 {@link BeanWrapper} 的基础接口。</p>
 public interface PropertyAccessor {
 
 	/**
@@ -57,6 +60,7 @@ public interface PropertyAccessor {
 	 * Marker that indicates the start of a property key for an
 	 * indexed or mapped property like "person.addresses[0]".
 	 */
+	// 指示索引或映射属性的属性键开始的标记，例如“person.addresses[0]”。
 	char PROPERTY_KEY_PREFIX_CHAR = '[';
 
 	/**
@@ -69,6 +73,7 @@ public interface PropertyAccessor {
 	 * Marker that indicates the end of a property key for an
 	 * indexed or mapped property like "person.addresses[0]".
 	 */
+	// 指示索引或映射属性的属性键结束的标记，例如“person.addresses[0]”。
 	char PROPERTY_KEY_SUFFIX_CHAR = ']';
 
 
@@ -187,6 +192,18 @@ public interface PropertyAccessor {
 	 * successfully updated.
 	 * @see #setPropertyValues(PropertyValues, boolean, boolean)
 	 */
+	// 执行批量更新的首选方法。
+	//
+	// <p>请注意，执行批量更新与执行单个更新不同，因为如果遇到可恢复的错误（例如类型不匹配，但不是无效字段名等），
+	// 此类的实现将继续更新属性，并抛出包含所有单个错误的 {@link PropertyBatchUpdateException}。
+	// 稍后可以检查此异常以查看所有绑定错误。已成功更新的属性将保持更改状态。
+	//
+	// <p>不允许未知字段或无效字段。
+	//
+	// @param pvs 要设置在目标对象上的 PropertyValues
+	// @throws InvalidPropertyException 如果不存在该属性或该属性不可写
+	// @throws PropertyBatchUpdateException 如果在批量更新期间特定属性发生一个或多个 PropertyAccessException。
+	// 此异常包含所有单独的 PropertyAccessException。所有其他属性都将成功更新。
 	void setPropertyValues(PropertyValues pvs) throws BeansException;
 
 	/**

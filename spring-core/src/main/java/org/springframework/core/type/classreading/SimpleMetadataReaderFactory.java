@@ -32,6 +32,7 @@ import org.springframework.util.ClassUtils;
  * @author Juergen Hoeller
  * @since 2.5
  */
+// 简单实现了 {@link MetadataReaderFactory} 接口，为每个请求创建一个新的 ASM {@link org.springframework.asm.ClassReader}。
 public class SimpleMetadataReaderFactory implements MetadataReaderFactory {
 
 	private final ResourceLoader resourceLoader;
@@ -75,6 +76,7 @@ public class SimpleMetadataReaderFactory implements MetadataReaderFactory {
 	@Override
 	public MetadataReader getMetadataReader(String className) throws IOException {
 		try {
+			// resourcePath 示例：classpath:com/example/Demo.class
 			String resourcePath = ResourceLoader.CLASSPATH_URL_PREFIX +
 					ClassUtils.convertClassNameToResourcePath(className) + ClassUtils.CLASS_FILE_SUFFIX;
 			Resource resource = this.resourceLoader.getResource(resourcePath);
@@ -83,8 +85,10 @@ public class SimpleMetadataReaderFactory implements MetadataReaderFactory {
 		catch (FileNotFoundException ex) {
 			// Maybe an inner class name using the dot name syntax? Need to use the dollar syntax here...
 			// ClassUtils.forName has an equivalent check for resolution into Class references later on.
+			// --> 译文：或许是使用了点号语法的内部类名？这里需要使用美元符号语法... ClassUtils.forName 稍后会检查解析为类引用的情况。
 			int lastDotIndex = className.lastIndexOf('.');
 			if (lastDotIndex != -1) {
+				// resourcePath 示例：classpath:com/example/Demo$Inner.class
 				String innerClassName =
 						className.substring(0, lastDotIndex) + '$' + className.substring(lastDotIndex + 1);
 				String innerClassResourcePath = ResourceLoader.CLASSPATH_URL_PREFIX +

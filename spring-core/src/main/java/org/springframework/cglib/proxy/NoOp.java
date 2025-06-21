@@ -19,10 +19,12 @@ package org.springframework.cglib.proxy;
  * Methods using this {@link Enhancer} callback will delegate directly to the
  * default (super) implementation in the base class.
  */
+// 使用此 {@link Enhancer} 回调的方法将直接委托给基类中的默认（super）实现。
 public interface NoOp extends Callback
 {
     /**
      * A thread-safe singleton instance of the <code>NoOp</code> callback.
      */
+	// <code>NoOp</code>回调的线程安全单例实例。
     public static final NoOp INSTANCE = new NoOp() { };
 }

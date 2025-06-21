@@ -35,6 +35,8 @@ import org.springframework.util.ObjectUtils;
  * @see ResourceBundleMessageSource
  * @see ReloadableResourceBundleMessageSource
  */
+// 基于资源包约定的 {@code MessageSource} 实现的抽象基类，
+// 例如 {@link ResourceBundleMessageSource} 和 {@link ReloadableResourceBundleMessageSource}。提供通用配置方法和相应的语义定义。
 public abstract class AbstractResourceBasedMessageSource extends AbstractMessageSource {
 
 	private final Set<String> basenameSet = new LinkedHashSet<>(4);

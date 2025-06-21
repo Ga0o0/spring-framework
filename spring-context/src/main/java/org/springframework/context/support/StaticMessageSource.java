@@ -34,6 +34,9 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 这是 {@link org.springframework.context.MessageSource} 的一个简单实现，允许以编程方式注册消息。此 MessageSource 支持基本的国际化。
+//
+// <p>此实现旨在用于测试，而非生产系统。</p>
 public class StaticMessageSource extends AbstractMessageSource {
 
 	private final Map<String, Map<Locale, MessageHolder>> messageMap = new HashMap<>();

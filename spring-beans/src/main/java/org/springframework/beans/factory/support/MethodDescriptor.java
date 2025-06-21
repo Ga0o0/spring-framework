@@ -48,6 +48,19 @@ record MethodDescriptor(Class<?> declaringClass, String methodName, Class<?>... 
 	 * @param methodName the name of the method
 	 * @return a new {@code MethodDescriptor}; never {@code null}
 	 */
+	// 为提供的 bean 类和方法名创建一个 {@link MethodDescriptor}。
+	//
+	// <p>提供的 {@code methodName} 可以是 {@linkplain Method#getName() 简单方法名}
+	// 或 {@linkplain ClassUtils#getQualifiedMethodName(Method) 限定方法名}。
+	//
+	// <p>如果方法名是完全限定的，此工具将从限定方法名中解析出方法名及其声明类，然后尝试使用提供的
+	// {@code beanClass} 的 {@link ClassLoader} 加载方法的声明类。
+	// 否则，返回的描述符将引用提供的 {@code beanClass} 和 {@code methodName}。
+	//
+	// @param beanName 工厂中的 bean 名称（用于调试目的）
+	// @param beanClass bean 类
+	// @param methodName 方法名
+	// @return 一个新的 {@code MethodDescriptor}；永远不会返回 {@code null}
 	static MethodDescriptor create(String beanName, Class<?> beanClass, String methodName) {
 		try {
 			Class<?> declaringClass = beanClass;

@@ -66,6 +66,7 @@ public interface PropertyValues extends Iterable<PropertyValue> {
 	/**
 	 * Return an array of the PropertyValue objects held in this object.
 	 */
+	// 返回此对象中保存的 PropertyValue 对象的数组。
 	PropertyValue[] getPropertyValues();
 
 	/**

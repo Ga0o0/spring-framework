@@ -32,6 +32,8 @@ import org.springframework.lang.Nullable;
  * @see BeanFactory#getBean(Class)
  * @see NoUniqueBeanDefinitionException
  */
+// 当向 {@code BeanFactory} 请求一个找不到定义的 bean 实例时，会抛出异常。
+// 这可能指向一个不存在的 bean、一个非唯一的 bean，或者一个手动注册但没有关联 bean 定义的单例实例。
 @SuppressWarnings("serial")
 public class NoSuchBeanDefinitionException extends BeansException {
 

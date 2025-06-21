@@ -193,6 +193,12 @@ public abstract class BeanUtils {
 	 * @throws BeanInstantiationException if the bean cannot be instantiated
 	 * @see Constructor#newInstance
 	 */
+	// 使用给定构造函数实例化类的便捷方法。
+	// <p>请注意，如果给定的构造函数不可访问（即非公共），此方法会尝试将其设置为可访问，并且支持带有可选参数和默认值的 Kotlin 类。
+	// @param ctor 要实例化的构造函数
+	// @param args 要应用的构造函数参数（对于未指定的参数，请使用 {@code null}，支持 Kotlin 可选参数和 Java 基本类型）
+	// @return 新实例
+	// @throws BeanInstantiationException 如果 bean 无法实例化
 	public static <T> T instantiateClass(Constructor<T> ctor, Object... args) throws BeanInstantiationException {
 		Assert.notNull(ctor, "Constructor must not be null");
 		try {
@@ -286,6 +292,8 @@ public abstract class BeanUtils {
 	 * @since 5.0
 	 * @see <a href="https://kotlinlang.org/docs/reference/classes.html#constructors">Kotlin docs</a>
 	 */
+	// 返回所提供类的主构造函数。对于 Kotlin 类，此函数返回与 Kotlin 主构造函数（如 Kotlin 规范中所定义）对应的 Java 构造函数。
+	// 否则，特别是对于非 Kotlin 类，此函数将返回 {@code null}。
 	@Nullable
 	public static <T> Constructor<T> findPrimaryConstructor(Class<T> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
@@ -309,6 +317,15 @@ public abstract class BeanUtils {
 	 * @see Class#getMethod
 	 * @see #findDeclaredMethod
 	 */
+	// 查找在给定类或其超类中声明的、具有给定方法名和给定参数类型的方法。优先查找公共方法，但也会返回受保护方法、包访问方法或私有方法。
+	//
+	// <p>首先检查 {@code Class.getMethod}，如果找不到则回退到 {@code findDeclaredMethod}。
+	// 这样即使在 Java 安全设置受限的环境中也能顺利找到公共方法。
+	//
+	// @param clazz 要检查的类
+	// @param methodName 要查找的方法名
+	// @param paramTypes 要查找的方法的参数类型
+	// @return 方法对象，如果未找到则返回 {@code null}。
 	@Nullable
 	public static Method findMethod(Class<?> clazz, String methodName, Class<?>... paramTypes) {
 		try {
@@ -695,6 +712,11 @@ public abstract class BeanUtils {
 	 * @see org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory#checkDependencies
 	 * @see #isSimpleValueType(Class)
 	 */
+	// 检查给定类型是否表示“简单”属性：简单值类型或简单值类型数组。
+	// <p>有关<em>简单值类型</em>的定义，请参阅{@link #isSimpleValueType(Class)}。
+	// <p>用于确定要检查的属性，以进行“简单”依赖关系检查。
+	// @param type 要检查的类型
+	// @return 给定类型是否表示“简单”属性
 	public static boolean isSimpleProperty(Class<?> type) {
 		Assert.notNull(type, "'type' must not be null");
 		return isSimpleValueType(type) || (type.isArray() && isSimpleValueType(type.componentType()));
@@ -715,6 +737,16 @@ public abstract class BeanUtils {
 	 * @see #isSimpleProperty(Class)
 	 * @see ClassUtils#isSimpleValueType(Class)
 	 */
+	// 检查给定类型是否代表 bean 属性和数据绑定的“简单”值类型：原始类型或原始类型包装器、
+	// {@code Enum}、{@code String} 或其他 {@code CharSequence}、{@code Number}、
+	// {@code Date}、{@code Temporal}、{@code UUID}、{@code URI}、{@code URL}、{@code Locale} 或 {@code Class}。
+	//
+	// <p>{@code Void} 和 {@code void} 不被视为简单值类型。
+	//
+	// <p>从 6.1 版本开始，此方法直接委托给 {@link ClassUtils#isSimpleValueType}，但可能会添加更多用于 bean 属性的规则。
+	//
+	// @param type 要检查的类型
+	// @return 给定类型是否代表“简单”值类型
 	public static boolean isSimpleValueType(Class<?> type) {
 		return ClassUtils.isSimpleValueType(type);
 	}

@@ -44,12 +44,17 @@ import org.springframework.util.StringUtils;
  * @author Chris Beams
  * @since 04.07.2003
  */
+// 针对 bean 工厂（特别是 {@link ListableBeanFactory} 接口）的便捷方法。
+//
+// <p>返回 bean 数量、bean 名称或 bean 实例，并考虑 bean 工厂的嵌套层次结构（
+// ListableBeanFactory 接口上定义的方法不考虑这一点，而 BeanFactory 接口上定义的方法则不同）。
 public abstract class BeanFactoryUtils {
 
 	/**
 	 * Separator for generated bean names. If a class name or parent name is not
 	 * unique, "#1", "#2" etc will be appended, until the name becomes unique.
 	 */
+	// 用于分隔生成的 bean 名称。如果类名或父名称不唯一，则会附加“#1”、“#2”等，直到名称唯一为止。
 	public static final String GENERATED_BEAN_NAME_SEPARATOR = "#";
 
 	/**
@@ -67,6 +72,9 @@ public abstract class BeanFactoryUtils {
 	 * @return whether the given name is a factory dereference
 	 * @see BeanFactory#FACTORY_BEAN_PREFIX
 	 */
+	// 返回给定名称是否为工厂解引用（以工厂解引用前缀开头）。
+	// @param name bean 的名称
+	// @return 给定名称是否为工厂解引用
 	public static boolean isFactoryDereference(@Nullable String name) {
 		return (name != null && name.startsWith(BeanFactory.FACTORY_BEAN_PREFIX));
 	}
@@ -78,6 +86,9 @@ public abstract class BeanFactoryUtils {
 	 * @return the transformed name
 	 * @see BeanFactory#FACTORY_BEAN_PREFIX
 	 */
+	// 返回实际的 Bean 名称，去掉工厂解引用前缀（如果有的话，如果发现重复的工厂前缀，也要一并去掉）。
+	// @param name 组件的名称
+	// @return 转换后的名称
 	public static String transformedBeanName(String name) {
 		Assert.notNull(name, "'name' must not be null");
 		if (!name.startsWith(BeanFactory.FACTORY_BEAN_PREFIX)) {

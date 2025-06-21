@@ -194,6 +194,8 @@ public abstract class ReflectionUtils {
 	 * @param ctor the constructor to make accessible
 	 * @see java.lang.reflect.Constructor#setAccessible
 	 */
+	// 使给定的构造函数可访问，必要时显式地设置其可访问性。`{@code setAccessible(true)}` 方法仅在实际需要时调用，以避免不必要的冲突。
+	// @param ctor 要使其可访问的构造函数
 	@SuppressWarnings("deprecation")
 	public static void makeAccessible(Constructor<?> ctor) {
 		if ((!Modifier.isPublic(ctor.getModifiers()) ||
@@ -275,6 +277,12 @@ public abstract class ReflectionUtils {
 	 * @param args the invocation arguments (may be {@code null})
 	 * @return the invocation result, if any
 	 */
+	// 使用提供的参数，针对指定的 {@link 方法} 调用目标对象。调用静态 {@link 方法} 时，目标对象可以为 {@code null}。
+	// <p>抛出的异常将通过调用 {@link #handleReflectionException} 进行处理。
+	// @param method 要调用的方法
+	// @param target 要调用方法的目标对象
+	// @param args 调用参数（可以为 {@code null}）
+	// @return 调用结果（如果有）
 	@Nullable
 	public static Object invokeMethod(Method method, @Nullable Object target, @Nullable Object... args) {
 		try {
@@ -563,6 +571,8 @@ public abstract class ReflectionUtils {
 	 * @param method the method to make accessible
 	 * @see java.lang.reflect.Method#setAccessible
 	 */
+	// 使给定方法可访问，必要时显式设置其可访问性。`{@code setAccessible(true)}` 方法仅在实际需要时调用，以避免不必要的冲突。
+	// @param method 要使其可访问的方法
 	@SuppressWarnings("deprecation")
 	public static void makeAccessible(Method method) {
 		if ((!Modifier.isPublic(method.getModifiers()) ||

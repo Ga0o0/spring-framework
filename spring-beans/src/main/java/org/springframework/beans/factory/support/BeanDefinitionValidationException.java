@@ -25,6 +25,7 @@ import org.springframework.beans.FatalBeanException;
  * @since 21.11.2003
  * @see AbstractBeanDefinition#validate()
  */
+// 当 bean 定义的验证失败时抛出异常。
 @SuppressWarnings("serial")
 public class BeanDefinitionValidationException extends FatalBeanException {
 

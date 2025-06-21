@@ -58,6 +58,14 @@ import org.springframework.util.ReflectionUtils;
  * @see BeanWrapper
  * @see PropertyEditorRegistrySupport
  */
+// 默认的 {@link BeanWrapper} 实现，足以满足所有典型用例。缓存内省结果以提高效率。
+//
+// <p>注意：自动注册来自 {@code org.springframework.beans.propertyeditors} 包的默认属性编辑器，这些编辑器是对 JDK 标准 PropertyEditors 的补充。
+// 应用程序可以调用 {@link #registerCustomEditor(Class, java.beans.PropertyEditor)} 方法为特定实例注册编辑器（即，它们不会在应用程序之间共享）。
+// 有关详细信息，请参阅基类 {@link PropertyEditorRegistrySupport}。
+//
+// <p><b>注意：从 Spring 2.5 开始，这几乎是一个内部类。</b>它之所以是公共的，只是为了允许其他框架包访问。
+// 对于标准的应用程序访问，请改用 {@link PropertyAccessorFactory#forBeanPropertyAccess} 工厂方法。
 public class BeanWrapperImpl extends AbstractNestablePropertyAccessor implements BeanWrapper {
 
 	/**

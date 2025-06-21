@@ -24,6 +24,7 @@ package org.springframework.beans.factory.support;
  * @author Juergen Hoeller
  * @since 5.0
  */
+// 从 {@link ConstructorResolver} 传播的内部异常，会传递给发起的 {@link DefaultSingletonBeanRegistry}（不包装在 {@code BeanCreationException} 中）。
 @SuppressWarnings("serial")
 class ImplicitlyAppearedSingletonException extends IllegalStateException {
 

@@ -39,6 +39,7 @@ import org.springframework.lang.Nullable;
  * @author Sam Brannen
  * @since 5.2
  */
+// {@link MergedAnnotations} 实现，它使用 {@link AnnotationTypeMappings} 搜索和调整注释和元注释。
 final class TypeMappedAnnotations implements MergedAnnotations {
 
 	/**

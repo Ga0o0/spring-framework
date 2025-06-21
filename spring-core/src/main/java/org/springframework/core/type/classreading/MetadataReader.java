@@ -27,7 +27,7 @@ import org.springframework.core.type.ClassMetadata;
  * @author Juergen Hoeller
  * @since 2.5
  */
-// 用于访问类元数据的简单外观，由 ASM {@link org.springframework.asm.ClassReader} 读取。
+// 用于访问类元数据的简单 facade，由 ASM {@link org.springframework.asm.ClassReader} 读取。
 public interface MetadataReader {
 
 	/**

@@ -29,6 +29,7 @@ import org.springframework.util.Assert;
  * @since 2.5
  * @see org.springframework.beans.factory.annotation.Qualifier
  */
+// 用于解析自动装配候选对象的限定符。包含一个或多个此类限定符的 bean 定义可以对要自动装配的字段或参数上的注解进行细粒度匹配。
 @SuppressWarnings("serial")
 public class AutowireCandidateQualifier extends BeanMetadataAttributeAccessor {
 

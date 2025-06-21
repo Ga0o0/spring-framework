@@ -24,6 +24,7 @@ package org.springframework.beans.factory;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 如果在当前不允许创建 bean 的情况下请求 bean（例如，在 bean 工厂的关闭阶段），则会抛出异常。
 @SuppressWarnings("serial")
 public class BeanCreationNotAllowedException extends BeanCreationException {
 

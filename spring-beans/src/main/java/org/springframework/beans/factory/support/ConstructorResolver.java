@@ -94,6 +94,9 @@ import org.springframework.util.StringUtils;
  * @see #resolveConstructorOrFactoryMethod
  * @see AbstractAutowireCapableBeanFactory
  */
+// 用于解析构造函数和工厂方法的委托。
+//
+// <p>通过参数匹配执行构造函数解析。
 class ConstructorResolver {
 
 	private static final Object[] EMPTY_ARGS = new Object[0];
@@ -111,6 +114,8 @@ class ConstructorResolver {
 	 * Create a new ConstructorResolver for the given factory and instantiation strategy.
 	 * @param beanFactory the BeanFactory to work with
 	 */
+	// 为给定的工厂和实例化策略创建一个新的构造函数解析器。
+	// @param beanFactory 要使用的 BeanFactory
 	public ConstructorResolver(AbstractAutowireCapableBeanFactory beanFactory) {
 		this.beanFactory = beanFactory;
 		this.logger = beanFactory.getLogger();
@@ -129,6 +134,13 @@ class ConstructorResolver {
 	 * or {@code null} if none (-> use constructor argument values from bean definition)
 	 * @return a BeanWrapper for the new instance
 	 */
+	// “自动装配构造函数”（按类型传递构造函数参数）行为。即使显式指定了构造函数参数值，此行为也适用。
+	//
+	// @param beanName bean 的名称
+	// @param mbd bean 的合并 bean 定义
+	// @param chosenCtors 选定的候选构造函数（如果没有，则为 {@code null}）
+	// @param explicitArgs 通过 getBean 方法以编程方式传递的参数值，如果没有，则为 {@code null}（-> 使用 bean 定义中的构造函数参数值）
+	// @return 新实例的 BeanWrapper
 	public BeanWrapper autowireConstructor(String beanName, RootBeanDefinition mbd,
 			@Nullable Constructor<?>[] chosenCtors, @Nullable Object[] explicitArgs) {
 

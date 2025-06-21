@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
  *
  * @author Juergen Hoeller
  */
+// 当 BeanFactory 尝试根据 bean 定义创建 bean 时遇到错误，将抛出异常。
 @SuppressWarnings("serial")
 public class BeanCreationException extends FatalBeanException {
 
@@ -139,6 +140,8 @@ public class BeanCreationException extends FatalBeanException {
 	 * earlier in the creation of the same bean instance.
 	 * @param ex the related cause to add
 	 */
+	// 为这个 bean 创建异常添加一个相关原因，该原因并非导致失败的直接原因，而是在创建同一 bean 实例的早期阶段发生的。
+	// @param ex 要添加的相关原因
 	public void addRelatedCause(Throwable ex) {
 		if (this.relatedCauses == null) {
 			this.relatedCauses = new ArrayList<>();

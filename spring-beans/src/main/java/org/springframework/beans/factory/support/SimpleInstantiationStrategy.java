@@ -51,6 +51,9 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	 * <p>Allows factory method implementations to determine whether the current
 	 * caller is the container itself as opposed to user code.
 	 */
+	// 返回当前正在调用的工厂方法，如果没有工厂方法则返回 null。
+	//
+	// 允许工厂方法实现确定当前调用者是容器本身还是用户代码。
 	@Nullable
 	public static Method getCurrentlyInvokedFactoryMethod() {
 		return currentlyInvokedFactoryMethod.get();
@@ -62,6 +65,9 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	 * @param method the factory method currently being invoked or {@code null}
 	 * @since 6.0
 	 */
+	// 设置当前正在调用的工厂方法，如果存在则设置为 null 以移除当前值。
+	//
+	// @param method – 当前正在调用的工厂方法，如果存在则设置为 null
 	public static void setCurrentlyInvokedFactoryMethod(@Nullable Method method) {
 		if (method != null) {
 			currentlyInvokedFactoryMethod.set(method);
@@ -107,7 +113,10 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	 * the Method Injection specified in the given RootBeanDefinition.
 	 * Instantiation should use a no-arg constructor.
 	 */
+	// 子类可以重写此方法，如果它们能够使用给定 RootBeanDefinition 中指定的方法注入实例化对象，
+	// 则该方法会抛出 UnsupportedOperationException。实例化应该使用无参构造函数。
 	protected Object instantiateWithMethodInjection(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
+		// SimpleInstantiationStrategy 不支持方法注入
 		throw new UnsupportedOperationException("Method Injection not supported in SimpleInstantiationStrategy");
 	}
 

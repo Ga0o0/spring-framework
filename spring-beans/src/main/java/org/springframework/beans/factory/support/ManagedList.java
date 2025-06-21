@@ -95,6 +95,7 @@ public class ManagedList<E> extends ArrayList<E> implements Mergeable, BeanMetad
 	/**
 	 * Return the default element type name (class name) to be used for this list.
 	 */
+	// 返回此列表要使用的默认元素类型名称（类名）。
 	@Nullable
 	public String getElementTypeName() {
 		return this.elementTypeName;

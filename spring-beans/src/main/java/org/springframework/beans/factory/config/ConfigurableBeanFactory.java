@@ -133,6 +133,7 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * if any.
 	 * @since 2.5
 	 */
+	// 如果存在用于类型匹配的临时 ClassLoader，请将其返回。
 	@Nullable
 	ClassLoader getTempClassLoader();
 

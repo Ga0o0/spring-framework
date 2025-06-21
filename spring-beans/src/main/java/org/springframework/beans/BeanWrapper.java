@@ -72,18 +72,19 @@ public interface BeanWrapper extends ConfigurablePropertyAccessor {
 	 * Return the limit for array and collection auto-growing.
 	 * @since 4.1
 	 */
+	// 返回数组和集合自动增长的限制。
 	int getAutoGrowCollectionLimit();
 
 	/**
 	 * Return the bean instance wrapped by this object.
 	 */
-	// 返回数组和集合自动增长的限制。
+	// 返回此对象包装的 Bean 实例。
 	Object getWrappedInstance();
 
 	/**
 	 * Return the type of the wrapped bean instance.
 	 */
-	// 返回此对象包装的 Bean 实例。
+	// 返回被包装的 bean 实例的类型。
 	Class<?> getWrappedClass();
 
 	/**

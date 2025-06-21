@@ -24,6 +24,7 @@ package org.springframework.beans.factory;
  * @since 1.1
  * @see org.springframework.beans.factory.support.AbstractBeanDefinition#setAbstract
  */
+// 当请求一个被标记为抽象的 bean 定义的 bean 实例时，会抛出异常。
 @SuppressWarnings("serial")
 public class BeanIsAbstractException extends BeanCreationException {
 

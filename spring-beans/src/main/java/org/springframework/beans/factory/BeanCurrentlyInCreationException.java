@@ -23,6 +23,7 @@ package org.springframework.beans.factory;
  * @author Juergen Hoeller
  * @since 1.1
  */
+// 当引用正在创建的 bean 时会抛出异常。这种情况通常发生在构造函数自动装配匹配到当前已创建的 bean 时。
 @SuppressWarnings("serial")
 public class BeanCurrentlyInCreationException extends BeanCreationException {
 

@@ -32,6 +32,8 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @since 2.5.2
  */
+// 用于装饰ClassLoader（如{@link OverridingClassLoader}和
+// {@link org.springframework.instrument.classloading.ShadowingClassLoader}）的基类，提供对排除的包和类的通用处理。
 public abstract class DecoratingClassLoader extends ClassLoader {
 
 	static {
@@ -76,6 +78,9 @@ public abstract class DecoratingClassLoader extends ClassLoader {
 	 * ClassLoader in the usual fashion.
 	 * @param className the class name to exclude
 	 */
+	// 添加一个要从装饰（如覆盖）中排除的类名。
+	// <p>在此注册的任何类名都将由父ClassLoader以常规方式处理。
+	// @param className 要排除的类名
 	public void excludeClass(String className) {
 		Assert.notNull(className, "Class name must not be null");
 		this.excludedClasses.add(className);

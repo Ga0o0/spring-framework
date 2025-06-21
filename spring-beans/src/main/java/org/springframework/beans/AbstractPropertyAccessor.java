@@ -100,8 +100,10 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 				// setPropertyValue may throw any BeansException, which won't be caught
 				// here, if there is a critical failure such as no matching field.
 				// We can attempt to deal only with less serious exceptions.
+				// --> 译文：如果出现诸如找不到匹配字段之类的严重错误，setPropertyValue 可能会抛出任何
+				// BeansException 异常，而这些异常在这里不会被捕获。我们只能尝试处理不太严重的异常。
 				try {
-					setPropertyValue(pv);
+					setPropertyValue(pv); // 实际设置属性值。
 				}
 				catch (NotWritablePropertyException ex) {
 					if (!ignoreUnknown) {
@@ -130,6 +132,7 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 		}
 
 		// If we encountered individual exceptions, throw the composite exception.
+		// --> 译文：如果遇到个别异常，则抛出复合异常。
 		if (propertyAccessExceptions != null) {
 			PropertyAccessException[] paeArray = propertyAccessExceptions.toArray(new PropertyAccessException[0]);
 			throw new PropertyBatchUpdateException(paeArray);
@@ -166,6 +169,11 @@ public abstract class AbstractPropertyAccessor extends TypeConverterSupport impl
 	 * @throws PropertyAccessException if the property was valid but the
 	 * accessor method failed or a type mismatch occurred
 	 */
+	// 实际设置属性值。
+	// @param propertyName 要设置值的属性名称
+	// @param value 新值
+	// @throws InvalidPropertyException 如果不存在该属性或该属性不可写
+	// @throws PropertyAccessException 如果属性有效但访问器方法失败或发生类型不匹配
 	@Override
 	public abstract void setPropertyValue(String propertyName, @Nullable Object value) throws BeansException;
 

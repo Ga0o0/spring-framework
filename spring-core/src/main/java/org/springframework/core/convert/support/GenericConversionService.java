@@ -222,6 +222,13 @@ public class GenericConversionService implements ConfigurableConversionService {
 	 * or {@code null} if no suitable converter was found
 	 * @see #getDefaultConverter(TypeDescriptor, TypeDescriptor)
 	 */
+	// 此钩子方法用于查找给定源类型/目标类型对的转换器。
+	// 它首先查询此 ConversionService 的转换器缓存。
+	// 如果缓存未命中，则会执行穷举搜索以查找匹配的转换器。如果没有找到匹配的转换器，则返回默认转换器。
+	//
+	// @param sourceType 要转换的源类型
+	// @param targetType 要转换的目标类型
+	// @return 将执行转换的通用转换器，如果未找到合适的转换器，则返回 {@code null}。
 	@Nullable
 	protected GenericConverter getConverter(TypeDescriptor sourceType, TypeDescriptor targetType) {
 		ConverterCacheKey key = new ConverterCacheKey(sourceType, targetType);
@@ -419,6 +426,7 @@ public class GenericConversionService implements ConfigurableConversionService {
 	/**
 	 * Key for use with the converter cache.
 	 */
+	// 用于转换器缓存的 Key
 	private static final class ConverterCacheKey implements Comparable<ConverterCacheKey> {
 
 		private final TypeDescriptor sourceType;
@@ -499,6 +507,11 @@ public class GenericConversionService implements ConfigurableConversionService {
 		 * @param targetType the target type
 		 * @return a matching {@link GenericConverter}, or {@code null} if none found
 		 */
+		// 根据源类型和目标类型查找 {@link GenericConverter}。
+		// <p>此方法将尝试遍历类型的类和接口层次结构，以匹配所有可能的转换器。
+		// @param sourceType 源类型
+		// @param targetType 目标类型
+		// @return 匹配的 {@link GenericConverter}，如果未找到，则返回 {@code null}。
 		@Nullable
 		public GenericConverter find(TypeDescriptor sourceType, TypeDescriptor targetType) {
 			// Search the full type hierarchy

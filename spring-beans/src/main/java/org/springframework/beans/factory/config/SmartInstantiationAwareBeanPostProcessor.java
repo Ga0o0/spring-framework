@@ -75,6 +75,13 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	 * @return the candidate constructors, or {@code null} if none specified
 	 * @throws org.springframework.beans.BeansException in case of errors
 	 */
+	// 确定给定 bean 的候选构造函数。
+	//
+	// <p>默认实现返回 {@code null}。</p>
+	// @param beanClass bean 的原始类（永远不会返回 {@code null}）
+	// @param beanName bean 的名称
+	// @return 候选构造函数，如果没有指定，则返回 {@code null}
+	// @throws org.springframework.beans.BeansException 如果发生错误
 	@Nullable
 	default Constructor<?>[] determineCandidateConstructors(Class<?> beanClass, String beanName)
 			throws BeansException {
@@ -103,6 +110,17 @@ public interface SmartInstantiationAwareBeanPostProcessor extends InstantiationA
 	 * (typically with the passed-in bean instance as default)
 	 * @throws org.springframework.beans.BeansException in case of errors
 	 */
+	// 获取指定 bean 的引用以便提前访问，通常用于解决循环引用问题。
+	//
+	// <p>此回调允许后处理器在目标 bean 实例完全初始化之前提前暴露包装器。
+	// 暴露的对象应与 {@link #postProcessBeforeInitialization} / {@link #postProcessAfterInitialization} 通常会暴露的对象等效。
+	// 请注意，除非后处理器从所述后处理回调中返回不同的包装器，否则此方法返回的对象将用作 bean 引用。
+	// 换句话说：这些后处理回调最终可能暴露相同的引用，或者从后续回调中返回原始 bean 实例（如果受影响 bean 的包装器已为调用此方法构建，则默认情况下它将作为最终 bean 引用暴露）。
+	//
+	// <p>默认实现按原样返回给定的 {@code bean}。
+	// @param bean 原始 bean 实例
+	// @param beanName bean 的名称
+	// @return 要作为 bean 引用公开的对象（通常默认为传入的 bean 实例）
 	default Object getEarlyBeanReference(Object bean, String beanName) throws BeansException {
 		return bean;
 	}

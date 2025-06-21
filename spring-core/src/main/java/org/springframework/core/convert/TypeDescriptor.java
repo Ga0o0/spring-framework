@@ -49,6 +49,9 @@ import org.springframework.util.ObjectUtils;
  * @see ConversionService#canConvert(TypeDescriptor, TypeDescriptor)
  * @see ConversionService#convert(Object, TypeDescriptor, TypeDescriptor)
  */
+// 用于描述要转换的类型（从类型或目标类型）的上下文信息。
+//
+// <p>能够表示数组和泛型集合类型。
 @SuppressWarnings("serial")
 public class TypeDescriptor implements Serializable {
 
@@ -561,6 +564,11 @@ public class TypeDescriptor implements Serializable {
 	 * @param source the source object
 	 * @return the type descriptor
 	 */
+	// 为对象创建一个新的类型描述符。
+	// <p>使用此工厂方法在请求转换系统将其转换为其他类型之前，先对源对象进行内省。
+	// <p>如果提供的对象为 {@code null}，则返回 {@code null}；否则，调用 {@link #valueOf(Class)} 从对象的类构建 TypeDescriptor。
+	// @param source 源对象
+	// @return 类型描述符
 	@Nullable
 	public static TypeDescriptor forObject(@Nullable Object source) {
 		return (source != null ? valueOf(source.getClass()) : null);

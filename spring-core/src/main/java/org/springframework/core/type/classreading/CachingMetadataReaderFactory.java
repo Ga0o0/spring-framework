@@ -91,6 +91,8 @@ public class CachingMetadataReaderFactory extends SimpleMetadataReaderFactory {
 	 * typically unbounded. This method enforces a local resource cache,
 	 * even if the {@link ResourceLoader} supports a shared resource cache.
 	 */
+	// 指定 MetadataReader 缓存的最大条目数。
+	// <p>本地缓存的默认值为 256，而共享缓存通常没有限制。即使 {@link ResourceLoader} 支持共享资源缓存，此方法也会强制使用本地资源缓存。
 	public void setCacheLimit(int cacheLimit) {
 		if (cacheLimit <= 0) {
 			this.metadataReaderCache = null;

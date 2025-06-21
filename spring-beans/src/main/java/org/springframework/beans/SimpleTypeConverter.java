@@ -30,6 +30,13 @@ package org.springframework.beans;
  * @since 2.0
  * @see BeanWrapperImpl
  */
+// SimpleTypeConverter 是 {@link TypeConverter} 接口的一个简单实现，它不针对特定目标对象进行操作。
+// 对于任意类型转换需求，它提供了一种替代方案，无需使用功能齐全的 BeanWrapperImpl 实例，
+// 同时底层使用相同的转换算法（包括委托给 {@link java.beans.PropertyEditor} 和
+// {@link org.springframework.core.convert.ConversionService}）。
+//
+// <p><b>注意：</b>由于 SimpleTypeConverter 依赖于 {@link java.beans.PropertyEditor PropertyEditors}，
+// 因此它不是线程安全的。请为每个线程使用单独的实例。
 public class SimpleTypeConverter extends TypeConverterSupport {
 
 	public SimpleTypeConverter() {

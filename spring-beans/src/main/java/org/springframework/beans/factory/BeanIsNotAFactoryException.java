@@ -25,6 +25,8 @@ package org.springframework.beans.factory;
  * @since 10.03.2003
  * @see org.springframework.beans.factory.FactoryBean
  */
+// 当一个 bean 不是工厂类对象，但用户尝试访问该 bean 名称对应的工厂类对象时，会抛出异常。
+// bean 是否为工厂类对象取决于它是否实现了 FactoryBean 接口。
 @SuppressWarnings("serial")
 public class BeanIsNotAFactoryException extends BeanNotOfRequiredTypeException {
 

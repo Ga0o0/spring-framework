@@ -33,6 +33,7 @@ import org.springframework.util.Assert;
  * @since 3.2
  * @see SimpleTypeConverter
  */
+// 使用包私有委托实现 {@link TypeConverter} 接口的基本实现。主要用作 {@link BeanWrapperImpl} 的基类。
 public abstract class TypeConverterSupport extends PropertyEditorRegistrySupport implements TypeConverter {
 
 	@Nullable

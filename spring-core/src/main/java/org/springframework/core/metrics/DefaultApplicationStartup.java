@@ -29,6 +29,9 @@ import org.springframework.lang.Nullable;
  *
  * @author Brian Clozel
  */
+// 默认的“无操作”{@code ApplicationStartup} 实现。
+//
+// <p>此变体旨在最大限度地减少开销，并且不记录事件。</p>
 class DefaultApplicationStartup implements ApplicationStartup {
 
 	private static final DefaultStartupStep DEFAULT_STARTUP_STEP = new DefaultStartupStep();

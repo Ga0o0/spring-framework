@@ -44,9 +44,9 @@ abstract class BeanAnnotationHelper {
 	public static String determineBeanNameFor(Method beanMethod) {
 		String beanName = beanNameCache.get(beanMethod);
 		if (beanName == null) {
-			// By default, the bean name is the name of the @Bean-annotated method
+			// By default, the bean name is the name of the @Bean-annotated method --> 译文：默认情况下，Bean 名称是带有 @Bean 注解的方法的名称。
 			beanName = beanMethod.getName();
-			// Check to see if the user has explicitly set a custom bean name...
+			// Check to see if the user has explicitly set a custom bean name... --> 译文：检查用户是否已明确设置自定义 bean 名称……
 			AnnotationAttributes bean =
 					AnnotatedElementUtils.findMergedAnnotationAttributes(beanMethod, Bean.class, false, false);
 			if (bean != null) {

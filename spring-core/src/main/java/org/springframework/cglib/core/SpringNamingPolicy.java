@@ -28,6 +28,10 @@ package org.springframework.cglib.core;
  * @author Sam Brannen
  * @since 3.2.8 / 6.0
  */
+// CGLIB 的 {@link DefaultNamingPolicy} 的自定义变体，将生成的类名中的标签从“EnhancerByCGLIB”等修改为“SpringCGLIB”标签，
+// 并使用普通的计数器后缀代替哈希码后缀（自 6.0 版本起）。
+//
+// <p>这使得能够可靠地发现类路径中预生成的 Spring 代理类。</p>
 public final class SpringNamingPolicy implements NamingPolicy {
 
 	public static final SpringNamingPolicy INSTANCE = new SpringNamingPolicy();

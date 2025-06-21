@@ -172,6 +172,7 @@ public class PropertyValue extends BeanMetadataAttributeAccessor implements Seri
 	 * Set the converted value of this property value,
 	 * after processed type conversion.
 	 */
+	// 设置此属性值的转换值（在处理类型转换之后）。
 	public synchronized void setConvertedValue(@Nullable Object value) {
 		this.converted = true;
 		this.convertedValue = value;

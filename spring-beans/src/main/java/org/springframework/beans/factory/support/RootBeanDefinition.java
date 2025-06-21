@@ -90,6 +90,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	volatile ResolvableType targetType;
 
 	/** Package-visible field for caching the determined Class of a given bean definition. */
+	// 用于缓存给定Bean定义所确定的Class的包可见字段。
 	@Nullable
 	volatile Class<?> resolvedTargetType;
 
@@ -113,6 +114,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	final Object constructorArgumentLock = new Object();
 
 	/** Package-visible field for caching the resolved constructor or factory method. */
+	// 用于缓存已解析构造函数或工厂方法的包可见字段。
 	@Nullable
 	Executable resolvedConstructorOrFactoryMethod;
 
@@ -128,9 +130,11 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	Object[] preparedConstructorArguments;
 
 	/** Common lock for the two post-processing fields below. */
+	// 以下两个后处理字段共用一个锁。
 	final Object postProcessingLock = new Object();
 
 	/** Package-visible field that indicates MergedBeanDefinitionPostProcessor having been applied. */
+	// 包可见字段，指示已应用 MergedBeanDefinitionPostProcessor。
 	boolean postProcessed = false;
 
 	/** Package-visible field that indicates a before-instantiation post-processor having kicked in. */
@@ -360,6 +364,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	 * (either specified in advance or resolved on first instantiation).
 	 * @since 3.2.2
 	 */
+	// 如果已知（无论是预先指定还是在首次实例化时解析得出），则返回此Bean定义的目标类型。
 	@Nullable
 	public Class<?> getTargetType() {
 		if (this.resolvedTargetType != null) {
@@ -407,6 +412,12 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	 * (in which case the regular no-arg default constructor will be called)
 	 * @since 5.1
 	 */
+	// 确定用于默认构造的首选构造函数（如有）。如有必要，构造函数参数将自动装配。
+	//
+	// <p>从 6.1 版本开始，此方法的默认实现会考虑 {@link #PREFERRED_CONSTRUCTORS_ATTRIBUTE} 属性。
+	// 建议子类通过调用 {@code super} 来保留此属性，调用可以在确定自身首选构造函数之前或之后进行。
+	//
+	// @return 返回一个或多个首选构造函数，如果没有首选构造函数，则返回 {@code null}（在这种情况下，将调用常规的无参默认构造函数）。
 	@Nullable
 	public Constructor<?>[] getPreferredConstructors() {
 		Object attribute = getAttribute(PREFERRED_CONSTRUCTORS_ATTRIBUTE);
@@ -488,6 +499,7 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	 * i.e. processed by {@link MergedBeanDefinitionPostProcessor}.
 	 * @since 6.0
 	 */
+	// 将此 bean 定义标记为已后处理，即由 {@link MergedBeanDefinitionPostProcessor} 处理。
 	public void markAsPostProcessed() {
 		synchronized (this.postProcessingLock) {
 			this.postProcessed = true;
@@ -557,6 +569,9 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	 * <p>See {@link #registerExternallyManagedInitMethod} for details
 	 * regarding the format for the supplied {@code initMethod}.
 	 */
+	// 判断给定的方法名是否表示外部管理的初始化方法。
+	//
+	// <p>有关提供的 {@code initMethod} 的格式详情，请参阅 {@link #registerExternallyManagedInitMethod}。</p>
 	public boolean isExternallyManagedInitMethod(String initMethod) {
 		synchronized (this.postProcessingLock) {
 			return (this.externallyManagedInitMethods != null &&
@@ -574,6 +589,10 @@ public class RootBeanDefinition extends AbstractBeanDefinition {
 	 * using a qualified method name instead of a simple method name.
 	 * @since 5.3.17
 	 */
+	// 无论方法可见性如何，此方法都会判断给定的方法名是否指示外部管理的初始化方法。
+	//
+	// <p>与 {@link #isExternallyManagedInitMethod(String)} 不同，
+	// 如果存在一个已使用限定方法名而非简单方法名注册的 {@code private} 外部管理的初始化方法，此方法也会返回 {@code true}。
 	boolean hasAnyExternallyManagedInitMethod(String initMethod) {
 		synchronized (this.postProcessingLock) {
 			if (isExternallyManagedInitMethod(initMethod)) {

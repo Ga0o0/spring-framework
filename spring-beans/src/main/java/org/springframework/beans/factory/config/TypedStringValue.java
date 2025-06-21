@@ -122,6 +122,7 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	/**
 	 * Return the type to convert to.
 	 */
+	// 返回要转换成的类型。
 	public Class<?> getTargetType() {
 		Object targetTypeValue = this.targetType;
 		if (!(targetTypeValue instanceof Class<?> clazz)) {
@@ -140,6 +141,7 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	/**
 	 * Return the type to convert to.
 	 */
+	// 返回要转换成的类型。
 	@Nullable
 	public String getTargetTypeName() {
 		Object targetTypeValue = this.targetType;
@@ -154,6 +156,7 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	/**
 	 * Return whether this typed String value carries a target type.
 	 */
+	// 返回此类型化的字符串值是否具有目标类型。
 	public boolean hasTargetType() {
 		return (this.targetType instanceof Class);
 	}
@@ -166,6 +169,10 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	 * @return the resolved type to convert to
 	 * @throws ClassNotFoundException if the type cannot be resolved
 	 */
+	// 确定要转换的类型，必要时从指定的类名解析。如果目标类型已解析，则还会根据类名重新加载指定的类。
+	// @param classLoader 用于解析（潜在）类名的类加载器
+	// @return 要转换到的已解析类型
+	// @throws ClassNotFoundException 如果无法解析类型
 	@Nullable
 	public Class<?> resolveTargetType(@Nullable ClassLoader classLoader) throws ClassNotFoundException {
 		String typeName = getTargetTypeName();
@@ -213,6 +220,7 @@ public class TypedStringValue implements BeanMetadataElement, Comparable<TypedSt
 	 * Mark this value as dynamic, i.e. as containing an expression
 	 * and hence not being subject to caching.
 	 */
+	// 将此值标记为动态值，即包含表达式，因此不受缓存影响。
 	public void setDynamic() {
 		this.dynamic = true;
 	}

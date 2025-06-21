@@ -89,6 +89,10 @@ public class CandidateComponentsIndex {
 	 * @return the candidate types associated with the specified {@code stereotype}
 	 * or an empty set if none has been found for the specified {@code basePackage}
 	 */
+	// 返回与指定 stereotype 关联的候选类型。
+	// @param basePackage 要检查候选类型的包
+	// @param stereotype 要使用的构造型
+	// @return 与指定 {@code stereotype} 关联的候选类型；如果未找到与指定 {@code basePackage} 关联的候选类型，则返回空集。
 	public Set<String> getCandidateTypes(String basePackage, String stereotype) {
 		List<Entry> candidates = this.index.get(stereotype);
 		if (candidates != null) {

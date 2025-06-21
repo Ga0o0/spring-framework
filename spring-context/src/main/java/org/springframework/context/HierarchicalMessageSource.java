@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// MessageSource 的子接口，由能够按层次结构解析消息的对象实现。
 public interface HierarchicalMessageSource extends MessageSource {
 
 	/**
@@ -34,11 +35,16 @@ public interface HierarchicalMessageSource extends MessageSource {
 	 * resolve messages that this object can't resolve.
 	 * May be {@code null}, in which case no further resolution is possible.
 	 */
+	// 设置用于尝试解析此对象无法解析的消息的父级 MessageSource。
+	//
+	// @param parent 用于解析此对象无法解析的消息的父级 MessageSource。
+	// 可以为 {@code null}，在这种情况下，无法进行进一步解析。
 	void setParentMessageSource(@Nullable MessageSource parent);
 
 	/**
 	 * Return the parent of this MessageSource, or {@code null} if none.
 	 */
+	// 返回此 MessageSource 的父级，如果没有父级，则返回 {@code null}。
 	@Nullable
 	MessageSource getParentMessageSource();
 

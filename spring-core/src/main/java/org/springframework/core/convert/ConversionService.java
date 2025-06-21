@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
  * @author Phillip Webb
  * @since 3.0
  */
+// 用于类型转换的服务接口。这是转换系统的入口点。调用 {@link #convert(Object, Class)} 即可使用此系统执行线程安全的类型转换。
 public interface ConversionService {
 
 	/**
@@ -62,6 +63,20 @@ public interface ConversionService {
 	 * {@code false} if not
 	 * @throws IllegalArgumentException if {@code targetType} is {@code null}
 	 */
+	// 如果 {@code sourceType} 类型的对象可以转换为 {@code targetType} 类型，则返回 {@code true}。
+	// 类型描述符 (TypeDescriptor) 提供有关转换发生的源位置和目标位置的额外上下文，通常是对象字段或属性位置。
+	//
+	// <p>如果此方法返回 {@code true}，则表示 {@link #convert(Object, TypeDescriptor, TypeDescriptor)}
+	// 能够将 {@code sourceType} 的实例转换为 {@code targetType}。
+	//
+	// <p>关于集合、数组和映射类型的特别说明：对于集合、数组和映射类型之间的转换，
+	// 即使转换调用在底层元素不可转换时仍可能生成 {@link ConversionException}，此方法也会返回 {@code true}。
+	// 调用者在使用集合和映射时应处理此异常情况。
+	//
+	// @param sourceType 源类型上下文（如果源类型为空，则可能为空）
+	// @param targetType 目标类型上下文（必需）
+	// @return 如果源类型和目标类型之间可以进行转换，则返回 true；否则返回 false
+	// @throws IllegalArgumentException 如果目标类型为空
 	boolean canConvert(@Nullable TypeDescriptor sourceType, TypeDescriptor targetType);
 
 	/**
@@ -105,6 +120,15 @@ public interface ConversionService {
 	 * @throws IllegalArgumentException if targetType is {@code null},
 	 * or {@code sourceType} is {@code null} but source is not {@code null}
 	 */
+	// 将给定的 {@code source} 转换为指定的 {@code targetType}。
+	// 类型描述符提供有关转换发生的源和目标位置的附加上下文，通常是对象字段或属性位置。
+	//
+	// @param source 要转换的源对象（可以为 {@code null}）
+	// @param sourceType 要从中转换的源类型的上下文（如果 source 为 {@code null}，则可能为 {@code null}）
+	// @param targetType 要转换为的目标类型的上下文（必需）
+	// @return 转换后的对象，{@link TypeDescriptor#getObjectType() targetType} 的实例
+	// @throws ConversionException 如果发生转换异常
+	// @throws IllegalArgumentException 如果 targetType 为 {@code null}，或者 {@code sourceType} 为 {@code null} 但 source 不为 {@code null}
 	@Nullable
 	Object convert(@Nullable Object source, @Nullable TypeDescriptor sourceType, TypeDescriptor targetType);
 

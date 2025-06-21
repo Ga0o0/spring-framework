@@ -402,6 +402,8 @@ public class Enhancer extends AbstractClassGenerator {
 	 * use the multi-arg <code>create</code> method.
 	 * @see #create(Class[], Object[])
 	 */
+	// 如有必要，生成一个新类并返回，而不创建新实例。这将忽略所有已设置的回调函数。
+	// 要创建新实例，您必须使用反射，并且构造函数期间调用的方法将不会被拦截。为避免此问题，请使用多参数的 `create` 方法。
 	public Class createClass() {
 		classOnly = true;
 		return (Class) createHelper();
@@ -860,6 +862,9 @@ public class Enhancer extends AbstractClassGenerator {
 	 * @param callbacks the array of callbacks to use when instances of the generated
 	 * class are created
 	 */
+	// 类似于 {@link #registerCallbacks}，但适用于多个线程创建已生成类的实例的情况。线程级回调始终会覆盖静态回调。静态回调永远不会被清除。
+	// @param generatedClass 先前由 {@link Enhancer} 创建的类
+	// @param callbacks 在创建已生成类的实例时要使用的回调数组
 	public static void registerStaticCallbacks(Class generatedClass, Callback[] callbacks) {
 		setCallbacksHelper(generatedClass, callbacks, SET_STATIC_CALLBACKS_NAME);
 	}

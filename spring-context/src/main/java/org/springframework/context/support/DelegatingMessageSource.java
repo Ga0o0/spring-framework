@@ -35,6 +35,10 @@ import org.springframework.lang.Nullable;
  * @since 1.1.5
  * @see AbstractApplicationContext
  */
+// 空的 {@link MessageSource}，它会将所有调用委托给父 MessageSource。如果没有父 MessageSource，则不会解析任何消息。
+//
+//
+// <p>如果 AbstractApplicationContext 没有定义自己的 MessageSource，则使用此占位符。不建议直接在应用程序中使用。
 public class DelegatingMessageSource extends MessageSourceSupport implements HierarchicalMessageSource {
 
 	@Nullable

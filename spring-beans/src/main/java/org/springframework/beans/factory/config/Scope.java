@@ -57,6 +57,20 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.context.request.RequestScope
  * @see org.springframework.web.context.request.SessionScope
  */
+// 策略接口由 {@link ConfigurableBeanFactory} 使用，表示用于保存 bean 实例的目标作用域。
+// 这允许使用自定义作用域扩展 BeanFactory 的标准作用域 {@link ConfigurableBeanFactory#SCOPE_SINGLETON "singleton"}
+// 和 {@link ConfigurableBeanFactory#SCOPE_PROTOTYPE "prototype"}，这些自定义作用域通过
+// {@link ConfigurableBeanFactory#registerScope(String, Scope) 特定键进行注册。
+//
+// <p>{@link org.springframework.context.ApplicationContext} 的实现，
+// 例如 {@link org.springframework.web.context.WebApplicationContext}，可以注册特定于其环境的其他标准作用域，
+// 例如：基于此作用域 SPI，可以实现 {@link org.springframework.web.context.WebApplicationContext#SCOPE_REQUEST "request"}
+// 和 {@link org.springframework.web.context.WebApplicationContext#SCOPE_SESSION "session"}。
+//
+// <p>即使其主要用途是 Web 环境中的扩展作用域，此 SPI 也完全通用：它能够从任何底层存储机制（例如 HTTP 会话或自定义会话机制）获取和放置对象。
+// 传递给此类 {@code get} 和 {@code remove} 方法的名称将标识当前作用域中的目标对象。<p>{@code Scope} 实现应为线程安全。
+// 如果需要，一个 {@code Scope} 实例可以同时与多个 bean 工厂一起使用（除非它明确需要知道包含它的 BeanFactory），
+// 并且允许任意数量的线程从任意数量的工厂并发访问 {@code Scope}。
 public interface Scope {
 
 	/**
@@ -71,6 +85,15 @@ public interface Scope {
 	 * @return the desired object (never {@code null})
 	 * @throws IllegalStateException if the underlying scope is not currently active
 	 */
+	// 从底层作用域返回具有给定名称的对象，如果底层存储机制中不存在该对象，
+	// 则使用 {@link org.springframework.beans.factory.ObjectFactory#getObject() 来创建它。
+	//
+	// <p>这是作用域的核心操作，也是唯一绝对必需的操作。
+	//
+	// @param name 要检索的对象的名称
+	// @param objectFactory 如果底层存储机制中不存在该对象，则使用 {@link ObjectFactory} 创建作用域对象
+	// @return 所需的对象（永远不会返回 {@code null}）
+	// @throws IllegalStateException 如果底层作用域当前未激活
 	Object get(String name, ObjectFactory<?> objectFactory);
 
 	/**

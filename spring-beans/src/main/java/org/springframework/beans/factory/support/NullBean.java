@@ -33,6 +33,12 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 5.0
  */
+// 空 bean 实例的内部表示，例如，从{@link FactoryBean#getObject()} 或工厂方法返回的 {@code null} 值。
+//
+// <p>每个这样的空bean都由一个专用的{@code NullBean}实例表示，这些实例彼此不相等，
+// 从而唯一区分从所有{@link org.springframework.beans.factory.BeanFactory#getBean}变体返回的每个bean。
+// 但是，每个这样的实例对于{@code #equals(null)}都将返回{@code true}，并且从{@code #toString()}返回“null”，
+// 这是它们可以在外部进行测试的方式（因为该类本身不是公共的）。
 final class NullBean {
 
 	NullBean() {

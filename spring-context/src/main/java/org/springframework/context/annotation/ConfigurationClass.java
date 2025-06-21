@@ -16,12 +16,6 @@
 
 package org.springframework.context.annotation;
 
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
 import org.springframework.beans.factory.parsing.Location;
 import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.beans.factory.parsing.ProblemReporter;
@@ -34,6 +28,12 @@ import org.springframework.core.type.classreading.MetadataReader;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents a user-defined {@link Configuration @Configuration} class.
@@ -48,6 +48,7 @@ import org.springframework.util.ClassUtils;
  * @see ConfigurationClassParser
  */
 // 表示用户定义的 {@link Configuration @Configuration} 类。
+//
 // <p>以“扁平化”的方式包含一组 {@link Bean} 方法，其中包括在该类的祖先中定义的所有此类方法。
 final class ConfigurationClass {
 
@@ -172,7 +173,7 @@ final class ConfigurationClass {
 	 * @since 3.1.1
 	 * @see #getImportedBy()
 	 */
-	// 返回此配置类是通过 @{@link Import} 注册的还是由于嵌套在另一个配置类中而自动注册的。
+	// 返回此配置类是通过 @{@link @Import} 注册的还是由于嵌套在另一个配置类中而自动注册的。
 	boolean isImported() {
 		return !this.importedBy.isEmpty();
 	}
@@ -192,6 +193,7 @@ final class ConfigurationClass {
 	 * @since 4.0.5
 	 * @see #isImported()
 	 */
+	// 返回导入此类的配置类，如果未导入此配置，则返回一个空集合。
 	Set<ConfigurationClass> getImportedBy() {
 		return this.importedBy;
 	}
@@ -235,10 +237,14 @@ final class ConfigurationClass {
 		// A configuration class may not be final (CGLIB limitation) unless it declares proxyBeanMethods=false
 		// --> 译文：配置类可能不是最终的（CGLIB 限制），除非它声明 proxyBeanMethods=false
 		if (attributes != null && (Boolean) attributes.get("proxyBeanMethods")) {
-			if (hasNonStaticBeanMethods() && this.metadata.isFinal()) {
+			if (hasNonStaticBeanMethods() && this.metadata.isFinal()) { // 非 static 的 final 方法
 				problemReporter.error(new FinalConfigurationProblem());
 			}
 			for (BeanMethod beanMethod : this.beanMethods) {
+				// validate() 做的三件事：
+				// 	a. 返回值为 void 的方法 -> 报错
+				// 	b. 静态 @Bean 方法无需进一步验证 -> 立即返回
+				// 	c. @Configuration 类中的 @Bean 实例方法必须可重写，以适应 CGLIB
 				beanMethod.validate(problemReporter);
 			}
 		}

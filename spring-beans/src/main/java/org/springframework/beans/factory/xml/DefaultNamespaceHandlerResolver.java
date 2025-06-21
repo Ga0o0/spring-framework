@@ -55,20 +55,24 @@ public class DefaultNamespaceHandlerResolver implements NamespaceHandlerResolver
 	/**
 	 * The location to look for the mapping files. Can be present in multiple JAR files.
 	 */
+	// 映射文件存放位置。可能存在于多个 JAR 文件中。
 	public static final String DEFAULT_HANDLER_MAPPINGS_LOCATION = "META-INF/spring.handlers";
 
-
 	/** Logger available to subclasses. */
+	// 子类可以使用日志记录器。
 	protected final Log logger = LogFactory.getLog(getClass());
 
 	/** ClassLoader to use for NamespaceHandler classes. */
+	// 用于命名空间处理器类的类加载器。
 	@Nullable
 	private final ClassLoader classLoader;
 
 	/** Resource location to search for. */
+	// 要查找的资源位置。
 	private final String handlerMappingsLocation;
 
 	/** Stores the mappings from namespace URI to NamespaceHandler class name / instance. */
+	// 存储从命名空间 URI 到 NamespaceHandler 类名/实例的映射。
 	@Nullable
 	private volatile Map<String, Object> handlerMappings;
 

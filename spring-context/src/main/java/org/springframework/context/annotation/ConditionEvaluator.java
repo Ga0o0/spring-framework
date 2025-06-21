@@ -83,7 +83,7 @@ class ConditionEvaluator {
 	 * @param phase the phase of the call
 	 * @return if the item should be skipped
 	 */
-	// 根据 {@code @Conditional} 注解确定是否应跳过某项。
+	// 根据 @Conditional 注解确定是否应跳过某项。
 	// @param metadata 元数据
 	// @param phase 调用阶段
 	// @return 是否应跳过该项
@@ -94,13 +94,14 @@ class ConditionEvaluator {
 
 		if (phase == null) {
 			if (metadata instanceof AnnotationMetadata annotationMetadata &&
+					// 被 @Component、@ComponentScan、@Import、@ImportResource、@Bean 标记
 					ConfigurationClassUtils.isConfigurationCandidate(annotationMetadata)) {
 				return shouldSkip(metadata, ConfigurationPhase.PARSE_CONFIGURATION);
 			}
 			return shouldSkip(metadata, ConfigurationPhase.REGISTER_BEAN);
 		}
 
-		// 处理 @Conditional
+		// 处理 @Conditional 的 value 属性中的 Condition 子类，并进行初始化，再存储到 conditions
 		List<Condition> conditions = new ArrayList<>();
 		// 获取 @Conditional 注解的属性 value 中的存储的 Class<? extends Condition>[]
 		for (String[] conditionClasses : getConditionClasses(metadata)) {

@@ -62,6 +62,18 @@ import org.springframework.util.ObjectUtils;
  * @see #setAlwaysUseMessageFormat
  * @see java.text.MessageFormat
  */
+// {@link HierarchicalMessageSource} 接口的抽象实现，实现了消息变体的通用处理方式，方便为具体的 MessageSource 实现特定的策略。
+//
+// <p>子类必须实现抽象的 {@link #resolveCode} 方法。为了高效解析不带参数的消息，
+// 还应重写 {@link #resolveCodeWithoutArguments} 方法，以便在不使用 MessageFormat 的情况下解析消息。
+//
+// <p><b>注意：</b>默认情况下，仅当消息传递了参数时，才会使用 MessageFormat 解析消息文本。
+// 如果没有参数，则消息文本将按原样返回。因此，您应该仅对带有实际参数的消息使用 MessageFormat 转义，
+// 而对所有其他消息保持未转义状态。如果您希望转义所有消息，请将“alwaysUseMessageFormat”标志设置为“true”。
+//
+// <p>不仅支持将 MessageSourceResolvable 对象作为主要消息，还支持解析本身也是 MessageSourceResolvable 对象的消息参数。
+//
+// <p>此类未实现按代码缓存消息，因此子类可以随时间动态更改消息。建议子类以感知修改的方式缓存消息，从而实现更新消息的热部署。
 public abstract class AbstractMessageSource extends MessageSourceSupport implements HierarchicalMessageSource {
 
 	@Nullable

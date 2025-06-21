@@ -19,6 +19,7 @@ package org.springframework.cglib.core;
 /**
  * Customize the generated class name for {@link AbstractClassGenerator}-based utilities.
  */
+// 自定义基于 {@link AbstractClassGenerator} 的实用程序生成的类名。
 public interface NamingPolicy {
     /**
      * Choose a name for a generated class.
@@ -29,6 +30,12 @@ public interface NamingPolicy {
      * @param names a predicate that returns true if the given classname has already been used in the same ClassLoader.
      * @return the fully-qualified class name
      */
+	// 为生成的类选择一个名称。
+	// @param prefix 生成类选择的带点的名称前缀（可能用于将生成的类放在特定的包中）。
+	// @param source 生成类的完全限定类名（例如 "org.springframework.cglib.Enhancer")。
+	// @param key 表示参数状态的键对象；为了使缓存正常工作，相同的键应该生成相同的类名。默认策略是将 `<code>key.hashCode()</code>` 合并到类名中。
+	// @param names 一个谓词，如果给定的类名已在同一个 ClassLoader 中使用，则返回 true。
+	// @return 完全限定类名。
     String getClassName(String prefix, String source, Object key, Predicate names);
 
     /**
@@ -38,6 +45,8 @@ public interface NamingPolicy {
      * correctly implement <code>equals</code> and <code>hashCode</code>
      * to avoid generating too many classes.
      */
+	// 目前使用的 <code>NamingPolicy</code> 不会影响 {@link AbstractClassGenerator} 生成的类的缓存，
+	// 但将来可能会影响，因此提醒您应正确实现 <code>equals</code> 和 <code>hashCode</code>，以避免生成过多的类。
     @Override
     boolean equals(Object o);
 }

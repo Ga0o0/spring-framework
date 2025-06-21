@@ -39,6 +39,13 @@ package org.springframework.beans.factory;
  * @see #isPrototype()
  * @see #isSingleton()
  */
+// {@link FactoryBean}接口的扩展。实现类可以指示它们是否总是返回独立的实例，以防其{@link #isSingleton()}实现返回{@code false}时无法明确表示是独立实例。
+//
+// <p>未实现此扩展接口的普通{@link FactoryBean}实现，如果其{@link #isSingleton()}实现返回{@code false}，
+// 则简单地假定它们总是返回独立的实例；仅在需要时访问公开的对象。
+//
+// <p><b>注意：</b>此接口是一个特殊用途的接口，主要用于框架内部和协作框架中的内部使用。
+// 通常，应用程序提供的FactoryBean应仅实现普通的{@link FactoryBean}接口。即使在点发布中，也可能向此扩展接口添加新方法。
 public interface SmartFactoryBean<T> extends FactoryBean<T> {
 
 	/**

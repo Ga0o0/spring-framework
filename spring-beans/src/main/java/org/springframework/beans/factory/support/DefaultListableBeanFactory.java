@@ -1011,13 +1011,13 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		// Trigger initialization of all non-lazy singleton beans... --> 译文：触发所有非延迟单例 bean 的初始化……
 		for (String beanName : beanNames) {
-			// 如果指定的 Bean 对应一个子 Bean 定义，则返回一个合并的 RootBeanDefinition，并遍历父 Bean 定义。
+			// 合共存在父子关系的 Bean 定义
 			RootBeanDefinition bd = getMergedLocalBeanDefinition(beanName);
-			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) {
+			if (!bd.isAbstract() && bd.isSingleton() && !bd.isLazyInit()) { // 非 abstract && 单例 && 非懒加载
 				// 检查给定的 bean 是否定义为 FactoryBean。
 				if (isFactoryBean(beanName)) {
-					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName);
-					if (bean instanceof SmartFactoryBean<?> smartFactoryBean && smartFactoryBean.isEagerInit()) {
+					Object bean = getBean(FACTORY_BEAN_PREFIX + beanName); // 获取 FactoryBean 实例
+					if (bean instanceof SmartFactoryBean<?> smartFactoryBean && smartFactoryBean.isEagerInit()) { // isEagerInit() --> 期望急于初始化
 						getBean(beanName);
 					}
 				}
@@ -1028,12 +1028,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 		}
 
 		// Trigger post-initialization callback for all applicable beans... --> 译文：为所有适用的 bean 触发初始化后回调...
-		// invoke org.springframework.beans.factory.SmartInitializingSingleton#afterSingletonsInstantiated()
 		for (String beanName : beanNames) {
 			Object singletonInstance = getSingleton(beanName); // 返回以给定名称注册的（原始）单例对象。
 			if (singletonInstance instanceof SmartInitializingSingleton smartSingleton) {
 				StartupStep smartInitialize = getApplicationStartup().start("spring.beans.smart-initialize")
 						.tag("beanName", beanName);
+				// 执行 SmartInitializingSingleton#afterSingletonsInstantiated() 方法
 				smartSingleton.afterSingletonsInstantiated();
 				smartInitialize.end();
 			}

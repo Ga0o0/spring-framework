@@ -114,6 +114,9 @@ public class MethodParameter {
 	 * return type; 0 for the first method parameter; 1 for the second method
 	 * parameter, etc.
 	 */
+	// 为给定方法创建一个新的 {@code MethodParameter}，嵌套级别为 1。
+	// @param method 要为其指定参数的方法
+	// @param parameterIndex 参数索引：-1 表示方法返回类型；0 表示第一个方法参数；1 表示第二个方法参数，依此类推。
 	public MethodParameter(Method method, int parameterIndex) {
 		this(method, parameterIndex, 1);
 	}

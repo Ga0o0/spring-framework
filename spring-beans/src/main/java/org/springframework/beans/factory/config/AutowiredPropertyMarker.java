@@ -34,12 +34,17 @@ import org.springframework.lang.Nullable;
  * @see BeanDefinition#getPropertyValues()
  * @see org.springframework.beans.factory.support.BeanDefinitionBuilder#addAutowiredProperty
  */
+// 一个简单的标记类，用于标记单独自动装配的属性值，该值将添加到特定 bean 属性的 {@link BeanDefinition#getPropertyValues()} 中。
+//
+// <p>运行时，此标记将被替换为对应 bean 属性的 write 方法的 {@link DependencyDescriptor}，
+// 最终通过 {@link AutowireCapableBeanFactory#resolveDependency} 步骤解析。
 @SuppressWarnings("serial")
 public final class AutowiredPropertyMarker implements Serializable {
 
 	/**
 	 * The canonical instance for the autowired marker value.
 	 */
+	// 自动注入标记值的规范实例。
 	public static final Object INSTANCE = new AutowiredPropertyMarker();
 
 

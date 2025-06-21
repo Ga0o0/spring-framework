@@ -102,6 +102,7 @@ public class AnnotatedBeanDefinitionReader {
 	/**
 	 * Get the BeanDefinitionRegistry that this reader operates on.
 	 */
+	// 获取此读取器所操作的BeanDefinitionRegistry。
 	public final BeanDefinitionRegistry getRegistry() {
 		return this.registry;
 	}
@@ -111,6 +112,8 @@ public class AnnotatedBeanDefinitionReader {
 	 * {@link Conditional @Conditional}-annotated component classes should be registered.
 	 * <p>The default is a {@link StandardEnvironment}.
 	 */
+	// 设置在评估是否应注册带有 {@link Conditional @Conditional} 注解的组件类时所使用的 {@code Environment}。
+	// <p>默认值为一个 {@link StandardEnvironment}。
 	public void setEnvironment(Environment environment) {
 		this.conditionEvaluator = new ConditionEvaluator(this.registry, environment, null);
 	}
@@ -119,6 +122,8 @@ public class AnnotatedBeanDefinitionReader {
 	 * Set the {@code BeanNameGenerator} to use for detected bean classes.
 	 * <p>The default is a {@link AnnotationBeanNameGenerator}.
 	 */
+	// 设置用于检测到的 bean 类的 {@code BeanNameGenerator}。
+	// <p>默认值为一个{@link AnnotationBeanNameGenerator}。
 	public void setBeanNameGenerator(@Nullable BeanNameGenerator beanNameGenerator) {
 		this.beanNameGenerator =
 				(beanNameGenerator != null ? beanNameGenerator : AnnotationBeanNameGenerator.INSTANCE);
@@ -128,6 +133,8 @@ public class AnnotatedBeanDefinitionReader {
 	 * Set the {@code ScopeMetadataResolver} to use for registered component classes.
 	 * <p>The default is an {@link AnnotationScopeMetadataResolver}.
 	 */
+	// 设置用于已注册组件类的 {@code ScopeMetadataResolver}。
+	// <p>默认值为一个 {@link AnnotationScopeMetadataResolver}。
 	public void setScopeMetadataResolver(@Nullable ScopeMetadataResolver scopeMetadataResolver) {
 		this.scopeMetadataResolver =
 				(scopeMetadataResolver != null ? scopeMetadataResolver : new AnnotationScopeMetadataResolver());
@@ -141,6 +148,9 @@ public class AnnotatedBeanDefinitionReader {
 	 * @param componentClasses one or more component classes,
 	 * e.g. {@link Configuration @Configuration} classes
 	 */
+	// 注册一个或多个要处理的组件类。
+	// <p>对 {@code register} 的调用是幂等的；多次添加同一个组件类不会产生任何额外效果。</p>
+	// @param componentClasses 一个或多个组件类，例如 {@link Configuration @Configuration} 类
 	public void register(Class<?>... componentClasses) {
 		for (Class<?> componentClass : componentClasses) {
 			registerBean(componentClass);
@@ -152,6 +162,8 @@ public class AnnotatedBeanDefinitionReader {
 	 * class-declared annotations.
 	 * @param beanClass the class of the bean
 	 */
+	// 从给定的 bean 类注册一个 bean，并从类声明的注解中获取其元数据。
+	// @param beanClass bean 的类
 	public void registerBean(Class<?> beanClass) {
 		doRegisterBean(beanClass, null, null, null, null);
 	}
@@ -164,6 +176,9 @@ public class AnnotatedBeanDefinitionReader {
 	 * (or {@code null} for generating a default bean name)
 	 * @since 5.2
 	 */
+	// 从给定的 bean 类注册一个 bean，其元数据来源于类声明的注解。
+	// @param beanClass bean 的类
+	// @param name bean 的显式名称（或 {@code null} 以生成默认 bean 名称）
 	public void registerBean(Class<?> beanClass, @Nullable String name) {
 		doRegisterBean(beanClass, name, null, null, null);
 	}
@@ -175,6 +190,9 @@ public class AnnotatedBeanDefinitionReader {
 	 * @param qualifiers specific qualifier annotations to consider,
 	 * in addition to qualifiers at the bean class level
 	 */
+	// 从给定的 bean 类注册一个 bean，并从类声明的注解中获取其元数据。
+	// @param beanClass bean 的类
+	// @param qualifiers 除了 bean 类级别的限定符之外，还要考虑的特定限定符注解
 	@SuppressWarnings("unchecked")
 	public void registerBean(Class<?> beanClass, Class<? extends Annotation>... qualifiers) {
 		doRegisterBean(beanClass, null, qualifiers, null, null);
@@ -189,6 +207,10 @@ public class AnnotatedBeanDefinitionReader {
 	 * @param qualifiers specific qualifier annotations to consider,
 	 * in addition to qualifiers at the bean class level
 	 */
+	// 从给定的 bean 类注册一个 bean，并从类声明的注解中获取其元数据。
+	// @param beanClass bean 的类
+	// @param name bean 的显式名称（或 {@code null} 以生成默认 bean 名称）
+	// @param qualifiers 除了 bean 类级别的限定符之外，还要考虑的特定限定符注解
 	@SuppressWarnings("unchecked")
 	public void registerBean(Class<?> beanClass, @Nullable String name,
 			Class<? extends Annotation>... qualifiers) {
@@ -205,6 +227,9 @@ public class AnnotatedBeanDefinitionReader {
 	 * (may be {@code null})
 	 * @since 5.0
 	 */
+	// 从给定的 bean 类注册一个 bean，其元数据来源于类声明的注解，并使用给定的 supplier 来获取新实例（可能声明为 lambda 表达式或方法引用）。
+	// @param beanClass bean 的类
+	// @param supplier 用于创建 bean 实例的回调函数（可以为 {@code null}）
 	public <T> void registerBean(Class<T> beanClass, @Nullable Supplier<T> supplier) {
 		doRegisterBean(beanClass, null, null, supplier, null);
 	}
@@ -220,6 +245,10 @@ public class AnnotatedBeanDefinitionReader {
 	 * (may be {@code null})
 	 * @since 5.0
 	 */
+	// 从给定的 bean 类注册一个 bean，其元数据来源于类声明的注解，并使用给定的 supplier 来获取新实例（可能声明为 lambda 表达式或方法引用）。
+	// @param beanClass bean 的类
+	// @param name bean 的显式名称（或 {@code null} 以生成默认 bean 名称）
+	// @param supplier 用于创建 bean 实例的回调函数（可以为 {@code null}）
 	public <T> void registerBean(Class<T> beanClass, @Nullable String name, @Nullable Supplier<T> supplier) {
 		doRegisterBean(beanClass, name, null, supplier, null);
 	}
@@ -236,6 +265,11 @@ public class AnnotatedBeanDefinitionReader {
 	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag
 	 * @since 5.2
 	 */
+	// 从给定的 bean 类注册一个 bean，其元数据源自类声明的注解。
+	// @param beanClass bean 的类
+	// @param name bean 的显式名称（或 {@code null} 以生成默认 bean 名称）
+	// @param supplier 用于创建 bean 实例的回调函数（可以为 {@code null}）
+	// @param customizers 用于自定义工厂的 {@link BeanDefinition} 的一个或多个回调函数，例如设置延迟初始化或主标志
 	public <T> void registerBean(Class<T> beanClass, @Nullable String name, @Nullable Supplier<T> supplier,
 			BeanDefinitionCustomizer... customizers) {
 
@@ -255,21 +289,32 @@ public class AnnotatedBeanDefinitionReader {
 	 * {@link BeanDefinition}, e.g. setting a lazy-init or primary flag
 	 * @since 5.0
 	 */
+	// 从给定的 bean 类注册一个 bean，并从类声明的注解中获取其元数据。
+	// @param beanClass bean 的类
+	// @param name bean 的显式名称
+	// @param qualifiers 除了 bean 类级别的限定符之外，还要考虑哪些特定的限定符注解（如果有）
+	// @param supplier 用于创建 bean 实例的回调函数（可以为 {@code null}）
+	// @param customizers 用于自定义工厂的 {@link BeanDefinition} 的一个或多个回调函数，例如设置延迟初始化或主标志
 	private <T> void doRegisterBean(Class<T> beanClass, @Nullable String name,
 			@Nullable Class<? extends Annotation>[] qualifiers, @Nullable Supplier<T> supplier,
 			@Nullable BeanDefinitionCustomizer[] customizers) {
 
 		AnnotatedGenericBeanDefinition abd = new AnnotatedGenericBeanDefinition(beanClass);
-		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) {
+		if (this.conditionEvaluator.shouldSkip(abd.getMetadata())) { // 根据 @Conditional 评估是否跳过该 bean 的注册
 			return;
 		}
 
+		// key: org.springframework.context.annotation.ConfigurationClassPostProcessor.candidate, value: Boolean.TRUE
 		abd.setAttribute(ConfigurationClassUtils.CANDIDATE_ATTRIBUTE, Boolean.TRUE);
 		abd.setInstanceSupplier(supplier);
+		// 解析与提供的 Bean definition 对应的 ScopeMetadata
+		// 创建一个 ScopeMetadata，然后获取 @Scope 注解的 value、proxyMode 属性并设置给 ScopeMetadata 的 scopeName、scopedProxyMode 属性
 		ScopeMetadata scopeMetadata = this.scopeMetadataResolver.resolveScopeMetadata(abd);
 		abd.setScope(scopeMetadata.getScopeName());
+		// 为给定的 bean 定义生成 bean 名称
 		String beanName = (name != null ? name : this.beanNameGenerator.generateBeanName(abd, this.registry));
 
+		// 处理注解 @Lazy/@Primary/@DependsOn/@Role/@Description
 		AnnotationConfigUtils.processCommonDefinitionAnnotations(abd);
 		if (qualifiers != null) {
 			for (Class<? extends Annotation> qualifier : qualifiers) {
@@ -284,6 +329,7 @@ public class AnnotatedBeanDefinitionReader {
 				}
 			}
 		}
+		// 执行 BeanDefinitionCustomizer.customize() 方法
 		if (customizers != null) {
 			for (BeanDefinitionCustomizer customizer : customizers) {
 				customizer.customize(abd);
@@ -291,7 +337,10 @@ public class AnnotatedBeanDefinitionReader {
 		}
 
 		BeanDefinitionHolder definitionHolder = new BeanDefinitionHolder(abd, beanName);
+		// 应用 ScopeMetadata 的 scopedProxyMode 属性
 		definitionHolder = AnnotationConfigUtils.applyScopedProxyMode(scopeMetadata, definitionHolder, this.registry);
+		// 注册 BeanDefinition 到 BeanDefinitionRegistry；
+		// 执行 BeanDefinitionRegistry.registerBeanDefinition() 和 BeanDefinitionRegistry.registerAlias()
 		BeanDefinitionReaderUtils.registerBeanDefinition(definitionHolder, this.registry);
 	}
 

@@ -39,6 +39,7 @@ import org.springframework.util.PropertiesPersister;
  * @author Juergen Hoeller
  * @since 1.2.2
  */
+// 用于 JavaBean 风格组件的基类，这些组件需要从一个或多个资源加载属性。也支持本地属性，并可配置重写。
 public abstract class PropertiesLoaderSupport {
 
 	/** Logger available to subclasses. */

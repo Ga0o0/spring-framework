@@ -120,12 +120,14 @@ public abstract class ClassUtils {
 	 * Map with primitive type name as key and corresponding primitive
 	 * type as value, for example: {@code "int" -> int.class}.
 	 */
+	// 一个以原始类型名称为键、以对应的原始类型为值的映射，例如：{@code "int" -> int.class}。
 	private static final Map<String, Class<?>> primitiveTypeNameMap = new HashMap<>(32);
 
 	/**
 	 * Map with common Java language class name as key and corresponding Class as value.
 	 * Primarily for efficient deserialization of remote invocations.
 	 */
+	// 一个以常见 Java 语言类名为键、对应 Class 为值的映射。主要用于远程调用的高效反序列化。
 	private static final Map<String, Class<?>> commonClassCache = new HashMap<>(64);
 
 	/**
@@ -152,6 +154,7 @@ public abstract class ClassUtils {
 		primitiveWrapperTypeMap.put(Void.class, void.class);
 
 		// Map entry iteration is less expensive to initialize than forEach with lambdas
+		// --> 译文：与使用 Lambda 表达式的 forEach 方法相比，初始化 Map 条目迭代的开销更低
 		for (Map.Entry<Class<?>, Class<?>> entry : primitiveWrapperTypeMap.entrySet()) {
 			primitiveTypeToWrapperMap.put(entry.getValue(), entry.getKey());
 			registerCommonClasses(entry.getKey());
@@ -184,6 +187,7 @@ public abstract class ClassUtils {
 	/**
 	 * Register the given common classes with the ClassUtils cache.
 	 */
+	// 将给定的公共类注册到 ClassUtils 缓存中。
 	private static void registerCommonClasses(Class<?>... commonClasses) {
 		for (Class<?> clazz : commonClasses) {
 			commonClassCache.put(clazz.getName(), clazz);
@@ -204,6 +208,10 @@ public abstract class ClassUtils {
 	 * @see Thread#getContextClassLoader()
 	 * @see ClassLoader#getSystemClassLoader()
 	 */
+	// 返回要使用的默认ClassLoader：通常是线程上下文ClassLoader（如果可用）；加载ClassUtils类的ClassLoader将作为备用。
+	// 如果您在明确希望使用非null ClassLoader引用的场景中使用线程上下文ClassLoader，请调用此方法：
+	// 例如，用于类路径资源加载（但不一定用于{@code Class.forName}，它也接受{@code null} ClassLoader引用）。
+	// @return 默认ClassLoader（仅当系统ClassLoader也无法访问时才为{@code null}）
 	@Nullable
 	public static ClassLoader getDefaultClassLoader() {
 		ClassLoader cl = null;
@@ -262,6 +270,13 @@ public abstract class ClassUtils {
 	 * @throws LinkageError if the class file could not be loaded
 	 * @see Class#forName(String, boolean, ClassLoader)
 	 */
+	// 该方法是{@code Class.forName()}的替代方法，它还为基本类型（如“int”）和数组类名（如“String[]”）返回Class实例。
+	// 此外，它还能够解析Java源代码样式中的嵌套类名（如“java.lang.Thread.State”而不是“java.lang.Thread$State”）。
+	// @param name 类名
+	// @param classLoader 要使用的类加载器（可以为{@code null}，表示使用默认类加载器）
+	// @return 所提供名称的类实例
+	// @throws ClassNotFoundException 如果未找到该类
+	// @throws LinkageError 如果无法加载类文件
 	public static Class<?> forName(String name, @Nullable ClassLoader classLoader)
 			throws ClassNotFoundException, LinkageError {
 
@@ -486,13 +501,18 @@ public abstract class ClassUtils {
 	 * @return the primitive class, or {@code null} if the name does not denote
 	 * a primitive class or primitive array class
 	 */
+	// 根据JVM对基本类的命名规则，将给定的类名解析为基本类（如果适用）。
+	// <p>还支持JVM对基本数组的内部类名。但不支持基本数组的“[]”后缀表示法；该表示法仅由{@link #forName(String, ClassLoader)}支持。
+	// @param name 可能是基本类的名称
+	// @return 基本类，如果名称不表示基本类或基本数组类，则返回{@code null}
 	@Nullable
 	public static Class<?> resolvePrimitiveClassName(@Nullable String name) {
 		Class<?> result = null;
 		// Most class names will be quite long, considering that they
 		// SHOULD sit in a package, so a length check is worthwhile.
+		// --> 译文：考虑到类名应位于一个包中，大多数类名会相当长，因此进行长度检查是值得的。
 		if (name != null && name.length() <= 7) {
-			// Could be a primitive - likely.
+			// Could be a primitive - likely. --> 译文：很可能是原始类型
 			result = primitiveTypeNameMap.get(name);
 		}
 		return result;
@@ -584,6 +604,17 @@ public abstract class ClassUtils {
 	 * suggesting value-based data binding and {@code toString} output
 	 * @since 6.1
 	 */
+	// 用于 {@link org.springframework.beans.BeanUtils#isSimpleValueType} 的委托。也供 {@link ObjectUtils#nullSafeConciseToString} 使用。
+	//
+	// <p>检查给定类型是否表示常见的“简单”值类型：原始类型或原始类型包装器、{@link Enum}、{@link String}
+	// 或其他 {@link CharSequence}、{@link Number}、{@link Date}、{@link Temporal}、{@link ZoneId}、
+	// {@link TimeZone}、{@link File}、{@link Path}、{@link URI}、{@link URL}、{@link InetAddress}、
+	// {@link Charset}、{@link Currency}、{@link Locale}、{@link UUID}、{@link Pattern} 或 {@link Class}。
+	//
+	// <p>{@code Void} 和 {@code void} 不被视为简单值类型。
+	//
+	// @param type 要检查的类型
+	// @return 给定的类型是否表示“简单”值类型，如果是，则建议使用基于值的数据绑定和 {@code toString} 输出
 	public static boolean isSimpleValueType(Class<?> type) {
 		return (!isVoidType(type) &&
 				(isPrimitiveOrWrapper(type) ||
@@ -665,6 +696,9 @@ public abstract class ClassUtils {
 	 * @param className the fully qualified class name
 	 * @return the corresponding resource path, pointing to the class
 	 */
+	// 将基于 “.” 的完全限定类名转换为基于 “/” 的资源路径。
+	// @param className 完全限定类名
+	// @return 指向该类的相应资源路径
 	public static String convertClassNameToResourcePath(String className) {
 		Assert.notNull(className, "Class name must not be null");
 		return className.replace(PACKAGE_SEPARATOR, PATH_SEPARATOR);
@@ -1307,6 +1341,16 @@ public abstract class ClassUtils {
 	 * @return the method, or {@code null} if not found
 	 * @see Class#getMethod
 	 */
+	// 判断给定类是否存在具有指定签名的公共方法，如果存在则返回该方法（否则返回 {@code null}）。
+	//
+	// <p>如果指定了任何签名，则仅当存在唯一候选方法（即具有指定名称的单个公共方法）时才返回该方法。
+	//
+	// <p>本质上是将 {@code NoSuchMethodException} 转换为 {@code null}。
+	//
+	// @param clazz 要分析的类
+	// @param methodName 方法名称
+	// @param paramTypes 方法的参数类型（可以为 {@code null} 表示任何签名）
+	// @return 方法，如果未找到则返回 {@code null}。
 	@Nullable
 	public static Method getMethodIfAvailable(Class<?> clazz, String methodName, @Nullable Class<?>... paramTypes) {
 		Assert.notNull(clazz, "Class must not be null");
@@ -1460,17 +1504,23 @@ public abstract class ClassUtils {
 	 * @since 5.3.16
 	 * @see #getMostSpecificMethod
 	 */
+	// 如果可能，确定给定方法句柄对应的接口方法。
+	// <p>这对于在 Jigsaw 上找到一个可以通过反射调用而不会出现非法访问警告的公共导出类型尤其有用。
+	// @param method 要调用的方法，可能来自实现类
+	// @param targetClass 要检查是否已声明接口的目标类
+	// @return 对应的接口方法，如果未找到，则返回原始方法。
 	public static Method getInterfaceMethodIfPossible(Method method, @Nullable Class<?> targetClass) {
 		if (!Modifier.isPublic(method.getModifiers()) || method.getDeclaringClass().isInterface()) {
 			return method;
 		}
-		// Try cached version of method in its declaring class
+		// Try cached version of method in its declaring class --> 译文：尝试使用声明类中方法的缓存版本
 		Method result = interfaceMethodCache.computeIfAbsent(method,
 				key -> findInterfaceMethodIfPossible(key, key.getDeclaringClass(), Object.class));
 		if (result == method && targetClass != null) {
 			// No interface method found yet -> try given target class (possibly a subclass of the
 			// declaring class, late-binding a base class method to a subclass-declared interface:
 			// see e.g. HashMap.HashIterator.hasNext)
+			// --> 译文：尚未找到接口方法 -> 尝试给定的目标类（可能是声明类的子类，将基类方法延迟绑定到子类声明的接口：例如，参见 HashMap.HashIterator.hasNext）
 			result = findInterfaceMethodIfPossible(method, targetClass, method.getDeclaringClass());
 		}
 		return result;

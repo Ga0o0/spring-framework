@@ -42,6 +42,9 @@ public abstract class AutoProxyUtils {
 	 * to its target class (even if AOP advices get applied through auto-proxying).
 	 * @see #shouldProxyTargetClass
 	 */
+	// Bean 定义属性，用于指示给定 bean 是否应该使用其目标类进行代理（如果该 bean 本身就需要代理）。其值为 {@code Boolean.TRUE} 或 {@code Boolean.FALSE}。
+	//
+	// <p>如果代理工厂为特定 bean 构建了目标类代理，并且希望强制该 bean 始终可以转换为其目标类（即使通过自动代理应用了 AOP 通知），则可以设置此属性。</p>
 	public static final String PRESERVE_TARGET_CLASS_ATTRIBUTE =
 			Conventions.getQualifiedAttributeName(AutoProxyUtils.class, "preserveTargetClass");
 

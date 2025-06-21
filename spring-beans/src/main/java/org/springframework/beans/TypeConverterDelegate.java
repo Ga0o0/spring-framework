@@ -112,22 +112,32 @@ class TypeConverterDelegate {
 	 * @return the new value, possibly the result of type conversion
 	 * @throws IllegalArgumentException if type conversion failed
 	 */
+	// 将指定属性的值转换为所需类型（如有必要，可从字符串转换）。
+	// @param propertyName 属性名称
+	// @param oldValue 先前的值（如果可用，可能为 {@code null}）
+	// @param newValue 建议的新值
+	// @param requiredType 要转换的类型（如果未知，例如集合元素，则为 {@code null}）
+	// @param typeDescriptor 目标属性或字段的描述符
+	// @return 新值，可能是类型转换的结果
+	// @throws IllegalArgumentException 如果类型转换失败
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public <T> T convertIfNecessary(@Nullable String propertyName, @Nullable Object oldValue, @Nullable Object newValue,
 			@Nullable Class<T> requiredType, @Nullable TypeDescriptor typeDescriptor) throws IllegalArgumentException {
 
-		// Custom editor for this type?
+		// Custom editor for this type? --> 译文：是否有此类自定义编辑器？
 		PropertyEditor editor = this.propertyEditorRegistry.findCustomEditor(requiredType, propertyName);
 
 		ConversionFailedException conversionAttemptEx = null;
 
-		// No custom editor but custom ConversionService specified?
+		// No custom editor but custom ConversionService specified? --> 译文：没有自定义编辑器，但指定了自定义转换服务？
 		ConversionService conversionService = this.propertyEditorRegistry.getConversionService();
 		if (editor == null && conversionService != null && newValue != null && typeDescriptor != null) {
 			TypeDescriptor sourceTypeDesc = TypeDescriptor.forObject(newValue);
+			// 如果 sourceTypeDesc 类型的对象可以转换为 typeDescriptor 类型，则返回 true。
 			if (conversionService.canConvert(sourceTypeDesc, typeDescriptor)) {
 				try {
+					// 将给定的 newValue 转换为指定的 typeDescriptor
 					return (T) conversionService.convert(newValue, sourceTypeDesc, typeDescriptor);
 				}
 				catch (ConversionFailedException ex) {
@@ -139,7 +149,7 @@ class TypeConverterDelegate {
 
 		Object convertedValue = newValue;
 
-		// Value not of required type?
+		// Value not of required type? --> 译文：值不是所需类型？
 		if (editor != null || (requiredType != null && !ClassUtils.isAssignableValue(requiredType, convertedValue))) {
 			if (typeDescriptor != null && requiredType != null && Collection.class.isAssignableFrom(requiredType)) {
 				TypeDescriptor elementTypeDesc = typeDescriptor.getElementTypeDescriptor();
@@ -158,13 +168,14 @@ class TypeConverterDelegate {
 			if (editor == null) {
 				editor = findDefaultEditor(requiredType);
 			}
+			// 使用给定的属性编辑器，将值转换为所需的类型（如有必要，可从字符串转换）。
 			convertedValue = doConvertValue(oldValue, convertedValue, requiredType, editor);
 		}
 
 		boolean standardConversion = false;
 
 		if (requiredType != null) {
-			// Try to apply some standard type conversion rules if appropriate.
+			// Try to apply some standard type conversion rules if appropriate. --> 译文：如果合适，请尝试应用一些标准类型转换规则。
 
 			if (convertedValue != null) {
 				if (Object.class == requiredType) {
@@ -362,6 +373,13 @@ class TypeConverterDelegate {
 	 * @return the new value, possibly the result of type conversion
 	 * @throws IllegalArgumentException if type conversion failed
 	 */
+	// 使用给定的属性编辑器，将值转换为所需的类型（如有必要，可从字符串转换）。
+	// @param oldValue 先前的值（如果可用，可能为 {@code null}）
+	// @param newValue 建议的新值
+	// @param requiredType 要转换的类型（如果未知，例如集合元素，则为 {@code null}）
+	// @param editor 要使用的属性编辑器
+	// @return 新值，可能是类型转换的结果
+	// @throws IllegalArgumentException 如果类型转换失败
 	@Nullable
 	private Object doConvertValue(@Nullable Object oldValue, @Nullable Object newValue,
 			@Nullable Class<?> requiredType, @Nullable PropertyEditor editor) {

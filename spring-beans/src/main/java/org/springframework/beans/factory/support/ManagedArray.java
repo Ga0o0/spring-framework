@@ -26,10 +26,12 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 标签集合类用于保存托管数组元素，其中可能包含运行时 bean 引用（要解析为 bean 对象）。
 @SuppressWarnings("serial")
 public class ManagedArray extends ManagedList<Object> {
 
 	/** Resolved element type for runtime creation of the target array. */
+	// 已解析目标数组运行时创建所需的元素类型。
 	@Nullable
 	volatile Class<?> resolvedElementType;
 
@@ -39,6 +41,9 @@ public class ManagedArray extends ManagedList<Object> {
 	 * @param elementTypeName the target element type as a class name
 	 * @param size the size of the array
 	 */
+	// 创建一个新的托管数组占位符。
+	// @param elementTypeName 目标元素类型（类名）
+	// @param size 数组的大小
 	public ManagedArray(String elementTypeName, int size) {
 		super(size);
 		Assert.notNull(elementTypeName, "elementTypeName must not be null");

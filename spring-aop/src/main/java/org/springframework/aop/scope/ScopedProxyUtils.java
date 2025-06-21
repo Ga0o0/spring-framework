@@ -76,11 +76,13 @@ public abstract class ScopedProxyUtils {
 
 		proxyDefinition.getPropertyValues().add("targetBeanName", targetBeanName);
 		if (proxyTargetClass) {
+			// org.springframework.aop.framework.autoproxy.AutoProxyUtils.preserveTargetClass = Boolean.TRUE
 			targetDefinition.setAttribute(AutoProxyUtils.PRESERVE_TARGET_CLASS_ATTRIBUTE, Boolean.TRUE);
 			// ScopedProxyFactoryBean's "proxyTargetClass" default is TRUE, so we don't need to set it explicitly here.
 			// --> 译文：ScopedProxyFactoryBean 的 “proxyTargetClass” 默认是 TRUE，所以我们不需要在这里明确设置它。
 		}
 		else {
+			// org.springframework.aop.framework.autoproxy.AutoProxyUtils.preserveTargetClass = Boolean.FALSE
 			proxyDefinition.getPropertyValues().add("proxyTargetClass", Boolean.FALSE);
 		}
 
@@ -113,6 +115,9 @@ public abstract class ScopedProxyUtils {
 	 * @return the generated bean to be used to reference the target bean
 	 * @see #getOriginalBeanName(String)
 	 */
+	// 生成用于在作用域代理中引用目标 bean 的 bean 名称。
+	// @param originalBeanName bean 的原始名称
+	// @return 用于引用目标 bean 的已生成 bean
 	public static String getTargetBeanName(String originalBeanName) {
 		return TARGET_NAME_PREFIX + originalBeanName;
 	}

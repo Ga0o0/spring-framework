@@ -69,6 +69,11 @@ import org.springframework.util.StringUtils;
  * @see BeanWrapper
  * @see PropertyEditorRegistrySupport
  */
+// 一个基本的 {@link ConfigurablePropertyAccessor}，为所有典型用例提供必要的基础架构。
+//
+// <p>此访问器会在必要时将集合和数组值转换为相应的目标集合或数组。
+// 处理集合或数组的自定义属性编辑器可以通过 PropertyEditor 的 {@code setValue} 编写，
+// 也可以通过 {@code setAsText} 针对逗号分隔的字符串编写，因为如果数组本身不可赋值，则会将其转换为这种格式。
 public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyAccessor {
 
 	/**
@@ -821,9 +826,12 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	 * @param propertyPath property path, which may be nested
 	 * @return a property accessor for the target bean
 	 */
+	// 递归遍历并返回嵌套属性路径的属性访问器。
+	// @param propertyPath 属性路径，可能嵌套
+	// @return 目标 bean 的属性访问器。
 	protected AbstractNestablePropertyAccessor getPropertyAccessorForPropertyPath(String propertyPath) {
 		int pos = PropertyAccessorUtils.getFirstNestedPropertySeparatorIndex(propertyPath);
-		// Handle nested properties recursively.
+		// Handle nested properties recursively. --> 译文：递归处理嵌套属性。
 		if (pos > -1) {
 			String nestedProperty = propertyPath.substring(0, pos);
 			String nestedPath = propertyPath.substring(pos + 1);
@@ -941,6 +949,9 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	 * @param propertyName the property name to parse
 	 * @return representation of the parsed property tokens
 	 */
+	// 将给定的属性名称解析为相应的属性名称标记。
+	// @param propertyName 要解析的属性名称
+	// @return 已解析的属性标记表示形式
 	private PropertyTokenHolder getPropertyNameTokens(String propertyName) {
 		String actualName = null;
 		List<String> keys = new ArrayList<>(2);
@@ -1074,6 +1085,7 @@ public abstract class AbstractNestablePropertyAccessor extends AbstractPropertyA
 	/**
 	 * Holder class used to store property tokens.
 	 */
+	// 用于存储属性令牌的 Holder 类。
 	protected static class PropertyTokenHolder {
 
 		public PropertyTokenHolder(String name) {

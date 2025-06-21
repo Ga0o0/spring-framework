@@ -26,6 +26,7 @@ import org.springframework.util.Assert;
  * @author Arjen Poutsma
  * @since 4.3
  */
+// {@link Resource} 实现中的区域，由 {@link Resource} 中的 {@code position} 和该区域长度的字节 {@code count} 来具体化。
 public class ResourceRegion {
 
 	private final Resource resource;
@@ -43,6 +44,11 @@ public class ResourceRegion {
 	 * @param position the start position of the region in that resource
 	 * @param count the byte count of the region in that resource
 	 */
+	// 从给定的 {@link Resource} 创建一个新的 {@code ResourceRegion}。
+	// 该资源区域由起始 {@code position} 和在给定 {@code Resource} 中的字节数 {@code count} 表示。
+	// @param resource 一个 Resource 对象
+	// @param position 该区域在该资源中的起始位置
+	// @param count 该区域在该资源中的字节数
 	public ResourceRegion(Resource resource, long position, long count) {
 		Assert.notNull(resource, "Resource must not be null");
 		Assert.isTrue(position >= 0, "'position' must be greater than or equal to 0");
@@ -56,6 +62,7 @@ public class ResourceRegion {
 	/**
 	 * Return the underlying {@link Resource} for this {@code ResourceRegion}.
 	 */
+	// 返回此 {@code ResourceRegion} 的底层 {@link Resource}。
 	public Resource getResource() {
 		return this.resource;
 	}
@@ -63,6 +70,7 @@ public class ResourceRegion {
 	/**
 	 * Return the start position of this region in the underlying {@link Resource}.
 	 */
+	// 返回此区域在底层 {@link Resource} 中的起始位置。
 	public long getPosition() {
 		return this.position;
 	}
@@ -70,6 +78,7 @@ public class ResourceRegion {
 	/**
 	 * Return the byte count of this region in the underlying {@link Resource}.
 	 */
+	// 返回底层 {@link Resource} 中此区域的字节数。
 	public long getCount() {
 		return this.count;
 	}

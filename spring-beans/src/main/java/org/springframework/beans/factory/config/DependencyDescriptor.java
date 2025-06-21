@@ -86,6 +86,9 @@ public class DependencyDescriptor extends InjectionPoint implements Serializable
 	 * @param methodParameter the MethodParameter to wrap
 	 * @param required whether the dependency is required
 	 */
+	// 为方法或构造函数参数创建新的描述符。将依赖项视为“急切型”。
+	// @param methodParameter 要包装的 MethodParameter
+	// @param required 依赖项是否为必需型
 	public DependencyDescriptor(MethodParameter methodParameter, boolean required) {
 		this(methodParameter, required, true);
 	}

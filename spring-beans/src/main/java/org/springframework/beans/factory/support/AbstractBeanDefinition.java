@@ -106,7 +106,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	// @see #setAutowireMode
 	// @deprecated 自 Spring 3.0 起：如果您使用混合自动装配策略，请使用基于注解的自动装配，以便更清晰地划分自动装配需求。
 	@Deprecated
-	public static final int AUTOWIRE_AUTODETECT = AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT;
+	public static final int AUTOWIRE_AUTODETECT = AutowireCapableBeanFactory.AUTOWIRE_AUTODETECT; // 自动检测
 
 	/**
 	 * Constant that indicates no dependency check at all.
@@ -454,7 +454,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	@Override
 	@Nullable
 	public String getBeanClassName() {
-		Object beanClassObject = this.beanClass;  // defensive access to volatile beanClass field
+		Object beanClassObject = this.beanClass;  // defensive access to volatile beanClass field --> 译文：对易变 beanClass 字段的防御性访问
 		return (beanClassObject instanceof Class<?> clazz ? clazz.getName() : (String) beanClassObject);
 	}
 
@@ -488,6 +488,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #setBeanClass(Class)
 	 * @see #resolveBeanClass(ClassLoader)
 	 */
+	// 返回Bean定义的指定类（假设该类已解析）。
+	// <p><b>注意：</b>这是Bean元数据定义中声明的初始类引用，可能结合了声明的工厂方法或一个{@link org.springframework.beans.factory.FactoryBean}，
+	// 这可能导致Bean的运行时类型不同，或者在实例级工厂方法的情况下（通过{@link #getFactoryBeanName()}解析），可能根本不会设置。
+	// <b>请勿使用此方法对任意Bean定义进行运行时类型自检。</b>
+	// 要了解特定Bean的实际运行时类型，建议对指定Bean名称调用{@link org.springframework.beans.factory.BeanFactory#getType}；此方法会考虑上述所有情况，
+	// 并返回对同一Bean名称调用{@link org.springframework.beans.factory.BeanFactory#getBean}将返回的对象类型。
+	// @return 已解析的Bean类（永不为{@code null}）
+	// @throws IllegalStateException 如果Bean定义未定义Bean类，或者指定的Bean类名尚未解析为实际的Class
 	public Class<?> getBeanClass() throws IllegalStateException {
 		Object beanClassObject = this.beanClass;  // defensive access to volatile beanClass field
 		if (beanClassObject == null) {
@@ -519,6 +527,10 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @return the resolved bean class
 	 * @throws ClassNotFoundException if the class name could be resolved
 	 */
+	// 确定被包装 bean 的类，必要时根据指定的类名解析。如果 bean 类已解析，则还会根据类名重新加载指定的类。
+	// @param classLoader 用于解析（潜在）类名的类加载器
+	// @return 已解析的 bean 类
+	// @throws ClassNotFoundException 如果无法解析类名
 	@Nullable
 	public Class<?> resolveBeanClass(@Nullable ClassLoader classLoader) throws ClassNotFoundException {
 		String className = getBeanClassName();
@@ -583,6 +595,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * returned for each call.
 	 * @see #SCOPE_PROTOTYPE
 	 */
+	// 返回这是否为<b>原型</b>，每次调用返回一个独立的实例。
 	@Override
 	public boolean isPrototype() {
 		return SCOPE_PROTOTYPE.equals(this.scope);
@@ -675,11 +688,14 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #AUTOWIRE_CONSTRUCTOR
 	 * @see #AUTOWIRE_BY_TYPE
 	 */
+	// 返回解析后的自动注入代码（将 AUTOWIRE_AUTODETECT 解析为 AUTOWIRE_CONSTRUCTOR 或 AUTOWIRE_BY_TYPE）。
 	public int getResolvedAutowireMode() {
 		if (this.autowireMode == AUTOWIRE_AUTODETECT) {
 			// Work out whether to apply setter autowiring or constructor autowiring.
 			// If it has a no-arg constructor it's deemed to be setter autowiring,
 			// otherwise we'll try constructor autowiring.
+			// --> 译文：判断是应用 setter 方法自动注入还是构造函数自动注入。
+			// 如果它有一个无参数构造函数，则视为 setter 方法自动注入；否则，我们将尝试构造函数自动注入。
 			Constructor<?>[] constructors = getBeanClass().getConstructors();
 			for (Constructor<?> constructor : constructors) {
 				if (constructor.getParameterCount() == 0) {
@@ -702,6 +718,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #DEPENDENCY_CHECK_SIMPLE
 	 * @see #DEPENDENCY_CHECK_ALL
 	 */
+	// 设置依赖项检查代码。
+	// @param dependencyCheck 要设置的代码。必须是此类中定义的四个常量之一。
 	public void setDependencyCheck(int dependencyCheck) {
 		this.dependencyCheck = dependencyCheck;
 	}
@@ -709,6 +727,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/**
 	 * Return the dependency check code.
 	 */
+	// 返回依赖关系检查代码。
 	public int getDependencyCheck() {
 		return this.dependencyCheck;
 	}
@@ -728,6 +747,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	/**
 	 * Return the bean names that this bean depends on.
 	 */
+	// 返回此 bean 所依赖的 bean 名称。
 	@Override
 	@Nullable
 	public String[] getDependsOn() {
@@ -743,6 +763,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #AUTOWIRE_BY_TYPE
 	 * @see #AUTOWIRE_BY_NAME
 	 */
+	// 设置此 bean 是否可自动装配到其他 bean 中。
+	//
+	// <p>请注意，此标志仅影响基于类型的自动装配。
+	// 它不会影响按名称显式引用，即使指定的 bean 未标记为自动装配候选对象，
+	// 这些引用也会被解析。因此，如果名称匹配，按名称自动装配仍然会注入 bean。</p>
 	@Override
 	public void setAutowireCandidate(boolean autowireCandidate) {
 		this.autowireCandidate = autowireCandidate;
@@ -780,6 +805,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * keyed by the qualifier's type name.
 	 * @see AutowireCandidateQualifier#getTypeName()
 	 */
+	// 注册一个限定符，用于自动装配候选解析，以限定符的类型名称作为键。
 	public void addQualifier(AutowireCandidateQualifier qualifier) {
 		this.qualifiers.put(qualifier.getTypeName(), qualifier);
 	}
@@ -910,6 +936,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #setFactoryBeanName
 	 * @see #setBeanClassName
 	 */
+	// 如有工厂方法，请指定。此方法将使用构造函数参数调用；如果未指定参数，则不带任何参数。
+	// 该方法将在指定的工厂 bean（如有）上调用；否则，将作为本地 bean 类的静态方法调用。
 	@Override
 	public void setFactoryMethodName(@Nullable String factoryMethodName) {
 		this.factoryMethodName = factoryMethodName;
@@ -978,6 +1006,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Return if there are property values defined for this bean.
 	 * @since 5.0.2
 	 */
+	// 返回此 bean 是否定义了属性值。
 	@Override
 	public boolean hasPropertyValues() {
 		return (this.propertyValues != null && !this.propertyValues.isEmpty());
@@ -1024,6 +1053,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Return the names of the initializer methods.
 	 * @since 6.0
 	 */
+	// 返回初始化方法的名称。
 	@Nullable
 	public String[] getInitMethodNames() {
 		return this.initMethodNames;
@@ -1034,6 +1064,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * <p>The default is {@code null} in which case there is no initializer method.
 	 * @see #setInitMethodNames
 	 */
+	// 设置初始化方法的名称。
+	// <p>默认值为 {@code null}，在这种情况下，没有初始化方法。</p>
 	@Override
 	public void setInitMethodName(@Nullable String initMethodName) {
 		this.initMethodNames = (initMethodName != null ? new String[] {initMethodName} : null);
@@ -1057,6 +1089,11 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #setInitMethodName
 	 * @see #applyDefaults
 	 */
+	// 指定配置的初始化方法是否为默认值。
+	//
+	// <p>对于本地指定的初始化方法，默认值为 {@code true}；
+	// 但对于默认设置部分中的共享设置（例如 XML 中的 {@code bean init-method}
+	// 与 {@code beans default-init-method} 级别），默认值为 {@code false}，因为这可能不适用于所有包含的 bean 定义。
 	public void setEnforceInitMethod(boolean enforceInitMethod) {
 		this.enforceInitMethod = enforceInitMethod;
 	}
@@ -1116,6 +1153,12 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * @see #setDestroyMethodName
 	 * @see #applyDefaults
 	 */
+	// 指定配置的销毁方法是否为默认值。
+	//
+	// <p>对于本地指定的销毁方法，默认值为 {@code true}；
+	// 但对于默认设置部分中的共享设置（例如 XML 中的 {@code bean destroy-method}
+	// 与 {@code beans default-destroy-method} 级别），默认值为 {@code false}，
+	// 因为该设置可能不适用于所有包含的 bean 定义。
 	public void setEnforceDestroyMethod(boolean enforceDestroyMethod) {
 		this.enforceDestroyMethod = enforceDestroyMethod;
 	}
@@ -1142,13 +1185,16 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Return whether this bean definition is 'synthetic', that is,
 	 * not defined by the application itself.
 	 */
+	// 返回此 bean 定义是否为 “合成的”，即是否由应用程序本身定义。
 	public boolean isSynthetic() {
+		// synthetic = true 表示这个 Bean 定义是由 Spring 框架内部自动创建和维护的，而不是通过用户的配置（如 XML、注解等）定义的。
 		return this.synthetic;
 	}
 
 	/**
 	 * Set the role hint for this {@code BeanDefinition}.
 	 */
+	// 为该 {@code BeanDefinition} 设置角色提示。
 	@Override
 	public void setRole(int role) {
 		this.role = role;
@@ -1208,6 +1254,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * Return a description of the resource that this bean definition
 	 * came from (for the purpose of showing context in case of errors).
 	 */
+	// 返回此 bean 定义所来自的资源的描述（以便在发生错误时显示上下文）。
 	@Override
 	@Nullable
 	public String getResourceDescription() {
@@ -1308,6 +1355,8 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 * To be implemented by concrete subclasses.
 	 * @return the cloned bean definition object
 	 */
+	// 克隆此 Bean 定义。需由具体子类实现。
+	// @return 克隆的Bean定义对象
 	public abstract AbstractBeanDefinition cloneBeanDefinition();
 
 	@Override

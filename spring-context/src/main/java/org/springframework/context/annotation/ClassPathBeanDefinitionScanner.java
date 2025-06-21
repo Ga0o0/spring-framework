@@ -312,7 +312,7 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 		// 在指定的基础包中执行扫描，返回已注册的 bean 定义。
 		doScan(basePackages);
 
-		// Register annotation config processors, if necessary. --> 译文：如果需要，注册注释配置处理器。
+		// Register annotation config processors, if necessary. --> 译文：如果需要，注册注解配置处理器。
 		if (this.includeAnnotationConfig) {
 			AnnotationConfigUtils.registerAnnotationConfigProcessors(this.registry);
 		}
@@ -454,6 +454,11 @@ public class ClassPathBeanDefinitionScanner extends ClassPathScanningCandidateCo
 	 * @return whether the definitions are considered as compatible, with the
 	 * new definition to be skipped in favor of the existing definition
 	 */
+	// 判断给定的新 bean 定义是否与给定的现有 bean 定义兼容。
+	// <p>默认实现认为，当现有 bean 定义来自同一来源或非扫描来源时，它们兼容。
+	// @param newDef 新的 bean 定义，源自扫描
+	// @param existingDef 现有的 bean 定义，可能是显式定义的，也可能是之前通过扫描生成的
+	// @return 返回这两个定义是否兼容，如果兼容，则跳过新定义，优先使用现有定义。
 	protected boolean isCompatible(BeanDefinition newDef, BeanDefinition existingDef) {
 		return ((newDef.getSource() != null && newDef.getSource().equals(existingDef.getSource())) ||
 				newDef.equals(existingDef));

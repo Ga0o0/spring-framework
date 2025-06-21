@@ -24,7 +24,7 @@ package org.springframework.beans;
  * @author Juergen Hoeller
  * @since 2.5.2
  */
-// 用于获取 {@link PropertyAccessor} 实例（尤其是 {@link BeanWrapper} 实例）的简单工厂外观。隐藏实际的目标实现类及其扩展的公共签名。
+// 一个简单的工厂外观，用于获取 {@link PropertyAccessor} 实例，特别是 {@link BeanWrapper} 实例。它隐藏了实际的目标实现类及其扩展的公共签名。
 public final class PropertyAccessorFactory {
 
 	private PropertyAccessorFactory() {

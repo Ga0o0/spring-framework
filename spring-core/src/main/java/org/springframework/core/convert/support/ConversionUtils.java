@@ -31,6 +31,7 @@ import org.springframework.util.ClassUtils;
  * @author Stephane Nicoll
  * @since 3.0
  */
+// 转换包的内部实用程序。
 abstract class ConversionUtils {
 
 	@Nullable

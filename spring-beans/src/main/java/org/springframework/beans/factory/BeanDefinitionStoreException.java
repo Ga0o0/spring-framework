@@ -27,6 +27,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @author Rob Harrop
  */
+// 当 BeanFactory 遇到无效的 bean 定义时抛出异常：例如，在 bean 元数据不完整或相互矛盾的情况下。
 @SuppressWarnings("serial")
 public class BeanDefinitionStoreException extends FatalBeanException {
 

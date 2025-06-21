@@ -435,6 +435,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @since 5.0
 	 * @see #indexSupportsIncludeFilter(TypeFilter)
 	 */
+	// 提取要用于指定兼容过滤器的构造型。
+	// @param filter 要处理的过滤器
+	// @return 索引中与此过滤器匹配的构造型
 	@Nullable
 	private String extractStereotype(TypeFilter filter) {
 		if (filter instanceof AnnotationTypeFilter annotationTypeFilter) {
@@ -450,17 +453,23 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
 		try {
 			Set<String> types = new HashSet<>();
+			// includeFilters = @org.springframework.stereotype.Component、
+			// 					@jakarta.annotation.ManagedBean、@javax.annotation.ManagedBean、
+			// 					@jakarta.inject.Named、@javax.inject.Named
 			for (TypeFilter filter : this.includeFilters) {
 				String stereotype = extractStereotype(filter);
 				if (stereotype == null) {
 					throw new IllegalArgumentException("Failed to extract stereotype from " + filter);
 				}
+				// index.getCandidateTypes() -> 返回与指定 stereotype 关联的候选类型。
 				types.addAll(index.getCandidateTypes(basePackage, stereotype));
 			}
 			boolean traceEnabled = logger.isTraceEnabled();
 			boolean debugEnabled = logger.isDebugEnabled();
 			for (String type : types) {
+				// 例如：type = @Component 等等
 				MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(type);
+				// 根据 excludeFilters 和 （includeFilters + @Conditional） 判断其是否为候选组件
 				if (isCandidateComponent(metadataReader)) {
 					ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 					sbd.setSource(metadataReader.getResource());
@@ -492,6 +501,9 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	private Set<BeanDefinition> scanCandidateComponents(String basePackage) {
 		Set<BeanDefinition> candidates = new LinkedHashSet<>();
 		try {
+			// basePackage = com.example
+			// resolveBasePackage(basePackage) -> com/example
+			// packageSearchPath = classpath*:com/example/**/*.class
 			String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX +
 					resolveBasePackage(basePackage) + '/' + this.resourcePattern;
 			Resource[] resources = getResourcePatternResolver().getResources(packageSearchPath);
@@ -500,7 +512,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 			for (Resource resource : resources) {
 				String filename = resource.getFilename();
 				if (filename != null && filename.contains(ClassUtils.CGLIB_CLASS_SEPARATOR)) {
-					// Ignore CGLIB-generated classes in the classpath
+					// Ignore CGLIB-generated classes in the classpath --> 译文：忽略类路径中由 CGLIB 生成的类
 					continue;
 				}
 				if (traceEnabled) {
@@ -508,6 +520,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 				}
 				try {
 					MetadataReader metadataReader = getMetadataReaderFactory().getMetadataReader(resource);
+					// 根据 excludeFilters 和 （includeFilters + @Conditional） 判断其是否为候选组件
 					if (isCandidateComponent(metadataReader)) {
 						ScannedGenericBeanDefinition sbd = new ScannedGenericBeanDefinition(metadataReader);
 						sbd.setSource(resource);
@@ -566,6 +579,10 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 	 * @param basePackage the base package as specified by the user
 	 * @return the pattern specification to be used for package searching
 	 */
+	// 将指定的基包解析为用于包搜索路径的模式规范。
+	// <p>默认实现会依据系统属性解析其中的占位符，并将基于“.”的包路径转换为基于“/”的资源路径。
+	// @param basePackage 用户指定的基包
+	// @return 用于包搜索的模式规范
 	protected String resolveBasePackage(String basePackage) {
 		return ClassUtils.convertClassNameToResourcePath(getEnvironment().resolveRequiredPlaceholders(basePackage));
 	}
@@ -587,7 +604,7 @@ public class ClassPathScanningCandidateComponentProvider implements EnvironmentC
 		}
 		for (TypeFilter tf : this.includeFilters) {
 			if (tf.match(metadataReader, getMetadataReaderFactory())) {
-				// 根据任何 {@code @Conditional} 注解判断给定类是否为候选组件。
+				// 根据任何 @Conditional 注解判断给定类是否为候选组件
 				return isConditionMatch(metadataReader);
 			}
 		}

@@ -80,6 +80,9 @@ public class MethodProxy {
 		 * code could allow fastClassInfo to be instantiated more than once, which
 		 * appears to be benign.
 		 */
+		// 使用 volatile 不变量可以让我们原子地初始化 FastClass 和方法索引对。
+		//
+		// 在 Java 5 中，使用 volatile 进行双重检查锁定是安全的。在 1.5 版本之前，这段代码可能允许 fastClassInfo 被多次实例化，这似乎是良性的。
 		if (fastClassInfo == null) {
 			synchronized (initLock) {
 				if (fastClassInfo == null) {
@@ -251,6 +254,10 @@ public class MethodProxy {
 	 * without wrapping in an <code>InvocationTargetException</code>
 	 * @see MethodInterceptor#intercept
 	 */
+	// 对指定对象调用原始（父级）方法。
+	// @param obj 增强后的对象，必须是作为 MethodInterceptor 的第一个参数传递的对象。
+	// @param args 传递给被拦截方法的参数；只要类型兼容，您可以替换为不同的参数数组。
+	// @throws Throwable 被调用方法抛出的原始异常将被传递，而不会被包装在 <code>InvocationTargetException</code> 中。
 	public Object invokeSuper(Object obj, Object[] args) throws Throwable {
 		try {
 			init();

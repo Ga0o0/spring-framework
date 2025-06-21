@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 当 BeanFactory 无法加载给定 bean 的指定类时，会抛出异常。
 @SuppressWarnings("serial")
 public class CannotLoadBeanClassException extends FatalBeanException {
 
