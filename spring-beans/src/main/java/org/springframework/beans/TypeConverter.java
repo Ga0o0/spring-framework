@@ -120,6 +120,13 @@ public interface TypeConverter {
 	 * @see org.springframework.core.convert.ConversionService
 	 * @see org.springframework.core.convert.converter.Converter
 	 */
+	// 将值转换为所需类型（如有必要，从字符串转换）。
+	// <p>从字符串到任何类型的转换通常使用 PropertyEditor 类的 {@code setAsText} 方法，或者 ConversionService 中的 Spring Converter。
+	// @param value 要转换的值
+	// @param requiredType 要转换到的类型（如果未知，例如集合元素，则为 {@code null}）
+	// @param typeDescriptor 要使用的类型描述符（可以为 {@code null}）
+	// @return 新值，可能是类型转换的结果
+	// @throws TypeMismatchException 如果类型转换失败
 	@Nullable
 	default <T> T convertIfNecessary(@Nullable Object value, @Nullable Class<T> requiredType,
 			@Nullable TypeDescriptor typeDescriptor) throws TypeMismatchException {

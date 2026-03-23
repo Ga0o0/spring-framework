@@ -290,12 +290,13 @@ public class InjectionMetadata {
 			if (!shouldInject(pvs)) {
 				return;
 			}
-			if (this.isField) {
+			if (this.isField) {// 如果是字段注入
 				Field field = (Field) this.member;
 				ReflectionUtils.makeAccessible(field);
+				// getResourceToInject(target, requestingBeanName) -> 获取要注入的值
 				field.set(target, getResourceToInject(target, requestingBeanName));
 			}
-			else {
+			else { // 如果是方法注入（setter方法）
 				try {
 					Method method = (Method) this.member;
 					ReflectionUtils.makeAccessible(method);

@@ -40,6 +40,9 @@ import org.springframework.util.ObjectUtils;
  * @see UnsatisfiedDependencyException#getInjectionPoint()
  * @see org.springframework.beans.factory.config.DependencyDescriptor
  */
+// 一个简单的注入点描述符，指向方法/构造函数参数或字段。
+//
+// <p>由 {@link UnsatisfiedDependencyException} 公开。也可作为工厂方法的参数，响应请求的注入点以构建自定义 bean 实例。
 public class InjectionPoint {
 
 	@Nullable

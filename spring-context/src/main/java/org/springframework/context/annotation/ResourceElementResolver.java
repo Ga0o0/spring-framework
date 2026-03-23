@@ -297,6 +297,7 @@ public abstract class ResourceElementResolver {
 	 * Extension of the DependencyDescriptor class,
 	 * overriding the dependency type with the specified resource type.
 	 */
+	// 扩展 DependencyDescriptor 类，用指定的资源类型覆盖依赖类型。
 	@SuppressWarnings("serial")
 	static class LookupDependencyDescriptor extends DependencyDescriptor {
 

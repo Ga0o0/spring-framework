@@ -42,6 +42,11 @@ public interface AutowireCandidateResolver {
 	 * @return whether the bean definition qualifies as autowire candidate
 	 * @see org.springframework.beans.factory.config.BeanDefinition#isAutowireCandidate()
 	 */
+	// 确定给定的 bean 定义是否符合给定依赖项的自动装配候选条件。
+	// <p>默认实现会检查 {@link org.springframework.beans.factory.config.BeanDefinition#isAutowireCandidate()}。
+	// @param bdHolder bean 定义，包括 bean 名称和别名
+	// @param descriptor 目标方法参数或字段的描述符
+	// @return bean 定义是否符合自动装配候选条件
 	default boolean isAutowireCandidate(BeanDefinitionHolder bdHolder, DependencyDescriptor descriptor) {
 		return bdHolder.getBeanDefinition().isAutowireCandidate();
 	}
@@ -55,6 +60,10 @@ public interface AutowireCandidateResolver {
 	 * @since 5.0
 	 * @see DependencyDescriptor#isRequired()
 	 */
+	// 确定给定的描述符是否为必需项。
+	// <p>默认实现会检查 {@link DependencyDescriptor#isRequired()}。
+	// @param descriptor 目标方法参数或字段的描述符
+	// @return 描述符是否被标记为必需，或者是否以其他方式（例如通过参数注解）指示其非必需状态。
 	default boolean isRequired(DependencyDescriptor descriptor) {
 		return descriptor.isRequired();
 	}

@@ -42,6 +42,10 @@ import org.springframework.util.ClassUtils;
  * @author Juergen Hoeller
  * @since 4.0
  */
+// 基本的 {@link AutowireCandidateResolver}，如果依赖项声明为泛型类型（例如 {@code Repository<Customer>}），则会执行完整的泛型类型匹配。
+//
+// <p>这是 {@link org.springframework.beans.factory.annotation.QualifierAnnotationAutowireCandidateResolver} 的基类，
+// 提供了此级别所有非基于注解的解析步骤的实现。</p>
 public class GenericTypeAwareAutowireCandidateResolver extends SimpleAutowireCandidateResolver
 		implements BeanFactoryAware, Cloneable {
 

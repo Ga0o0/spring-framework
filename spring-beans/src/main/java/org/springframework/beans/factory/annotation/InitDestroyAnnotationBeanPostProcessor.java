@@ -83,6 +83,19 @@ import org.springframework.util.ReflectionUtils;
  * @see #setInitAnnotationType
  * @see #setDestroyAnnotationType
  */
+// {@link org.springframework.beans.factory.config.BeanPostProcessor} 实现会调用带有注解的 init 和 destroy 方法。
+// 它提供了一种替代 Spring 的 {@link org.springframework.beans.factory.InitializingBean} 和
+// {@link org.springframework.beans.factory.DisposableBean} 回调接口的注解方式。
+//
+// <p>此后处理器检查的实际注解类型可以通过 {@link #setInitAnnotationType "initAnnotationType"}
+// 和 {@link #setDestroyAnnotationType "destroyAnnotationType"} 属性进行配置。可以使用任何自定义注解，因为没有必需的注解属性。
+//
+// <p>init 和 destroy 注解可以应用于任何可见性的方法：public、package-protected、protected 或 private。
+// 可以注解多个此类方法，但建议分别只注解一个 init 方法和一个 destroy 方法。
+//
+// <p>Spring 的 {@link org.springframework.context.annotation.CommonAnnotationBeanPostProcessor}
+// 默认支持 {@link jakarta.annotation.PostConstruct} 和 {@link jakarta.annotation.PreDestroy} 注解，
+// 分别用作初始化注解和销毁注解。此外，它还支持 {@link jakarta.annotation.Resource} 注解，用于通过注解驱动注入命名 bean。
 @SuppressWarnings("serial")
 public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAwareBeanPostProcessor,
 		MergedBeanDefinitionPostProcessor, BeanRegistrationAotProcessor, PriorityOrdered, Serializable {
@@ -266,10 +279,10 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 
 	private LifecycleMetadata findLifecycleMetadata(Class<?> beanClass) {
 		if (this.lifecycleMetadataCache == null) {
-			// Happens after deserialization, during destruction...
+			// Happens after deserialization, during destruction... --> 译文：发生在反序列化之后，销毁过程中……
 			return buildLifecycleMetadata(beanClass);
 		}
-		// Quick check on the concurrent map first, with minimal locking.
+		// Quick check on the concurrent map first, with minimal locking. --> 译文：首先快速检查并发映射，尽量减少锁定。
 		LifecycleMetadata metadata = this.lifecycleMetadataCache.get(beanClass);
 		if (metadata == null) {
 			synchronized (this.lifecycleMetadataCache) {
@@ -285,6 +298,7 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 	}
 
 	private LifecycleMetadata buildLifecycleMetadata(final Class<?> beanClass) {
+		// 1. 检查类是否被候选注解（initAnnotationTypes 和 destroyAnnotationTypes）标注
 		if (!AnnotationUtils.isCandidateClass(beanClass, this.initAnnotationTypes) &&
 				!AnnotationUtils.isCandidateClass(beanClass, this.destroyAnnotationTypes)) {
 			return this.emptyLifecycleMetadata;
@@ -298,6 +312,8 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 			final List<LifecycleMethod> currInitMethods = new ArrayList<>();
 			final List<LifecycleMethod> currDestroyMethods = new ArrayList<>();
 
+			// 2. 获取类中被候选注解（initAnnotationTypes 和 destroyAnnotationTypes）标注的方法，
+			// 并封装成 LifecycleMethod 添加到各自的集合（currInitMethods 和 currDestroyMethods）中
 			ReflectionUtils.doWithLocalMethods(currentClass, method -> {
 				for (Class<? extends Annotation> initAnnotationType : this.initAnnotationTypes) {
 					if (initAnnotationType != null && method.isAnnotationPresent(initAnnotationType)) {
@@ -323,6 +339,7 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 		}
 		while (currentClass != null && currentClass != Object.class);
 
+		// 3. 使用 init 和 destroy 方法集创建一个 集合 LifecycleMetadata 并返回
 		return (initMethods.isEmpty() && destroyMethods.isEmpty() ? this.emptyLifecycleMetadata :
 				new LifecycleMetadata(beanClass, initMethods, destroyMethods));
 	}
@@ -434,6 +451,7 @@ public class  InitDestroyAnnotationBeanPostProcessor implements DestructionAware
 	/**
 	 * Class representing an annotated init or destroy method.
 	 */
+	// 表示带注解的 init 或 destroy 方法的类。
 	private static class LifecycleMethod {
 
 		private final Method method;

@@ -595,7 +595,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	}
 
 	private InjectionMetadata buildAutowiringMetadata(Class<?> clazz) {
-		// 确定给定类是否适合携带指定注解之一（在类型、方法或字段级别）。
+		// 1. 检查给定类是否被 autowired（autowiredAnnotationTypes=@jakarta.inject.Inject、@javax.inject.Inject、t@Autowired、@Value） 注解标注（在类型、方法或字段级别）
 		if (!AnnotationUtils.isCandidateClass(clazz, this.autowiredAnnotationTypes)) {
 			return InjectionMetadata.EMPTY;
 		}
@@ -604,6 +604,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		Class<?> targetClass = clazz;
 
 		do {
+			// 2. 获取被 autowired 注解标注的字段，并将其封装到 AutowiredFieldElement 对象中，最后添加到集合中
 			final List<InjectionMetadata.InjectedElement> fieldElements = new ArrayList<>();
 			// 在给定类中所有本地声明的字段上调用给定的回调函数。
 			ReflectionUtils.doWithLocalFields(targetClass, field -> {
@@ -618,12 +619,13 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 						return;
 					}
 					// 确定被注解的字段或方法是否需要依赖项。即：根据注解的 required 字段进行判断
-					boolean required = determineRequiredStatus(ann);
+					boolean required = determineRequiredStatus(ann); // 获取属性 @Autowired#required 的值
 					// add AutowiredFieldElement to fieldElements
 					fieldElements.add(new AutowiredFieldElement(field, required));
 				}
 			});
 
+			// 3. 获取被 autowired 注解标注的方法，并将其封装到 AutowiredMethodElement 对象中，最后添加到集合中
 			final List<InjectionMetadata.InjectedElement> methodElements = new ArrayList<>();
 			// 对给定类的所有匹配方法执行给定的回调操作，这些方法可以是本地声明的或等效的（例如，给定类实现的基于 Java 8 的接口上的默认方法）。
 			ReflectionUtils.doWithLocalMethods(targetClass, method -> {
@@ -657,7 +659,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 						}
 					}
 					// 确定被注解的字段或方法是否需要依赖项。即：根据注解的 required 字段进行判断
-					boolean required = determineRequiredStatus(ann);
+					boolean required = determineRequiredStatus(ann); // 获取属性 @Autowired#required 的值
 					// 为给定方法查找 JavaBean {@code PropertyDescriptor}，该方法可以是该 bean 属性的读取方法或写入方法。
 					PropertyDescriptor pd = BeanUtils.findPropertyForMethod(bridgedMethod, clazz);
 					// add AutowiredMethodElement to fieldElements
@@ -671,6 +673,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		}
 		while (targetClass != null && targetClass != Object.class);
 
+		// 4. 使用被 autowired 注解标注的字段和方法封装成的 AutowiredFieldElement、AutowiredMethodElement 的对象，创建一个 InjectionMetadata 对象返回
 		return InjectionMetadata.forElements(elements, clazz);
 	}
 
@@ -709,6 +712,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	/**
 	 * Sort the method elements via ASM for deterministic declaration order if possible.
 	 */
+	// 如果可能，通过 ASM 对方法元素进行排序，以确定声明顺序。
 	private List<InjectionMetadata.InjectedElement> sortMethodElements(
 			List<InjectionMetadata.InjectedElement> methodElements, Class<?> targetClass) {
 
@@ -716,6 +720,8 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 			// Try reading the class file via ASM for deterministic declaration order...
 			// Unfortunately, the JVM's standard reflection returns methods in arbitrary
 			// order, even between different runs of the same application on the same JVM.
+			// --> 译文：尝试通过汇编语言读取类文件，以确保声明顺序的确定性……
+			// 遗憾的是，JVM 的标准反射机制返回的方法顺序是任意的，即使是在同一 JVM 上运行的同一应用程序的不同版本之间也是如此。
 			try {
 				AnnotationMetadata asm =
 						this.metadataReaderFactory.getMetadataReader(targetClass.getName()).getAnnotationMetadata();
@@ -734,14 +740,14 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 						}
 					}
 					if (selectedMethods.size() == methodElements.size()) {
-						// All reflection-detected methods found in ASM method set -> proceed
+						// All reflection-detected methods found in ASM method set -> proceed --> 译文：ASM 方法集中找到的所有反射检测方法 -> 继续
 						return selectedMethods;
 					}
 				}
 			}
 			catch (IOException ex) {
 				logger.debug("Failed to read class file via ASM for determining @Autowired method order", ex);
-				// No worries, let's continue with the reflection metadata we started with...
+				// No worries, let's continue with the reflection metadata we started with... --> 译文：别担心，我们继续之前讨论的反射元数据……
 			}
 		}
 		return methodElements;
@@ -768,6 +774,7 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 	/**
 	 * Resolve the specified cached method argument or field value.
 	 */
+	// 解析指定的缓存方法参数或字段值。
 	@Nullable
 	private Object resolveCachedArgument(@Nullable String beanName, @Nullable Object cachedArgument) {
 		if (cachedArgument instanceof DependencyDescriptor descriptor) {
@@ -814,12 +821,14 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 		protected void inject(Object bean, @Nullable String beanName, @Nullable PropertyValues pvs) throws Throwable {
 			Field field = (Field) this.member;
 			Object value;
+			// 1. 缓存检查
 			if (this.cached) {
 				try {
+					// 已缓存参数数组，直接使用
 					value = resolveCachedArgument(beanName, this.cachedFieldValue);
 				}
 				catch (BeansException ex) {
-					// Unexpected target bean mismatch for cached argument -> re-resolve
+					// Unexpected target bean mismatch for cached argument -> re-resolve --> 译文：缓存参数的目标 bean 不匹配 -> 重新解析
 					this.cached = false;
 					logger.debug("Failed to resolve cached argument", ex);
 					value = resolveFieldValue(field, bean, beanName);
@@ -837,17 +846,13 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 
 		@Nullable
 		private Object resolveFieldValue(Field field, Object bean, @Nullable String beanName) {
-			// 为字段创建新的描述符。
 			DependencyDescriptor desc = new DependencyDescriptor(field, this.required);
-			// 可选地设置包含此依赖项的具体类。这可能与声明参数/字段的类不同，因为它可能是其子类，可能会替换类型变量。
 			desc.setContainingClass(bean.getClass());
 			Set<String> autowiredBeanNames = new LinkedHashSet<>(2);
 			Assert.state(beanFactory != null, "No BeanFactory available");
-			// 获取此 BeanFactory 使用的类型转换器。
 			TypeConverter typeConverter = beanFactory.getTypeConverter();
 			Object value;
 			try {
-				// 解析此工厂中定义的 bean 的指定依赖关系。
 				value = beanFactory.resolveDependency(desc, beanName, autowiredBeanNames, typeConverter);  // go
 			}
 			catch (BeansException ex) {
@@ -857,7 +862,6 @@ public class AutowiredAnnotationBeanPostProcessor implements SmartInstantiationA
 				if (!this.cached) {
 					if (value != null || this.required) {
 						Object cachedFieldValue = desc;
-						// 将指定的 bean 注册为依赖于自动装配的 bean。
 						registerDependentBeans(beanName, autowiredBeanNames);
 						if (value != null && autowiredBeanNames.size() == 1) {
 							String autowiredBeanName = autowiredBeanNames.iterator().next();

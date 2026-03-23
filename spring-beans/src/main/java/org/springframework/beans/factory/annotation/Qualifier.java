@@ -33,6 +33,7 @@ import java.lang.annotation.Target;
  * @since 2.5
  * @see Autowired
  */
+// 此注解可用于字段或参数，作为自动装配时候选 bean 的限定符。它还可用于注解其他自定义注解，这些自定义注解反过来又可用作限定符。
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.TYPE, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

@@ -54,6 +54,10 @@ import org.springframework.util.StringUtils;
  * @see BeanWrapperImpl
  * @see SimpleTypeConverter
  */
+// 用于将属性值转换为目标类型的内部辅助类。
+//
+// <p>作用于给定的 {@link PropertyEditorRegistrySupport} 实例。
+// 被 {@link BeanWrapperImpl} 和 {@link SimpleTypeConverter} 用作委托。</p>
 class TypeConverterDelegate {
 
 	private static final Log logger = LogFactory.getLog(TypeConverterDelegate.class);

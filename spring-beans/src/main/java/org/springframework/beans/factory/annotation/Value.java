@@ -52,6 +52,14 @@ import java.lang.annotation.Target;
  * @see org.springframework.beans.factory.config.BeanExpressionResolver
  * @see org.springframework.beans.factory.support.AutowireCandidateResolver#getSuggestedValue
  */
+// 用于字段或方法/构造函数参数级别的注解，指示被注解元素的默认值表达式。
+//
+// 通常用于表达式驱动或属性驱动的依赖注入。也支持动态解析处理程序方法参数——例如，在 Spring MVC 中。
+//
+// 一个常见的用例是使用 #{systemProperties.myProp} 风格的 SpEL（Spring 表达式语言）表达式注入值。或者，也可以使用 ${my.app.myProp} 风格的属性占位符注入值。
+//
+// 请注意，@Value 注解的实际处理由 BeanPostProcessor 执行，这意味着您不能在 BeanPostProcessor 或 BeanFactoryPostProcessor 类型中使用 @Value。
+// 请参阅 AutowiredAnnotationBeanPostProcessor 类的 Javadoc（默认情况下，该类会检查是否存在此注解）。
 @Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -61,6 +69,7 @@ public @interface Value {
 	 * The actual value expression such as <code>#{systemProperties.myProp}</code>
 	 * or property placeholder such as <code>${my.app.myProp}</code>.
 	 */
+	// 实际值表达式，例如 <code>#{systemProperties.myProp}</code>，或属性占位符，例如 <code>${my.app.myProp}</code>。
 	String value();
 
 }

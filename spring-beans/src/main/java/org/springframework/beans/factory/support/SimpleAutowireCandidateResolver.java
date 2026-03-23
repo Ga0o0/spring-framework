@@ -28,6 +28,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.5
  */
+// 当不支持注解时，将使用 {@link AutowireCandidateResolver} 实现。此实现仅检查 bean 定义。
 public class SimpleAutowireCandidateResolver implements AutowireCandidateResolver {
 
 	/**

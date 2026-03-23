@@ -917,6 +917,12 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @param resolver the AutowireCandidateResolver to use for the actual resolution algorithm
 	 * @return whether the bean should be considered as autowire candidate
 	 */
+	// 判断指定的 bean 定义是否符合自动装配候选条件，以便注入到声明了匹配类型依赖项的其他 bean 中。
+	// @param beanName 要检查的 bean 定义的名称
+	// @param mbd 要检查的合并 bean 定义
+	// @param descriptor 要解析的依赖项的描述符
+	// @param resolver 用于实际解析算法的 AutowireCandidateResolver
+	// @return 该 bean 是否应被视为自动装配候选。
 	protected boolean isAutowireCandidate(String beanName, RootBeanDefinition mbd,
 			DependencyDescriptor descriptor, AutowireCandidateResolver resolver) {
 
@@ -1414,19 +1420,20 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 
 		// 初始化底层方法参数的参数名称发现（如果有）。
 		descriptor.initParameterNameDiscovery(getParameterNameDiscoverer());
-		// descriptor.getDependencyType() --> 确定包装参数/字段的声明（非泛型）类型。
+		// 1. 处理 Optional 类型
 		if (Optional.class == descriptor.getDependencyType()) {
 			return createOptionalDependency(descriptor, requestingBeanName);
 		}
+		// 2. 处理 ObjectFactory / ObjectProvider 类型
 		else if (ObjectFactory.class == descriptor.getDependencyType() ||
 				ObjectProvider.class == descriptor.getDependencyType()) {
 			return new DependencyObjectProvider(descriptor, requestingBeanName);
 		}
-		// jakartaInjectProviderClass == "jakarta.inject.Provider"
+		// 3. 处理 jakarta.inject.Provider 类型
 		else if (jakartaInjectProviderClass == descriptor.getDependencyType()) {
 			return new Jsr330Factory().createDependencyProvider(descriptor, requestingBeanName);
 		}
-		// 确定此依赖项是否支持延迟解析，例如通过额外代理。默认值为 {@code true}。
+		// 4. 处理依赖项延迟解析
 		else if (descriptor.supportsLazyResolution()) {
 			Object result = getAutowireCandidateResolver().getLazyResolutionProxyIfNecessary(
 					descriptor, requestingBeanName);
@@ -1434,6 +1441,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				return result;
 			}
 		}
+		// 5. 常规类型：执行核心解析
 		return doResolveDependency(descriptor, requestingBeanName, autowiredBeanNames, typeConverter); // go
 	}
 
@@ -1464,6 +1472,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 				TypeConverter converter = (typeConverter != null ? typeConverter : getTypeConverter());
 				try {
+					// 解析 ${...} 占位符和 #{...} SpEL表达式
 					return converter.convertIfNecessary(value, type, descriptor.getTypeDescriptor());
 				}
 				catch (UnsupportedOperationException ex) {
@@ -1483,7 +1492,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 			}
 			// Step 3b: direct bean matches, possibly direct beans of type Collection / Map
 			// --> 译文：步骤 3b：直接 bean 匹配，可能是 Collection / Map 类型的直接 bean
-			// 查找符合所需类型的 Bean 实例。在为指定 Bean 自动装配时调用。
+			// 查找符合所需类型的 Bean 实例。key: beanName, value: beanClass
 			Map<String, Object> matchingBeans = findAutowireCandidates(beanName, type, descriptor);
 			if (matchingBeans.isEmpty()) {
 				// Step 3c (fallback): custom Collection / Map declarations for collecting multiple beans
@@ -1737,7 +1746,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	protected Map<String, Object> findAutowireCandidates(
 			@Nullable String beanName, Class<?> requiredType, DependencyDescriptor descriptor) {
 
-		// 获取给定类型的所有 Bean 名称，包括在祖先工厂中定义的 Bean 名称。如果 Bean 定义被覆盖，则返回唯一名称。
+		// 查询给定类型 Class 的所有 Bean 名称，包括其在祖先工厂中定义的 Bean 名称
 		String[] candidateNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 				this, requiredType, true, descriptor.isEager());
 		Map<String, Object> result = CollectionUtils.newLinkedHashMap(candidateNames.length);
@@ -1978,6 +1987,15 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * @param beanInstance the bean instance to check (can be {@code null})
 	 * @return the priority assigned to that bean or {@code null} if none is set
 	 */
+	// 返回由 {@code jakarta.annotation.Priority} 注解为给定 bean 实例分配的优先级。
+	//
+	// <p>默认实现会委托给指定的 {@link #setDependencyComparator 依赖比较器}，
+	// 并检查其 {@link OrderComparator#getPriority 方法} 是否为 Spring 通用 {@link OrderComparator}
+	// 的扩展——通常是 {@link org.springframework.core.annotation.AnnotationAwareOrderComparator}。
+	// 如果不存在这样的比较器，则此实现返回 {@code null}。
+	//
+	// @param beanInstance 要检查的 bean 实例（可以为 {@code null}）
+	// @return 分配给该 bean 的优先级，如果未设置优先级，则返回 {@code null}。
 	@Nullable
 	protected Integer getPriority(Object beanInstance) {
 		Comparator<Object> comparator = getDependencyComparator();
@@ -2013,6 +2031,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Raise a NoSuchBeanDefinitionException or BeanNotOfRequiredTypeException
 	 * for an unresolvable dependency.
 	 */
+	// 对于无法解析的依赖项，引发 NoSuchBeanDefinitionException 或 BeanNotOfRequiredTypeException 异常。
 	private void raiseNoMatchingBeanFound(
 			Class<?> type, ResolvableType resolvableType, DependencyDescriptor descriptor) throws BeansException {
 
@@ -2027,6 +2046,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Raise a BeanNotOfRequiredTypeException for an unresolvable dependency, if applicable,
 	 * i.e. if the target type of the bean would match but an exposed proxy doesn't.
 	 */
+	// 如果适用，则对于无法解析的依赖项引发 BeanNotOfRequiredTypeException，即如果 bean 的目标类型匹配但公开的代理不匹配。
 	private void checkBeanNotOfRequiredType(Class<?> type, DependencyDescriptor descriptor) {
 		for (String beanName : this.beanDefinitionNames) {
 			try {
@@ -2035,6 +2055,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				if (targetType != null && type.isAssignableFrom(targetType) &&
 						isAutowireCandidate(beanName, mbd, descriptor, getAutowireCandidateResolver())) {
 					// Probably a proxy interfering with target type match -> throw meaningful exception.
+					// --> 译文：可能是代理干扰了目标类型匹配 -> 抛出有意义的异常。
 					Object beanInstance = getSingleton(beanName, false);
 					Class<?> beanType = (beanInstance != null && beanInstance.getClass() != NullBean.class ?
 							beanInstance.getClass() : predictBeanType(beanName, mbd));
@@ -2044,7 +2065,7 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 				}
 			}
 			catch (NoSuchBeanDefinitionException ex) {
-				// Bean definition got removed while we were iterating -> ignore.
+				// Bean definition got removed while we were iterating -> ignore. --> 译文：迭代过程中 Bean 定义被删除 -> 忽略。
 			}
 		}
 
@@ -2350,6 +2371,8 @@ public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFacto
 	 * Actual {@code jakarta.inject.Provider} implementation is nested here in order to make it
 	 * invisible for Graal's introspection of DefaultListableBeanFactory's nested classes.
 	 */
+	// 单独的内部类是为了避免对 {@code jakarta.inject} API 的硬性依赖。
+	// 实际的 {@code jakarta.inject.Provider} 实现嵌套在这里，是为了使其对 Graal 的 DefaultListableBeanFactory 嵌套类的自省不可见。
 	private class Jsr330Factory implements Serializable {
 
 		public Object createDependencyProvider(DependencyDescriptor descriptor, @Nullable String beanName) {

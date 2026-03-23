@@ -59,6 +59,10 @@ import org.springframework.util.ObjectUtils;
  * @see Qualifier
  * @see Value
  */
+// {@link AutowireCandidateResolver} 实现，用于将 bean 定义限定符与要自动装配的字段或参数上的
+// {@link Qualifier qualifier annotations} 进行匹配。此外，还支持通过 {@link Value value} 注解提供建议的表达式值。
+//
+// <p>如果可用，还支持 JSR-330 的 {@link jakarta.inject.Qualifier} 注解（以及其 Jakarta 之前的等效注解 {@code javax.inject.Qualifier}）。</p>
 public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwareAutowireCandidateResolver {
 
 	private final Set<Class<? extends Annotation>> qualifierTypes = new LinkedHashSet<>(2);
@@ -403,6 +407,7 @@ public class QualifierAnnotationAutowireCandidateResolver extends GenericTypeAwa
 	 * Extract the value attribute from the given annotation.
 	 * @since 4.3
 	 */
+	// 从给定的注解中提取值属性。
 	protected Object extractValue(AnnotationAttributes attr) {
 		Object value = attr.get(AnnotationUtils.VALUE);
 		if (value == null) {
