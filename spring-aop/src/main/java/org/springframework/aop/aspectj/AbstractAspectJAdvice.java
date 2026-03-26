@@ -59,6 +59,7 @@ import org.springframework.util.StringUtils;
  * @author Ramnivas Laddad
  * @since 2.0
  */
+// AOP Alliance {@link org.aopalliance.aop.Advice} 类的基类，用于封装 AspectJ 切面或 AspectJ 注解的 advice 方法。
 @SuppressWarnings("serial")
 public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedenceInformation, Serializable {
 
@@ -107,11 +108,13 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * (used when determining advice precedence so that we can determine
 	 * whether two pieces of advice come from the same aspect).
 	 */
+	// 定义此 advice 的方面（ref bean）的名称（用于确定 advice 优先级，以便我们可以确定两条 advice 是否来自同一方面）。
 	private String aspectName = "";
 
 	/**
 	 * The order of declaration of this advice within the aspect.
 	 */
+	// 该 advice 在该方面内的声明顺序。
 	private int declarationOrder;
 
 	/**
@@ -226,6 +229,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	/**
 	 * Set the name of the aspect (bean) in which the advice was declared.
 	 */
+	// 设置声明该 advice 的方面（bean）的名称。
 	public void setAspectName(String name) {
 		this.aspectName = name;
 	}
@@ -238,6 +242,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	/**
 	 * Set the declaration order of this advice within the aspect.
 	 */
+	// 设置此 advice 在切面中的声明顺序。
 	public void setDeclarationOrder(int order) {
 		this.declarationOrder = order;
 	}
@@ -264,6 +269,9 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * or in an advice annotation.
 	 * @param argumentNames list of argument names
 	 */
+	// 如果参数名称已知，则由此通知对象的创建者设置。
+	// <p>例如，这可能是因为它们已在 XML 或通知注解中显式指定。
+	// @param argumentNames 参数名称列表
 	public void setArgumentNamesFromStringArray(String... argumentNames) {
 		this.argumentNames = new String[argumentNames.length];
 		for (int i = 0; i < argumentNames.length; i++) {
@@ -375,6 +383,14 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	 * to which argument name. There are multiple strategies for determining
 	 * this binding, which are arranged in a ChainOfResponsibility.
 	 */
+	// 在设置阶段尽可能多地完成工作，以便后续通知调用中的参数绑定能够尽可能快。
+	//
+	// <p>如果第一个参数的类型是 JoinPoint 或 ProceedingJoinPoint，则在该位置传递一个 JoinPoint（对于环绕通知，传递 ProceedingJoinPoint）。
+	//
+	// <p>如果第一个参数的类型是 {@code JoinPoint.StaticPart}，则在该位置传递一个 {@code JoinPoint.StaticPart}。
+	//
+	// <p>其余参数必须通过在给定连接点处进行切入点求值来绑定。我们将获得一个从参数名称到值的映射。
+	// 我们需要计算哪个通知参数需要绑定到哪个参数名称。有多种策略可以确定这种绑定，这些策略按责任链排列。
 	public final void calculateArgumentBindings() {
 		// The simple case... nothing to bind.
 		if (this.argumentsIntrospected || this.parameterTypes.length == 0) {
@@ -389,7 +405,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 		}
 
 		if (numUnboundArgs > 0) {
-			// need to bind arguments by name as returned from the pointcut match
+			// need to bind arguments by name as returned from the pointcut match --> 译文：需要按名称绑定从切入点匹配返回的参数。
 			bindArgumentsByName(numUnboundArgs);
 		}
 
@@ -660,6 +676,7 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	/**
 	 * Get the current join point match at the join point we are being dispatched on.
 	 */
+	// 获取当前分派点的连接点匹配项。
 	@Nullable
 	protected JoinPointMatch getJoinPointMatch() {
 		MethodInvocation mi = ExposeInvocationInterceptor.currentInvocation();
@@ -675,6 +692,9 @@ public abstract class AbstractAspectJAdvice implements Advice, AspectJPrecedence
 	// 'last man wins' which is not what we want at all.
 	// Using the expression is guaranteed to be safe, since 2 identical expressions
 	// are guaranteed to bind in exactly the same way.
+	// 注意：我们不能使用 `JoinPointMatch.getClass().getName()` 作为键，因为 Spring AOP 会在连接点处完成所有匹配，然后再进行所有调用。
+	// 在这种情况下，如果我们只使用 `JoinPointMatch` 作为键，就会出现“最后匹配成功”的情况，这完全不是我们想要的结果。
+	// 使用表达式可以保证安全，因为两个相同的表达式保证会以完全相同的方式绑定。
 	@Nullable
 	protected JoinPointMatch getJoinPointMatch(ProxyMethodInvocation pmi) {
 		String expression = this.pointcut.getExpression();

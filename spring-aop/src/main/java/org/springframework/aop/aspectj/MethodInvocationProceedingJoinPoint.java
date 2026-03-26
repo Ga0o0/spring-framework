@@ -49,6 +49,12 @@ import org.springframework.util.Assert;
  * @author Ramnivas Laddad
  * @since 2.0
  */
+// 这是 AspectJ {@link ProceedingJoinPoint} 接口的一个实现，它封装了 AOP Alliance {@link org.aopalliance.intercept.MethodInvocation}。
+//
+// <p><b>注意</b>：{@code getThis()} 方法返回当前 Spring AOP 代理。
+// {@code getTarget()} 方法返回当前 Spring AOP 目标（如果没有目标实例，则可能为 {@code null}），它以普通的 POJO 对象形式返回，不包含任何通知。
+//
+// <b>如果要调用对象并让通知生效，请使用 {@code getThis()}。</b> 一个常见的例子是在实现引入方法时将对象强制转换为引入的接口。AspectJ 本身并没有区分目标和代理。
 public class MethodInvocationProceedingJoinPoint implements ProceedingJoinPoint, JoinPoint.StaticPart {
 
 	private static final ParameterNameDiscoverer parameterNameDiscoverer = new DefaultParameterNameDiscoverer();

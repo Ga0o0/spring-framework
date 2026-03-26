@@ -95,9 +95,9 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 
 	@Override
 	protected List<Advisor> findCandidateAdvisors() {
-		// Add all the Spring advisors found according to superclass rules.
+		// Add all the Spring advisors found according to superclass rules. --> 译文：添加所有根据超类规则找到的 Spring advisors
 		List<Advisor> advisors = super.findCandidateAdvisors();
-		// Build Advisors for all AspectJ aspects in the bean factory.
+		// Build Advisors for all AspectJ aspects in the bean factory. --> 译文：为 Bean Factory 中的所有 AspectJ aspects 构建 Advisors
 		if (this.aspectJAdvisorsBuilder != null) {
 			advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());
 		}
@@ -114,6 +114,9 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 		// proxied by that interface and fail at runtime as the advice method is not
 		// defined on the interface. We could potentially relax the restriction about
 		// not advising aspects in the future.
+		// -> 译文：之前我们在构造函数中设置了 setProxyTargetClass(true)，但这影响范围太广。现在我们重写了 isInfrastructureClass 方法来避免代理切面。
+		// 我对这个做法并不完全满意，因为除了会导致通知调用通过代理之外，没有其他充分的理由不给切面提供通知。
+		// 如果切面实现了例如 Ordered 接口，它将被该接口代理，并在运行时失败，因为该接口上没有定义通知方法。未来我们或许可以放宽对不给切面提供通知的限制。
 		return (super.isInfrastructureClass(beanClass) ||
 				(this.aspectJAdvisorFactory != null && this.aspectJAdvisorFactory.isAspect(beanClass)));
 	}

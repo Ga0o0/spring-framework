@@ -1533,6 +1533,9 @@ public class BeanDefinitionParserDelegate {
 	 * different mechanism for getting the local name.
 	 * @param node the {@code Node}
 	 */
+	// 获取提供的 {@link Node} 的本地名称。
+	// <p>默认实现调用 {@link Node#getLocalName}。子类可以重写默认实现，以提供不同的获取本地名称的机制。
+	// @param node {@code Node}
 	public String getLocalName(Node node) {
 		return node.getLocalName();
 	}

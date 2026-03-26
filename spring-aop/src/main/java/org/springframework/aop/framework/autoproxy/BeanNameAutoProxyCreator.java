@@ -43,6 +43,10 @@ import org.springframework.util.PatternMatchUtils;
  * @see #setInterceptorNames
  * @see AbstractAutoProxyCreator
  */
+// 自动代理创建器，通过名称列表识别要代理的 bean。检查直接匹配、“xxx*”匹配和“*xxx”匹配。
+//
+// <p>有关配置详情，请参阅父类 AbstractAutoProxyCreator 的 Javadoc。
+// 通常，您可以通过“interceptorNames”属性指定一个拦截器名称列表，将其应用于所有已识别的 bean。
 @SuppressWarnings("serial")
 public class BeanNameAutoProxyCreator extends AbstractAutoProxyCreator {
 

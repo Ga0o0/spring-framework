@@ -44,13 +44,20 @@ public abstract class AspectJProxyUtils {
 	 * @return {@code true} if an {@link ExposeInvocationInterceptor} was added to the list,
 	 * otherwise {@code false}
 	 */
+	// 如有必要，可添加特殊顾问以与包含 AspectJ 顾问的代理链配合使用：具体来说，在列表开头添加 {@link ExposeInvocationInterceptor}。
+	//
+	// <p>这将暴露当前的 Spring AOP 调用（某些 AspectJ 切入点匹配需要此操作），并提供当前的 AspectJ JoinPoint。如果顾问链中没有 AspectJ 顾问，则此调用无效。
+	// @param advisors 可用的顾问
+	// @return 如果列表中添加了 {@link ExposeInvocationInterceptor}，则返回 {@code true}，否则返回 {@code false}
 	public static boolean makeAdvisorChainAspectJCapableIfNecessary(List<Advisor> advisors) {
 		// Don't add advisors to an empty list; may indicate that proxying is just not required
+		// --> 译文：不要将 advisors 添加到空列表中；这可能表明根本不需要代理。
 		if (!advisors.isEmpty()) {
 			boolean foundAspectJAdvice = false;
 			for (Advisor advisor : advisors) {
 				// Be careful not to get the Advice without a guard, as this might eagerly
 				// instantiate a non-singleton AspectJ aspect...
+				// --> 译文：注意不要在没有守卫的情况下获取建议，因为这可能会立即实例化一个非单例的 AspectJ 方面……
 				if (isAspectJAdvice(advisor)) {
 					foundAspectJAdvice = true;
 					break;
@@ -68,6 +75,8 @@ public abstract class AspectJProxyUtils {
 	 * Determine whether the given Advisor contains an AspectJ advice.
 	 * @param advisor the Advisor to check
 	 */
+	// 判断给定的 Advisor 是否包含 AspectJ 建议。
+	// @param advisor 要检查的 Advisor
 	private static boolean isAspectJAdvice(Advisor advisor) {
 		return (advisor instanceof InstantiationModelAwarePointcutAdvisor ||
 				advisor.getAdvice() instanceof AbstractAspectJAdvice ||

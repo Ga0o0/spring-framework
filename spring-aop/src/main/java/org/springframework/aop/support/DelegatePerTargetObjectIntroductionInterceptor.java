@@ -52,6 +52,16 @@ import org.springframework.util.ReflectionUtils;
  * @see #suppressInterface
  * @see DelegatingIntroductionInterceptor
  */
+// 对 {@link org.springframework.aop.IntroductionInterceptor} 接口的便捷实现。
+//
+// <p>这与 {@link DelegatingIntroductionInterceptor} 的区别在于，此类的单个实例可以用于通知多个目标对象，
+// 并且每个目标对象都有其自己的<i>自己的</i>委托（而 DelegatingIntroductionInterceptor 共享同一个委托，因此所有目标对象共享相同的状态）。
+//
+// <p>可以使用 {@code suppressInterface} 方法抑制委托类实现的接口，但这些接口不应引入到所属的 AOP 代理中。
+//
+// <p>如果委托是可序列化的，则此类的实例也是可序列化的。
+//
+// <p><i>注意：此类与 {@link DelegatingIntroductionInterceptor} 之间存在一些实现上的相似之处，这表明将来可能会进行重构，以提取一个公共的祖先类。</i>
 @SuppressWarnings("serial")
 public class DelegatePerTargetObjectIntroductionInterceptor extends IntroductionInfoSupport
 		implements IntroductionInterceptor {

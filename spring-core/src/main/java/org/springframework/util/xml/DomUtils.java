@@ -57,6 +57,11 @@ public abstract class DomUtils {
 	 * @see org.w3c.dom.Element
 	 * @see org.w3c.dom.Element#getElementsByTagName
 	 */
+	// 获取给定 DOM 元素的所有子元素，这些子元素必须与给定的元素名称匹配。
+	// 仅查找给定元素的直接子元素级别；不会深入到更深的层级（与 DOM API 的 `getElementsByTagName` 方法不同）。
+	// @param ele 要分析的 DOM 元素
+	// @param childEleNames 要查找的子元素名称
+	// @return 子元素 `{@code org.w3c.dom.Element}` 实例的列表
 	public static List<Element> getChildElementsByTagName(Element ele, String... childEleNames) {
 		Assert.notNull(ele, "Element must not be null");
 		Assert.notNull(childEleNames, "Element names collection must not be null");
@@ -82,6 +87,10 @@ public abstract class DomUtils {
 	 * @see org.w3c.dom.Element
 	 * @see org.w3c.dom.Element#getElementsByTagName
 	 */
+	// 获取给定 DOM 元素的所有与给定元素名称匹配的子元素。仅查找给定元素的直接子元素；不会深入到更深的层级（与 DOM API 的 {@code getElementsByTagName} 方法不同）。
+	// @param ele 要分析的 DOM 元素
+	// @param childEleName 要查找的子元素名称
+	// @return 子 {@code org.w3c.dom.Element} 实例的列表
 	public static List<Element> getChildElementsByTagName(Element ele, String childEleName) {
 		return getChildElementsByTagName(ele, new String[] {childEleName});
 	}
@@ -123,6 +132,9 @@ public abstract class DomUtils {
 	 * @param ele the DOM element to analyze
 	 * @return a List of child {@code org.w3c.dom.Element} instances
 	 */
+	// 获取给定 DOM 元素的所有子元素。
+	// @param ele 要分析的 DOM 元素
+	// @return 子元素 {@code org.w3c.dom.Element} 实例的列表
 	public static List<Element> getChildElements(Element ele) {
 		Assert.notNull(ele, "Element must not be null");
 		NodeList nl = ele.getChildNodes();

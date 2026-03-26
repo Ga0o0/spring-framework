@@ -104,16 +104,18 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 				new CompositeComponentDefinition(element.getTagName(), parserContext.extractSource(element));
 		parserContext.pushContainingComponent(compositeDef);
 
-		// register AspectJAwareAdvisorAutoProxyCreator
+		// 1. 注册 AspectJAwareAdvisorAutoProxyCreator 的 BeanDefinition，并获取 <aop:config/> 标签的属性设置给它
 		configureAutoProxyCreator(parserContext, element);
 
+		// 2. 获取给定 DOM 元素的所有子元素，并进行解析
 		List<Element> childElts = DomUtils.getChildElements(element);
 		for (Element elt: childElts) {
 			String localName = parserContext.getDelegate().getLocalName(elt);
 			switch (localName) {
-				case POINTCUT -> parsePointcut(elt, parserContext); // -> AspectJExpressionPointcut
-				case ADVISOR -> parseAdvisor(elt, parserContext); 	// -> DefaultBeanFactoryPointcutAdvisor
-				case ASPECT -> parseAspect(elt, parserContext);		// -> AspectJPointcutAdvisor
+				case POINTCUT -> parsePointcut(elt, parserContext); // pointcut -> AspectJExpressionPointcut
+				case ADVISOR -> parseAdvisor(elt, parserContext); 	// advisor  -> DefaultBeanFactoryPointcutAdvisor
+				case ASPECT -> parseAspect(elt, parserContext);		// aspect	-> AspectJPointcutAdvisor
+				// aspect 标签处理中对 advice 的处理：ConfigBeanDefinitionParser.getAdviceClass(...)
 			}
 		}
 
@@ -223,7 +225,8 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 			boolean adviceFoundAlready = false;
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				Node node = nodeList.item(i);
-				// isAdviceNode() -> 如果提供的节点描述了 advice 类型，则返回 {@code true}。可以是以下之一：'{@code before}'、'{@code after}'、'{@code after-returning}'、'{@code after-throwing}' 或 '{@code around}'。
+				// 如果提供的节点描述了一种 advice 类型，则返回 true。可以是以下值之一：
+				// before、after、after-returning、after-throwing 或 around
 				if (isAdviceNode(node, parserContext)) {
 					if (!adviceFoundAlready) {
 						adviceFoundAlready = true;
@@ -245,6 +248,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 					aspectElement, aspectId, beanDefinitions, beanReferences, parserContext);
 			parserContext.pushContainingComponent(aspectComponentDefinition);
 
+			// 获取给定 DOM 元素的所有与给定元素名称匹配的子元素。
 			List<Element> pointcuts = DomUtils.getChildElementsByTagName(aspectElement, POINTCUT);
 			for (Element pointcutElement : pointcuts) {
 				parsePointcut(pointcutElement, parserContext);
@@ -272,8 +276,8 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	 * '{@code before}', '{@code after}', '{@code after-returning}',
 	 * '{@code after-throwing}' or '{@code around}'.
 	 */
-	// 如果提供的节点描述了 advice 类型，则返回 {@code true}。
-	// 可以是以下之一：'{@code before}'、'{@code after}'、'{@code after-returning}'、'{@code after-throwing}' 或 '{@code around}'。
+	// 如果提供的节点描述了一种 advice 类型，则返回 {@code true}。可以是以下值之一：
+	// '{@code before}'、'{@code after}'、'{@code after-returning}'、'{@code after-throwing}' 或 '{@code around}'。
 	private boolean isAdviceNode(Node aNode, ParserContext parserContext) {
 		if (!(aNode instanceof Element)) {
 			return false;
@@ -423,7 +427,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 	/**
 	 * Gets the advice implementation class corresponding to the supplied {@link Element}.
 	 */
-	// 获取与提供的{@link Element}对应的建议实现类。
+	// 获取与提供的 {@link Element} 对应的 advice 实现类。
 	private Class<?> getAdviceClass(Element adviceElement, ParserContext parserContext) {
 		String elementName = parserContext.getDelegate().getLocalName(adviceElement);
 		return switch (elementName) {
@@ -449,7 +453,7 @@ class ConfigBeanDefinitionParser implements BeanDefinitionParser {
 
 		try {
 			this.parseState.push(new PointcutEntry(id));
-			// 使用提供的切入点表达式为 {@link AspectJExpressionPointcut} 类创建一个 {@link BeanDefinition}。
+			// 使用提供的切入点（pointcut）表达式为 AspectJExpressionPointcut 类创建一个 BeanDefinition
 			pointcutDefinition = createPointcutDefinition(expression);
 			pointcutDefinition.setSource(parserContext.extractSource(pointcutElement));
 

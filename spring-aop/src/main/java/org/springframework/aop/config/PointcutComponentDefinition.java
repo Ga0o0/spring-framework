@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
  * @author Rob Harrop
  * @since 2.0
  */
+// {@link org.springframework.beans.factory.parsing.ComponentDefinition} 实现，其中包含切入点定义。
 public class PointcutComponentDefinition extends AbstractComponentDefinition {
 
 	private final String pointcutBeanName;

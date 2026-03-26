@@ -68,6 +68,15 @@ public interface SmartClassLoader {
 	 * @see ClassLoader#getParent()
 	 * @see org.springframework.aop.framework.autoproxy.AbstractAutoProxyCreator
 	 */
+	// 返回此 SmartClassLoader 的原始 ClassLoader，或者如果当前加载器是自包含的，则返回当前加载器本身。
+	//
+	// <p>默认实现按原样返回本地 ClassLoader 引用。对于可重载或其他选择性重写的 ClassLoader（通常处理来自基类加载器的未受影响的类），
+	// 应实现为返回当前加载器所继承的原始 ClassLoader（例如，通过 {@code return getParent();}）。
+	//
+	// <p>这专门用于 Spring 的 AOP 框架中，用于在目标类未在当前类加载器中定义时确定特定代理的类加载器。
+	// 对于可重载类加载器，我们倾向于使用基类加载器来代理未在可重载类加载器本身中定义的通用类。
+	//
+	// @return 原始 ClassLoader（默认情况下返回相同的引用）
 	default ClassLoader getOriginalClassLoader() {
 		return (ClassLoader) this;
 	}

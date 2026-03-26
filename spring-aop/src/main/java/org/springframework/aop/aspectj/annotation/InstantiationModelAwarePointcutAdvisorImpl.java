@@ -101,13 +101,14 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 		this.aspectName = aspectName;
 
 		if (aspectInstanceFactory.getAspectMetadata().isLazilyInstantiated()) {
-			// Static part of the pointcut is a lazy type.
+			// Static part of the pointcut is a lazy type. --> 译文：切入点的静态部分是惰性类型
 			Pointcut preInstantiationPointcut = Pointcuts.union(
 					aspectInstanceFactory.getAspectMetadata().getPerClausePointcut(), this.declaredPointcut);
 
 			// Make it dynamic: must mutate from pre-instantiation to post-instantiation state.
 			// If it's not a dynamic pointcut, it may be optimized out
 			// by the Spring AOP infrastructure after the first evaluation.
+			// --> 译文：使其动态化：必须能够从实例化前的状态转变为实例化后的状态。如果不是动态切入点，Spring AOP 基础架构可能会在第一次求值后将其优化掉。
 			this.pointcut = new PerTargetInstantiationModelPointcut(
 					this.declaredPointcut, preInstantiationPointcut, aspectInstanceFactory);
 			this.lazy = true;

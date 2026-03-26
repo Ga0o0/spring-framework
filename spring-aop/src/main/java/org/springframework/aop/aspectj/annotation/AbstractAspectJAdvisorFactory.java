@@ -55,6 +55,9 @@ import org.springframework.lang.Nullable;
  * @author Sam Brannen
  * @since 2.0
  */
+// 这是一个抽象基类，用于创建 Spring AOP Advisor，其接受的 AspectJ 类必须遵循 AspectJ 5 注解语法。
+//
+// <p>此类处理注解解析和验证功能。它本身并不生成 Spring AOP Advisor，生成工作由子类负责。</p>
 public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFactory {
 
 	private static final Class<?>[] ASPECTJ_ANNOTATION_CLASSES = new Class<?>[] {
@@ -111,6 +114,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	 * Find and return the first AspectJ annotation on the given method
 	 * (there <i>should</i> only be one anyway...).
 	 */
+	// 查找并返回给定方法上的第一个 AspectJ 注解（无论如何，应该只有一个注解……）。
 	@SuppressWarnings("unchecked")
 	@Nullable
 	protected static AspectJAnnotation findAspectJAnnotationOnMethod(Method method) {
@@ -148,6 +152,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	 * Enum for AspectJ annotation types.
 	 * @see AspectJAnnotation#getAnnotationType()
 	 */
+	// AspectJ 注解类型的枚举。
 	protected enum AspectJAnnotationType {
 
 		AtPointcut, AtAround, AtBefore, AtAfter, AtAfterReturning, AtAfterThrowing
@@ -158,6 +163,7 @@ public abstract class AbstractAspectJAdvisorFactory implements AspectJAdvisorFac
 	 * Class modeling an AspectJ annotation, exposing its type enumeration and
 	 * pointcut String.
 	 */
+	// 对 AspectJ 注解进行类建模，公开其类型枚举和切入点 String。
 	protected static class AspectJAnnotation {
 
 		private static final String[] EXPRESSION_ATTRIBUTES = {"pointcut", "value"};

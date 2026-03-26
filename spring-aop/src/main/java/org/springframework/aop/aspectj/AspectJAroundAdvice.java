@@ -35,6 +35,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// Spring AOP 围绕通知（MethodInterceptor）封装 AspectJ advice 方法。公开 ProceedingJoinPoint。
 @SuppressWarnings("serial")
 public class AspectJAroundAdvice extends AbstractAspectJAdvice implements MethodInterceptor, Serializable {
 
@@ -78,6 +79,9 @@ public class AspectJAroundAdvice extends AbstractAspectJAdvice implements Method
 	 * which we'll use for attribute binding
 	 * @return the ProceedingJoinPoint to make available to advice methods
 	 */
+	// 返回当前调用的 ProceedingJoinPoint，如果它尚未绑定到线程，则延迟实例化它。
+	// @param rmi 当前的 Spring AOP ReflectiveMethodInvocation，我们将使用它进行属性绑定
+	// @return 要提供给 advice 方法的 ProceedingJoinPoint
 	protected ProceedingJoinPoint lazyGetProceedingJoinPoint(ProxyMethodInvocation rmi) {
 		return new MethodInvocationProceedingJoinPoint(rmi);
 	}

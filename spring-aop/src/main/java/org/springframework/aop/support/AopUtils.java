@@ -327,10 +327,10 @@ public abstract class AopUtils {
 	// @param hasIntroductions 此 bean 的 advisor 链是否包含任何引入
 	// @return 切入点是否可以应用于任何方法
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
-		if (advisor instanceof IntroductionAdvisor ia) {
+		if (advisor instanceof IntroductionAdvisor ia) { // IntroductionAdvisor#getClassFilter()
 			return ia.getClassFilter().matches(targetClass);
 		}
-		else if (advisor instanceof PointcutAdvisor pca) {
+		else if (advisor instanceof PointcutAdvisor pca) {// PointcutAdvisor#getPointcut()#getMethodMatcher()/getClassFilter()
 			return canApply(pca.getPointcut(), targetClass, hasIntroductions);
 		}
 		else {
@@ -357,6 +357,7 @@ public abstract class AopUtils {
 		}
 		List<Advisor> eligibleAdvisors = new ArrayList<>();
 		for (Advisor candidate : candidateAdvisors) {
+			// canApply(candidate, clazz) -> 应用 IntroductionAdvisor#getClassFilter() + PointcutAdvisor#getPointcut()#getMethodMatcher()/getClassFilter()
 			if (candidate instanceof IntroductionAdvisor && canApply(candidate, clazz)) {
 				eligibleAdvisors.add(candidate);
 			}

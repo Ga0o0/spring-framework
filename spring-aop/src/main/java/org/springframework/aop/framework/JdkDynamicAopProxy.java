@@ -110,7 +110,7 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 		Assert.notNull(config, "AdvisedSupport must not be null");
 		this.advised = config;
 
-		// Initialize ProxiedInterfacesCache if not cached already
+		// Initialize ProxiedInterfacesCache if not cached already --> 译文：如果尚未缓存，则初始化代理接口缓存。
 		ProxiedInterfacesCache cache;
 		if (config.proxyMetadataCache instanceof ProxiedInterfacesCache proxiedInterfacesCache) {
 			cache = proxiedInterfacesCache;
@@ -146,25 +146,27 @@ final class JdkDynamicAopProxy implements AopProxy, InvocationHandler, Serializa
 	 * Determine whether the JDK bootstrap or platform loader has been suggested ->
 	 * use higher-level loader which can see Spring infrastructure classes instead.
 	 */
+	// 确定是否建议使用 JDK 引导加载程序或平台加载程序 -> 改用可以访问 Spring 基础架构类的更高级别的加载程序。
 	private ClassLoader determineClassLoader(@Nullable ClassLoader classLoader) {
 		if (classLoader == null) {
-			// JDK bootstrap loader -> use spring-aop ClassLoader instead.
+			// JDK bootstrap loader -> use spring-aop ClassLoader instead. --> 译文：JDK引导加载程序 -> 请改用 spring-aop 类加载器。
 			return getClass().getClassLoader();
 		}
 		if (classLoader.getParent() == null) {
-			// Potentially the JDK platform loader on JDK 9+
+			// Potentially the JDK platform loader on JDK 9+ --> 译文：可能是 JDK 9 及更高版本上的 JDK 平台加载器。
 			ClassLoader aopClassLoader = getClass().getClassLoader();
 			ClassLoader aopParent = aopClassLoader.getParent();
 			while (aopParent != null) {
 				if (classLoader == aopParent) {
 					// Suggested ClassLoader is ancestor of spring-aop ClassLoader
 					// -> use spring-aop ClassLoader itself instead.
+					// --> 译文：建议的类加载器是 spring-aop 类加载器的祖先 -> 请改用 spring-aop 类加载器本身。
 					return aopClassLoader;
 				}
 				aopParent = aopParent.getParent();
 			}
 		}
-		// Regular case: use suggested ClassLoader as-is.
+		// Regular case: use suggested ClassLoader as-is. --> 译文：常规情况：直接使用建议的类加载器。
 		return classLoader;
 	}
 

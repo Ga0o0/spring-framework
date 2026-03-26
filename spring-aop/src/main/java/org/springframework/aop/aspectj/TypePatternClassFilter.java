@@ -35,6 +35,7 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 2.0
  */
+// 使用 AspectJ 类型匹配实现 Spring AOP {@link ClassFilter}。
 public class TypePatternClassFilter implements ClassFilter {
 
 	private String typePattern = "";
@@ -58,6 +59,8 @@ public class TypePatternClassFilter implements ClassFilter {
 	 * given type pattern.
 	 * @param typePattern the type pattern that AspectJ weaver should parse
 	 */
+	// 使用给定的类型模式创建完全配置的 {@link TypePatternClassFilter}。
+	// @param typePattern AspectJ 织入器应解析的类型模式
 	public TypePatternClassFilter(String typePattern) {
 		setTypePattern(typePattern);
 	}
@@ -78,6 +81,22 @@ public class TypePatternClassFilter implements ClassFilter {
 	 * <p>These conventions are established by AspectJ, not Spring AOP.
 	 * @param typePattern the type pattern that AspectJ weaver should parse
 	 */
+	// 设置要匹配的 AspectJ 类型模式。
+	//
+	// <p>示例包括：
+	//
+	// <code class="code">
+	// org.springframework.beans.*
+	// </code>
+	// 这将匹配给定包中的任何类或接口。
+	//
+	// <code class="code">
+	// org.springframework.beans.ITestBean+
+	// </code>
+	// 这将匹配 {@code ITestBean} 接口以及任何实现该接口的类。
+	//
+	// <p>这些约定由 AspectJ 制定，而非 Spring AOP。
+	// @param typePattern AspectJ 织入器应解析的类型模式
 	public void setTypePattern(String typePattern) {
 		Assert.notNull(typePattern, "Type pattern must not be null");
 		this.typePattern = typePattern;
@@ -112,6 +131,9 @@ public class TypePatternClassFilter implements ClassFilter {
 	 * We also allow {@code and} between two sub-expressions.
 	 * <p>This method converts back to {@code &&} for the AspectJ pointcut parser.
 	 */
+	// 如果 XML 中指定了类型模式，用户不能将 {@code and} 写成 "&&"（尽管 &amp;&amp; 可以）。我们也允许在两个子表达式之间使用 {@code and}。
+	//
+	// <p>此方法会将 AspectJ 切入点解析器转换回 {@code &&}。</p>
 	private String replaceBooleanOperators(String pcExpr) {
 		String result = StringUtils.replace(pcExpr," and "," && ");
 		result = StringUtils.replace(result, " or ", " || ");

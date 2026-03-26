@@ -46,7 +46,7 @@ public interface AdvisorAdapterRegistry {
 	 * @throws UnknownAdviceTypeException if no registered advisor adapter
 	 * can wrap the supposed advice
 	 */
-	// 返回一个包装了指定建议的 {@link Advisor}。
+	// 返回一个包装了指定 advice 的 {@link Advisor}。
 	// <p>默认情况下至少应支持
 	// {@link org.aopalliance.intercept.MethodInterceptor}、
 	// {@link org.springframework.aop.MethodBeforeAdvice}、

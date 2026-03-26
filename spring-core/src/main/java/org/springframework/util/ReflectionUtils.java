@@ -50,6 +50,7 @@ public abstract class ReflectionUtils {
 	 * which are not declared on {@code java.lang.Object}.
 	 * @since 3.0.5
 	 */
+	// 预构建的 {@link MethodFilter}，匹配所有未在 {@code java.lang.Object} 上声明的非桥接非合成方法。
 	public static final MethodFilter USER_DECLARED_METHODS =
 			(method -> !method.isBridge() && !method.isSynthetic() && (method.getDeclaringClass() != Object.class));
 
@@ -364,6 +365,13 @@ public abstract class ReflectionUtils {
 	 * @param mf the filter that determines the methods to apply the callback to
 	 * @throws IllegalStateException if introspection fails
 	 */
+	// 对给定类及其父类（或给定接口及其父接口）的所有匹配方法执行指定的回调操作。
+	//
+	// <p>子类和父类中同名的方法将出现两次，除非被指定的 {@link MethodFilter} 排除。
+	// @param clazz 要进行内省的类
+	// @param mc 要为每个方法调用的回调函数
+	// @param mf 用于确定要应用回调函数的方法的过滤器
+	// @throws IllegalStateException 如果内省失败
 	public static void doWithMethods(Class<?> clazz, MethodCallback mc, @Nullable MethodFilter mf) {
 		if (mf == USER_DECLARED_METHODS && clazz == Object.class) {
 			// nothing to introspect
@@ -381,7 +389,7 @@ public abstract class ReflectionUtils {
 				throw new IllegalStateException("Not allowed to access method '" + method.getName() + "': " + ex);
 			}
 		}
-		// Keep backing up the inheritance hierarchy.
+		// Keep backing up the inheritance hierarchy. --> 译文：持续备份继承层次结构。
 		if (clazz.getSuperclass() != null && (mf != USER_DECLARED_METHODS || clazz.getSuperclass() != Object.class)) {
 			doWithMethods(clazz.getSuperclass(), mc, mf);
 		}
@@ -844,6 +852,7 @@ public abstract class ReflectionUtils {
 	/**
 	 * Action to take on each method.
 	 */
+	// 针对每种方法应采取的行动。
 	@FunctionalInterface
 	public interface MethodCallback {
 
@@ -851,6 +860,8 @@ public abstract class ReflectionUtils {
 		 * Perform an operation using the given method.
 		 * @param method the method to operate on
 		 */
+		// 使用给定的方法执行操作。
+		// @param method 要操作的方法
 		void doWith(Method method) throws IllegalArgumentException, IllegalAccessException;
 	}
 
@@ -858,6 +869,7 @@ public abstract class ReflectionUtils {
 	/**
 	 * Callback optionally used to filter methods to be operated on by a method callback.
 	 */
+	// 回调函数（可选）用于过滤要通过方法回调进行操作的方法。
 	@FunctionalInterface
 	public interface MethodFilter {
 
@@ -865,6 +877,8 @@ public abstract class ReflectionUtils {
 		 * Determine whether the given method matches.
 		 * @param method the method to check
 		 */
+		// 判断给定的方法是否匹配。
+		// @param method 要检查的方法
 		boolean matches(Method method);
 
 		/**
@@ -875,6 +889,12 @@ public abstract class ReflectionUtils {
 		 * @throws IllegalArgumentException if the MethodFilter argument is {@code null}
 		 * @since 5.3.2
 		 */
+		// 基于此筛选器和提供的筛选器创建复合筛选器。
+		//
+		// <p>如果此筛选器不匹配，则不会应用下一个筛选器。</p>
+		// @param next 下一个 {@code MethodFilter}
+		// @return 一个复合 {@code MethodFilter}
+		// @throws IllegalArgumentException 如果 MethodFilter 参数为 {@code null}
 		default MethodFilter and(MethodFilter next) {
 			Assert.notNull(next, "Next MethodFilter must not be null");
 			return method -> matches(method) && next.matches(method);

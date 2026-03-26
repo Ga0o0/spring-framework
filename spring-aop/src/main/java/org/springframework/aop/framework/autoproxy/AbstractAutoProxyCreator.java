@@ -140,6 +140,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * Indicates whether the proxy should be frozen. Overridden from super
 	 * to prevent the configuration from becoming frozen too early.
 	 */
+	// 指示是否应冻结代理。此设置由父类覆盖，以防止配置过早冻结。
 	private boolean freezeProxy = false;
 
 	/** Default is no common interceptors. */
@@ -393,13 +394,15 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {
 			return bean;
 		}
+		// isInfrastructureClass(...) -> 是否是 不应该被代理的基础结构类
+		// shouldSkip(...) -> beanName 是否以 beanClassName 开头，以 “.ORIGINAL“ 结尾
 		if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {
 			this.advisedBeans.put(cacheKey, Boolean.FALSE);
 			return bean;
 		}
 
 		// Create proxy if we have advice. --> 译文：如果我们有 advice，请创建代理。
-		// 返回给定 bean 是否需要代理，以及需要应用哪些附加 advices（例如 AOP Alliance 拦截器）和 advisors。
+		// 返回需要应用的 advices（例如 AOP Alliance 拦截器）和 advisors
 		Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);
 		if (specificInterceptors != DO_NOT_PROXY) {
 			this.advisedBeans.put(cacheKey, Boolean.TRUE);
@@ -426,7 +429,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 	 * @see org.springframework.aop.framework.AopInfrastructureBean
 	 * @see #shouldSkip
 	 */
-	// 返回给定 bean 类是否代表不应被代理的基础结构类。
+	// 返回给定 bean 类是否代表不应该被代理的基础结构类。
 	// <p>默认实现将 Advice、Advisors 和 AopInfrastructureBeans 视为基础结构类。
 	// @param beanClass bean 的类
 	// @return bean 是否代表基础结构类
@@ -539,9 +542,9 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		}
 
 		ProxyFactory proxyFactory = new ProxyFactory();
-		proxyFactory.copyFrom(this);
+		proxyFactory.copyFrom(this); // 从其他配置对象复制配置
 
-		if (proxyFactory.isProxyTargetClass()) {
+		if (proxyFactory.isProxyTargetClass()) { // 返回是否直接代理目标类以及任何接口
 			// Explicit handling of JDK proxy targets and lambdas (for introduction advice scenarios)
 			// --> 译文：明确处理 JDK 代理目标和 lambda（用于引入建议场景）
 			if (Proxy.isProxyClass(beanClass) || ClassUtils.isLambdaClass(beanClass)) {
@@ -553,13 +556,12 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 			}
 		}
 		else {
-			// No proxyTargetClass flag enforced, let's apply our default checks...
-			// --> 译文：没有强制执行 proxyTargetClass 标志，让我们应用默认检查...
-			if (shouldProxyTargetClass(beanClass, beanName)) {
-				proxyFactory.setProxyTargetClass(true);
+			// No proxyTargetClass flag enforced, let's apply our default checks... --> 译文：没有强制执行 proxyTargetClass 标志，让我们应用默认检查...
+			if (shouldProxyTargetClass(beanClass, beanName)) { // 确定给定的 bean 是否应该通过其目标类而不是其接口进行代理
+				proxyFactory.setProxyTargetClass(true); // 设置是否直接代理目标类，而不是仅代理特定接口
 			}
 			else {
-				evaluateProxyInterfaces(beanClass, proxyFactory);
+				evaluateProxyInterfaces(beanClass, proxyFactory); // 检查给定 bean 类的接口，并在适当的情况下将其应用于 ProxyFactory
 			}
 		}
 
@@ -569,8 +571,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		proxyFactory.setTargetSource(targetSource);
 		customizeProxyFactory(proxyFactory);
 
-		proxyFactory.setFrozen(this.freezeProxy);
-		if (advisorsPreFiltered()) {
+		proxyFactory.setFrozen(this.freezeProxy); // 设置此配置是否应冻结
+		if (advisorsPreFiltered()) { // Advisor 是否已预先过滤
 			proxyFactory.setPreFiltered(true);
 		}
 
@@ -580,6 +582,8 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 		if (classLoader instanceof SmartClassLoader smartClassLoader && classLoader != beanClass.getClassLoader()) {
 			classLoader = smartClassLoader.getOriginalClassLoader();
 		}
+		// proxyFactory.getProxyClass(...)	->  根据此工厂中的设置确定代理类
+		// proxyFactory.getProxy(...)		->  根据此工厂中的设置创建一个新的代理
 		return (classOnly ? proxyFactory.getProxyClass(classLoader) : proxyFactory.getProxy(classLoader));
 	}
 
@@ -659,6 +663,7 @@ public abstract class AbstractAutoProxyCreator extends ProxyProcessorSupport
 
 		Advisor[] advisors = new Advisor[allInterceptors.size()];
 		for (int i = 0; i < allInterceptors.size(); i++) {
+			// 返回一个包装了指定 advice 的 Advisor
 			advisors[i] = this.advisorAdapterRegistry.wrap(allInterceptors.get(i));
 		}
 		return advisors;

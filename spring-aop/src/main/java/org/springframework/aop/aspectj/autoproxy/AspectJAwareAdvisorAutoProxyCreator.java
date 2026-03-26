@@ -92,6 +92,9 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 	 * <p>This additional advice is needed when using AspectJ pointcut expressions
 	 * and when using AspectJ-style advice.
 	 */
+	// 在通知链的开头添加一个 {@link ExposeInvocationInterceptor}。
+	//
+	// <p>使用 AspectJ 切入点表达式和 AspectJ 风格的通知时，需要此额外通知。</p>
 	@Override
 	protected void extendAdvisors(List<Advisor> candidateAdvisors) {
 		AspectJProxyUtils.makeAdvisorChainAspectJCapableIfNecessary(candidateAdvisors);
@@ -99,8 +102,8 @@ public class AspectJAwareAdvisorAutoProxyCreator extends AbstractAdvisorAutoProx
 
 	@Override
 	protected boolean shouldSkip(Class<?> beanClass, String beanName) {
-		// TODO: Consider optimization by caching the list of the aspect names
-		List<Advisor> candidateAdvisors = findCandidateAdvisors();
+		// TODO: Consider optimization by caching the list of the aspect names --> 译文：考虑通过缓存方面名称列表来进行优化。
+		List<Advisor> candidateAdvisors = findCandidateAdvisors(); // 查找所有用于自动代理的候选 Advisors
 		for (Advisor advisor : candidateAdvisors) {
 			if (advisor instanceof AspectJPointcutAdvisor pointcutAdvisor &&
 					pointcutAdvisor.getAspectName().equals(beanName)) {

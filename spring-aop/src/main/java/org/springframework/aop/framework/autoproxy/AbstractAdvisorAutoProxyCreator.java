@@ -86,7 +86,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	protected Object[] getAdvicesAndAdvisorsForBean(
 			Class<?> beanClass, String beanName, @Nullable TargetSource targetSource) {
 
-		// 查找所有符合条件的 Advisor 来自动代理此类。
+		// 查找所有符合条件的 Advisor 来自动代理此类
 		List<Advisor> advisors = findEligibleAdvisors(beanClass, beanName);
 		if (advisors.isEmpty()) {
 			return DO_NOT_PROXY;
@@ -109,11 +109,13 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	// @param beanName 当前代理的 bean 的名称
 	// @return 返回空列表，如果不存在切入点或拦截器，则返回 null 值
 	protected List<Advisor> findEligibleAdvisors(Class<?> beanClass, String beanName) {
-		// 查找所有用于自动代理的候选 Advisors。
+		// 查找所有用于自动代理的候选 Advisors
+		// -> 	AbstractAdvisorAutoProxyCreator#findCandidateAdvisors()
+		// 		AnnotationAwareAspectJAutoProxyCreator#findCandidateAdvisors()
 		List<Advisor> candidateAdvisors = findCandidateAdvisors();
-		// 搜索给定的候选 Advisor，找到所有适用于指定 Bean 的 Advisor。
+		// 搜索给定的候选 Advisor，找到所有适用于指定 Bean 的 Advisor
 		List<Advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName); // apply ClassFilter/MethodMatcher
-		extendAdvisors(eligibleAdvisors);
+		extendAdvisors(eligibleAdvisors); // 扩展 Advisors
 		if (!eligibleAdvisors.isEmpty()) {
 			try {
 				eligibleAdvisors = sortAdvisors(eligibleAdvisors);
@@ -131,7 +133,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	 * Find all candidate Advisors to use in auto-proxying.
 	 * @return the List of candidate Advisors
 	 */
-	// 查找所有用于自动代理的候选顾问。
+	// 查找所有用于自动代理的候选 Advisors
 	// @return 候选顾问列表
 	protected List<Advisor> findCandidateAdvisors() {
 		Assert.state(this.advisorRetrievalHelper != null, "No BeanFactoryAdvisorRetrievalHelper available");
@@ -216,6 +218,7 @@ public abstract class AbstractAdvisorAutoProxyCreator extends AbstractAutoProxyC
 	/**
 	 * This auto-proxy creator always returns pre-filtered Advisors.
 	 */
+	// 这个自动代理创建器总是返回预先筛选过的顾问。
 	@Override
 	protected boolean advisorsPreFiltered() {
 		return true;

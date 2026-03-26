@@ -49,6 +49,15 @@ import org.springframework.util.Assert;
  * @see #suppressInterface
  * @see DelegatePerTargetObjectIntroductionInterceptor
  */
+// 方便地实现了 {@link org.springframework.aop.IntroductionInterceptor} 接口。
+//
+// <p>子类只需继承此类并实现要引入的接口即可。在这种情况下，委托就是子类实例本身。或者，也可以使用单独的委托来实现该接口，并通过委托 bean 属性进行设置。
+//
+// <p>委托或子类可以实现任意数量的接口。默认情况下，除 IntroductionInterceptor 接口外的所有接口都来自子类或委托。
+//
+// <p>可以使用 {@code suppressInterface} 方法抑制委托实现但不应引入到所属 AOP 代理的接口。
+//
+// <p>如果委托是可序列化的，则此类的实例也是可序列化的。
 @SuppressWarnings("serial")
 public class DelegatingIntroductionInterceptor extends IntroductionInfoSupport
 		implements IntroductionInterceptor {

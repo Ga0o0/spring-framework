@@ -134,6 +134,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	/**
 	 * Create a new default AspectJExpressionPointcut.
 	 */
+	// 创建一个新的默认 AspectJExpressionPointcut。
 	public AspectJExpressionPointcut() {
 	}
 
@@ -143,6 +144,10 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	 * @param paramNames the parameter names for the pointcut
 	 * @param paramTypes the parameter types for the pointcut
 	 */
+	// 使用给定的设置创建一个新的 AspectJExpressionPointcut。
+	// @param declarationScope 切入点的声明范围
+	// @param paramNames 切入点的参数名称
+	// @param paramTypes 切入点的参数类型
 	public AspectJExpressionPointcut(Class<?> declarationScope, String[] paramNames, Class<?>[] paramTypes) {
 		setPointcutDeclarationScope(declarationScope);
 		if (paramNames.length != paramTypes.length) {
@@ -157,6 +162,7 @@ public class AspectJExpressionPointcut extends AbstractExpressionPointcut
 	/**
 	 * Set the declaration scope for the pointcut.
 	 */
+	// 设置切入点的声明作用域
 	public void setPointcutDeclarationScope(Class<?> pointcutDeclarationScope) {
 		this.pointcutDeclarationScope = pointcutDeclarationScope;
 		this.aspectCompiledByAjc = compiledByAjc(pointcutDeclarationScope);

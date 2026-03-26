@@ -43,6 +43,9 @@ import org.springframework.aop.support.ComposablePointcut;
  * @since 2.0
  * @see org.springframework.aop.aspectj.AspectJExpressionPointcut
  */
+// 用于 AspectJ 切面类的元数据，并额外添加了一个用于 per 子句的 Spring AOP 切入点。
+//
+// <p>使用 AspectJ 5 AJType 反射 API，使我们能够使用不同的 AspectJ 实例化模型，例如“singleton”、“pertarget”和“perthis”。</p>
 @SuppressWarnings("serial")
 public class AspectMetadata implements Serializable {
 
@@ -51,18 +54,22 @@ public class AspectMetadata implements Serializable {
 	 * allows us to determine if two pieces of advice come from the
 	 * same aspect and hence their relative precedence.
 	 */
+	// Spring 定义的这个方面的名称（bean 名称）允许我们确定两条建议是否来自同一个方面，从而确定它们的相对优先级。
 	private final String aspectName;
 
 	/**
 	 * The aspect class, stored separately for re-resolution of the
 	 * corresponding AjType on deserialization.
 	 */
+	// 该 aspect 类单独存储，以便在反序列化时重新解析相应的 AjType。
 	private final Class<?> aspectClass;
 
 	/**
 	 * AspectJ reflection information.
 	 * <p>Re-resolved on deserialization since it isn't serializable itself.
 	 */
+	// AspectJ 反射信息。
+	// <p>由于其本身不可序列化，因此在反序列化时重新解析。
 	private transient AjType<?> ajType;
 
 	/**
@@ -70,6 +77,7 @@ public class AspectMetadata implements Serializable {
 	 * aspect. Will be the {@code Pointcut.TRUE} canonical instance in the
 	 * case of a singleton, otherwise an AspectJExpressionPointcut.
 	 */
+	// Spring AOP 切入点，对应于切面的 per 子句。如果是单例模式，则为 {@code Pointcut.TRUE} 规范实例；否则为 AspectJExpressionPointcut。
 	private final Pointcut perClausePointcut;
 
 
@@ -78,6 +86,9 @@ public class AspectMetadata implements Serializable {
 	 * @param aspectClass the aspect class
 	 * @param aspectName the name of the aspect
 	 */
+	// 为给定的切面类创建一个新的 AspectMetadata 实例。
+	// @param aspectClass 切面类
+	// @param aspectName 切面的名称
 	public AspectMetadata(Class<?> aspectClass, String aspectName) {
 		this.aspectName = aspectName;
 
@@ -147,6 +158,7 @@ public class AspectMetadata implements Serializable {
 	/**
 	 * Return the aspect class.
 	 */
+	// 返回 aspect class
 	public Class<?> getAspectClass() {
 		return this.aspectClass;
 	}
@@ -154,6 +166,7 @@ public class AspectMetadata implements Serializable {
 	/**
 	 * Return the aspect name.
 	 */
+	// 返回 aspect 名称
 	public String getAspectName() {
 		return this.aspectName;
 	}
@@ -162,6 +175,7 @@ public class AspectMetadata implements Serializable {
 	 * Return a Spring pointcut expression for a singleton aspect.
 	 * (e.g. {@code Pointcut.TRUE} if it's a singleton).
 	 */
+	// 返回单例切面的 Spring 切入点表达式。（例如，如果是单例，则为 {@code Pointcut.TRUE}）。
 	public Pointcut getPerClausePointcut() {
 		return this.perClausePointcut;
 	}
@@ -185,6 +199,7 @@ public class AspectMetadata implements Serializable {
 	/**
 	 * Return whether the aspect needs to be lazily instantiated.
 	 */
+	// 返回该 aspect 是否需要延迟实例化
 	public boolean isLazilyInstantiated() {
 		return (isPerThisOrPerTarget() || isPerTypeWithin());
 	}

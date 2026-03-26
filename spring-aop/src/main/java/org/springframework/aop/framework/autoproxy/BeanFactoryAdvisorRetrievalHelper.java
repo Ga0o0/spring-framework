@@ -68,11 +68,12 @@ public class BeanFactoryAdvisorRetrievalHelper {
 	// 在当前 bean 工厂中查找所有符合条件的 Advisor bean，忽略 FactoryBeans 并排除当前正在创建的 bean。
 	// @return {@link org.springframework.aop.Advisor} bean 列表
 	public List<Advisor> findAdvisorBeans() {
-		// Determine list of advisor bean names, if not cached already.
+		// Determine list of advisor bean names, if not cached already. --> 译文：如果尚未缓存，则确定 advisor bean 名称列表。
 		String[] advisorNames = this.cachedAdvisorBeanNames;
 		if (advisorNames == null) {
 			// Do not initialize FactoryBeans here: We need to leave all regular beans
 			// uninitialized to let the auto-proxy creator apply to them!
+			// --> 译文：不要在此处初始化 FactoryBeans：我们需要将所有常规 bean 保持未初始化状态，以便自动代理创建器可以应用于它们！
 			advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 					this.beanFactory, Advisor.class, true, false);
 			this.cachedAdvisorBeanNames = advisorNames;
@@ -104,6 +105,7 @@ public class BeanFactoryAdvisorRetrievalHelper {
 								}
 								// Ignore: indicates a reference back to the bean we're trying to advise.
 								// We want to find advisors other than the currently created bean itself.
+								// --> 译文：忽略：表示指向我们试图为其提供建议的 bean 的引用。我们希望找到除当前创建的 bean 本身之外的其他顾问。
 								continue;
 							}
 						}

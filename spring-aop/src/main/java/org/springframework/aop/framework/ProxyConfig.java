@@ -59,8 +59,10 @@ public class ProxyConfig implements Serializable {
 	 * @see org.springframework.aop.TargetSource#getTargetClass()
 	 */
 	// 设置是否直接代理目标类，而不是仅代理特定接口。默认值为 “false”。
+	//
 	// <p>设置为 “true” 将强制代理 TargetSource 暴露的目标类。
 	// 如果目标类是接口，则会为该接口创建一个 JDK 代理。如果目标类是其他类，则会为该类创建一个 CGLIB 代理。
+	//
 	// <p>注意：根据具体代理工厂的配置，即使未指定接口（且未激活接口自动检测），proxy-target-class 行为也将适用。
 	public void setProxyTargetClass(boolean proxyTargetClass) {
 		this.proxyTargetClass = proxyTargetClass;
@@ -84,6 +86,7 @@ public class ProxyConfig implements Serializable {
 	 * but without any class validation checks (for final methods etc).
 	 */
 	// 设置代理是否应执行积极优化。“积极优化”的确切含义因代理而异，但通常需要权衡利弊。默认值为“false”。
+	//
 	// <p>使用 Spring 当前的代理选项，此标志可有效强制执行 CGLIB 代理（类似于 {@link #setProxyTargetClass}），
 	// 但不执行任何类验证检查（例如 final 方法）。
 	public void setOptimize(boolean optimize) {
@@ -114,6 +117,7 @@ public class ProxyConfig implements Serializable {
 	 * Return whether proxies created by this configuration should be
 	 * prevented from being cast to {@link Advised}.
 	 */
+	// 返回是否应阻止通过此配置创建的代理被强制转换为 {@link Advised}。
 	public boolean isOpaque() {
 		return this.opaque;
 	}
@@ -127,6 +131,10 @@ public class ProxyConfig implements Serializable {
 	 * This means that no guarantees are provided that AopContext access will
 	 * work consistently within any method of the advised object.
 	 */
+	// 设置是否应将代理作为 ThreadLocal 暴露给 AOP 框架，以便通过 AopContext 类进行检索。
+	// 如果被建议的对象需要调用自身上的另一个被建议的方法，则此功能非常有用。（如果使用 {@code this}，则不会建议该调用。）
+	//
+	// <p>默认值为“false”，以避免不必要的额外拦截。这意味着不保证在被建议对象的任何方法中都能始终如一地访问 AopContext。
 	public void setExposeProxy(boolean exposeProxy) {
 		this.exposeProxy = exposeProxy;
 	}
@@ -135,6 +143,7 @@ public class ProxyConfig implements Serializable {
 	 * Return whether the AOP proxy will expose the AOP proxy for
 	 * each invocation.
 	 */
+	// 返回 AOP 代理是否会在每次调用时都暴露 AOP 代理。
 	public boolean isExposeProxy() {
 		return this.exposeProxy;
 	}
@@ -154,6 +163,7 @@ public class ProxyConfig implements Serializable {
 	/**
 	 * Return whether the config is frozen, and no advice changes can be made.
 	 */
+	// 返回配置是否已冻结，且无法进行任何建议更改。
 	public boolean isFrozen() {
 		return this.frozen;
 	}

@@ -34,6 +34,7 @@ import org.springframework.util.TypeUtils;
  * @author Ramnivas Laddad
  * @since 2.0
  */
+// Spring AOP advice 包装了 AspectJ after-returning advice 方法。
 @SuppressWarnings("serial")
 public class AspectJAfterReturningAdvice extends AbstractAspectJAdvice
 		implements AfterReturningAdvice, AfterAdvice, Serializable {

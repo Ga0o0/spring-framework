@@ -57,6 +57,7 @@ public final class ExposeInvocationInterceptor implements MethodInterceptor, Pri
 	 * Singleton advisor for this class. Use in preference to INSTANCE when using
 	 * Spring AOP, as it prevents the need to create a new Advisor to wrap the instance.
 	 */
+	// 此类采用单例 Advisor 模式。在使用 Spring AOP 时，建议优先使用单例模式而非实例模式，因为它避免了创建新的 Advisor 来包装实例的需要。
 	public static final Advisor ADVISOR = new DefaultPointcutAdvisor(INSTANCE) {
 		@Override
 		public String toString() {
@@ -74,6 +75,9 @@ public final class ExposeInvocationInterceptor implements MethodInterceptor, Pri
 	 * @throws IllegalStateException if there is no AOP invocation in progress,
 	 * or if the ExposeInvocationInterceptor was not added to this interceptor chain
 	 */
+	// 返回与当前调用关联的 AOP Alliance MethodInvocation 对象。
+	// @return 与当前调用关联的调用对象
+	// @throws IllegalStateException 如果没有正在进行的 AOP 调用，或者 ExposeInvocationInterceptor 未添加到此拦截器链中，则抛出此异常
 	public static MethodInvocation currentInvocation() throws IllegalStateException {
 		MethodInvocation mi = invocation.get();
 		if (mi == null) {

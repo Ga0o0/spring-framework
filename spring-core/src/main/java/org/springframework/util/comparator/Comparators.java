@@ -25,6 +25,7 @@ import java.util.Comparator;
  * @author Juergen Hoeller
  * @since 5.0
  */
+// 为常见的 Spring {@link Comparator} 变体提供带有通用类型工厂方法的便捷入口点。
 public abstract class Comparators {
 
 	/**

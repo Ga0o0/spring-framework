@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @since 2.0
  */
+// Spring AOP advice 封装了 AspectJ after-throwing advice 方法。
 @SuppressWarnings("serial")
 public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
 		implements MethodInterceptor, AfterAdvice, Serializable {
@@ -75,6 +76,7 @@ public class AspectJAfterThrowingAdvice extends AbstractAspectJAdvice
 	 * In AspectJ semantics, after throwing advice that specifies a throwing clause
 	 * is only invoked if the thrown exception is a subtype of the given throwing type.
 	 */
+	// 在 AspectJ 语义中，抛出后，指定了 throwing 子句的建议只有在抛出的异常是给定抛出类型的子类型时才会被调用。
 	private boolean shouldInvokeOnThrowing(Throwable ex) {
 		return getDiscoveredThrowingType().isAssignableFrom(ex.getClass());
 	}

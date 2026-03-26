@@ -29,6 +29,7 @@ import static org.springframework.core.NativeDetector.Context;
  * @author Sebastien Deleuze
  * @since 6.0
  */
+// 用于确定是否必须使用 AOT 处理的优化而不是常规运行时优化的实用程序。仅限框架内部使用。
 public abstract class AotDetector {
 
 	/**
@@ -37,6 +38,7 @@ public abstract class AotDetector {
 	 * recommended to throw an exception rather than fall back to the regular
 	 * runtime behavior.
 	 */
+	// 系统属性，用于指示应用程序是否应使用 AOT 生成的工件运行。如果此类优化不可用，建议抛出异常，而不是回退到常规运行时行为。
 	public static final String AOT_ENABLED = "spring.aot.enabled";
 
 	private static final boolean inNativeImage = NativeDetector.inNativeImage(Context.RUN, Context.BUILD);
@@ -48,6 +50,8 @@ public abstract class AotDetector {
 	 * the {@value #AOT_ENABLED} Spring property.
 	 * @return whether AOT optimizations must be considered
 	 */
+	// 确定是否需要在运行时考虑 AOT 优化。这在原生镜像中是强制性的，但在 JVM 上可以使用 Spring 的 `{@value #AOT_ENABLED}` 属性来触发。
+	// @return 是否需要考虑 AOT 优化
 	public static boolean useGeneratedArtifacts() {
 		return (inNativeImage || SpringProperties.getFlag(AOT_ENABLED));
 	}

@@ -35,6 +35,9 @@ import org.springframework.util.comparator.Comparators;
  * @param <S> the source type
  * @param <T> the target type
  */
+// 一个在比较值之前对其进行转换的 {@link Comparator}。
+//
+// <p>指定的 {@link Converter} 将用于在将每个值传递给底层 {@code Comparator} 之前对其进行转换。</p>
 public class ConvertingComparator<S, T> implements Comparator<S> {
 
 	private final Comparator<T> comparator;
@@ -46,6 +49,8 @@ public class ConvertingComparator<S, T> implements Comparator<S> {
 	 * Create a new {@link ConvertingComparator} instance.
 	 * @param converter the converter
 	 */
+	// 创建一个新的 {@link ConvertingComparator} 实例。
+	// @param converter 转换器
 	public ConvertingComparator(Converter<S, T> converter) {
 		this(Comparators.comparable(), converter);
 	}
@@ -55,6 +60,9 @@ public class ConvertingComparator<S, T> implements Comparator<S> {
 	 * @param comparator the underlying comparator used to compare the converted values
 	 * @param converter the converter
 	 */
+	// 创建一个新的 {@link ConvertingComparator} 实例。
+	// @param comparator 用于比较转换后值的底层比较器
+	// @param converter 转换器
 	public ConvertingComparator(Comparator<T> comparator, Converter<S, T> converter) {
 		Assert.notNull(comparator, "Comparator must not be null");
 		Assert.notNull(converter, "Converter must not be null");

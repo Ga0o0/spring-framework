@@ -20,6 +20,7 @@ package org.springframework.cglib.proxy;
  * {@link LazyLoader} interface but needs to be separate so that <code>Enhancer</code>
  * knows which type of code to generate.
  */
+// 正在分发 {@link Enhancer} 回调函数。这与 {@link LazyLoader} 接口相同，但需要分开，以便 <code>Enhancer</code> 知道要生成哪种类型的代码。
 public interface Dispatcher extends Callback {
     /**
      * Return the object which the original method invocation should

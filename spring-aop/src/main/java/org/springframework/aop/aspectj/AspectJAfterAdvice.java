@@ -31,6 +31,7 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @since 2.0
  */
+// Spring AOP 建议包装了 AspectJ after advice 方法。
 @SuppressWarnings("serial")
 public class AspectJAfterAdvice extends AbstractAspectJAdvice
 		implements MethodInterceptor, AfterAdvice, Serializable {

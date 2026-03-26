@@ -55,6 +55,7 @@ public abstract class AutoProxyUtils {
 	 * @since 4.2.3
 	 * @see #determineTargetClass
 	 */
+	// Bean 定义属性，指示自动代理 bean 的原始目标类，例如，用于对基于接口的代理后面的目标类上的注解进行内省。
 	public static final String ORIGINAL_TARGET_CLASS_ATTRIBUTE =
 			Conventions.getQualifiedAttributeName(AutoProxyUtils.class, "originalTargetClass");
 

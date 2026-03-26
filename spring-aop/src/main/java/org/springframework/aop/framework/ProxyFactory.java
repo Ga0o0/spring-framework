@@ -40,6 +40,7 @@ public class ProxyFactory extends ProxyCreatorSupport {
 	/**
 	 * Create a new ProxyFactory.
 	 */
+	// 创建一个新的 ProxyFactory
 	public ProxyFactory() {
 	}
 

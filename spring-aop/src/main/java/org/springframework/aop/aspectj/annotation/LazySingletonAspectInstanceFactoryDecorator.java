@@ -28,6 +28,7 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// 装饰器，使 {@link MetadataAwareAspectInstanceFactory} 只实例化一次。
 @SuppressWarnings("serial")
 public class LazySingletonAspectInstanceFactoryDecorator implements MetadataAwareAspectInstanceFactory, Serializable {
 
@@ -41,6 +42,8 @@ public class LazySingletonAspectInstanceFactoryDecorator implements MetadataAwar
 	 * Create a new lazily initializing decorator for the given AspectInstanceFactory.
 	 * @param maaif the MetadataAwareAspectInstanceFactory to decorate
 	 */
+	// 为给定的 AspectInstanceFactory 创建一个新的延迟初始化装饰器。
+	// @param maaif 要装饰的 MetadataAwareAspectInstanceFactory
 	public LazySingletonAspectInstanceFactoryDecorator(MetadataAwareAspectInstanceFactory maaif) {
 		Assert.notNull(maaif, "AspectInstanceFactory must not be null");
 		this.maaif = maaif;

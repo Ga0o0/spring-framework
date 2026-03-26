@@ -16,13 +16,12 @@
 
 package org.springframework.aop.config;
 
-import org.w3c.dom.Element;
-
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.parsing.BeanComponentDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.ParserContext;
 import org.springframework.lang.Nullable;
+import org.w3c.dom.Element;
 
 /**
  * Utility class for handling registration of auto-proxy creators used internally
@@ -71,34 +70,37 @@ public abstract class AopNamespaceUtils {
 	public static void registerAspectJAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
 
-		// register AspectJAwareAdvisorAutoProxyCreator
+		// 1. 注册 BeanDefinition，如果已存在进行升级处理；名称：org.springframework.aop.config.internalAutoProxyCreator，类型：AspectJAwareAdvisorAutoProxyCreator
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
+		// 2. 获取 <aop:config proxy-target-class="" expose-proxy=""/> 标签的属性（expose-proxy 和 proxy-target-class）并设置给名为 org.springframework.aop.config.internalAutoProxyCreator 的实例
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
+		// 3. 注册组件
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}
 
 	public static void registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 			ParserContext parserContext, Element sourceElement) {
 
+		// 1. 注册 BeanDefinition，如果已存在进行升级处理；名称：org.springframework.aop.config.internalAutoProxyCreator，类型：AnnotationAwareAspectJAutoProxyCreator
 		BeanDefinition beanDefinition = AopConfigUtils.registerAspectJAnnotationAutoProxyCreatorIfNecessary(
 				parserContext.getRegistry(), parserContext.extractSource(sourceElement));
+		// 2. 获取 <aop:aspectj-autoproxy proxy-target-class="" expose-proxy=""/> 标签的属性（expose-proxy 和 proxy-target-class）并设置给名为 org.springframework.aop.config.internalAutoProxyCreator 的实例
 		useClassProxyingIfNecessary(parserContext.getRegistry(), sourceElement);
+		// 3. 注册组件
 		registerComponentIfNecessary(beanDefinition, parserContext);
 	}
 
 	private static void useClassProxyingIfNecessary(BeanDefinitionRegistry registry, @Nullable Element sourceElement) {
 		if (sourceElement != null) {
-			// PROXY_TARGET_CLASS_ATTRIBUTE = "proxy-target-class"
+			// 获取标签属性 proxy-target-class 设置给名为 org.springframework.aop.config.internalAutoProxyCreator 的 BeanDefinition 的 proxyTargetClass 的属性
 			boolean proxyTargetClass = Boolean.parseBoolean(sourceElement.getAttribute(PROXY_TARGET_CLASS_ATTRIBUTE));
 			if (proxyTargetClass) {
-				// 强制 AutoProxyCreator 使用类代理
 				AopConfigUtils.forceAutoProxyCreatorToUseClassProxying(registry);
 			}
-			// EXPOSE_PROXY_ATTRIBUTE = "expose-proxy"
+			// 获取标签属性 expose-proxy 设置给名为 org.springframework.aop.config.internalAutoProxyCreator 的 BeanDefinition 的 exposeProxy 的属性
 			boolean exposeProxy = Boolean.parseBoolean(sourceElement.getAttribute(EXPOSE_PROXY_ATTRIBUTE));
 			if (exposeProxy) {
-				// 强制 AutoProxyCreator 公开代理
 				AopConfigUtils.forceAutoProxyCreatorToExposeProxy(registry);
 			}
 		}

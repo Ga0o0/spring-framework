@@ -33,6 +33,7 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 3.2
  */
+// 用于将 Spring AOP {@link Advisor} 应用于特定 bean 的 {@link BeanPostProcessor} 实现的基类。
 @SuppressWarnings("serial")
 public abstract class AbstractAdvisingBeanPostProcessor extends ProxyProcessorSupport
 		implements SmartInstantiationAwareBeanPostProcessor {

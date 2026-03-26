@@ -305,6 +305,8 @@ public class Enhancer extends AbstractClassGenerator {
 	 * @see #setCallbackFilter
 	 * @see #setCallback
 	 */
+	// 设置要使用的回调数组。如果使用 {@link #createClass}，则此参数将被忽略。您必须使用 {@link CallbackFilter} 为代理类中的每个方法指定此数组的索引。
+	// @param callbacks 回调数组
 	public void setCallbacks(Callback[] callbacks) {
 		if (callbacks != null && callbacks.length == 0) {
 			throw new IllegalArgumentException("Array cannot be empty");
@@ -331,6 +333,8 @@ public class Enhancer extends AbstractClassGenerator {
 	 * will call the method of the proxy's base class, if it exists.
 	 * @param interceptDuringConstruction whether to intercept methods called from the constructor
 	 */
+	// 设置是否拦截从代理构造函数中调用的方法。默认值为 true。未被拦截的方法将调用代理基类的方法（如果存在）。
+	// @param interceptDuringConstruction 是否拦截从构造函数中调用的方法
 	public void setInterceptDuringConstruction(boolean interceptDuringConstruction) {
 		this.interceptDuringConstruction = interceptDuringConstruction;
 	}

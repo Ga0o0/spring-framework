@@ -92,7 +92,7 @@ public abstract class AopConfigUtils {
 	@Nullable
 	public static BeanDefinition registerAspectJAutoProxyCreatorIfNecessary(
 			BeanDefinitionRegistry registry, @Nullable Object source) {
-
+		// 注册 BeanDefinition，如果已存在进行升级处理；名称：org.springframework.aop.config.internalAutoProxyCreator，类型：AnnotationAwareAspectJAutoProxyCreator
 		return registerOrEscalateApcAsRequired(AspectJAwareAdvisorAutoProxyCreator.class, registry, source);
 	}
 
@@ -130,8 +130,9 @@ public abstract class AopConfigUtils {
 
 		Assert.notNull(registry, "BeanDefinitionRegistry must not be null");
 
-		// AUTO_PROXY_CREATOR_BEAN_NAME = "org.springframework.aop.config.internalAutoProxyCreator"
-		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) { // 容器中存在时的处理
+		// 1. BeanDefinitionRegistry 中存在 org.springframework.aop.config.internalAutoProxyCreator 的 BeanDefinition，
+		// 比较当前实例和容器中 BeanDefinition#beanClass 的优先级，将较大的 beanClass 设置给 BeanDefinition
+		if (registry.containsBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME)) {
 			BeanDefinition apcDefinition = registry.getBeanDefinition(AUTO_PROXY_CREATOR_BEAN_NAME);
 			if (!cls.getName().equals(apcDefinition.getBeanClassName())) {
 				int currentPriority = findPriorityForClass(apcDefinition.getBeanClassName());
@@ -144,6 +145,7 @@ public abstract class AopConfigUtils {
 			return null;
 		}
 
+		// 2. BeanDefinitionRegistry 中不存在 org.springframework.aop.config.internalAutoProxyCreator 的 BeanDefinition 时，创建一个并进行注册
 		RootBeanDefinition beanDefinition = new RootBeanDefinition(cls);
 		beanDefinition.setSource(source);
 		beanDefinition.getPropertyValues().add("order", Ordered.HIGHEST_PRECEDENCE);

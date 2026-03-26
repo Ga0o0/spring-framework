@@ -33,6 +33,9 @@ import org.springframework.util.Assert;
  * @author Rod Johnson
  * @author Juergen Hoeller
  */
+// 用于匹配 getter 和 setter 的切入点常量，以及用于操作和评估切入点的静态方法。
+//
+// <p>这些方法在使用 union 和 intersection 方法组合切入点时尤其有用。</p>
 public abstract class Pointcuts {
 
 	/** Pointcut matching all bean property setters, in any class. */
@@ -49,6 +52,10 @@ public abstract class Pointcuts {
 	 * @return a distinct Pointcut that matches all methods that either
 	 * of the given Pointcuts matches
 	 */
+	// 匹配所有与给定切入点匹配的方法（无论是否同时与两个切入点匹配）。
+	// @param pc1 第一个切入点
+	// @param pc2 第二个切入点
+	// @return 返回一个不同的切入点，该切入点匹配所有与给定切入点匹配的方法。
 	public static Pointcut union(Pointcut pc1, Pointcut pc2) {
 		return new ComposablePointcut(pc1).union(pc2);
 	}

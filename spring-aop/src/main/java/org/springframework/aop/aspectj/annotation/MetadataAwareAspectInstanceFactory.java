@@ -28,12 +28,15 @@ import org.springframework.lang.Nullable;
  * @see AspectMetadata
  * @see org.aspectj.lang.reflect.AjType
  */
+// {@link org.springframework.aop.aspectj.AspectInstanceFactory} 的子接口，返回与 AspectJ 注解类关联的 {@link AspectMetadata}。
 public interface MetadataAwareAspectInstanceFactory extends AspectInstanceFactory {
 
 	/**
 	 * Get the AspectJ AspectMetadata for this factory's aspect.
 	 * @return the aspect metadata
 	 */
+	// 获取此工厂切面的 AspectJ AspectMetadata。
+	// @return 切面元数据
 	AspectMetadata getAspectMetadata();
 
 	/**
@@ -41,6 +44,8 @@ public interface MetadataAwareAspectInstanceFactory extends AspectInstanceFactor
 	 * @return the mutex object (may be {@code null} for no mutex to use)
 	 * @since 4.3
 	 */
+	// 获取此工厂的最佳创建互斥锁。
+	// @return 互斥锁对象（如果不需要互斥锁，则可能为 {@code null}）
 	@Nullable
 	Object getAspectCreationMutex();
 

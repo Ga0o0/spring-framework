@@ -41,6 +41,9 @@ import org.springframework.util.Assert;
  * @see ClassFilters
  * @see Pointcuts
  */
+// 用于组合 {@link MethodMatcher MethodMatchers} 的静态实用方法。
+//
+// <p>MethodMatcher 可以静态求值（基于方法和目标类），也可以需要进一步动态求值（基于方法调用时的参数）。</p>
 public abstract class MethodMatchers {
 
 	/**
@@ -64,6 +67,12 @@ public abstract class MethodMatchers {
 	 * @return a distinct MethodMatcher that matches all methods that either
 	 * of the given MethodMatchers matches
 	 */
+	// 匹配所有与给定的 MethodMatcher 中任一方法匹配的方法。
+	// @param mm1 第一个 MethodMatcher
+	// @param cf1 第一个 MethodMatcher 对应的 ClassFilter
+	// @param mm2 第二个 MethodMatcher
+	// @param cf2 第二个 MethodMatcher 对应的 ClassFilter
+	// @return 返回一个不同的 MethodMatcher，它匹配所有与给定的 MethodMatcher 中任一方法匹配的方法。
 	static MethodMatcher union(MethodMatcher mm1, ClassFilter cf1, MethodMatcher mm2, ClassFilter cf2) {
 		return (mm1 instanceof IntroductionAwareMethodMatcher || mm2 instanceof IntroductionAwareMethodMatcher ?
 				new ClassFilterAwareUnionIntroductionAwareMethodMatcher(mm1, cf1, mm2, cf2) :
@@ -197,6 +206,7 @@ public abstract class MethodMatchers {
 	 * MethodMatcher implementation for a union of two given MethodMatchers,
 	 * supporting an associated ClassFilter per MethodMatcher.
 	 */
+	// MethodMatcher 实现用于合并两个给定的 MethodMatcher，支持每个 MethodMatcher 关联一个 ClassFilter。
 	@SuppressWarnings("serial")
 	private static class ClassFilterAwareUnionMethodMatcher extends UnionMethodMatcher {
 
@@ -256,6 +266,7 @@ public abstract class MethodMatchers {
 	 * supporting an associated ClassFilter per MethodMatcher.
 	 * @since 5.1
 	 */
+	// MethodMatcher 实现用于两个给定 MethodMatcher 的联合，其中至少一个是 IntroductionAwareMethodMatcher，每个 MethodMatcher 支持一个关联的 ClassFilter。
 	@SuppressWarnings("serial")
 	private static class ClassFilterAwareUnionIntroductionAwareMethodMatcher extends ClassFilterAwareUnionMethodMatcher
 			implements IntroductionAwareMethodMatcher {

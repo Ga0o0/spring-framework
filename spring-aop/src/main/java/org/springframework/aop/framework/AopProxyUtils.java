@@ -143,6 +143,12 @@ public abstract class AopProxyUtils {
 	 * @see SpringProxy
 	 * @see Advised
 	 */
+	// 确定给定 AOP 配置需要代理的完整接口集。
+	//
+	// <p>除非 AdvisedSupport 的 {@link AdvisedSupport#setOpaque "opaque"} 标志已启用，
+	// 否则此方法始终会添加 {@link Advised} 接口。始终会添加 {@link org.springframework.aop.SpringProxy} 标记接口。
+	// @param advised 代理配置
+	// @return 要代理的完整接口集
 	public static Class<?>[] completeProxiedInterfaces(AdvisedSupport advised) {
 		return completeProxiedInterfaces(advised, false);
 	}

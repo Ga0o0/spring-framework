@@ -35,6 +35,12 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @author Rob Harrop
  */
+// {@code BeanPostProcessor} 实现基于当前 {@code BeanFactory} 中所有候选的 {@code Advisor} 创建 AOP 代理。
+// 此类完全通用，不包含任何处理特定方面（例如方面池）的特殊代码。
+//
+// <p>可以通过将 {@code usePrefix} 属性设置为 true 来过滤顾问（例如，在同一工厂中使用多个此类后处理器）。
+// 在这种情况下，只会使用以 DefaultAdvisorAutoProxyCreator 的 bean 名称开头并后跟一个点（例如“aapc.”）的顾问。
+// 可以通过设置 {@code advisorBeanNamePrefix} 属性来更改 bean 名称的默认前缀。在这种情况下，也会使用分隔符 (.)。
 @SuppressWarnings("serial")
 public class DefaultAdvisorAutoProxyCreator extends AbstractAdvisorAutoProxyCreator implements BeanNameAware {
 

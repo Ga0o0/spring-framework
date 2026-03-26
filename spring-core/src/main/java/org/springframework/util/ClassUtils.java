@@ -801,6 +801,11 @@ public abstract class ClassUtils {
 	 * @since 3.1
 	 * @see StringUtils#toStringArray
 	 */
+	// 将给定的 {@code Collection} 复制到 {@code Class} 数组中。
+	//
+	// <p>{@code Collection} 必须仅包含 {@code Class} 元素。</p>
+	// @param collection 要复制的 {@code Collection}
+	// @return {@code Class} 数组
 	public static Class<?>[] toClassArray(@Nullable Collection<Class<?>> collection) {
 		return (!CollectionUtils.isEmpty(collection) ? collection.toArray(EMPTY_CLASS_ARRAY) : EMPTY_CLASS_ARRAY);
 	}
@@ -836,7 +841,14 @@ public abstract class ClassUtils {
 	 * (can be {@code null} when accepting all declared interfaces)
 	 * @return all interfaces that the given object implements as an array
 	 */
+	// 返回给定类实现的所有接口，包括超类实现的接口，并以数组形式返回。
+	//
+	// <p>如果类本身就是一个接口，则仅返回该接口。</p>
+	// @param clazz 要分析接口的类
+	// @param classLoader 接口需要可见的类加载器（如果接受所有已声明的接口，则可以为 {@code null}）
+	// @return 给定对象实现的所有接口，并以数组形式返回。
 	public static Class<?>[] getAllInterfacesForClass(Class<?> clazz, @Nullable ClassLoader classLoader) {
+		// getAllInterfacesForClassAsSet(...) -> 返回给定类实现的所有接口，以 Set 的形式返回，包括超类实现的接口。
 		return toClassArray(getAllInterfacesForClassAsSet(clazz, classLoader));
 	}
 
@@ -875,6 +887,12 @@ public abstract class ClassUtils {
 	 * (can be {@code null} when accepting all declared interfaces)
 	 * @return all interfaces that the given object implements as a Set
 	 */
+	// 返回给定类实现的所有接口，以 Set 的形式返回，包括超类实现的接口。
+	//
+	// <p>如果类本身就是一个接口，则仅返回该接口。</p>
+	// @param clazz 要分析接口的类
+	// @param classLoader 接口需要在其中可见的类加载器（如果接受所有已声明的接口，则可以为 {@code null}）
+	// @return 返回给定对象实现的所有接口，以 Set 的形式返回。
 	public static Set<Class<?>> getAllInterfacesForClassAsSet(Class<?> clazz, @Nullable ClassLoader classLoader) {
 		Assert.notNull(clazz, "Class must not be null");
 		if (clazz.isInterface() && isVisible(clazz, classLoader)) {

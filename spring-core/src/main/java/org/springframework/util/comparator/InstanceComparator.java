@@ -36,6 +36,10 @@ import org.springframework.util.Assert;
  * @param <T> the type of objects that may be compared by this comparator
  * @see Comparator#thenComparing(Comparator)
  */
+// 基于任意类顺序比较对象。允许根据对象继承的类类型对其进行排序——例如，此比较器可用于对 {@code Number} 列表进行排序，使 {@code Long} 出现在 {@code Integer} 之前。
+//
+// <p>比较期间仅考虑指定的 {@code instanceOrder} 类。如果两个对象都是排序类型的实例，则此比较器将返回值 {@code 0}。
+// 如果需要进一步排序，请考虑与 {@link Comparator#thenComparing(Comparator)} 结合使用。
 public class InstanceComparator<T> implements Comparator<T> {
 
 	private final Class<?>[] instanceOrder;

@@ -48,6 +48,17 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 2.0
  */
+// AspectJ 建议/顾问按优先级排序（<i>而非</i>调用顺序）。
+//
+// <p>假设有两个建议 {@code A} 和 {@code B}：
+// <ul>
+// <li>如果 {@code A} 和 {@code B} 定义在不同的切面中，则优先级值最低的切面中的建议优先级最高。</li>
+// <li>如果 {@code A} 和 {@code B} 定义在同一个切面中，且 {@code A} 或 {@code B} 中有一个是 <em>after</em> 建议，则该切面中最后声明的建议优先级最高。
+// 	   如果 {@code A} 和 {@code B} 都不是 <em>after</em> 通知，则切面中第一个声明的通知优先级最高。</li>
+// </ul>
+//
+// <p>重要提示：此比较器与 AspectJ 的 {@link org.aspectj.util.PartialOrder PartialOrder} 排序工具一起使用。
+// 因此，与普通的 {@link Comparator} 不同，此比较器返回 {@code 0} 表示我们不关心顺序，而不是两个元素必须排序相同。
 class AspectJPrecedenceComparator implements Comparator<Advisor> {
 
 	private static final int HIGHER_PRECEDENCE = -1;
