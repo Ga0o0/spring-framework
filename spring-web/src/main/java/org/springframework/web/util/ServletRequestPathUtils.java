@@ -144,6 +144,8 @@ public abstract class ServletRequestPathUtils {
 		// RequestPath is parsed once and cached in the DispatcherServlet if any HandlerMapping uses PathPatterns.
 		// A String lookupPath is resolved and cached in each HandlerMapping that uses String matching.
 		// So we try lookupPath first, then RequestPath second
+		// --> 译文：如果任何 HandlerMapping 使用 PathPatterns，则 RequestPath 会被解析一次并缓存在 DispatcherServlet 中。
+		// 对于每个使用字符串匹配的 HandlerMapping，都会解析并缓存一个字符串 lookupPath。因此，我们首先尝试 lookupPath，然后尝试 RequestPath。
 
 		String lookupPath = (String) request.getAttribute(UrlPathHelper.PATH_ATTRIBUTE);
 		if (lookupPath != null) {

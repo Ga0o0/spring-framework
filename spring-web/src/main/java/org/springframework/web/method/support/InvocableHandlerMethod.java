@@ -192,13 +192,13 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	public Object invokeForRequest(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		// 获取当前请求的方法参数值 -> INVOKE HandlerMethodArgumentResolver.resolveArgument()
+		// 1. 获取当前请求的方法参数值 -> 执行 HandlerMethodArgumentResolver#resolveArgument() 方法
 		Object[] args = getMethodArgumentValues(request, mavContainer, providedArgs);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Arguments: " + Arrays.toString(args));
 		}
 
-		// 方法参数是否需要进行方法验证
+		// 2. 方法参数是否需要进行方法验证
 		if (shouldValidateArguments() && this.methodValidator != null) {
 			// 应用参数验证 -> MethodValidator.validateArguments()
 			this.methodValidator.applyArgumentValidation(
@@ -207,7 +207,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 
 		Object returnValue = doInvoke(args);
 
-		// 方法返回值是否是方法验证的候选值
+		// 3. 方法返回值是否是方法验证的候选值
 		if (shouldValidateReturnValue() && this.methodValidator != null) {
 			// 验证给定的返回值并返回验证结果。 -> MethodValidator.validateReturnValue()
 			this.methodValidator.applyReturnValueValidation(
@@ -228,7 +228,7 @@ public class InvocableHandlerMethod extends HandlerMethod {
 	protected Object[] getMethodArgumentValues(NativeWebRequest request, @Nullable ModelAndViewContainer mavContainer,
 			Object... providedArgs) throws Exception {
 
-		// 返回此 {@code AnnotatedMethod} 的方法参数。
+		// 返回此 AnnotatedMethod 的方法参数。
 		MethodParameter[] parameters = getMethodParameters();
 		if (ObjectUtils.isEmpty(parameters)) {
 			return EMPTY_ARGS;
@@ -246,7 +246,8 @@ public class InvocableHandlerMethod extends HandlerMethod {
 				throw new IllegalStateException(formatArgumentError(parameter, "No suitable resolver"));
 			}
 			try {
-				// HandlerMethodArgumentResolverComposite.resolveArgument() -> INVOKE HandlerMethodArgumentResolver.resolveArgument()
+				// 遍历已注册的 HandlerMethodArgumentResolver 并调用支持它的那个。
+				// 执行 HandlerMethodArgumentResolver#resolveArgument() 方法
 				args[i] = this.resolvers.resolveArgument(parameter, mavContainer, request, this.dataBinderFactory);
 			}
 			catch (Exception ex) {

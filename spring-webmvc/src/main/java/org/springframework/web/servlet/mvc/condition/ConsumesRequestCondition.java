@@ -165,6 +165,13 @@ public final class ConsumesRequestCondition extends AbstractRequestCondition<Con
 	 * @param bodyRequired whether requests are expected to have a body
 	 * @since 5.2
 	 */
+	// 此条件是否要求请求包含请求体。
+	//
+	// <p>默认情况下，此参数设置为 {@code true}，此时假定请求体是必需的，
+	// 并且此条件与“Content-Type”标头匹配，或者回退到“Content-Type: application/octet-stream”。
+	//
+	// <p>如果设置为 {@code false}，并且请求没有请求体，则此条件会自动匹配，即不进行表达式检查。
+	// @param bodyRequired 请求是否需要包含请求体
 	public void setBodyRequired(boolean bodyRequired) {
 		this.bodyRequired = bodyRequired;
 	}

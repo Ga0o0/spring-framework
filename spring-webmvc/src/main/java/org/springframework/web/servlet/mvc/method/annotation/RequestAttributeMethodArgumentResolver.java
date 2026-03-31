@@ -34,6 +34,7 @@ import org.springframework.web.method.annotation.AbstractNamedValueMethodArgumen
  * @author Rossen Stoyanchev
  * @since 4.3
  */
+// 解析带有 @{@link RequestAttribute} 注解的方法参数。
 public class RequestAttributeMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
 	@Override

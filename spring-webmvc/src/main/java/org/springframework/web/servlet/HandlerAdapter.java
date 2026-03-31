@@ -94,7 +94,7 @@ public interface HandlerAdapter {
 	 * model data, or {@code null} if the request has been handled directly
 	 * @throws Exception in case of errors
 	 */
-	// 使用给定的处理程序来处理此请求。所需的工作流程可能差异很大。
+	// 使用给定的 handler 来处理当前请求。所需的工作流程可能差异很大。
 	// @param request 当前 HTTP 请求
 	// @param respond 当前 HTTP 响应
 	// @param handler 要使用的处理程序。此对象必须先前已传递给此接口的 {@code support} 方法，并且该方法必须返回 {@code true}。

@@ -38,6 +38,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 解析 {@link Map} 方法的参数并处理 {@link Map} 的返回值。
+//
+// <p>Map 的返回值可以根据是否存在 {@code @ModelAttribute} 或 {@code @ResponseBody} 等注解而有多种解释。
+// 从 5.2 版本开始，如果参数带有注解，则此解析器返回 false。
 public class MapMethodProcessor implements HandlerMethodArgumentResolver, HandlerMethodReturnValueHandler {
 
 	@Override

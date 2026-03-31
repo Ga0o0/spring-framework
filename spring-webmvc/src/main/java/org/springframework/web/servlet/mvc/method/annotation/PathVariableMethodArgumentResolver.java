@@ -62,6 +62,15 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 解析使用 @{@link PathVariable} 注解的方法参数。
+//
+// <p>@{@link PathVariable} 是一个命名值，它从 URI 模板变量解析而来。它始终是必需的，并且没有默认值可供回退。
+// 有关命名值处理方式的更多信息，请参阅基类 {@link org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver}。
+//
+// <p>如果方法参数类型为 {@link Map}，则使用注解中指定的名称来解析 URI 变量的字符串值。
+// 然后，假设已注册合适的 {@link Converter} 或 {@link PropertyEditor}，则通过类型转换将该值转换为 {@link Map}。
+//
+// <p>调用 {@link WebDataBinder} 来对已解析但尚未与方法参数类型匹配的路径变量值应用类型转换。
 public class PathVariableMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 		implements UriComponentsContributor {
 

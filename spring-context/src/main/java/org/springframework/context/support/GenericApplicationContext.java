@@ -605,7 +605,7 @@ public class GenericApplicationContext extends AbstractApplicationContext implem
 	// <p>可以覆盖此方法以适应所有 {@code registerBean} 方法的注册机制（因为它们都委托给此方法）。
 	// @param beanName bean 的名称（可以为 {@code null}）
 	// @param beanClass bean 的类
-	// @param supply 用于创建 bean 实例的回调（如果为 {@code null}，则解析为自动装配的公共构造函数）
+	// @param supplier 用于创建 bean 实例的回调（如果为 {@code null}，则解析为自动装配的公共构造函数）
 	// @param customizers 一个或多个用于自定义工厂的 {@link BeanDefinition} 的回调，例如设置 lazy-init 或 primary 标志
 	public <T> void registerBean(@Nullable String beanName, Class<T> beanClass,
 			@Nullable Supplier<T> supplier, BeanDefinitionCustomizer... customizers) {

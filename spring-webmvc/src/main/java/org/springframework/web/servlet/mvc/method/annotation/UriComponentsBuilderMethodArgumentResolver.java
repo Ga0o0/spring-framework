@@ -38,6 +38,9 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 解析器参数值类型为 {@link UriComponentsBuilder}。
+//
+// <p>返回的实例通过 {@link ServletUriComponentsBuilder#fromServletMapping(HttpServletRequest)} 初始化。
 public class UriComponentsBuilderMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

@@ -36,6 +36,7 @@ import org.springframework.web.method.support.InvocableHandlerMethod;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 通过 {@code @InitBinder} 方法为 WebDataBinder 添加初始化。
 public class InitBinderDataBinderFactory extends DefaultDataBinderFactory {
 
 	private final List<InvocableHandlerMethod> binderMethods;
@@ -61,6 +62,10 @@ public class InitBinderDataBinderFactory extends DefaultDataBinderFactory {
 	 * @throws Exception if one of the invoked @{@link InitBinder} methods fails
 	 * @see #isBinderMethodApplicable
 	 */
+	// 使用 {@code @InitBinder} 方法初始化 WebDataBinder。
+	// <p>如果 {@code @InitBinder} 注解指定了属性名称，则仅当名称包含目标对象名称时才会调用它。</p>
+	// @throws Exception 如果调用的 @{@link InitBinder} 方法之一失败
+	// @see #isBinderMethodApplicable
 	@Override
 	public void initBinder(WebDataBinder dataBinder, NativeWebRequest request) throws Exception {
 		for (InvocableHandlerMethod binderMethod : this.binderMethods) {

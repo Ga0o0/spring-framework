@@ -39,6 +39,11 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 解析带有 {@code @Value} 注解的方法参数。
+//
+// <p>一个 {@code @Value} 没有名称，而是从默认值字符串中解析得到，该字符串可能包含 ${...} 占位符或 Spring 表达式语言 #{...} 表达式。
+//
+// <p>可以调用{@link WebDataBinder}对解析后的参数值进行类型转换。
 public class ExpressionValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
 	/**

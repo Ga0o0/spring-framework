@@ -157,6 +157,8 @@ public abstract class WebUtils {
 	 * to them directly rather than through the servlet container's error page
 	 * resolution mechanism.
 	 */
+	// 标准 Servlet 2.3+ 规范中用于处理错误页面异常的请求属性。
+	// <p>当直接转发到标记为错误页面的 JSP 页面（而不是通过 Servlet 容器的错误页面解析机制）时，此属性将暴露给这些页面。</p>
 	public static final String ERROR_EXCEPTION_ATTRIBUTE = "jakarta.servlet.error.exception";
 
 	/**
@@ -461,6 +463,10 @@ public abstract class WebUtils {
 	 * @return the matching request object, or {@code null} if none
 	 * of that type is available
 	 */
+	// 如果存在指定类型的请求对象，则返回该对象，并根据需要对给定的请求进行解包。
+	// @param request 要进行内省的 servlet 请求
+	// @param requiredType 所需的请求对象类型
+	// @return 匹配的请求对象，如果不存在该类型，则返回 {@code null}。
 	@SuppressWarnings("unchecked")
 	@Nullable
 	public static <T> T getNativeRequest(ServletRequest request, @Nullable Class<T> requiredType) {

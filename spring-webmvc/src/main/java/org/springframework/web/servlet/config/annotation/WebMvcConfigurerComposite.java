@@ -35,6 +35,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 一个 {@link WebMvcConfigurer}，它将委托给一个或多个其他配置器。
 class WebMvcConfigurerComposite implements WebMvcConfigurer {
 
 	private final List<WebMvcConfigurer> delegates = new ArrayList<>();

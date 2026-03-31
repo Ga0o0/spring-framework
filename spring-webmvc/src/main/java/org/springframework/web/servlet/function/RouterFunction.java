@@ -31,6 +31,9 @@ import org.springframework.util.Assert;
  * @param <T> the type of the {@linkplain HandlerFunction handler function} to route to
  * @see RouterFunctions
  */
+// 表示一个路由到 {@linkplain HandlerFunction 处理函数} 的函数。
+//
+// @param <T> 要路由到的 {@linkplain HandlerFunction 处理函数} 的类型
 @FunctionalInterface
 public interface RouterFunction<T extends ServerResponse> {
 
@@ -40,6 +43,9 @@ public interface RouterFunction<T extends ServerResponse> {
 	 * @return an {@code Optional} describing the {@code HandlerFunction} that matches this request,
 	 * or an empty {@code Optional} if there is no match
 	 */
+	// 返回与给定请求匹配的 {@linkplain HandlerFunction 处理函数}。
+	// @param request 要路由的请求
+	// @return 一个 {@code Optional}，用于描述与此请求匹配的 {@code HandlerFunction}；如果没有匹配项，则返回一个空的 {@code Optional}。
 	Optional<HandlerFunction<T>> route(ServerRequest request);
 
 	/**

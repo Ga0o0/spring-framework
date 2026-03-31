@@ -43,6 +43,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 解析 Servlet 支持的响应相关方法参数。支持以下类型的值：
+// <ul>
+// <li>{@link ServletResponse}
+// <li>{@link OutputStream}
+// <li>{@link Writer}
+// </ul>
 public class ServletResponseMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

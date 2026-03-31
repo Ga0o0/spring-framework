@@ -47,6 +47,10 @@ import org.springframework.util.Assert;
  * @since 3.0
  * @param <T> the converted object type
  */
+// 大多数 {@link HttpMessageConverter} 实现的抽象基类。
+//
+// <p>此基类通过 {@link #setSupportedMediaTypes(List) supportedMediaTypes} bean 属性添加了对设置受支持的 {@code MediaTypes} 的支持。
+// 它还添加了在写入输出消息时对 {@code Content-Type} 和 {@code Content-Length} 的支持。
 public abstract class AbstractHttpMessageConverter<T> implements HttpMessageConverter<T> {
 
 	/** Logger available to subclasses. */

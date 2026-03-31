@@ -33,6 +33,7 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  * @see WebRequestInterceptor
  */
+// 通用的 Web 请求接口。主要用于通用的 Web 请求拦截器，使其能够访问通用的请求元数据，而不是实际处理请求。
 public interface WebRequest extends RequestAttributes {
 
 	/**

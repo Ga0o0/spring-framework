@@ -41,6 +41,8 @@ import org.springframework.web.servlet.HandlerMapping;
  * @since 3.2
  * @see PathVariableMethodArgumentResolver
  */
+// 解析带有 {@link PathVariable @PathVariable} 注解的 {@link Map} 方法参数，
+// 其中该注解未指定路径变量名称。解析后的 {@link Map} 参数是所有 URI 模板名称 - 值对的副本。
 public class PathVariableMapMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

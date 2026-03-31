@@ -31,6 +31,11 @@ import org.springframework.lang.Nullable;
  * @author Juergen Hoeller
  * @since 2.5.1
  */
+// 定义 model 属性持有者的接口。
+//
+// <p>主要用于向 model 添加属性。
+//
+// <p>允许将整个 model 作为 {@code java.util.Map} 访问。
 public interface Model {
 
 	/**

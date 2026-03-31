@@ -58,6 +58,14 @@ import org.springframework.web.util.pattern.PatternParseException;
  * @author Brian Clozel
  * @since 3.0
  */
+// 封装一个 {@link HandlerInterceptor}，并使用 URL 模式来确定它是否适用于给定的请求。
+//
+// <p>模式匹配可以使用 {@link PathMatcher} 或已解析的 {@link PathPattern} 来完成。
+// 语法基本相同，但后者更适合 Web 使用，效率更高。选择哪种方式取决于是否存在已解析的 {@linkplain UrlPathHelper#resolveAndCacheLookupPath} {@code String}
+// 查找路径或已解析的 {@linkplain ServletRequestPathUtils#parseAndCache parsed} {@code RequestPath}，而这又取决于与当前请求匹配的 {@link HandlerMapping}。
+//
+// <p>{@code MappedInterceptor} 由 {@link org.springframework.web.servlet.handler.AbstractHandlerMethodMapping AbstractHandlerMethodMapping} 的子类支持，
+// 这些子类可以检测 {@code MappedInterceptor} 类型的 bean，并检查直接注册到该 bean 的拦截器是否为这种类型。
 public final class MappedInterceptor implements HandlerInterceptor {
 
 	private static final PathMatcher defaultPathMatcher = new AntPathMatcher();

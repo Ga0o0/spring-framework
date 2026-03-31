@@ -49,6 +49,9 @@ import org.springframework.web.servlet.HandlerMapping;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 一个 Servlet 特有的 {@link ModelAttributeMethodProcessor}，它通过类型为 {@link ServletRequestDataBinder} 的 WebDataBinder 应用数据绑定。
+//
+// <p>此外，它还添加了一个回退策略，即如果名称与模型属性名称匹配，并且存在适当的类型转换策略，则从 URI 模板变量或请求参数实例化模型属性。
 public class ServletModelAttributeMethodProcessor extends ModelAttributeMethodProcessor {
 
 	/**

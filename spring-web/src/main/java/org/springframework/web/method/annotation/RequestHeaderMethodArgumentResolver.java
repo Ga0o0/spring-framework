@@ -44,6 +44,12 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 解析除 {@link Map} 参数之外的所有使用 {@code @RequestHeader} 注解的方法参数。
+// 有关使用 {@code @RequestHeader} 注解的 {@link Map} 参数的详细信息，请参阅 {@link RequestHeaderMapMethodArgumentResolver}。
+//
+// <p>{@code @RequestHeader} 是从请求头解析出的命名值。它具有必需标志和一个默认值，当请求头不存在时，该默认值将回退到该默认值。
+//
+// <p>调用 {@link WebDataBinder} 来对已解析但尚未与方法参数类型匹配的请求头值应用类型转换。
 public class RequestHeaderMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
 	/**

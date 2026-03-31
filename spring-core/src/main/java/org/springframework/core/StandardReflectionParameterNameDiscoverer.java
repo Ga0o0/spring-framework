@@ -36,6 +36,10 @@ import org.springframework.lang.Nullable;
  * @see KotlinReflectionParameterNameDiscoverer
  * @see DefaultParameterNameDiscoverer
  */
+// {@link ParameterNameDiscoverer} 的实现利用 JDK 8 的反射机制来内省参数名称（基于“-parameters”编译器标志）。
+//
+// <p>这是 {@link DefaultParameterNameDiscoverer} 的一个关键元素，如果使用了 Kotlin，
+// 它会与 {@link KotlinReflectionParameterNameDiscoverer} 结合使用。
 public class StandardReflectionParameterNameDiscoverer implements ParameterNameDiscoverer {
 
 	@Override

@@ -76,7 +76,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @see org.springframework.web.servlet.HandlerInterceptor
  */
 // {@link org.springframework.web.servlet.HandlerMapping} 实现的抽象基类。
-// 支持排序、默认处理程序和处理程序拦截器，包括按路径模式映射的处理程序拦截器。
+// 支持排序、默认 handler 和 handler 拦截器，包括按路径模式映射的 handler 拦截器。
 //
 // <p>注意：此基类<i>不</i>支持公开 {@link #PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE}。
 // 此属性的支持取决于具体的子类，通常基于请求 URL 映射。
@@ -129,7 +129,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * Return the default handler for this handler mapping,
 	 * or {@code null} if none.
 	 */
-	// 返回此处理程序映射的默认处理程序，如果没有，则返回 {@code null}。
+	// 返回此 handler 映射的默认 handler ，如果没有，则返回 {@code null}。
 	@Nullable
 	public Object getDefaultHandler() {
 		return this.defaultHandler;
@@ -513,22 +513,24 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @return the corresponding handler instance, or the default handler
 	 * @see #getHandlerInternal
 	 */
-	// 查找指定请求的处理程序，如果未找到指定处理程序，则返回默认处理程序。
+	// 查找指定请求的 handler ，如果未找到指定 handler ，则返回默认 handler 。
 	// @param request 当前 HTTP 请求
-	// @return 相应的处理程序实例，或默认处理程序
+	// @return 相应的 handler 实例，或默认 handler 
 	@Override
 	@Nullable
 	public final HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-		// 查找给定请求的处理程序，如果未找到，则返回 {@code null}。
+		// 1. 查找给定请求的 handler，如果未找到，则返回 null；
+		// AbstractHandlerMethodMapping#getHandlerInternal(HttpServletRequest) -> HandlerMethod
 		Object handler = getHandlerInternal(request);
 		if (handler == null) {
-			// 返回此处理程序映射的默认处理程序，如果没有，则返回 {@code null}。
+			// 返回此 handler 映射的默认 handler，如果没有，则返回 null
 			handler = getDefaultHandler();
 		}
 		if (handler == null) {
 			return null;
 		}
-		// Bean name or resolved handler? --> 译文：Bean 名称或已解析的处理程序？
+		// 2. 解析 handler bean 名称为 handler 对象
+		// Bean name or resolved handler? --> 译文：Bean 名称或已解析的 handler？
 		if (handler instanceof String handlerName) {
 			handler = obtainApplicationContext().getBean(handlerName);
 		}
@@ -539,7 +541,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 			initLookupPath(request);
 		}
 
-		// 为给定的处理程序构建一个 {@link HandlerExecutionChain}，包括适用的拦截器。
+		// 3. 为给定的 handler 构建一个 HandlerExecutionChain，包括适用的拦截器
 		// HandlerExecutionChain {Object handler, List<HandlerInterceptor> interceptorList}
 		HandlerExecutionChain executionChain = getHandlerExecutionChain(handler, request);
 
@@ -552,10 +554,11 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 			}
 		}
 
-		// hasCorsConfigurationSource(handler) -> 如果此处理程序有 {@link CorsConfigurationSource}，则返回 {@code true}。
-		// CorsUtils.isPreFlightRequest(request) -> 通过检查 {@code OPTIONS} 方法是否存在 {@code Origin} 和 {@code Access-Control-Request-Method} 标头，如果请求是有效的 CORS 预检请求，则返回 {@code true}。
+		// 4. Cors 处理
+		// hasCorsConfigurationSource(handler)   -> 如果此 handler 有 CorsConfigurationSource，则返回 true
+		// CorsUtils.isPreFlightRequest(request) -> 通过检查 OPTIONS 方法是否存在 Origin 和 Access-Control-Request-Method 标头，如果请求是有效的 CORS 预检请求，则返回 true
 		if (hasCorsConfigurationSource(handler) || CorsUtils.isPreFlightRequest(request)) {
-			// 检索指定处理程序的 CORS 配置。
+			// 检索指定 handler 的 CORS 配置
 			CorsConfiguration config = getCorsConfiguration(handler, request);
 			if (getCorsConfigurationSource() != null) {
 				CorsConfiguration globalConfig = getCorsConfigurationSource().getCorsConfiguration(request);
@@ -588,15 +591,15 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @return the corresponding handler instance, or {@code null} if none found
 	 * @throws Exception if there is an internal error
 	 */
-	// 查找给定请求的处理程序，如果未找到，则返回 {@code null}。
-	// 此方法由 {@link #getHandler} 调用；如果设置了默认处理程序，则返回 {@code null} 的值。
+	// 查找给定请求的 handler，如果未找到，则返回 {@code null}。
+	// 此方法由 {@link #getHandler} 调用；如果设置了默认 handler，则返回 {@code null} 的值。
 	// <p>在 CORS 预检请求中，此方法返回的匹配项并非针对预检请求，而是基于 URL 路径、
 	// “Access-Control-Request-Method” 标头中的 HTTP 方法以及 “Access-Control-Request-Headers” 标头中的标头，
 	// 而是基于预期的实际请求，从而允许通过 {@link #getCorsConfiguration(Object, HttpServletRequest)} 获取 CORS 配置。
-	// <p>注意：此方法还可以返回预构建的 {@link HandlerExecutionChain}，将处理程序对象与动态确定的拦截器相结合。
+	// <p>注意：此方法还可以返回预构建的 {@link HandlerExecutionChain}，将 handler 对象与动态确定的拦截器相结合。
 	// 静态指定的拦截器将合并到这样的现有链中。
 	// @param request 当前 HTTP 请求
-	// @return 相应的处理程序实例，如果未找到则返回 {@code null}
+	// @return 相应的 handler 实例，如果未找到则返回 {@code null}
 	// @throws Exception 如果存在内部错误
 	@Nullable
 	protected abstract Object getHandlerInternal(HttpServletRequest request) throws Exception;
@@ -638,7 +641,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	private RequestPath getRequestPath(HttpServletRequest request) {
 		// Expect pre-parsed path with DispatcherServlet,
 		// but otherwise parse per handler lookup + cache for handling
-		// --> 译文：期望使用 DispatcherServlet 预解析路径，但其他情况下则解析每个处理程序查找 + 缓存以进行处理
+		// --> 译文：期望使用 DispatcherServlet 预解析路径，但其他情况下则解析每个 handler 查找 + 缓存以进行处理
 		return (request.getAttribute(DispatcherServlet.WEB_APPLICATION_CONTEXT_ATTRIBUTE) != null ?
 				// 返回一个 {@link #parseAndCache 先前} 解析并缓存的 {@code RequestPath}。
 				ServletRequestPathUtils.getParsedRequestPath(request) :
@@ -665,15 +668,15 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @return the HandlerExecutionChain (never {@code null})
 	 * @see #getAdaptedInterceptors()
 	 */
-	// 为给定的处理程序构建一个 {@link HandlerExecutionChain}，包括适用的拦截器。
-	// <p>默认实现会使用给定的处理程序、处理程序映射的通用拦截器以及任何与当前请求 URL 匹配的
+	// 为给定的 handler 构建一个 {@link HandlerExecutionChain}，包括适用的拦截器。
+	// <p>默认实现会使用给定的 handler 、 handler 映射的通用拦截器以及任何与当前请求 URL 匹配的
 	// {@link MappedInterceptor MappedInterceptors} 构建一个标准 {@link HandlerExecutionChain}。
 	// 拦截器按注册顺序添加。子类可以重写此方法以扩展/重新排列拦截器列表。
-	// <p><b>注意：</b>传入的处理程序对象可以是原始处理程序或预先构建的 {@link HandlerExecutionChain}。
+	// <p><b>注意：</b>传入的 handler 对象可以是原始 handler 或预先构建的 {@link HandlerExecutionChain}。
 	// 此方法应明确处理这两种情况，要么构建一个新的 {@link HandlerExecutionChain}，要么扩展现有的链。
 	// <p>如果只想在自定义子类中添加拦截器，请考虑调用 {@code super.getHandlerExecutionChain(handler, request)}
 	// 并在返回的链对象上调用 {@link HandlerExecutionChain#addInterceptor}。
-	// @param handler 已解析的处理程序实例（永不 {@code null}）
+	// @param handler 已解析的 handler 实例（永不 {@code null}）
 	// @param request 当前 HTTP 请求
 	// @return HandlerExecutionChain（永不 {@code null}）
 	protected HandlerExecutionChain getHandlerExecutionChain(Object handler, HttpServletRequest request) {
@@ -698,7 +701,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * Return {@code true} if there is a {@link CorsConfigurationSource} for this handler.
 	 * @since 5.2
 	 */
-	// 如果此处理程序有 {@link CorsConfigurationSource}，则返回 {@code true}。
+	// 如果此 handler 有 {@link CorsConfigurationSource}，则返回 {@code true}。
 	protected boolean hasCorsConfigurationSource(Object handler) {
 		if (handler instanceof HandlerExecutionChain handlerExecutionChain) {
 			handler = handlerExecutionChain.getHandler();
@@ -713,10 +716,10 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @return the CORS configuration for the handler, or {@code null} if none
 	 * @since 4.2
 	 */
-	// 检索指定处理程序的 CORS 配置。
-	// @param handler 要检查的处理程序（永不为 {@code null}）。
+	// 检索指定 handler 的 CORS 配置。
+	// @param handler 要检查的 handler （永不为 {@code null}）。
 	// @param request 当前请求。
-	// @return 处理程序的 CORS 配置，如果没有，则返回 {@code null}。
+	// @return  handler 的 CORS 配置，如果没有，则返回 {@code null}。
 	@Nullable
 	protected CorsConfiguration getCorsConfiguration(Object handler, HttpServletRequest request) {
 		Object resolvedHandler = handler;
@@ -738,13 +741,14 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 	 * @param config the CORS configuration applicable to the handler
 	 * @since 4.2
 	 */
-	// 更新 {@link HandlerExecutionChain} 以支持 CORS 请求，在链的开头插入一个拦截器来执行 CORS 检查，并使用空操作处理程序来处理预检请求。
+	// 更新 {@link HandlerExecutionChain} 以支持 CORS 请求，在链的开头插入一个拦截器来执行 CORS 检查，并使用空操作 handler 来处理预检请求。
 	// @param request 当前请求
 	// @param chain 要更新的链
-	// @param config 适用于处理程序的 CORS 配置
+	// @param config 适用于 handler 的 CORS 配置
 	protected HandlerExecutionChain getCorsHandlerExecutionChain(
 			HttpServletRequest request, HandlerExecutionChain chain, @Nullable CorsConfiguration config) {
 
+		// 通过检查 OPTIONS 方法是否存在 Origin 和 Access-Control-Request-Method 标头，如果请求是有效的 CORS 预检请求，则返回 true
 		if (CorsUtils.isPreFlightRequest(request)) {
 			PreFlightHandler preFlightHandler = new PreFlightHandler(config);
 			chain.addInterceptor(0, preFlightHandler);

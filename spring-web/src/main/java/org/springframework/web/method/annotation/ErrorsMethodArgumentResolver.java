@@ -40,6 +40,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 解析 {@link Errors} 方法参数。
+//
+// <p>{@code Errors} 方法参数应紧跟在方法签名中的模型属性之后。解析方法是：模型中最后添加的两个属性应为模型属性及其 {@link BindingResult}。
 public class ErrorsMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

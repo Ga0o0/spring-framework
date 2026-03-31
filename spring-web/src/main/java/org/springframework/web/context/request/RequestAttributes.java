@@ -30,6 +30,9 @@ import org.springframework.lang.Nullable;
  * @since 2.0
  * @see ServletRequestAttributes
  */
+// 用于访问与请求关联的属性对象的抽象层。支持访问请求作用域的属性以及会话作用域的属性，并可选地支持“全局会话”的概念。
+//
+// <p>可应用于任何类型的请求/会话机制，尤其适用于 servlet 请求。</p>
 public interface RequestAttributes {
 
 	/**

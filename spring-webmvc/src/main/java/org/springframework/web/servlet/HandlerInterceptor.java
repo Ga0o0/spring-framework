@@ -78,21 +78,21 @@ import org.springframework.web.method.HandlerMethod;
  * @see org.springframework.web.servlet.theme.ThemeChangeInterceptor
  * @see jakarta.servlet.Filter
  */
-// 工作流接口允许自定义处理程序执行链。
-// 应用程序可以为特定处理程序组注册任意数量的现有或自定义拦截器，从而添加常见的预处理行为，而无需修改每个处理程序的实现。
+// 工作流接口允许自定义 Handler 执行链。
+// 应用程序可以为特定 Handler 组注册任意数量的现有或自定义拦截器，从而添加常见的预处理行为，而无需修改每个 Handler 的实现。
 //
-// <p>HandlerInterceptor 在相应的 HandlerAdapter 触发处理程序本身的执行之前被调用。
-// 此机制可用于大量预处理方面，或常见的处理程序行为，例如语言环境或主题更改。其主要目的是允许分解重复的处理程序代码。
+// <p>HandlerInterceptor 在相应的 HandlerAdapter 触发 Handler 本身的执行之前被调用。
+// 此机制可用于大量预处理方面，或常见的 Handler 行为，例如语言环境或主题更改。其主要目的是允许分解重复的 Handler 代码。
 //
-// <p>在异步处理场景中，处理程序可以在单独的线程中执行，而主线程退出时不会渲染或调用 {@code postHandle} 和 {@code afterCompletion} 回调。
-// 当并发处理程序执行完成后，请求将被分派回来以继续渲染模型，并且此契约的所有方法都会再次被调用。
+// <p>在异步处理场景中， Handler 可以在单独的线程中执行，而主线程退出时不会渲染或调用 {@code postHandle} 和 {@code afterCompletion} 回调。
+// 当并发 Handler 执行完成后，请求将被分派回来以继续渲染模型，并且此契约的所有方法都会再次被调用。
 // 更多选项和详细信息，请参阅 {@code org.springframework.web.servlet.AsyncHandlerInterceptor}
 //
 // <p>通常，每个 HandlerMapping bean 都会定义一个拦截器链，并共享其粒度。
-// 为了能够将某个拦截器链应用于一组处理程序，需要通过一个 HandlerMapping bean 映射所需的处理程序。
+// 为了能够将某个拦截器链应用于一组 Handler ，需要通过一个 HandlerMapping bean 映射所需的 Handler 。
 // 拦截器本身在应用程序上下文中定义为 bean，由映射 bean 定义通过其“interceptors”属性（在 XML 中为 <ref> 的 <list>）引用。
 //
-// <p>HandlerInterceptor 基本类似于 Servlet 过滤器，但与后者不同的是，它只允许自定义预处理（可以选择禁止处理程序本身的执行）和自定义后处理。
+// <p>HandlerInterceptor 基本类似于 Servlet 过滤器，但与后者不同的是，它只允许自定义预处理（可以选择禁止 Handler 本身的执行）和自定义后处理。
 // 过滤器功能更强大，例如，它们允许交换沿链传递的请求和响应对象。
 // 请注意，过滤器在 web.xml 中进行配置，而 HandlerInterceptor 则在应用程序上下文中进行配置。
 //
@@ -123,15 +123,15 @@ public interface HandlerInterceptor {
 	 * that this interceptor has already dealt with the response itself.
 	 * @throws Exception in case of errors
 	 */
-	// 处理程序执行前的拦截点。在 HandlerMapping 确定合适的处理程序对象之后，但在 HandlerAdapter 调用处理程序之前调用。
-	// <p>DispatcherServlet 处理执行链中的处理程序，该执行链由任意数量的拦截器组成，处理程序本身位于末尾。
+	//  Handler 执行前的拦截点。在 HandlerMapping 确定合适的 Handler 对象之后，但在 HandlerAdapter 调用 Handler 之前调用。
+	// <p>DispatcherServlet 处理执行链中的 Handler ，该执行链由任意数量的拦截器组成， Handler 本身位于末尾。
 	// 使用此方法，每个拦截器都可以决定中止执行链，通常是发送 HTTP 错误或编写自定义响应。
 	// <p><strong>注意：</strong>异步请求处理有特殊注意事项。更多详情请参阅 {@link org.springframework.web.servlet.AsyncHandlerInterceptor}。
 	// <p>默认实现返回 {@code true}。
 	// @param request 当前 HTTP 请求
 	// @param respond 当前 HTTP 响应
-	// @param handler 选定要执行的处理程序，用于类型和/或实例评估
-	// @return {@code true} 如果执行链应该继续执行下一个拦截器或处理程序本身。否则，DispatcherServlet 会假定此拦截器已经处理了响应本身。
+	// @param handler 选定要执行的 Handler ，用于类型和/或实例评估
+	// @return {@code true} 如果执行链应该继续执行下一个拦截器或 Handler 本身。否则，DispatcherServlet 会假定此拦截器已经处理了响应本身。
 	// @throws Exception 发生错误时
 	default boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
@@ -160,17 +160,17 @@ public interface HandlerInterceptor {
 	 * (can also be {@code null})
 	 * @throws Exception in case of errors
 	 */
-	// 成功执行处理程序后的拦截点。在 HandlerAdapter 实际调用处理程序之后、DispatcherServlet 渲染视图之前调用。
+	// 成功执行 Handler 后的拦截点。在 HandlerAdapter 实际调用 Handler 之后、DispatcherServlet 渲染视图之前调用。
 	// 可以通过给定的 ModelAndView 向视图公开其他模型对象。
-	// <p>DispatcherServlet 处理执行链中的处理程序，该执行链由任意数量的拦截器组成，处理程序本身位于链的末尾。
+	// <p>DispatcherServlet 处理执行链中的 Handler ，该执行链由任意数量的拦截器组成， Handler 本身位于链的末尾。
 	// 使用此方法，每个拦截器都可以对执行进行后处理，并按执行链的逆序应用。
 	// <p><strong>注意：</strong>异步请求处理需要特别注意。更多详情请参阅
 	// {@link org.springframework.web.servlet.AsyncHandlerInterceptor}。
 	// <p>默认实现为空。
 	// @param request 当前 HTTP 请求
 	// @param respond 当前 HTTP 响应
-	// @param handler 启动异步执行的处理程序（或 {@link HandlerMethod}），用于类型和/或实例检查
-	// @param modelAndView 处理程序返回的 {@code ModelAndView}（也可以为 {@code null}）
+	// @param handler 启动异步执行的 Handler （或 {@link HandlerMethod}），用于类型和/或实例检查
+	// @param modelAndView  Handler 返回的 {@code ModelAndView}（也可以为 {@code null}）
 	// @throws 错误时抛出异常
 	default void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 			@Nullable ModelAndView modelAndView) throws Exception {
@@ -197,7 +197,7 @@ public interface HandlerInterceptor {
 	 * include exceptions that have been handled through an exception resolver
 	 * @throws Exception in case of errors
 	 */
-	// 请求处理完成后的回调，即在渲染视图之后。将在处理程序执行的任何结果上调用，从而允许正确的资源清理。
+	// 请求处理完成后的回调，即在渲染视图之后。将在 Handler 执行的任何结果上调用，从而允许正确的资源清理。
 	// <p>注意：仅当此拦截器的 {@code preHandle} 方法成功完成并返回 {@code true} 时才会调用！
 	// <p>与 {@code postHandle} 方法一样，该方法将按相反的顺序在链中的每个拦截器上调用，因此第一个拦截器将是最后调用的。
 	// <p><strong>注意：</strong>异步请求处理有特殊注意事项。有关更多详细信息，请参阅
@@ -205,8 +205,8 @@ public interface HandlerInterceptor {
 	// <p>默认实现为空。
 	// @param request 当前 HTTP 请求
 	// @param respond 当前 HTTP 响应
-	// @param handler 启动异步执行的处理程序（或 {@link HandlerMethod}），用于类型和/或实例检查
-	// @param ex 处理程序执行时引发的任何异常（如果有）；这不包括已通过异常解析器处理的异常
+	// @param handler 启动异步执行的 Handler （或 {@link HandlerMethod}），用于类型和/或实例检查
+	// @param ex  Handler 执行时引发的任何异常（如果有）；这不包括已通过异常解析器处理的异常
 	// @throws Exception 发生错误时
 	default void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
 			@Nullable Exception ex) throws Exception {

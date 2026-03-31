@@ -38,6 +38,7 @@ import org.springframework.web.bind.WebDataBinder;
  * @see #setConversionService(ConversionService)
  * @see #setPropertyEditorRegistrar
  */
+// 方便的 {@link WebBindingInitializer}，用于在 Spring 应用程序上下文中进行声明式配置。允许在多个控制器/处理程序中重用预配置的初始化器。
 public class ConfigurableWebBindingInitializer implements WebBindingInitializer {
 
 	private boolean autoGrowNestedPaths = true;

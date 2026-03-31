@@ -48,6 +48,10 @@ import org.springframework.web.servlet.HandlerMapping;
  * @author Rossen Stoyanchev
  * @since 3.2
  */
+// 解析类型为 {@link Map} 且带有 {@link MatrixVariable @MatrixVariable} 注解但未指定名称的参数。
+// 换句话说，此解析器的目的是提供对多个矩阵变量的访问，这些变量可以是全部矩阵变量，也可以与特定路径变量关联。
+//
+// <p>如果指定了名称，则类型为 Map 的参数将被视为具有 Map 值的单个属性，并由 {@link MatrixVariableMethodArgumentResolver} 解析。</p>
 public class MatrixVariableMapMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

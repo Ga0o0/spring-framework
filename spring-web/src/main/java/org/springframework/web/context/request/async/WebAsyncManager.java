@@ -157,7 +157,7 @@ public final class WebAsyncManager {
 	 * that it has completed and the request was dispatched for further
 	 * processing of the concurrent result.
 	 */
-	// 返回当前请求所选的处理程序是否选择异步处理请求。
+	// 返回当前请求所选的 handler 是否选择异步处理请求。
 	// 返回值 “true” 表示并发处理正在进行中，响应将保持打开状态。
 	// 返回值 “false” 表示并发处理未启动，或者可能已完成，请求已被调度以进一步处理并发结果。
 	public boolean isConcurrentHandlingStarted() {

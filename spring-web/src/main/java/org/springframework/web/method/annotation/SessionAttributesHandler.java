@@ -80,6 +80,9 @@ public class SessionAttributesHandler {
 	 * @param handlerType the controller type
 	 * @param sessionAttributeStore used for session access
 	 */
+	// 创建一个新的 session 属性 handler。Session 属性名称和类型将从给定类型上的 @SessionAttributes 注解（如果存在）中提取。
+	// @param handlerType 控制器类型
+	// @param sessionAttributeStore 用于会话访问
 	public SessionAttributesHandler(Class<?> handlerType, SessionAttributeStore sessionAttributeStore) {
 		Assert.notNull(sessionAttributeStore, "SessionAttributeStore may not be null");
 		this.sessionAttributeStore = sessionAttributeStore;
@@ -97,7 +100,7 @@ public class SessionAttributesHandler {
 	 * Whether the controller represented by this instance has declared any
 	 * session attributes through an {@link SessionAttributes} annotation.
 	 */
-	// 此实例所代表的控制器是否已通过 {@link SessionAttributes} 注释声明任何会话属性。
+	// 此实例所代表的控制器是否已通过 {@link SessionAttributes} 注解声明任何会话属性。
 	public boolean hasSessionAttributes() {
 		return (!this.attributeNames.isEmpty() || !this.attributeTypes.isEmpty());
 	}

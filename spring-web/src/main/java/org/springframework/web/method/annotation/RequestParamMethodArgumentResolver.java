@@ -75,6 +75,16 @@ import org.springframework.web.util.UriComponentsBuilder;
  * @since 3.1
  * @see RequestParamMapMethodArgumentResolver
  */
+// 此解析器可解析使用 @{@link RequestParam} 注解的方法参数、结合 Spring 的 {@link MultipartResolver} 抽象的 {@link MultipartFile} 类型参数，
+// 以及结合 Servlet multipart 请求的 {@code jakarta.servlet.http.Part} 类型参数。
+// 此外，此解析器还可在默认解析模式下创建，在该模式下，未使用 {@link RequestParam @RequestParam} 注解
+// 的简单类型（例如 int、long 等）也会被视为请求参数，其参数名称由参数名称派生而来。
+//
+// <p>如果方法参数类型为 {@link Map}，则使用注解中指定的名称来解析请求参数的字符串值。
+// 然后，假设已注册合适的 {@link Converter} 或 {@link PropertyEditor}，则该值将通过类型转换转换为 {@link Map}。
+// 如果未指定请求参数名称，则会使用 {@link RequestParamMapMethodArgumentResolver} 以映射的形式提供对所有请求参数的访问。
+//
+// <p>调用 {@link WebDataBinder} 对已解析但尚未与方法参数类型匹配的请求头值进行类型转换。
 public class RequestParamMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver
 		implements UriComponentsContributor {
 

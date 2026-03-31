@@ -143,7 +143,7 @@ public abstract class AopUtils {
 	 * @since 4.3
 	 * @see MethodIntrospector#selectInvocableMethod(Method, Class)
 	 */
-	// 选择目标类型上的可调用方法：如果实际在目标类型上暴露，则选择给定方法本身，否则选择目标类型的接口之一或目标类型本身上的相应方法。
+	// 选择目标类的可调用方法：如果实际在目标类上暴露，则选择给定方法本身，否则选择目标类的接口之一或目标类本身上的相应方法。
 	// @param method 要检查的方法
 	// @param targetType 要在其上搜索方法的目标类型（通常是 AOP 代理）
 	// @return 目标类型上相应的可调用方法

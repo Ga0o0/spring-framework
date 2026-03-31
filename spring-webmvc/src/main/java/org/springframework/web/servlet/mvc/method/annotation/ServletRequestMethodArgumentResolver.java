@@ -65,6 +65,21 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 解析 Servlet 支持的请求相关方法参数。支持以下类型的值：
+// <ul>
+// <li>{@link WebRequest}
+// <li>{@link ServletRequest}
+// <li>{@link MultipartRequest}
+// <li>{@link HttpSession}
+// <li>{@link PushBuilder}（从 Spring 5.0 开始，基于 Servlet 4.0）
+// <li>{@link Principal}，但仅当未添加注解时才支持，以便允许自定义解析器解析，并回退到 {@link PrincipalMethodArgumentResolver}。
+// <li>{@link InputStream}
+// <li>{@link Reader}
+// <li>{@link HttpMethod}（Spring 4.0 起）
+// <li>{@link Locale}
+// <li>{@link TimeZone}（Spring 4.0 起）
+// <li>{@link java.time.ZoneId}（Spring 4.0 和 Java 8 起）
+// </ul>
 public class ServletRequestMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

@@ -38,6 +38,7 @@ import org.springframework.web.server.ServerWebExchange;
  * @author Rossen Stoyanchev
  * @since 5.0
  */
+// {@link HandlerMethod} 的扩展，通过 {@link InvocableHandlerMethod} 调用底层方法，但仅使用同步参数解析器，因此可以直接返回一个 {@link HandlerResult}，而无需异步包装器。
 public class SyncInvocableHandlerMethod extends HandlerMethod {
 
 	private final InvocableHandlerMethod delegate;

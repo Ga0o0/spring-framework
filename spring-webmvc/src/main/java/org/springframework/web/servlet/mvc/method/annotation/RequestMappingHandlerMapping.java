@@ -183,6 +183,13 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @param prefixes a map with path prefixes as key
 	 * @since 5.1
 	 */
+	// 配置路径前缀以应用于 controller 方法。
+	//
+	// <p>前缀用于丰富映射中每个 {@code @RequestMapping} 方法和 {@code @HttpExchange} 方法的映射，
+	// 这些方法的 controller 类型与映射中对应的 {@code Predicate} 匹配。假设输入映射的顺序可预测，则使用第一个匹配谓词的前缀。
+	//
+	// <p>考虑使用 {@link org.springframework.web.method.HandlerTypePredicate HandlerTypePredicate} 对 controller 进行分组。
+	// @param prefixes 以路径前缀作为键的映射
 	public void setPathPrefixes(Map<String, Predicate<Class<?>>> prefixes) {
 		this.pathPrefixes = (!prefixes.isEmpty() ?
 				Collections.unmodifiableMap(new LinkedHashMap<>(prefixes)) :
@@ -201,6 +208,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * Set the {@link ContentNegotiationManager} to use to determine requested media types.
 	 * If not set, the default constructor is used.
 	 */
+	// 设置用于确定请求媒体类型的 {@link ContentNegotiationManager}。如果未设置，则使用默认构造函数。
 	public void setContentNegotiationManager(ContentNegotiationManager contentNegotiationManager) {
 		Assert.notNull(contentNegotiationManager, "ContentNegotiationManager must not be null");
 		this.contentNegotiationManager = contentNegotiationManager;
@@ -209,7 +217,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	/**
 	 * Return the configured {@link ContentNegotiationManager}.
 	 */
-	// 返回已配置的 {@link ContentNegotiation Manager}。
+	// 返回已配置的 ContentNegotiationManager
 	public ContentNegotiationManager getContentNegotiationManager() {
 		return this.contentNegotiationManager;
 	}
@@ -272,7 +280,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	/**
 	 * Whether to match to URLs irrespective of the presence of a trailing slash.
 	 */
-	// 是否匹配 URL，无论是否存在尾部斜杠。
+	// 是否匹配 URL，无论 URL 末尾是否存在斜杠
 	public boolean useTrailingSlashMatch() {
 		return this.useTrailingSlashMatch;
 	}
@@ -298,6 +306,11 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @return the builder configuration that reflects the internal state
 	 * @since 5.3.14
 	 */
+	// 获取反映此 {@code HandlerMapping} 内部配置的 {@link RequestMappingInfo.BuilderConfiguration}，
+	// 可用于设置 {@link RequestMappingInfo.Builder#options(RequestMappingInfo.BuilderConfiguration)}。
+	//
+	// <p>这对于通过 {@link #registerHandlerMethod(Object, Method, RequestMappingInfo)} 以编程方式注册请求映射非常有用。
+	// @return 反映内部状态的构建器配置
 	public RequestMappingInfo.BuilderConfiguration getBuilderConfiguration() {
 		return this.config;
 	}
@@ -307,7 +320,7 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * {@inheritDoc}
 	 * <p>Expects a handler to have a type-level @{@link Controller} annotation.
 	 */
-	// <p>期望处理程序具有类型级别的 @{@link Controller} 注释。
+	// <p>期望 handler 具有类级别的 @{@link Controller} 注解
 	@Override
 	protected boolean isHandler(Class<?> beanType) {
 		return AnnotatedElementUtils.hasAnnotation(beanType, Controller.class);
@@ -322,29 +335,29 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @see #getCustomMethodCondition(Method)
 	 * @see #getCustomTypeCondition(Class)
 	 */
-	// 使用类型级别和方法级别的 {@link RequestMapping @RequestMapping} 和
+	// 使用类和方法级别的 {@link RequestMapping @RequestMapping} 和
 	// {@link HttpExchange @HttpExchange} 注解来创建 {@link RequestMappingInfo}。
 	// @return 创建的 {@code RequestMappingInfo}，如果该方法没有 {@code @RequestMapping}
 	// 或 {@code @HttpExchange} 注解，则返回 {@code null}
 	@Override
 	@Nullable
 	protected RequestMappingInfo getMappingForMethod(Method method, Class<?> handlerType) {
-		// 根据 @HttpExchange 和 @RequestMapping 创建的 RequestMappingInfo
+		// 1. 根据 Method 上的 @HttpExchange 和 @RequestMapping 注解创建的 RequestMappingInfo
 		RequestMappingInfo info = createRequestMappingInfo(method); // 方法 请求映射信息
 		if (info != null) {
-			// 类型 请求映射信息
+			// 2. 根据 Class 上的 @HttpExchange 和 @RequestMapping 注解创建的 RequestMappingInfo
 			RequestMappingInfo typeInfo = createRequestMappingInfo(handlerType);
 			if (typeInfo != null) {
-				// 将 typeInfo 请求映射信息（即当前实例）与 info 请求映射信息实例合并。
+				// 合并 Class 和 Method 的 RequestMappingInfo
 				info = typeInfo.combine(info);
 			}
-			if (info.isEmptyMapping()) {
-				// 返回一个构建器，通过修改此构建器来创建新的 RequestMappingInfo。
+			if (info.isEmptyMapping()) { // 请求映射是空的 URL 路径映射
+				// 使用 "" 和 "/" 路径创建一个新的 RequestMappingInfo
 				info = info.mutate().paths("", "/").options(this.config).build();
 			}
 			String prefix = getPathPrefix(handlerType);
 			if (prefix != null) {
-				// 使用给定的路径创建一个新的 {@code RequestMappingInfo.Builder}。
+				// 使用给定的路径创建一个新的 RequestMappingInfo
 				info = RequestMappingInfo.paths(prefix).options(this.config).build().combine(info);
 			}
 		}
@@ -547,19 +560,28 @@ public class RequestMappingHandlerMapping extends RequestMappingInfoHandlerMappi
 	 * @param method the method to register
 	 * @param mapping the mapping conditions associated with the handler method
 	 */
+	// <p><strong>注意：</strong> 要创建 {@link RequestMappingInfo}，请使用 {@link #getBuilderConfiguration()}
+	// 并设置 {@link RequestMappingInfo.Builder#options(RequestMappingInfo.BuilderConfiguration)} 中的选项，使其与此 {@code HandlerMapping} 的配置方式相匹配。
+	// 例如，这对于确保使用基于 {@link org.springframework.web.util.pattern.PathPattern} 或 {@link org.springframework.util.PathMatcher} 的匹配至关重要。
+	// @param handler 处理程序的 bean 名称或处理程序实例
+	// @param method 要注册的方法
+	// @param mapping 与处理程序方法关联的映射条件
 	@Override
 	protected void registerHandlerMethod(Object handler, Method method, RequestMappingInfo mapping) {
+		// 注册一个 handler 方法及其唯一映射
 		super.registerHandlerMethod(handler, method, mapping);
+		// 获取 @RequestBody#required 属性设置给 ConsumesRequestCondition.bodyRequired（是否要求请求包含请求体）
 		updateConsumesCondition(mapping, method);
 	}
 
+	// 获取 @RequestBody#required 属性设置给 ConsumesRequestCondition.bodyRequired（是否要求请求包含请求体）
 	private void updateConsumesCondition(RequestMappingInfo info, Method method) {
 		ConsumesRequestCondition condition = info.getConsumesCondition();
 		if (!condition.isEmpty()) {
 			for (Parameter parameter : method.getParameters()) {
 				MergedAnnotation<RequestBody> annot = MergedAnnotations.from(parameter).get(RequestBody.class);
-				if (annot.isPresent()) {
-					condition.setBodyRequired(annot.getBoolean("required"));
+				if (annot.isPresent()) { // 确定源中是否存在注解
+					condition.setBodyRequired(annot.getBoolean("required")); // ConsumesRequestCondition.bodyRequired -> 是否要求请求包含请求体
 					break;
 				}
 			}

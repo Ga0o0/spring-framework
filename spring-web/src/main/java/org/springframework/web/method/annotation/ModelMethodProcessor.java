@@ -37,6 +37,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 解析 {@link Model} 参数并处理 {@link Model} 返回值。
+//
+// <p>{@link Model} 返回类型具有特定用途。因此，应在支持任何使用 {@code @ModelAttribute}
+// 或 {@code @ResponseBody} 注解的返回值类型的处理程序之前配置此处理程序，以确保它们不会接管其功能。
 public class ModelMethodProcessor implements HandlerMethodArgumentResolver, HandlerMethodReturnValueHandler {
 
 	@Override

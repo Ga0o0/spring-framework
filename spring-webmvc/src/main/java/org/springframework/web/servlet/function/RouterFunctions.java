@@ -258,6 +258,12 @@ public abstract class RouterFunctions {
 	 * @param <T> the type of response returned by the handler function
 	 * @return the change router function
 	 */
+	// 更改给定路由函数 RouterFunction 的 PathPatternParser。
+	// 此方法可用于更改 PathPatternParser 的默认属性，例如更改 PathPatternParser#setCaseSensitive(boolean) 的大小写敏感性。
+	// @param routerFunction 要更改解析器的路由函数
+	// @param parser 要更改为的解析器
+	// @param <T> 处理函数返回的响应类型
+	// @return 更改后的路由函数
 	public static <T extends ServerResponse> RouterFunction<T> changeParser(
 			RouterFunction<T> routerFunction, PathPatternParser parser) {
 

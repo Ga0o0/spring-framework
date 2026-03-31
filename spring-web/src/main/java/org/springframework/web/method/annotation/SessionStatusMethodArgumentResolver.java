@@ -32,6 +32,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 通过从 {@link ModelAndViewContainer} 获取 {@link SessionStatus} 参数来解析它。
 public class SessionStatusMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

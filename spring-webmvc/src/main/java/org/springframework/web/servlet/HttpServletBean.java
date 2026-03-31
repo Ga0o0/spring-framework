@@ -78,6 +78,21 @@ import org.springframework.web.context.support.StandardServletEnvironment;
  * @see #doGet
  * @see #doPost
  */
+// 这是 {@link jakarta.servlet.http.HttpServlet} 的一个简单扩展，
+// 它将配置参数（{@code web.xml} 中 {@code servlet} 标签内的 {@code init-param} 条目）视为 bean 属性。
+//
+// <p>这是一个适用于任何类型 servlet 的便捷超类。配置参数的类型转换是自动的，
+// 相应的 setter 方法会使用转换后的值进行调用。子类也可以指定所需的属性。没有匹配 bean 属性 setter 的参数将被忽略。
+//
+// <p>此 servlet 将请求处理留给子类，继承了 HttpServlet 的默认行为（{@code doGet}、{@code doPost} 等）。
+//
+// <p>这个通用 servlet 基类不依赖于 Spring 的 {@link org.springframework.context.ApplicationContext} 概念。
+// 简单的 Servlet 通常不会加载自己的上下文，而是从 Spring 根应用程序上下文中访问服务 bean，
+// 可通过过滤器的 {@link #getServletContext() ServletContext} 方法访问
+// （参见 `@link org.springframework.web.context.support.WebApplicationContextUtils`）。
+//
+// {@link FrameworkServlet} 类是一个更具体的 Servlet 基类，它会加载自己的应用程序上下文。
+// {@link DispatcherServlet} 是 Spring 功能齐全的 Servlet 的直接基类。`
 @SuppressWarnings("serial")
 public abstract class HttpServletBean extends HttpServlet implements EnvironmentCapable, EnvironmentAware {
 

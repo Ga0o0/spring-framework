@@ -44,13 +44,13 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.view.AbstractView
  * @see org.springframework.web.servlet.view.InternalResourceView
  */
-// MVC 视图用于 Web 交互。实现负责渲染内容并公开模型。单个视图公开多个模型属性。
+// MVC view 用于 Web 交互。实现负责渲染内容并公开模型。单个 view 公开多个模型属性。
 //
 // <p>此类及其相关的 MVC 方法在 Rod Johnson 所著的《Expert One-On-One J2EE Design and Development》（Wrox，2002 年）第 12 章中进行了讨论。
 //
-// <p>视图的实现可能差异很大。一种显而易见的实现是基于 JSP 的。其他实现可能基于 XSLT，或者使用 HTML 生成库。此接口旨在避免限制可能的实现范围。
+// <p>view 的实现可能差异很大。一种显而易见的实现是基于 JSP 的。其他实现可能基于 XSLT，或者使用 HTML 生成库。此接口旨在避免限制可能的实现范围。
 //
-// <p>视图应该是 bean。它们很可能由 ViewResolver 实例化为 bean。由于此接口是无状态的，因此视图实现应该是线程安全的。
+// <p>views 应该是 bean。它们很可能由 ViewResolver 实例化为 bean。由于此接口是无状态的，因此 view 实现应该是线程安全的。
 public interface View {
 
 	/**

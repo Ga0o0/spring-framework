@@ -82,6 +82,7 @@ public class HandlerMethodArgumentResolverComposite implements HandlerMethodArgu
 	/**
 	 * Return a read-only list with the contained resolvers, or an empty list.
 	 */
+	// 返回一个包含解析器的只读列表，或者返回一个空列表。
 	public List<HandlerMethodArgumentResolver> getResolvers() {
 		return Collections.unmodifiableList(this.argumentResolvers);
 	}

@@ -55,6 +55,8 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * Abstract base class for {@link HandlerMapping} implementations that define
  * a mapping between a request and a {@link HandlerMethod}.
  *
+ * Abstract base class for URL-mapped {@link HandlerMapping} implementations.
+ *
  * <p>For each registered handler method, a unique mapping is maintained with
  * subclasses defining the details of the mapping type {@code <T>}.
  *
@@ -66,7 +68,7 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @param <T> the mapping for a {@link HandlerMethod} containing the conditions
  * needed to match the handler method to an incoming request.
  */
-// {@link HandlerMapping} 实现的抽象基类，定义请求和 {@link HandlerMethod} 之间的映射。
+// {@link HandlerMapping} 实现的抽象基类，定义 request 和 {@link HandlerMethod} 之间的映射。
 //
 // <p>对于每个已注册的处理程序方法，都会维护一个唯一的映射，并通过子类定义映射类型 {@code <T>} 的详细信息。
 public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMapping implements InitializingBean {
@@ -249,7 +251,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	// 确定应用程序上下文中候选 bean 的名称。
 	protected String[] getCandidateBeanNames() {
 		return (this.detectHandlerMethodsInAncestorContexts ?
+				// 获取给定类型的所有 Bean 名称，包括祖先工厂中定义的 Bean 名称。
 				BeanFactoryUtils.beanNamesForTypeIncludingAncestors(obtainApplicationContext(), Object.class) :
+				// 返回与给定类型（包括子类）匹配的 Bean 的名称，
 				obtainApplicationContext().getBeanNamesForType(Object.class));
 	}
 
@@ -293,8 +297,8 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @param handler either a bean name or an actual handler instance
 	 * @see #getMappingForMethod
 	 */
-	// 在指定的处理程序 bean 中查找处理程序方法。
-	// @param handler 可以是 bean 名称或实际的处理程序实例
+	// 在指定的 handler bean 中查找 handler 方法。
+	// @param handler 可以是 bean 名称或实际的 handler 实例
 	protected void detectHandlerMethods(Object handler) {
 		// 确定 handler 的类型
 		Class<?> handlerType = (handler instanceof String beanName ?
@@ -306,10 +310,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			Map<Method, T> methods = MethodIntrospector.selectMethods(userType,
 					(MethodIntrospector.MetadataLookup<T>) method -> {
 						try {
-							// 提供处理程序方法的映射。无法提供映射的方法不是处理程序方法。
-							// 1. RequestMappingHandlerMapping.getMappingForMethod()：
-							// 		使用类型级别和方法级别的 {@link RequestMapping @RequestMapping} 和
-							// 		{@link HttpExchange @HttpExchange} 注解来创建 {@link RequestMappingInfo}。
+							// 使用类和方法级别的 @RequestMapping 和 @HttpExchange 注解来创建 RequestMappingInfo
 							return getMappingForMethod(method, userType);
 						}
 						catch (Throwable ex) {
@@ -325,9 +326,9 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 			}
 			// mapping -> RequestMappingInfo
 			methods.forEach((method, mapping) -> {
-				// 选择目标类型上的可调用方法：如果实际在目标类型上暴露，则选择给定方法本身，否则选择目标类型的接口之一或目标类型本身上的相应方法。
+				// 选择目标类的可调用方法：如果实际在目标类上暴露，则选择给定方法本身，否则选择目标类的接口之一或目标类本身上的相应方法。
 				Method invocableMethod = AopUtils.selectInvocableMethod(method, userType);
-				// 注册一个处理程序方法及其唯一映射。
+				// 注册一个 handler 方法及其唯一映射
 				registerHandlerMethod(handler, invocableMethod, mapping);
 			});
 		}
@@ -360,7 +361,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * @throws IllegalStateException if another method was already registered
 	 * under the same mapping
 	 */
-	// 注册一个处理程序方法及其唯一映射。在启动时为每个检测到的处理程序方法调用。
+	// 注册一个 handler 方法及其唯一映射。在启动时为每个检测到的 handler 方法调用。
 	// @param handler 处理程序的 bean 名称或处理程序实例
 	// @param method 要注册的方法
 	// @param mapping 与处理程序方法关联的映射条件
@@ -573,7 +574,7 @@ public abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 	 * declaring class
 	 * @return the mapping, or {@code null} if the method is not mapped
 	 */
-	// 提供处理程序方法的映射。无法提供映射的方法不是处理程序方法。
+	// 提供 handler 方法的映射。无法提供映射的方法不是处理程序方法。
 	// @param method 提供映射的方法
 	// @param handlerType 处理程序类型，可能是方法声明类的子类型
 	// @return 映射，如果方法未映射，则返回 {@code null}

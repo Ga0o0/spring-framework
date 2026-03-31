@@ -64,6 +64,12 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Vladislav Kisel
  * @since 3.1
  */
+// 解析带有 @ModelAttribute 注解的方法参数，并处理带有 @ModelAttribute 注解的方法的返回值。
+//
+// <p>模型属性可以从模型中获取，也可以使用默认构造函数创建（然后添加到模型中）。创建后，属性会通过数据绑定到 Servlet 请求参数来填充。
+// 如果参数带有 @jakarta.validation.Valid 注解或 Spring 自带的 @org.springframework.validation.annotation.Validated 注解，则可以应用验证。
+//
+// <p>当此处理程序使用 @annotationNotRequired=true 创建时，任何非简单类型的参数和返回值都会被视为模型属性，无论是否存在 @ModelAttribute 注解。
 public class ModelAttributeMethodProcessor implements HandlerMethodArgumentResolver, HandlerMethodReturnValueHandler {
 
 	protected final Log logger = LogFactory.getLog(getClass());

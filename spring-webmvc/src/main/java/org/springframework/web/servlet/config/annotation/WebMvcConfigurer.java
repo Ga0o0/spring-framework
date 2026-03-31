@@ -46,6 +46,9 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
  * @author David Syer
  * @since 3.1
  */
+// 定义回调方法，用于自定义通过 {@code @EnableWebMvc} 启用的 Spring MVC 的 Java 配置。
+//
+// <p>使用 {@code @EnableWebMvc} 注解的配置类可以实现此接口，以便在被回调时有机会自定义默认配置。</p>
 public interface WebMvcConfigurer {
 
 	/**

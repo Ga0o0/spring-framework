@@ -67,11 +67,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author Sam Brannen
  * @since 3.1
  */
-// 封装由 {@linkplain #getMethod() 方法} 和 {@linkplain #getBean() bean} 组成的处理程序方法的信息。
+// 封装由 {@linkplain AnnotatedMethod#getMethod() 方法} 和 {@linkplain HandlerMethod#getBean() bean} 组成的 handler 方法的信息。
 // 提供对方法参数、方法返回值、方法注解等的便捷访问。
 //
 // <p>该类可以通过 bean 实例或 bean 名称（例如 lazy-init bean、prototype bean）创建。
-// 使用 {@link #createWithResolvedBean()} 获取 {@code HandlerMethod} 实例，并通过关联的 {@link BeanFactory} 解析 bean 实例。
+// 使用 {@link HandlerMethod#createWithResolvedBean()} 获取 {@code HandlerMethod} 实例，并通过关联的 {@link BeanFactory} 解析 bean 实例。
 public class HandlerMethod extends AnnotatedMethod {
 
 	/** Logger that is available to subclasses. */

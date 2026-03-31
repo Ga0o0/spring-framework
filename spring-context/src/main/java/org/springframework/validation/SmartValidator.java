@@ -26,6 +26,7 @@ import org.springframework.lang.Nullable;
  * @author Sam Brannen
  * @since 3.1
  */
+// {@link Validator} 接口的扩展变体，增加了对验证“提示”的支持。
 public interface SmartValidator extends Validator {
 
 	/**

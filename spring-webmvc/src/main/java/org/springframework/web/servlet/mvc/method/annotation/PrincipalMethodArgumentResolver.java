@@ -36,6 +36,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Rossen Stoyanchev
  * @since 5.3.1
  */
+// 解析类型为 {@link Principal} 的参数，类似于 {@link ServletRequestMethodArgumentResolver}，
+// 但无论参数是否带有注解。这样做是为了支持对带有自定义注解的 {@link Principal} 参数进行自定义解析。
 public class PrincipalMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

@@ -283,7 +283,7 @@ public class ModelAndViewContainer {
 	 * argument of type {@code ServletResponse} or {@code OutputStream}).
 	 * <p>The default value is {@code false}.
 	 */
-	// 请求是否已在处理程序（例如 {@code @ResponseBody} 方法）中完全处理，因此无需进行视图解析。
+	// 请求是否已在 handler（例如 {@code @ResponseBody} 方法）中完全处理，因此无需进行视图解析。
 	// 当控制器方法声明 {@code ServletResponse} 或 {@code OutputStream} 类型的参数时，也可以设置此标志。
 	// <p>默认值为 {@code false}。
 	public void setRequestHandled(boolean requestHandled) {

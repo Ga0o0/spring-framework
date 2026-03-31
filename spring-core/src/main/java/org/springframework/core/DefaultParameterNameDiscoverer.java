@@ -33,6 +33,11 @@ package org.springframework.core;
  * @see StandardReflectionParameterNameDiscoverer
  * @see KotlinReflectionParameterNameDiscoverer
  */
+// {@link ParameterNameDiscoverer} 策略接口的默认实现，委托给 Java 8 标准反射机制。
+//
+// <p>如果存在 Kotlin 反射实现，则 {@link KotlinReflectionParameterNameDiscoverer} 会添加到列表中的第一个位置，并用于 Kotlin 类和接口。
+//
+// <p>可以通过 {@link #addDiscoverer(ParameterNameDiscoverer)} 添加其他发现器。
 public class DefaultParameterNameDiscoverer extends PrioritizedParameterNameDiscoverer {
 
 	public DefaultParameterNameDiscoverer() {

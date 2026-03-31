@@ -143,6 +143,8 @@ public final class HandlerMethodValidator implements MethodValidator {
 	 * Validation is enabled for use via {@link ConfigurableWebBindingInitializer},
 	 * for example in Spring MVC or WebFlux config.
 	 */
+	// 静态工厂方法，用于在启用 Bean 验证时创建 {@link HandlerMethodValidator}，
+	// 以便通过 {@link ConfigurableWebBindingInitializer} 使用，例如在 Spring MVC 或 WebFlux 配置中。
 	@Nullable
 	public static MethodValidator from(
 			@Nullable WebBindingInitializer initializer, @Nullable ParameterNameDiscoverer paramNameDiscoverer,

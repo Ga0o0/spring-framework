@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.BindParam;
  * @author Rossen Stoyanchev
  * @since 6.1
  */
+// {@link org.springframework.validation.DataBinder.NameResolver} 从 {@link BindParam @BindParam} 方法参数注解确定绑定值名称。
 public final class BindParamNameResolver implements DataBinder.NameResolver {
 
 	@Override

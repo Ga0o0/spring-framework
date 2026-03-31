@@ -55,6 +55,19 @@ import org.springframework.core.annotation.AliasFor;
  * @author Sam Brannen
  * @since 2.5
  */
+// 此注解用于指示特定处理程序使用的会话属性。
+//
+// <p>此注解通常会列出应透明地存储在会话或某种会话存储中的模型属性名称，这些属性用作表单支持 bean。
+// <b>在类型级别声明</b>，应用于被注解的处理程序类操作的模型属性。
+//
+// <p><b>注意：</b>使用此注解指示的会话属性对应于特定处理程序的模型属性，这些属性会透明地存储在会话中。
+// 一旦处理程序指示其会话结束，这些属性将被移除。因此，对于需要在特定处理程序会话期间<i>临时</i>存储在会话中的会话属性，请使用此功能。
+//
+// <p>对于永久会话属性（例如用户身份验证对象），请改用传统的 {@code session.setAttribute} 方法。
+// 或者，考虑使用通用 {@link org.springframework.web.context.request.WebRequest} 接口的属性管理功能。
+//
+// </p> <p><b>注意：</b> 当使用控制器接口（例如用于 AOP 代理）时，请确保始终将所有映射注解
+// （例如 {@code @RequestMapping} 和 {@code @SessionAttributes}）放在控制器接口上，而不是放在实现类上。
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

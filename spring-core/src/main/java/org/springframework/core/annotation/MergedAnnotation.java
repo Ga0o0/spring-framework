@@ -87,6 +87,10 @@ public interface MergedAnnotation<A extends Annotation> {
 	 * of the {@link SearchStrategy} used.
 	 * @return {@code true} if the annotation is present
 	 */
+	// 确定源中是否存在注解。
+	// 考虑在所使用的 {@link SearchStrategy} 上下文中，直接存在的 {@linkplain #isDirectlyPresent()} 注解和元存在的 {@linkplain #isMetaPresent()} 注解。
+	//
+	// @return 如果注解存在，则返回 true
 	boolean isPresent();
 
 	/**

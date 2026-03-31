@@ -37,6 +37,7 @@ import org.springframework.util.ClassUtils;
  * @author Sebastien Deleuze
  * @since 3.2
  */
+// 对 {@link org.springframework.http.converter.FormHttpMessageConverter} 的扩展，增加了对基于 XML 和 JSON 的部分的支持。
 public class AllEncompassingFormHttpMessageConverter extends FormHttpMessageConverter {
 
 	private static final boolean jaxb2Present;

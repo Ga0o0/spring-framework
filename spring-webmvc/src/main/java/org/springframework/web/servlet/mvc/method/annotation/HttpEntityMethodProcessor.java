@@ -70,6 +70,11 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  * @author Sam Brannen
  * @since 3.1
  */
+// 解析 {@link HttpEntity} 和 {@link RequestEntity} 方法的参数值，以及 {@link HttpEntity}、
+// {@link ResponseEntity}、{@link ErrorResponse} 和 {@link ProblemDetail} 类型的返回值。
+//
+// <p>{@link HttpEntity} 返回类型具有特定用途。因此，应在支持任何使用 {@code @ModelAttribute}
+// 或 {@code @ResponseBody} 注解的返回值类型的处理程序之前配置此处理程序，以确保它们不会接管此处理程序。
 public class HttpEntityMethodProcessor extends AbstractMessageConverterMethodProcessor {
 
 	/**

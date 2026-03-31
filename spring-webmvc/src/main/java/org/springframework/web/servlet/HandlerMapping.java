@@ -54,7 +54,7 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping
  * @see org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping
  */
-// 定义请求和处理程序对象之间映射的对象需要实现的接口。
+// 定义 requests 和 handler objects 之间映射的对象需要实现的接口。
 //
 // <p>此类可由应用程序开发人员实现，但并非必需，因为框架中包含
 // {@link org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping} 和
@@ -62,7 +62,7 @@ import org.springframework.lang.Nullable;
 // 如果应用程序上下文中未注册 HandlerMapping bean，则默认使用前者。
 //
 // <p>HandlerMapping 实现可以支持映射的拦截器，但这不是必须的。
-// 处理程序始终包装在 {@link HandlerExecutionChain} 实例中，并可选地附带一些 {@link HandlerInterceptor} 实例。
+// handler 始终包装在 {@link HandlerExecutionChain} 实例中，并可选地附带一些 {@link HandlerInterceptor} 实例。
 // DispatcherServlet 将首先按给定顺序调用每个 HandlerInterceptor 的 {@code preHandle} 方法，如果所有 {@code preHandle} 方法都返回 {@code true}，则最终调用处理程序本身。
 //
 // <p>参数化映射的能力是此 MVC 框架的一项强大而独特的功能。例如，可以基于会话状态、Cookie 状态或许多其他变量编写自定义映射。似乎没有其他 MVC 框架拥有如此高的灵活性。
@@ -185,7 +185,7 @@ public interface HandlerMapping {
 	 * any interceptors, or {@code null} if no mapping found
 	 * @throws Exception if there is an internal error
 	 */
-	// 返回此请求的处理程序及其所有拦截器。选择取决于请求 URL、会话状态或实现类选择的任何因素。
+	// 返回当前请求的 handler 及其所有 interceptors。选择取决于请求 URL、会话状态或实现类选择的任何因素。
 	// <p>返回的 HandlerExecutionChain 包含一个处理程序对象，而不是标签接口，因此处理程序不受任何约束。例如，可以编写 HandlerAdapter 以允许使用其他框架的处理程序对象。
 	// <p>如果未找到匹配项，则返回 {@code null}。这并非错误。DispatcherServlet 将查询所有已注册的 HandlerMapping bean 以查找匹配项，并且只有在未找到任何处理程序时才判定存在错误。
 	// @param request 当前 HTTP 请求

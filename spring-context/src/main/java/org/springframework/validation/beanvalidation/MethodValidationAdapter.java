@@ -70,6 +70,8 @@ import org.springframework.validation.method.ParameterValidationResult;
  * @author Rossen Stoyanchev
  * @since 6.1
  */
+// {@link MethodValidator} 使用 Bean Validation {@link jakarta.validation.Validator} 进行验证，
+// 并将 {@link ConstraintViolation} 适配到 {@link MethodValidationResult}。
 public class MethodValidationAdapter implements MethodValidator {
 
 	private static final MethodValidationResult emptyValidationResult = MethodValidationResult.emptyResult();

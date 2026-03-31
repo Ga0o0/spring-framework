@@ -35,6 +35,11 @@ import org.springframework.util.StreamUtils;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 实现了可以读写字节数组的 {@link HttpMessageConverter}。
+//
+// <p>默认情况下，此转换器支持所有媒体类型 ((*/*))，
+// 并以 {@code application/octet-stream} 的 {@code Content-Type} 写入数据。
+// 可以通过设置 {@link #setSupportedMediaTypes supportedMediaTypes} 属性来覆盖此默认行为。
 public class ByteArrayHttpMessageConverter extends AbstractHttpMessageConverter<byte[]> {
 
 	/**

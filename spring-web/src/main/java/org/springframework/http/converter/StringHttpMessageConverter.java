@@ -41,6 +41,11 @@ import org.springframework.util.StreamUtils;
  * @author Juergen Hoeller
  * @since 3.0
  */
+// 实现了可以读写字符串的 {@link HttpMessageConverter}。
+//
+// <p>默认情况下，此转换器支持所有媒体类型 (*/*)，
+// 并以 {@code content-Type} 为 {@code text/plain} 写入。
+// 可以通过设置 {@link #setSupportedMediaTypes supportedMediaTypes} 属性来覆盖此默认行为。</p>
 public class StringHttpMessageConverter extends AbstractHttpMessageConverter<String> {
 
 	private static final MediaType APPLICATION_PLUS_JSON = new MediaType("application", "*+json");

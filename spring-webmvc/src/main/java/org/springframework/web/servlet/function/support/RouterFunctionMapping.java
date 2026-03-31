@@ -150,6 +150,7 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 	 * Detect all {@linkplain RouterFunction router functions} in the current
 	 * application context.
 	 */
+	// 检测当前应用程序上下文中的所有 {@linkplain RouterFunction 路由函数}。
 	private void initRouterFunctions() {
 		List<RouterFunction<?>> routerFunctions = obtainApplicationContext()
 				.getBeanProvider(RouterFunction.class)
@@ -190,6 +191,7 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 	/**
 	 * Initializes a default set of {@linkplain HttpMessageConverter message converters}.
 	 */
+	// 初始化一组默认的 {@linkplain HttpMessageConverter 消息转换器}。
 	private void initMessageConverters() {
 		List<HttpMessageConverter<?>> messageConverters = new ArrayList<>(4);
 		messageConverters.add(new ByteArrayHttpMessageConverter());
@@ -205,6 +207,7 @@ public class RouterFunctionMapping extends AbstractHandlerMapping implements Ini
 	protected Object getHandlerInternal(HttpServletRequest servletRequest) throws Exception {
 		if (this.routerFunction != null) {
 			ServerRequest request = ServerRequest.create(servletRequest, this.messageConverters);
+			// 返回与给定请求匹配的 HandlerFunction
 			HandlerFunction<?> handlerFunction = this.routerFunction.route(request).orElse(null);
 			setAttributes(servletRequest, request, handlerFunction);
 			return handlerFunction;

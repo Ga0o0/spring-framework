@@ -186,6 +186,50 @@ import org.springframework.web.util.pattern.PathPatternParser;
  * @see EnableWebMvc
  * @see WebMvcConfigurer
  */
+// 这是提供 MVC Java 配置底层配置的主类。通常，可以通过将 @EnableWebMvc 注解添加到应用程序的 @Configuration 类中来导入它。
+// 另一种更高级的方法是直接继承此类并根据需要重写方法，但请记住将 @Configuration 注解添加到子类，并将 @Bean 注解添加到重写的 @Bean 方法中。
+// 更多详细信息，请参阅 @EnableWebMvc 注解的 Javadoc。
+//
+// <p>此类注册以下 {@link HandlerMapping HandlerMapping}：
+// <ul>
+// <li>{@link RouterFunctionMapping}，顺序为 -1，用于映射 {@linkplain org.springframework.web.servlet.function.RouterFunction 路由函数}。
+// <li>{@link RequestMappingHandlerMapping}，顺序为 0，用于将请求映射到带注解的控制器方法。
+// <li>{@link HandlerMapping}，顺序为 1，用于将 URL 路径直接映射到视图名称。
+// <li>{@link BeanNameUrlHandlerMapping}，顺序为 2，用于将 URL 路径映射到控制器 bean 名称。
+// <li>{@link HandlerMapping}，顺序为 {@code Integer.MAX_VALUE-1}，用于处理静态资源请求。
+// <li>{@link HandlerMapping}，顺序为 {@code Integer.MAX_VALUE}，用于将请求转发到默认 servlet。
+// </ul>
+//
+// <p>注册以下 {@link HandlerAdapter HandlerAdapter}：
+// <ul>
+// <li>{@link RequestMappingHandlerAdapter}，用于处理带有注解的控制器方法的请求。
+// <li>{@link HttpRequestHandlerAdapter}，用于处理带有 {@link HttpRequestHandler HttpRequestHandler} 的请求。
+// <li>{@link SimpleControllerHandlerAdapter}，用于处理带有基于接口的 {@link Controller Controllers} 的请求。
+// <li>{@link HandlerFunctionAdapter} 用于处理使用 {@linkplain org.springframework.web.servlet.function.RouterFunction 路由函数} 的请求。
+// </ul>
+//
+// <p>注册一个 {@link HandlerExceptionResolverComposite}，其中包含以下异常解析器链：
+// <ul>
+// <li>{@link ExceptionHandlerExceptionResolver} 用于处理通过 {@link org.springframework.web.bind.annotation.ExceptionHandler} 方法抛出的异常。
+// <li>{@link ResponseStatusExceptionResolver} 用于处理使用 {@link org.springframework.web.bind.annotation.ResponseStatus} 注解的异常。
+// <li>{@link DefaultHandlerExceptionResolver} 用于解析已知的 Spring 异常类型
+// </ul>
+//
+// <p>注册一个 {@link AntPathMatcher} 和一个 {@link UrlPathHelper}，供以下对象使用：
+// <ul>
+// <li>{@link RequestMappingHandlerMapping}，
+// <li>用于 ViewController 的 {@link HandlerMapping}，
+// <li>以及用于提供资源的 {@link HandlerMapping}
+// </ul>
+// 注意，这些 bean 可以使用 {@link PathMatchConfigurer} 进行配置。
+//
+// <p>默认情况下，{@link RequestMappingHandlerAdapter} 和 {@link ExceptionHandlerExceptionResolver} 都配置了以下对象的默认实例：
+// <ul>
+// <li>{@link ContentNegotiationManager}
+// <li>{@link DefaultFormattingConversionService}
+// <li>如果类路径中存在 JSR-303 实现，则为 {@link org.springframework.validation.beanvalidation.OptionalValidatorFactoryBean}
+// <li>一系列 {@link HttpMessageConverter HttpMessageConverters}，具体取决于类路径中可用的第三方库。
+// </ul>
 public class WebMvcConfigurationSupport implements ApplicationContextAware, ServletContextAware {
 
 	private static final boolean romePresent;
@@ -298,6 +342,7 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	 * Return a {@link RequestMappingHandlerMapping} ordered at 0 for mapping
 	 * requests to annotated controllers.
 	 */
+	// 返回一个排序为 0 的 {@link RequestMappingHandlerMapping}，用于将请求映射到带注解的控制器。
 	@Bean
 	@SuppressWarnings("deprecation")
 	public RequestMappingHandlerMapping requestMappingHandlerMapping(
@@ -996,6 +1041,11 @@ public class WebMvcConfigurationSupport implements ApplicationContextAware, Serv
 	 * Rather than overriding it, consider overriding {@link #configureHandlerExceptionResolvers}
 	 * which allows for providing a list of resolvers.
 	 */
+	// 返回一个 {@link HandlerExceptionResolverComposite} 对象，其中包含通过 {@link #configureHandlerExceptionResolvers}
+	// 或 {@link #addDefaultHandlerExceptionResolvers} 获取的异常解析器列表。
+	//
+	// <p><strong>注意：</strong> 由于 CGLIB 的限制，此方法不能设为 final。
+	// 与其重写此方法，不如考虑重写 {@link #configureHandlerExceptionResolvers} 方法，该方法允许提供解析器列表。
 	@Bean
 	public HandlerExceptionResolver handlerExceptionResolver(
 			@Qualifier("mvcContentNegotiationManager") ContentNegotiationManager contentNegotiationManager) {

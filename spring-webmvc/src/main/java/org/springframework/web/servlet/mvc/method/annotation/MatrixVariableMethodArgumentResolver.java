@@ -47,6 +47,10 @@ import org.springframework.web.servlet.HandlerMapping;
  * @author Sam Brannen
  * @since 3.2
  */
+// 解析带有 {@link MatrixVariable @MatrixVariable} 注解的参数。
+//
+// <p>如果方法参数的类型为 {@link Map}，则会使用 {@link MatrixVariableMapMethodArgumentResolver} 进行解析，
+// 除非注解指定了名称，在这种情况下，它会被视为类型为 map 的单个属性（而不是收集在 map 中的多个属性）。
 public class MatrixVariableMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
 
 	public MatrixVariableMethodArgumentResolver() {

@@ -45,6 +45,14 @@ import jakarta.servlet.http.HttpServletRequest;
  * {@link org.springframework.http.ResponseEntity} with an "ETag" and/or
  * "Last-Modified" headers set.
  */
+// 支持获取 HTTP 请求的最后修改时间，以方便内容缓存。其机制与 Servlet API 的 {@code getLastModified} 方法相同。
+//
+// <p>由 {@link org.springframework.web.servlet.HandlerAdapter#getLastModified} 实现委托。
+// 默认情况下，Spring 默认框架中的任何 Controller 或 HttpRequestHandler 都可以实现此接口以启用最后修改时间检查。
+//
+// <p><b>注意：</b> 其他处理程序实现方式具有不同的最后修改时间处理风格。例如，Spring 2.5 的注解控制器方法（使用 {@code @RequestMapping}）
+// 通过 {@link org.springframework.web.context.request.WebRequest#checkNotModified} 方法提供最后修改时间支持，
+// 允许在主处理程序方法中进行最后修改时间检查。
 @Deprecated
 public interface LastModified {
 

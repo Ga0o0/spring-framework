@@ -59,6 +59,10 @@ import org.springframework.web.multipart.support.MultipartResolutionDelegate;
  * @see MultipartRequest#getMultiFileMap()
  * @see MultipartRequest#getFileMap()
  */
+// 解析带有 @{@link RequestParam} 注解的 {@link Map} 方法参数，前提是该注解未指定请求参数名称。
+//
+// <p>创建的 {@link Map} 包含所有请求参数名称/值对，或者，如果值类型明确声明为 {@link MultipartFile}，则包含给定参数名称的所有 multipart 文件。
+// 如果方法参数类型为 {@link MultiValueMap}，则创建的映射包含所有请求参数及其所有值（适用于请求参数具有多个值或多个同名 multipart 文件的情况）。
 public class RequestParamMapMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

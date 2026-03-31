@@ -16,12 +16,7 @@
 
 package org.springframework.web.servlet.mvc.method.annotation;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
-
 import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.core.MethodParameter;
 import org.springframework.core.ResolvableType;
 import org.springframework.http.HttpInputMessage;
@@ -43,6 +38,10 @@ import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.multipart.support.MultipartResolutionDelegate;
 import org.springframework.web.multipart.support.RequestPartServletServerHttpRequest;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
 
 /**
  * Resolves the following method arguments:
@@ -73,6 +72,21 @@ import org.springframework.web.multipart.support.RequestPartServletServerHttpReq
  * @author Juergen Hoeller
  * @since 3.1
  */
+// 解析以下方法参数：
+// <ul>
+// <li>使用 @{@link RequestPart} 注解的参数
+// <li>类型为 {@link MultipartFile}，并结合 Spring 的 {@link MultipartResolver} 抽象层
+// <li>类型为 {@code jakarta.servlet.http.Part}，并结合 Servlet multipart 请求
+// </ul>
+//
+// <p>当参数使用 {@code @RequestPart} 注解时，该部分的内容会通过 {@link HttpMessageConverter} 进行转换，
+// 以根据请求部分的“Content-Type”解析方法参数。这类似于 @{@link RequestBody} 根据常规请求的内容解析参数的方式。
+//
+// <p>当参数未使用 {@code @RequestPart} 注解或未指定部分名称时，请求部分的名称将根据方法参数的名称派生。
+//
+// <p>如果参数带有任何触发验证的 {@linkplain org.springframework.validation.annotation.ValidationAnnotationUtils#determineValidationHints 注释}，
+// 则可以应用自动验证。如果验证失败，则会引发 {@link MethodArgumentNotValidException} 异常，并且如果配置了
+// {@link org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver}，则会返回 400 响应状态码。
 public class RequestPartMethodArgumentResolver extends AbstractMessageConverterMethodArgumentResolver {
 
 	/**

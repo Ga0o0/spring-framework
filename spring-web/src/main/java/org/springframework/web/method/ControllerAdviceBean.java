@@ -310,7 +310,7 @@ public class ControllerAdviceBean implements Ordered {
 		// BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, Object.class) ->
 		// 获取给定类型的所有 Bean 名称，包括祖先工厂中定义的 Bean 名称。如果 Bean 定义被覆盖，则返回唯一名称。
 		for (String name : BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, Object.class)) {
-			// ScopedProxyUtils.isScopedTarget(name) -> 确定 {@code beanName} 是否是引用范围代理内的目标 bean 的 bean 名称。
+			// ScopedProxyUtils.isScopedTarget(name) -> 确定 beanName 是否是引用范围代理内的目标 bean 的 bean 名称。
 			if (!ScopedProxyUtils.isScopedTarget(name)) {
 				ControllerAdvice controllerAdvice = beanFactory.findAnnotationOnBean(name, ControllerAdvice.class);
 				if (controllerAdvice != null) {

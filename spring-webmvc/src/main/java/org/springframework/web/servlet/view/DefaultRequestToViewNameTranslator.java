@@ -91,6 +91,8 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * Set the prefix to prepend to generated view names.
 	 * @param prefix the prefix to prepend to generated view names
 	 */
+	// 设置要添加到生成的视图名称前的前缀。
+	// @param prefix 要添加到生成的视图名称前的前缀
 	public void setPrefix(@Nullable String prefix) {
 		this.prefix = (prefix != null ? prefix : "");
 	}
@@ -99,6 +101,8 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * Set the suffix to append to generated view names.
 	 * @param suffix the suffix to append to generated view names
 	 */
+	// 设置要附加到生成的视图名称的后缀。
+	// @param suffix 要附加到生成的视图名称的后缀
 	public void setSuffix(@Nullable String suffix) {
 		this.suffix = (suffix != null ? suffix : "");
 	}
@@ -108,6 +112,7 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * in the view name. The default behavior simply leaves '{@code /}'
 	 * as the separator.
 	 */
+	// 设置视图名称中分隔符 / 的替换值。默认情况下，分隔符仍为 /。
 	public void setSeparator(String separator) {
 		this.separator = separator;
 	}
@@ -116,6 +121,7 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * Set whether leading slashes should be stripped from the URI when
 	 * generating the view name. Default is "true".
 	 */
+	// 设置生成视图名称时是否从 URI 中删除前导斜杠。默认值为 true。
 	public void setStripLeadingSlash(boolean stripLeadingSlash) {
 		this.stripLeadingSlash = stripLeadingSlash;
 	}
@@ -124,6 +130,7 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * Set whether trailing slashes should be stripped from the URI when
 	 * generating the view name. Default is "true".
 	 */
+	// 设置生成视图名称时是否从 URI 中删除尾部斜杠。默认值为 true。
 	public void setStripTrailingSlash(boolean stripTrailingSlash) {
 		this.stripTrailingSlash = stripTrailingSlash;
 	}
@@ -132,6 +139,7 @@ public class DefaultRequestToViewNameTranslator implements RequestToViewNameTran
 	 * Set whether file extensions should be stripped from the URI when
 	 * generating the view name. Default is "true".
 	 */
+	// 设置生成视图名称时是否从 URI 中去除文件扩展名。默认值为 true。
 	public void setStripExtension(boolean stripExtension) {
 		this.stripExtension = stripExtension;
 	}

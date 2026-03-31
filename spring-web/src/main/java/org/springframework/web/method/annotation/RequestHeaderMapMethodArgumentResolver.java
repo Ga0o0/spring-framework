@@ -44,6 +44,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 解析带有 {@code @RequestHeader} 注解的 {@link Map} 方法参数。
+// 对于带有 {@code @RequestHeader} 注解的单个请求头值，请参阅 {@link RequestHeaderMethodArgumentResolver}。
+//
+// <p>创建的 {@link Map} 包含所有请求头名称/值对。方法参数类型可以是 {@link MultiValueMap}，以便接收请求头的所有值，而不仅仅是第一个值。</p>
 public class RequestHeaderMapMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

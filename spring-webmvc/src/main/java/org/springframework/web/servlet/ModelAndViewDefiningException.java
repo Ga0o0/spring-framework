@@ -32,6 +32,10 @@ import org.springframework.util.Assert;
  * @author Juergen Hoeller
  * @since 22.11.2003
  */
+// 当出现错误情况并需要跳转到特定视图和特定模型时，将抛出此异常。
+//
+// <p>此异常可在处理程序执行期间的任何时间抛出。这包括预构建控制器的任何模板方法。
+// 例如，如果某些参数不允许继续执行正常的流程，则表单控制器可能会中止并跳转到特定的错误页面。</p>
 @SuppressWarnings("serial")
 public class ModelAndViewDefiningException extends ServletException {
 
@@ -51,6 +55,7 @@ public class ModelAndViewDefiningException extends ServletException {
 	/**
 	 * Return the ModelAndView that this exception contains for forwarding to.
 	 */
+	// 返回此异常包含的 ModelAndView，以便转发到该对象。
 	public ModelAndView getModelAndView() {
 		return this.modelAndView;
 	}

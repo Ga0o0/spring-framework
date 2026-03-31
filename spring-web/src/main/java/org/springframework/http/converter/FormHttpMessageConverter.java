@@ -152,6 +152,89 @@ import org.springframework.util.StringUtils;
  * @see org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter
  * @see org.springframework.util.MultiValueMap
  */
+// 实现 {@link HttpMessageConverter}，用于读写 “普通” HTML 表单，以及写入（但不能读取）多部分数据（例如文件上传）。
+//
+// <p>换句话说，此转换器可以读写 {@code "application/x-www-form-urlencoded"} 媒体类型，
+// 并将其转换为 {@link MultiValueMap MultiValueMap<String, String>}；
+// 它还可以写入（但不能读取）{@code "multipart/form-data"} 和 {@code "multipart/mixed"} 媒体类型，
+// 并将其转换为 {@link MultiValueMap MultiValueMap<String, Object>}。
+//
+// <h3>多部分数据</h3>
+//
+// <p>默认情况下，当写入多部分数据时，{@code "multipart/form-data"} 用作内容类型。
+// 从 Spring Framework 5.2 开始，也可以使用其他 multipart 子类型（例如 {@code "multipart/mixed"}
+// 和 {@code "multipart/related"}）来写入 multipart 数据，前提是该 multipart 子类型已注册为
+// {@linkplain #getSupportedMediaTypes 支持的媒体类型}，并且在 {@linkplain #write writing}
+// 写入 multipart 数据时，已将所需的 multipart 子类型指定为内容类型。
+// 请注意，{@code "multipart/mixed"} 默认已注册为支持的媒体类型。
+//
+// <p>写入 multipart 数据时，此转换器会使用其他 {@link HttpMessageConverter HttpMessageConverters} 来写入相应的 MIME 部分。
+// 默认情况下，已注册用于字节数组、{@code String} 和 {@code Resource} 的基本转换器。
+// 这些转换器可以通过 {@link #setPartConverters} 进行覆盖，也可以通过 {@link #addPartConverter} 进行扩展。
+//
+// <h3>示例</h3>
+//
+// <p>以下代码片段展示了如何使用 {@code "multipart/form-data"} 内容类型提交 HTML 表单。
+// <pre class="code">
+// 		RestTemplate restTemplate = new RestTemplate();
+// 		// 默认配置 AllEncompassingFormHttpMessageConverter
+//
+// 		MultiValueMap<String, Object> form = new LinkedMultiValueMap<>();
+// 		form.add("field 1", "value 1");
+// 		form.add("field 2", "value 2");
+// 		form.add("field 2", "value 3");
+// 		form.add("field 3", 4); // 从 5.1.4 版本开始支持非字符串类型的表单值
+//
+// 		restTemplate.postForLocation("https://example.com/myForm", form);
+// </pre>
+//
+// <p>以下代码片段展示了如何使用 {@code "multipart/form-data"} 内容类型进行文件上传。
+// <pre class="code">
+// 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+// 		parts.add("field 1", "value 1");
+// 		parts.add("file", new ClassPathResource("myFile.jpg"));
+//
+// 		restTemplate.postForLocation("https://example.com/myFileUpload", parts);
+// </pre>
+//
+// <p>以下代码片段展示了如何使用 {@code "multipart/mixed"} 内容类型进行文件上传。
+// <pre class="code">
+// 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+// 		parts.add("field 1", "value 1");
+// 		parts.add("file", new ClassPathResource("myFile.jpg"));
+//
+// 		HttpHeaders requestHeaders = new HttpHeaders();
+// 		requestHeaders.setContentType(MediaType.MULTIPART_MIXED);
+//
+// 		restTemplate.postForLocation("https://example.com/myFileUpload",
+// 			new HttpEntity<>(parts, requestHeaders));
+// </pre>
+//
+// <p>以下代码片段展示了如何使用 {@code "multipart/related"} 内容类型进行文件上传。
+// <pre class="code">
+// 		MediaType multipartRelated = new MediaType("multipart", "related");
+//
+// 		restTemplate.getMessageConverters().stream()
+// 			.filter(FormHttpMessageConverter.class::isInstance)
+// 			.map(FormHttpMessageConverter.class::cast)
+// 			.findFirst()
+// 			.orElseThrow(() -> new IllegalStateException("找不到 FormHttpMessageConverter"))
+// 			.addSupportedMediaTypes(multipartRelated);
+//
+// 		MultiValueMap<String, Object> parts = new LinkedMultiValueMap<>();
+// 		parts.add("field 1", "value 1");
+// 		parts.add("file", new ClassPathResource("myFile.jpg"));
+//
+// 		HttpHeaders requestHeaders = new HttpHeaders();
+// 		requestHeaders.setContentType(multipartRelated);
+//
+// 		restTemplate.postForLocation("https://example.com/myFileUpload",
+// 			new HttpEntity<>(parts, requestHeaders));
+// </pre>
+//
+// <h3>其他</h3>
+//
+// <p>此类中的一些方法受到了 {@code org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity} 的启发。
 public class FormHttpMessageConverter implements HttpMessageConverter<MultiValueMap<String, ?>> {
 
 	/**

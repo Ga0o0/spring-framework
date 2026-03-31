@@ -40,6 +40,8 @@ import org.springframework.web.method.ControllerAdviceBean;
  * @author Rossen Stoyanchev
  * @since 4.2
  */
+// 调用 {@link RequestBodyAdvice} 和 {@link ResponseBodyAdvice}，
+// 其中每个实例都可以（而且很可能）被 {@link org.springframework.web.method.ControllerAdviceBean ControllerAdviceBean} 包装。
 class RequestResponseBodyAdviceChain implements RequestBodyAdvice, ResponseBodyAdvice<Object> {
 
 	private final List<Object> requestBodyAdvice = new ArrayList<>(4);

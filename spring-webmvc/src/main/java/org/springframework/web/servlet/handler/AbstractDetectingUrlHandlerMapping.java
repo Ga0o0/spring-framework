@@ -68,17 +68,20 @@ public abstract class AbstractDetectingUrlHandlerMapping extends AbstractUrlHand
 	 * @throws org.springframework.beans.BeansException if the handler couldn't be registered
 	 * @see #determineUrlsForHandler(String)
 	 */
+	// 注册当前 ApplicationContext 中找到的所有处理程序。
+	// <p>处理程序的实际 URL 确定由具体的 {@link #determineUrlsForHandler(String)} 实现决定。如果某个 bean 无法确定任何 URL，则该 bean 将不被视为处理程序。
+	// @throws org.springframework.beans.BeansException 如果无法注册 handler
 	protected void detectHandlers() throws BeansException {
 		ApplicationContext applicationContext = obtainApplicationContext();
 		String[] beanNames = (this.detectHandlersInAncestorContexts ?
 				BeanFactoryUtils.beanNamesForTypeIncludingAncestors(applicationContext, Object.class) :
 				applicationContext.getBeanNamesForType(Object.class));
 
-		// Take any bean name that we can determine URLs for.
+		// Take any bean name that we can determine URLs for. --> 译文：选取任何我们可以确定其 URL 的 Bean 名称。
 		for (String beanName : beanNames) {
 			String[] urls = determineUrlsForHandler(beanName);
 			if (!ObjectUtils.isEmpty(urls)) {
-				// URL paths found: Let's consider it a handler.
+				// URL paths found: Let's consider it a handler. --> 译文：找到 URL 路径：我们将其视为一个处理程序。
 				registerHandler(urls, beanName);
 			}
 		}
@@ -97,6 +100,9 @@ public abstract class AbstractDetectingUrlHandlerMapping extends AbstractUrlHand
 	 * @param beanName the name of the candidate bean
 	 * @return the URLs determined for the bean, or an empty array if none
 	 */
+	// 确定给定处理程序 bean 的 URL。
+	// @param beanName 候选 bean 的名称
+	// @return 为该 bean 确定的 URL，如果没有找到 URL，则返回空数组。
 	protected abstract String[] determineUrlsForHandler(String beanName);
 
 }

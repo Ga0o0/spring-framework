@@ -35,6 +35,7 @@ import org.springframework.web.util.WebUtils;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 一个从 {@link HttpServletRequest} 解析 cookie 值的 {@link org.springframework.web.method.annotation.AbstractCookieValueMethodArgumentResolver}。
 public class ServletCookieValueMethodArgumentResolver extends AbstractCookieValueMethodArgumentResolver {
 
 	private UrlPathHelper urlPathHelper = new UrlPathHelper();

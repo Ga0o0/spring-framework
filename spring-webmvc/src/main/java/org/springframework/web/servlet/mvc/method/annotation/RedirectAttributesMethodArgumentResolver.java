@@ -44,6 +44,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
  * @author Rossen Stoyanchev
  * @since 3.1
  */
+// 解析类型为 {@link RedirectAttributes} 的方法参数。
+//
+// <p>此解析器必须列在 {@link org.springframework.web.method.annotation.ModelMethodProcessor}
+// 和 {@link org.springframework.web.method.annotation.MapMethodProcessor} 之前，后者支持 {@link Map} 和 {@link Model} 参数，
+// 它们都是 {@code RedirectAttributes} 的“超”类型，并且也会尝试解析 {@code RedirectAttributes} 参数。
 public class RedirectAttributesMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

@@ -199,6 +199,7 @@ public class ModelAndView {
 	 * DispatcherServlet via a ViewResolver. Will override any
 	 * pre-existing view name or View.
 	 */
+	// 为该模型和视图设置视图名称，该名称将由调度器服务 (DispatcherServlet) 通过视图解析器 (ViewResolver) 解析。这将覆盖任何预先存在的视图名称或视图。
 	public void setViewName(@Nullable String viewName) {
 		this.view = viewName;
 	}

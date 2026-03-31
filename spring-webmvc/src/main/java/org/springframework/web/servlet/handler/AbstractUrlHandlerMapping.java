@@ -149,6 +149,9 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	 * @param request current HTTP request
 	 * @return the handler instance, or {@code null} if none found
 	 */
+	// 查找给定请求 URL 路径的 handler。
+	// @param request 当前 HTTP 请求
+	// @return 处理程序实例，如果未找到则返回 {@code null}
 	@Override
 	@Nullable
 	protected Object getHandlerInternal(HttpServletRequest request) throws Exception {
@@ -240,6 +243,10 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	 * @see #exposePathWithinMapping
 	 * @see AntPathMatcher
 	 */
+	// 查找给定 URL 路径对应的处理程序实例。此方法用于使用 {@code PathMatcher} 进行字符串模式匹配时。
+	// @param lookupPath 要匹配模式的路径
+	// @param request 当前 HTTP 请求
+	// @return 匹配的处理程序，如果未找到则返回 {@code null}
 	@Nullable
 	protected Object lookupHandler(String lookupPath, HttpServletRequest request) throws Exception {
 		Object handler = getDirectMatch(lookupPath, request);
@@ -403,6 +410,11 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	 * @throws BeansException if the handler couldn't be registered
 	 * @throws IllegalStateException if there is a conflicting handler registered
 	 */
+	// 为给定的 URL 路径注册指定的处理程序。
+	// @param urlPaths bean 要映射到的 URL
+	// @param beanName 处理程序 bean 的名称
+	// @throws BeansException 如果处理程序注册失败
+	// 1@throws IllegalStateException 如果已注册冲突的处理程序
 	protected void registerHandler(String[] urlPaths, String beanName) throws BeansException, IllegalStateException {
 		Assert.notNull(urlPaths, "URL path array must not be null");
 		for (String urlPath : urlPaths) {
@@ -418,6 +430,11 @@ public abstract class AbstractUrlHandlerMapping extends AbstractHandlerMapping i
 	 * @throws BeansException if the handler couldn't be registered
 	 * @throws IllegalStateException if there is a conflicting handler registered
 	 */
+	// 为给定的 URL 路径注册指定的处理程序。
+	// @param urlPath bean 要映射到的 URL
+	// @param handler 处理程序实例或处理程序 bean 名称（字符串，bean 名称将自动解析为相应的处理程序 bean）
+	// @throws BeansException 如果无法注册处理程序
+	// @throws IllegalStateException 如果已注册冲突的处理程序
 	protected void registerHandler(String urlPath, Object handler) throws BeansException, IllegalStateException {
 		Assert.notNull(urlPath, "URL path must not be null");
 		Assert.notNull(handler, "Handler object must not be null");

@@ -24,6 +24,7 @@ package org.springframework.web.servlet.function;
  * @param <T> the type of the response of the function
  * @see RouterFunction
  */
+// 表示处理 {@linkplain ServerRequest 请求} 的函数。
 @FunctionalInterface
 public interface HandlerFunction<T extends ServerResponse> {
 

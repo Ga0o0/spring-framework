@@ -103,7 +103,7 @@ public final class MethodIntrospector {
 	 * recognize handler methods of interest
 	 * @return the selected methods, or an empty set in case of no match
 	 */
-	// 根据过滤器选择给定目标类型的方法。
+	// 根据过滤器选择给定目标类的方法。
 	// <p>调用者通过 {@code MethodFilter} 参数定义感兴趣的方法。
 	// @param targetType 指定目标类型以搜索方法
 	// @param methodFilter 指定 {@code MethodFilter} 以帮助识别感兴趣的处理程序方法

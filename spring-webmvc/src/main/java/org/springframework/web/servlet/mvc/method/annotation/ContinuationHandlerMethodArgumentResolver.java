@@ -29,6 +29,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
  * @author Sebastien Deleuze
  * @since 5.3
  */
+// 类型为 {@link kotlin.coroutines.Continuation} 的方法参数的空操作解析器。
 public class ContinuationHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override

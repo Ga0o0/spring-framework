@@ -44,6 +44,15 @@ import org.springframework.web.context.request.NativeWebRequest;
  * @author Rob Winch
  * @since 3.2
  */
+// 拦截并发请求处理，其中并发结果是通过使用 AsyncTaskExecutor 代表应用程序执行 Callable 来获得的。
+//
+// CallableProcessingInterceptor 会在异步线程中调用 Callable 任务之前和之后被调用，
+// 也会在容器线程超时/出错时被调用，或者在因任何原因（包括超时或网络错误）完成之后被调用。
+//
+// 通常，拦截器方法引发的异常会导致异步处理通过分派回容器并使用 Exception 实例作为并发结果来恢复。
+// 然后，这些异常将通过 HandlerExceptionResolver 机制进行处理。
+//
+// handleTimeout 方法可以选择一个用于恢复处理的值。
 public interface CallableProcessingInterceptor {
 
 	/**

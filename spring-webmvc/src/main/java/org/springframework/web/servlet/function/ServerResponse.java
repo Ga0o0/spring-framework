@@ -57,6 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
  * @author Arjen Poutsma
  * @since 5.2
  */
+// 表示由 {@linkplain HandlerFunction 处理函数} 或 {@linkplain HandlerFilterFunction 过滤函数} 返回的类型化服务器端 HTTP 响应。
 public interface ServerResponse {
 
 	/**
