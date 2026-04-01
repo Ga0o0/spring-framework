@@ -600,13 +600,13 @@ options for using `@Configuration` classes in this kind of "`XML-centric`" situa
 ==== Declaring `@Configuration` classes as plain Spring `<bean/>` elements
 
 Remember that `@Configuration` classes are ultimately bean definitions in the container.
-In this series of examples, we create a `@Configuration` class named `AppConfig` and
+In this series of examples, we create a `@Configuration` class named `AppConfig2` and
 include it within `system-test-config.xml` as a `<bean/>` definition. Because
 `<context:annotation-config/>` is switched on, the container recognizes the
-`@Configuration` annotation and processes the `@Bean` methods declared in `AppConfig`
+`@Configuration` annotation and processes the `@Bean` methods declared in `AppConfig2`
 properly.
 
-The following example shows the `AppConfig` configuration class in Java and Kotlin:
+The following example shows the `AppConfig2` configuration class in Java and Kotlin:
 
 [tabs]
 ======
@@ -707,7 +707,7 @@ Kotlin::
 ----
 ======
 
-NOTE: In the `system-test-config.xml` file, the `AppConfig` `<bean/>` does not declare an `id`
+NOTE: In the `system-test-config.xml` file, the `AppConfig2` `<bean/>` does not declare an `id`
 attribute. While it would be acceptable to do so, it is unnecessary, given that no other bean
 ever refers to it, and it is unlikely to be explicitly fetched from the container by name.
 Similarly, the `DataSource` bean is only ever autowired by type, so an explicit bean `id`

@@ -47,6 +47,13 @@ import org.springframework.core.annotation.AliasFor;
  * @since 3.1
  * @see CacheConfig
  */
+// 此注解指示某个方法（或类上的所有方法）触发 {@link org.springframework.cache.Cache#put(Object, Object) 缓存放置} 操作。
+//
+// <p>与 {@link Cacheable @Cacheable} 注解不同，此注解不会导致跳过所建议的方法。
+// 相反，如果 {@link #condition()} 和 {@link #unless()} 表达式匹配，则始终会调用该方法并将其结果存储在关联的缓存中。
+// 请注意，Java 8 的 {@code Optional} 返回类型会自动处理，如果存在，其内容也会存储在缓存中。
+//
+// <p>此注解可用作 <em>元注解</em>，以创建具有属性覆盖的自定义 <em>组合注解</em>。</p>
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

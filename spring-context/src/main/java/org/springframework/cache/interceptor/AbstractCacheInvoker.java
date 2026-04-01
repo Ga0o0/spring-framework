@@ -67,6 +67,8 @@ public abstract class AbstractCacheInvoker {
 	 * miss in case of error.
 	 * @see Cache#get(Object)
 	 */
+	// 对指定的 {@link Cache} 执行 {@link Cache#get(Object)} 方法，如果发生异常，则调用错误处理程序。
+	// 如果处理程序未抛出任何异常，则返回 {@code null}，这模拟了发生错误时的缓存未命中。
 	@Nullable
 	protected Cache.ValueWrapper doGet(Cache cache, Object key) {
 		try {
@@ -82,6 +84,7 @@ public abstract class AbstractCacheInvoker {
 	 * Execute {@link Cache#put(Object, Object)} on the specified {@link Cache}
 	 * and invoke the error handler if an exception occurs.
 	 */
+	// 对指定的 {@link Cache} 执行 {@link Cache#put(Object, Object)}，如果发生异常，则调用错误处理程序。
 	protected void doPut(Cache cache, Object key, @Nullable Object value) {
 		try {
 			cache.put(key, value);
@@ -95,6 +98,7 @@ public abstract class AbstractCacheInvoker {
 	 * Execute {@link Cache#evict(Object)}/{@link Cache#evictIfPresent(Object)} on the
 	 * specified {@link Cache} and invoke the error handler if an exception occurs.
 	 */
+	// 对指定的 {@link Cache} 执行 {@link Cache#evict(Object)}/{@link Cache#evictIfPresent(Object)} 方法，并在发生异常时调用错误处理程序。
 	protected void doEvict(Cache cache, Object key, boolean immediate) {
 		try {
 			if (immediate) {
@@ -113,6 +117,7 @@ public abstract class AbstractCacheInvoker {
 	 * Execute {@link Cache#clear()} on the specified {@link Cache} and
 	 * invoke the error handler if an exception occurs.
 	 */
+	// 对指定的 {@link Cache} 执行 {@link Cache#clear()} 方法，如果发生异常，则调用错误处理程序。
 	protected void doClear(Cache cache, boolean immediate) {
 		try {
 			if (immediate) {

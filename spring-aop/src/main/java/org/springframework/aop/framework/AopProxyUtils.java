@@ -79,6 +79,9 @@ public abstract class AopProxyUtils {
 	 * @see org.springframework.aop.TargetClassAware#getTargetClass()
 	 * @see Advised#getTargetSource()
 	 */
+	// 确定给定 bean 实例的最终目标类，不仅要遍历顶层代理，还要遍历任意数量的嵌套代理——尽可能避免副作用，也就是说，仅针对单例目标。
+	// @param candidate 要检查的实例（可能是 AOP 代理）
+	// @return 最终目标类（如果返回空类则返回给定对象的普通类；永远不会返回 {@code null}）
 	public static Class<?> ultimateTargetClass(Object candidate) {
 		Assert.notNull(candidate, "Candidate object must not be null");
 		Object current = candidate;

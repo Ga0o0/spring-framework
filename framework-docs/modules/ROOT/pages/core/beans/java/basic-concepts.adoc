@@ -46,7 +46,7 @@ Kotlin::
 ----
 ======
 
-The preceding `AppConfig` class is equivalent to the following Spring `<beans/>` XML:
+The preceding `AppConfig2` class is equivalent to the following Spring `<beans/>` XML:
 
 [source,xml,indent=0,subs="verbatim,quotes"]
 ----

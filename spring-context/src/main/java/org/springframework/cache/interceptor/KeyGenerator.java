@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
  * @author Phillip Webb
  * @since 3.1
  */
+// 缓存键生成器。用于根据给定的方法（用作上下文）及其参数创建键。
 @FunctionalInterface
 public interface KeyGenerator {
 

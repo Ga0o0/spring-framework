@@ -67,6 +67,8 @@ public abstract class AbstractFallbackCacheOperationSource implements CacheOpera
 	 * <p>As this base class is not marked Serializable, the cache will be recreated
 	 * after serialization - provided that the concrete subclass is Serializable.
 	 */
+	// 缓存操作，以特定目标类的方法为键。
+	// <p>由于此基类未标记为 Serializable，因此序列化后将重新创建缓存——前提是具体的子类是 Serializable 的。</p>
 	private final Map<Object, Collection<CacheOperation>> operationCache = new ConcurrentHashMap<>(1024);
 
 
@@ -78,6 +80,11 @@ public abstract class AbstractFallbackCacheOperationSource implements CacheOpera
 	 * @return {@link CacheOperation} for this method, or {@code null} if the method
 	 * is not cacheable
 	 */
+	// 确定此方法调用的缓存操作。
+	// <p>如果未找到方法级元数据，则默认使用类声明的元数据。</p>
+	// @param method 当前调用的方法（永远不会为 {@code null}）
+	// @param targetClass 此调用的目标类（可以为 {@code null}）
+	// @return 此方法的 {@link CacheOperation}，如果该方法不可缓存，则返回 {@code null}。
 	@Override
 	@Nullable
 	public Collection<CacheOperation> getCacheOperations(Method method, @Nullable Class<?> targetClass) {
@@ -114,40 +121,46 @@ public abstract class AbstractFallbackCacheOperationSource implements CacheOpera
 	 * @param targetClass the target class (may be {@code null})
 	 * @return the cache key (never {@code null})
 	 */
+	// 为给定的方法和目标类确定缓存键。
+	// <p>重载方法不能使用相同的缓存键。同一方法的不同实例必须使用相同的缓存键。
+	// @param method 方法（不能为空）
+	// @param targetClass 目标类（可以为空）
+	// @return 缓存键（不能为空）
 	protected Object getCacheKey(Method method, @Nullable Class<?> targetClass) {
 		return new MethodClassKey(method, targetClass);
 	}
 
 	@Nullable
 	private Collection<CacheOperation> computeCacheOperations(Method method, @Nullable Class<?> targetClass) {
-		// Don't allow non-public methods, as configured.
+		// Don't allow non-public methods, as configured. --> 译文：不允许使用 non-public 方法，按配置执行。
 		if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
 			return null;
 		}
 
 		// The method may be on an interface, but we need metadata from the target class.
 		// If the target class is null, the method will be unchanged.
+		// --> 译文：该方法可能位于接口中，但我们需要目标类的元数据。如果目标类为空，则该方法将保持不变。
 		Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
 
-		// First try is the method in the target class.
+		// First try is the method in the target class. --> 译文：首先尝试的是目标类中的方法。
 		Collection<CacheOperation> opDef = findCacheOperations(specificMethod);
 		if (opDef != null) {
 			return opDef;
 		}
 
-		// Second try is the caching operation on the target class.
+		// Second try is the caching operation on the target class.--> 译文：第二次尝试是对目标类进行缓存操作。
 		opDef = findCacheOperations(specificMethod.getDeclaringClass());
 		if (opDef != null && ClassUtils.isUserLevelMethod(method)) {
 			return opDef;
 		}
 
 		if (specificMethod != method) {
-			// Fallback is to look at the original method.
+			// Fallback is to look at the original method. --> 译文：退而求其次的方法是查看原始方法。
 			opDef = findCacheOperations(method);
 			if (opDef != null) {
 				return opDef;
 			}
-			// Last fallback is the class of the original method.
+			// Last fallback is the class of the original method. --> 译文：最后一种回退机制是使用原始方法的类。
 			opDef = findCacheOperations(method.getDeclaringClass());
 			if (opDef != null && ClassUtils.isUserLevelMethod(method)) {
 				return opDef;
@@ -164,6 +177,9 @@ public abstract class AbstractFallbackCacheOperationSource implements CacheOpera
 	 * @param clazz the class to retrieve the cache operations for
 	 * @return all cache operations associated with this class, or {@code null} if none
 	 */
+	// 子类需要实现此方法，以返回给定类的缓存操作（如果有的话）。
+	// @param clazz 要检索其缓存操作的类
+	// @return 与此类相关的所有缓存操作，如果没有则返回 {@code null}
 	@Nullable
 	protected abstract Collection<CacheOperation> findCacheOperations(Class<?> clazz);
 
@@ -173,6 +189,9 @@ public abstract class AbstractFallbackCacheOperationSource implements CacheOpera
 	 * @param method the method to retrieve the cache operations for
 	 * @return all cache operations associated with this method, or {@code null} if none
 	 */
+	// 子类需要实现此方法以返回给定方法的缓存操作（如果有）。
+	// @param method 要检索缓存操作的方法
+	// @return 与此方法关联的所有缓存操作，如果没有则返回 {@code null}
 	@Nullable
 	protected abstract Collection<CacheOperation> findCacheOperations(Method method);
 
@@ -180,6 +199,8 @@ public abstract class AbstractFallbackCacheOperationSource implements CacheOpera
 	 * Should only public methods be allowed to have caching semantics?
 	 * <p>The default implementation returns {@code false}.
 	 */
+	// 是否只有公共方法才允许具有缓存语义？
+	// <p>默认实现返回 {@code false}。</p>
 	protected boolean allowPublicMethodsOnly() {
 		return false;
 	}

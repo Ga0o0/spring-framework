@@ -55,6 +55,17 @@ import org.springframework.core.annotation.AliasFor;
  * @since 3.1
  * @see CacheConfig
  */
+// 此注解指示可以缓存方法（或类中的所有方法）的调用结果。
+//
+// <p>每次调用被建议的方法时，都会应用缓存行为，检查该方法是否已针对给定参数调用过。
+// 一个合理的默认值是直接使用方法参数计算键，但也可以通过 {@link #key} 属性提供 SpEL 表达式，
+// 或者使用自定义的 {@link org.springframework.cache.interceptor.KeyGenerator} 实现替换默认实现（参见 {@link #keyGenerator}）。
+//
+// <p>如果在缓存中找不到计算出的键对应的值，则会调用目标方法，并将返回值存储在关联的缓存中。请注意，{@link java.util.Optional} 返回类型会自动解包。
+// 如果 {@code Optional} 值 {@linkplain java.util.Optional#isPresent() 存在}，则会将其存储在关联的缓存中。
+// 如果 {@code Optional} 值不存在，则会在关联的缓存中存储 {@code null}。
+//
+// <p>此注解可用作 <em>元注解</em>，以创建具有属性覆盖的自定义 <em>组合注解</em>。</p>
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
@@ -85,6 +96,16 @@ public @interface Cacheable {
 	 * @see #value
 	 * @see CacheConfig#cacheNames
 	 */
+	// 用于存储方法调用结果的缓存名称。
+	//
+	// <p>名称可用于确定目标缓存，并通过配置的 {@link #cacheResolver()} 进行解析，
+	// 该解析器通常会委托给 {@link org.springframework.cache.CacheManager#getCache}。
+	//
+	// <p>这通常是一个缓存名称。如果指定了多个名称，则会按照定义顺序查询缓存命中，并且所有名称都会收到针对同一新缓存值的 put/evict 请求。
+	//
+	// <p>请注意，异步/响应式缓存访问可能不会完全查询所有指定的缓存，具体取决于目标缓存。
+	// 对于延迟确定的缓存未命中（例如使用 Redis），将不再查询其他缓存。
+	// 因此，在异步缓存模式设置中指定多个缓存名称仅在早期确定的缓存未命中（例如使用 Caffeine）的情况下才有意义。
 	@AliasFor("value")
 	String[] cacheNames() default {};
 

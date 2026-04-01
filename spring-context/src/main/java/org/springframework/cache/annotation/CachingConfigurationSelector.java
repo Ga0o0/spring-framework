@@ -38,6 +38,10 @@ import org.springframework.util.StringUtils;
  * @see EnableCaching
  * @see ProxyCachingConfiguration
  */
+// 根据导入的 {@code @Configuration} 类中 {@link EnableCaching#mode} 的值，
+// 选择应使用的 {@link AbstractCachingConfiguration} 实现。
+//
+// <p>检测是否存在 JSR-107，并相应地启用 JCache 支持。</p>
 public class CachingConfigurationSelector extends AdviceModeImportSelector<EnableCaching> {
 
 	private static final String PROXY_JCACHE_CONFIGURATION_CLASS =
@@ -57,6 +61,7 @@ public class CachingConfigurationSelector extends AdviceModeImportSelector<Enabl
 	static {
 		ClassLoader classLoader = CachingConfigurationSelector.class.getClassLoader();
 		jsr107Present = ClassUtils.isPresent("javax.cache.Cache", classLoader);
+		// PROXY_JCACHE_CONFIGURATION_CLASS = org.springframework.cache.jcache.config.ProxyJCacheConfiguration
 		jcacheImplPresent = ClassUtils.isPresent(PROXY_JCACHE_CONFIGURATION_CLASS, classLoader);
 	}
 
@@ -66,6 +71,8 @@ public class CachingConfigurationSelector extends AdviceModeImportSelector<Enabl
 	 * for {@code PROXY} and {@code ASPECTJ} values of {@link EnableCaching#mode()},
 	 * respectively. Potentially includes corresponding JCache configuration as well.
 	 */
+	// 分别针对 {@link EnableCaching#mode()} 的 {@code PROXY} 和 {@code ASPECTJ} 值
+	// 返回 {@link ProxyCachingConfiguration} 或 {@code AspectJCachingConfiguration}。也可能包含相应的 JCache 配置。
 	@Override
 	public String[] selectImports(AdviceMode adviceMode) {
 		return switch (adviceMode) {
@@ -78,6 +85,8 @@ public class CachingConfigurationSelector extends AdviceModeImportSelector<Enabl
 	 * Return the imports to use if the {@link AdviceMode} is set to {@link AdviceMode#PROXY}.
 	 * <p>Take care of adding the necessary JSR-107 import if it is available.
 	 */
+	// 如果 {@link AdviceMode} 设置为 {@link AdviceMode#PROXY}，则返回要使用的导入。
+	// <p>如果存在，请注意添加必要的 JSR-107 导入。
 	private String[] getProxyImports() {
 		List<String> result = new ArrayList<>(3);
 		result.add(AutoProxyRegistrar.class.getName());
@@ -92,6 +101,8 @@ public class CachingConfigurationSelector extends AdviceModeImportSelector<Enabl
 	 * Return the imports to use if the {@link AdviceMode} is set to {@link AdviceMode#ASPECTJ}.
 	 * <p>Take care of adding the necessary JSR-107 import if it is available.
 	 */
+	// 如果 {@link AdviceMode} 设置为 {@link AdviceMode#ASPECTJ}，则返回要使用的导入。
+	// <p>如果存在，请确保添加必要的 JSR-107 导入。</p>
 	private String[] getAspectJImports() {
 		List<String> result = new ArrayList<>(2);
 		result.add(CACHE_ASPECT_CONFIGURATION_CLASS_NAME);
@@ -100,5 +111,4 @@ public class CachingConfigurationSelector extends AdviceModeImportSelector<Enabl
 		}
 		return StringUtils.toStringArray(result);
 	}
-
 }

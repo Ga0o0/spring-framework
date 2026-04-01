@@ -30,6 +30,7 @@ import org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor;
  * @see #setAdviceBeanName
  * @see CacheInterceptor
  */
+// 由 {@link CacheOperationSource} 驱动的 Advisor，用于为可缓存的方法包含缓存建议 bean。
 @SuppressWarnings("serial")
 public class BeanFactoryCacheOperationSourceAdvisor extends AbstractBeanFactoryPointcutAdvisor {
 
@@ -42,6 +43,7 @@ public class BeanFactoryCacheOperationSourceAdvisor extends AbstractBeanFactoryP
 	 * set on the cache interceptor itself.
 	 * @see CacheInterceptor#setCacheOperationSource
 	 */
+	// 设置用于查找缓存属性的缓存操作属性源。这通常应与缓存拦截器本身设置的源引用相同。
 	public void setCacheOperationSource(CacheOperationSource cacheOperationSource) {
 		this.pointcut.setCacheOperationSource(cacheOperationSource);
 	}
@@ -50,6 +52,7 @@ public class BeanFactoryCacheOperationSourceAdvisor extends AbstractBeanFactoryP
 	 * Set the {@link ClassFilter} to use for this pointcut.
 	 * Default is {@link ClassFilter#TRUE}.
 	 */
+	// 设置此切入点要使用的 {@link ClassFilter}。默认值为 {@link ClassFilter#TRUE}。
 	public void setClassFilter(ClassFilter classFilter) {
 		this.pointcut.setClassFilter(classFilter);
 	}

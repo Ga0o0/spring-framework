@@ -384,6 +384,13 @@ public abstract class AnnotatedElementUtils {
 	 * @since 5.1
 	 * @see #getAllMergedAnnotations(AnnotatedElement, Class)
 	 */
+	// 获取指定 {@code 元素} 上方注解层级中所有 {@code annotationTypes} 类型的注解；
+	// 对于找到的每个注解，将其属性与注解层级中较低层级注解的匹配属性合并，并将结果合成为相应 {@code annotationType} 的注解。
+	// <p>完全支持 {@link AliasFor @AliasFor} 语义，无论是在单个注解内部还是在注解层级内部。
+	// <p>此方法遵循 {@linkplain AnnotatedElementUtils 类级 javadoc} 中描述的 <em>get 语义</em>。
+	// @param element 被注解的元素（永远不会为 {@code null}）
+	// @param annotationTypes 要查找的注解类型
+	// @return 所有已合并合成的 {@code Annotations} 的集合，如果没有找到任何注解，则返回空集合。
 	public static Set<Annotation> getAllMergedAnnotations(AnnotatedElement element,
 			Set<Class<? extends Annotation>> annotationTypes) {
 
@@ -702,6 +709,13 @@ public abstract class AnnotatedElementUtils {
 	 * @since 5.1
 	 * @see #findAllMergedAnnotations(AnnotatedElement, Class)
 	 */
+	// 在提供的 {@code 元素} 上方的注解层次结构中，查找指定 {@code annotationTypes} 的所有注解；
+	// 对于找到的每个注解，将其属性与注解层次结构中较低层级注解的匹配属性合并，并将结果合成为相应 {@code annotationType} 的注解。
+	// <p>完全支持 {@link AliasFor @AliasFor} 语义，无论是在单个注解内还是在注解层次结构内。
+	// <p>此方法遵循 {@linkplain AnnotatedElementUtils 类级 javadoc} 中描述的 <em>find 语义</em>。
+	// @param element 被注解的元素（永远不会为 {@code null}）
+	// @param annotationTypes 要查找的注解类型
+	// @return 所有已合并、合成的 {@code Annotations} 的集合，如果没有找到任何注解，则返回空集合。
 	public static Set<Annotation> findAllMergedAnnotations(AnnotatedElement element, Set<Class<? extends Annotation>> annotationTypes) {
 		return findAnnotations(element).stream()
 				.filter(MergedAnnotationPredicates.typeIn(annotationTypes))

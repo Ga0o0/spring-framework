@@ -34,6 +34,9 @@ import java.lang.annotation.Target;
  * @since 4.1
  * @see Cacheable
  */
+// {@code @CacheConfig} 提供了一种在类级别共享通用缓存相关设置的机制。
+//
+// <p>当此注解存在于给定类上时，它会为该类中定义的任何缓存操作提供一组默认设置。
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
@@ -48,6 +51,13 @@ public @interface CacheConfig {
 	 * {@link org.springframework.cache.CacheManager#getCache}.
 	 * For further details see {@link Cacheable#cacheNames()}.
 	 */
+	// 注解类中定义的缓存操作要考虑的默认缓存名称。
+	//
+	// <p>如果在操作级别未设置任何缓存，则使用这些名称代替默认值。
+	//
+	// <p>名称可用于确定目标缓存，并通过配置的 {@link #cacheResolver()} 解析，
+	// 该解析器通常会委托给 {@link org.springframework.cache.CacheManager#getCache}。
+	// 更多详细信息，请参阅 {@link Cacheable#cacheNames()}。
 	String[] cacheNames() default {};
 
 	/**

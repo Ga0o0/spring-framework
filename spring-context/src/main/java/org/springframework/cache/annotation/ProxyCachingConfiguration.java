@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Role;
  * @see EnableCaching
  * @see CachingConfigurationSelector
  */
+// {@code @Configuration} 类，用于注册启用基于代理的注解驱动的缓存管理所需的 Spring 基础架构 bean。
 @Configuration(proxyBeanMethods = false)
 @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 public class ProxyCachingConfiguration extends AbstractCachingConfiguration {
@@ -56,7 +57,7 @@ public class ProxyCachingConfiguration extends AbstractCachingConfiguration {
 	@Bean
 	@Role(BeanDefinition.ROLE_INFRASTRUCTURE)
 	public CacheOperationSource cacheOperationSource() {
-		// Accept protected @Cacheable etc methods on CGLIB proxies, as of 6.0.
+		// Accept protected @Cacheable etc methods on CGLIB proxies, as of 6.0. --> 译文：从 6.0 版本开始，接受 CGLIB 代理上的受保护的 @Cacheable 等方法。
 		return new AnnotationCacheOperationSource(false);
 	}
 

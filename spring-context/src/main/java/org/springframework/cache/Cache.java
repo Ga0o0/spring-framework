@@ -284,6 +284,8 @@ public interface Cache {
 	 * @since 5.2
 	 * @see #clear()
 	 */
+	// 通过移除所有映射来使缓存失效，预期所有条目在后续查找中立即不可见。
+	// @return 如果之前已知缓存中存在映射，则返回{@code true}，如果未出现（或无法确定之前是否存在条目），则返回{@code false}
 	default boolean invalidate() {
 		clear();
 		return false;

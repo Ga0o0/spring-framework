@@ -79,6 +79,7 @@ final class CacheOperationSourcePointcut extends StaticMethodMatcherPointcut imp
 	 * {@link ClassFilter} that delegates to {@link CacheOperationSource#isCandidateClass}
 	 * for filtering classes whose methods are not worth searching to begin with.
 	 */
+	// {@link ClassFilter} 委托给 {@link CacheOperationSource#isCandidateClass}，用于过滤那些方法本身就不值得搜索的类。
 	private final class CacheOperationSourceClassFilter implements ClassFilter {
 
 		@Override

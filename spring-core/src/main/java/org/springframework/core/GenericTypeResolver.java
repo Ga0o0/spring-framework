@@ -110,6 +110,10 @@ public final class GenericTypeResolver {
 	 * @param genericType the generic interface or superclass to resolve the type argument from
 	 * @return the resolved type of the argument, or {@code null} if not resolvable
 	 */
+	// 根据给定的目标类解析给定泛型类型的单个类型参数，该目标类假定实现了给定类型，并可能为其类型变量声明具体类型。
+	// @param clazz 要检查的目标类
+	// @param genericType 要从中解析类型参数的泛型接口或超类
+	// @return 参数的解析类型，如果无法解析，则返回 {@code null}
 	@Nullable
 	public static Class<?> resolveTypeArgument(Class<?> clazz, Class<?> genericType) {
 		ResolvableType resolvableType = ResolvableType.forClass(clazz).as(genericType);

@@ -35,6 +35,9 @@ import org.springframework.aot.hint.annotation.Reflective;
  * @author Chris Beams
  * @since 3.1
  */
+// 用于对多个缓存注解（类型不同或相同）进行分组注解。
+//
+// <p>此注解可用作<em>元注解</em>，以创建具有属性覆盖的自定义<em>组合注解</em>。</p>
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

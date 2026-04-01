@@ -41,6 +41,14 @@ import org.springframework.lang.Nullable;
  * @since 3.1
  * @see EnableCaching
  */
+// 此接口由使用 @{@link EnableCaching} 注解的 @{@link org.springframework.context.annotation.Configuration Configuration} 类实现，
+// 这些类需要显式指定缓存的解析方式以及如何为注解驱动的缓存管理生成键。
+//
+// <p>有关一般示例和上下文，请参阅 @{@link EnableCaching}；有关详细说明，请参阅 {@link #cacheManager()}、
+// {@link #cacheResolver()}、{@link #keyGenerator()} 和 {@link #errorHandler()}。
+//
+// <p><b>注意：{@code CachingConfigurer} 会提前初始化。</b> 请勿直接将常用依赖项注入到自动装配字段中；
+// 相反，请考虑为这些依赖项声明一个惰性 {@link org.springframework.beans.factory.ObjectProvider}。
 public interface CachingConfigurer {
 
 	/**

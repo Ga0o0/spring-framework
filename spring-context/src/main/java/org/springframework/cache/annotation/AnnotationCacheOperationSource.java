@@ -44,6 +44,10 @@ import org.springframework.util.Assert;
  * @author Stephane Nicoll
  * @since 3.1
  */
+// 实现 {@link org.springframework.cache.interceptor.CacheOperationSource CacheOperationSource} 接口，用于处理注解格式的缓存元数据。
+//
+// <p>此类读取 Spring 的 {@link Cacheable}、{@link CachePut} 和 {@link CacheEvict} 注解，
+// 并将相应的缓存操作定义暴露给 Spring 的缓存基础架构。此类也可作为自定义 {@code CacheOperationSource} 的基类。
 @SuppressWarnings("serial")
 public class AnnotationCacheOperationSource extends AbstractFallbackCacheOperationSource implements Serializable {
 
@@ -67,6 +71,8 @@ public class AnnotationCacheOperationSource extends AbstractFallbackCacheOperati
 	 * typically for use with proxy-based AOP), or protected/private methods as well
 	 * (typically used with AspectJ class weaving)
 	 */
+	// 创建一个默认的 {@code AnnotationCacheOperationSource}，支持带有 {@code Cacheable} 和 {@code CacheEvict} 注解的公共方法。
+	// @param publicMethodsOnly 是否仅支持带注解的公共方法（通常用于基于代理的 AOP），还是也支持受保护/私有方法（通常用于 AspectJ 类织入）。
 	public AnnotationCacheOperationSource(boolean publicMethodsOnly) {
 		this.publicMethodsOnly = publicMethodsOnly;
 		this.annotationParsers = Collections.singleton(new SpringCacheAnnotationParser());
@@ -134,6 +140,11 @@ public class AnnotationCacheOperationSource extends AbstractFallbackCacheOperati
 	 * @param provider the cache operation provider to use
 	 * @return the configured caching operations, or {@code null} if none found
 	 */
+	// 确定给定 {@link CacheOperationProvider} 的缓存操作。
+	// <p>此实现委托给已配置的 {@link CacheAnnotationParser CacheAnnotationParsers}，用于将已知注解解析为 Spring 的元数据属性类。
+	// <p>可以重写以支持携带缓存元数据的自定义注解。
+	// @param provider 要使用的缓存操作提供程序
+	// @return 已配置的缓存操作，如果未找到，则返回 {@code null}
 	@Nullable
 	protected Collection<CacheOperation> determineCacheOperations(CacheOperationProvider provider) {
 		Collection<CacheOperation> ops = null;
@@ -180,6 +191,7 @@ public class AnnotationCacheOperationSource extends AbstractFallbackCacheOperati
 	 * Callback interface providing {@link CacheOperation} instance(s) based on
 	 * a given {@link CacheAnnotationParser}.
 	 */
+	// 回调接口提供基于给定 {@link CacheAnnotationParser} 的 {@link CacheOperation} 实例。
 	@FunctionalInterface
 	protected interface CacheOperationProvider {
 
@@ -188,6 +200,9 @@ public class AnnotationCacheOperationSource extends AbstractFallbackCacheOperati
 		 * @param parser the parser to use
 		 * @return the cache operations, or {@code null} if none found
 		 */
+		// 返回指定解析器提供的 {@link CacheOperation} 实例。
+		// @param parser 要使用的解析器
+		// @return 缓存操作，如果未找到，则返回 {@code null}
 		@Nullable
 		Collection<CacheOperation> getCacheOperations(CacheAnnotationParser parser);
 	}

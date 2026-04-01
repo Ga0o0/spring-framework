@@ -42,6 +42,11 @@ import org.springframework.util.Assert;
  * @author Sebastien Deleuze
  * @since 3.1
  */
+// AOP Alliance MethodInterceptor 是一款声明式缓存管理方法，它使用通用的 Spring 缓存基础架构 ({@link org.springframework.cache.Cache})。
+//
+// <p>继承自 {@link CacheAspectSupport} 类，该类集成了 Spring 的底层缓存 API。CacheInterceptor 会按正确的顺序调用相关的超类方法。
+//
+// <p>CacheInterceptor 是线程安全的。
 @SuppressWarnings("serial")
 public class CacheInterceptor extends CacheAspectSupport implements MethodInterceptor, Serializable {
 

@@ -157,6 +157,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	 * suppliers, applying the corresponding default if a supplier is not resolvable.
 	 * @since 5.1
 	 */
+	// 使用给定的错误处理程序、密钥生成器和缓存解析器/管理器供应商配置此方面，如果供应商无法解析，则应用相应的默认值。
 	public void configure(
 			@Nullable Supplier<CacheErrorHandler> errorHandler, @Nullable Supplier<KeyGenerator> keyGenerator,
 			@Nullable Supplier<CacheResolver> cacheResolver, @Nullable Supplier<CacheManager> cacheManager) {
@@ -192,6 +193,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	/**
 	 * Return the CacheOperationSource for this cache aspect.
 	 */
+	// 返回此缓存方面的 CacheOperationSource。
 	@Nullable
 	public CacheOperationSource getCacheOperationSource() {
 		return this.cacheOperationSource;
@@ -264,7 +266,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	@Override
 	public void afterSingletonsInstantiated() {
 		if (getCacheResolver() == null) {
-			// Lazily initialize cache resolver via default cache manager
+			// Lazily initialize cache resolver via default cache manager --> 译文：通过默认缓存管理器延迟初始化缓存解析器
 			Assert.state(this.beanFactory != null, "CacheResolver or BeanFactory must be set on cache aspect");
 			try {
 				setCacheManager(this.beanFactory.getBean(CacheManager.class));
@@ -386,6 +388,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	@Nullable
 	protected Object execute(CacheOperationInvoker invoker, Object target, Method method, Object[] args) {
 		// Check whether aspect is enabled (to cope with cases where the AJ is pulled in automatically)
+		// --> 译文：检查是否启用了 aspect（以应对自动导入 AJ 的情况）
 		if (this.initialized) {
 			Class<?> targetClass = AopProxyUtils.ultimateTargetClass(target);
 			CacheOperationSource cacheOperationSource = getCacheOperationSource();
@@ -411,6 +414,11 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	 * @return the result of the invocation
 	 * @see CacheOperationInvoker#invoke()
 	 */
+	// 执行底层操作（通常在缓存未命中时执行），并返回调用结果。
+	// 如果发生异常，则会将其包装在 {@link CacheOperationInvoker.ThrowableWrapper} 中：
+	// 可以处理或修改异常，但必须将其包装在 {@link CacheOperationInvoker.ThrowableWrapper} 中。
+	// @param invoker 处理缓存操作的调用器
+	// @return 调用结果
 	@Nullable
 	protected Object invokeOperation(CacheOperationInvoker invoker) {
 		return invoker.invoke();
@@ -419,15 +427,15 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	@Nullable
 	private Object execute(CacheOperationInvoker invoker, Method method, CacheOperationContexts contexts) {
 		if (contexts.isSynchronized()) {
-			// Special handling of synchronized invocation
+			// Special handling of synchronized invocation --> 译文：同步调用的特殊处理
 			return executeSynchronized(invoker, method, contexts);
 		}
 
-		// Process any early evictions
+		// Process any early evictions --> 译文：处理任何提前驱逐
 		processCacheEvicts(contexts.get(CacheEvictOperation.class), true,
 				CacheOperationExpressionEvaluator.NO_RESULT);
 
-		// Check if we have a cached value matching the conditions
+		// Check if we have a cached value matching the conditions --> 译文：检查我们是否有符合条件的缓存值
 		Object cacheHit = findCachedValue(invoker, method, contexts);
 		if (cacheHit == null || cacheHit instanceof Cache.ValueWrapper) {
 			return evaluate(cacheHit, invoker, method, contexts);
@@ -473,6 +481,9 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	 * @return a {@link Cache.ValueWrapper} holding the cached value,
 	 * or {@code null} if none is found
 	 */
+	// 仅查找满足条件的 {@link CacheableOperation} 的缓存值。
+	// @param contexts 可缓存操作
+	// @return 包含缓存值的 {@link Cache.ValueWrapper}，如果未找到缓存值，则返回 {@code null}。
 	@Nullable
 	private Object findCachedValue(CacheOperationInvoker invoker, Method method, CacheOperationContexts contexts) {
 		for (CacheOperationContext context : contexts.get(CacheableOperation.class)) {
@@ -533,7 +544,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	private Object evaluate(@Nullable Object cacheHit, CacheOperationInvoker invoker, Method method,
 			CacheOperationContexts contexts) {
 
-		// Re-invocation in reactive pipeline after late cache hit determination?
+		// Re-invocation in reactive pipeline after late cache hit determination? --> 译文：在响应式管道中，延迟缓存命中判定后是否需要重新调用？
 		if (contexts.processed) {
 			return cacheHit;
 		}
@@ -542,26 +553,26 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 		Object returnValue;
 
 		if (cacheHit != null && !hasCachePut(contexts)) {
-			// If there are no put requests, just use the cache hit
+			// If there are no put requests, just use the cache hit --> 译文：如果没有 PUT 请求，则直接使用缓存命中。
 			cacheValue = unwrapCacheValue(cacheHit);
 			returnValue = wrapCacheValue(method, cacheValue);
 		}
 		else {
-			// Invoke the method if we don't have a cache hit
+			// Invoke the method if we don't have a cache hit --> 译文：如果没有缓存命中，则调用该方法
 			returnValue = invokeOperation(invoker);
 			cacheValue = unwrapReturnValue(returnValue);
 		}
 
-		// Collect puts from any @Cacheable miss, if no cached value is found
+		// Collect puts from any @Cacheable miss, if no cached value is found --> 译文：如果未找到缓存值，则收集所有 @Cacheable 未命中导致的 puts 请求。
 		List<CachePutRequest> cachePutRequests = new ArrayList<>(1);
 		if (cacheHit == null) {
 			collectPutRequests(contexts.get(CacheableOperation.class), cacheValue, cachePutRequests);
 		}
 
-		// Collect any explicit @CachePuts
+		// Collect any explicit @CachePuts --> 译文：收集所有显式的 @CachePuts 请求。
 		collectPutRequests(contexts.get(CachePutOperation.class), cacheValue, cachePutRequests);
 
-		// Process any collected put requests, either from @CachePut or a @Cacheable miss
+		// Process any collected put requests, either from @CachePut or a @Cacheable miss --> 译文：处理所有收集到的 put 请求，无论是来自 @CachePut 还是 @Cacheable 未命中。
 		for (CachePutRequest cachePutRequest : cachePutRequests) {
 			Object returnOverride = cachePutRequest.apply(cacheValue);
 			if (returnOverride != null) {
@@ -569,14 +580,14 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			}
 		}
 
-		// Process any late evictions
+		// Process any late evictions --> 译文：处理所有逾期驱逐案件
 		Object returnOverride = processCacheEvicts(
 				contexts.get(CacheEvictOperation.class), false, returnValue);
 		if (returnOverride != null) {
 			returnValue = returnOverride;
 		}
 
-		// Mark as processed for re-invocation after late cache hit determination
+		// Mark as processed for re-invocation after late cache hit determination --> 译文：标记为已处理，以便在延迟缓存命中判定后重新调用
 		contexts.processed = true;
 
 		return returnValue;
@@ -603,6 +614,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 
 	private boolean hasCachePut(CacheOperationContexts contexts) {
 		// Evaluate the conditions *without* the result object because we don't have it yet...
+		// --> 译文：由于我们还没有结果对象，所以*在没有*结果对象的情况下评估条件……
 		Collection<CacheOperationContext> cachePutContexts = contexts.get(CachePutOperation.class);
 		Collection<CacheOperationContext> excluded = new ArrayList<>(1);
 		for (CacheOperationContext context : cachePutContexts) {
@@ -613,9 +625,10 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 			}
 			catch (VariableNotAvailableException ex) {
 				// Ignoring failure due to missing result, consider the cache put has to proceed
+				// --> 译文：忽略因结果缺失导致的失败，假设缓存放入操作必须继续进行。
 			}
 		}
-		// Check if all puts have been excluded by condition
+		// Check if all puts have been excluded by condition --> 译文：检查是否所有看跌期权都已按条件排除。
 		return (cachePutContexts.size() != excluded.size());
 	}
 
@@ -686,6 +699,10 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 	 * @param result the result value
 	 * @param putRequests the collection to update
 	 */
+	// 使用指定的结果值，为每个 {@link CacheOperation} 收集一个 {@link CachePutRequest}。
+	// @param contexts 要处理的上下文
+	// @param result 结果值
+	// @param putRequests 要更新的集合
 	private void collectPutRequests(Collection<CacheOperationContext> contexts,
 			@Nullable Object result, Collection<CachePutRequest> putRequests) {
 
@@ -912,6 +929,7 @@ public abstract class CacheAspectSupport extends AbstractCacheInvoker
 		/**
 		 * Compute the key for the given caching operation.
 		 */
+		// 计算给定缓存操作的键。
 		@Nullable
 		protected Object generateKey(@Nullable Object result) {
 			if (StringUtils.hasText(this.metadata.operation.getKey())) {

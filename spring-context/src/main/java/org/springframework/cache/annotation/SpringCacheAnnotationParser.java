@@ -45,6 +45,7 @@ import org.springframework.util.StringUtils;
  * @author Sam Brannen
  * @since 3.1
  */
+// 解析 Spring 的 {@link Caching}、{@link Cacheable}、{@link CacheEvict} 和 {@link CachePut} 注解的策略实现。
 @SuppressWarnings("serial")
 public class SpringCacheAnnotationParser implements CacheAnnotationParser, Serializable {
 
@@ -75,7 +76,7 @@ public class SpringCacheAnnotationParser implements CacheAnnotationParser, Seria
 	private Collection<CacheOperation> parseCacheAnnotations(DefaultCacheConfig cachingConfig, AnnotatedElement ae) {
 		Collection<CacheOperation> ops = parseCacheAnnotations(cachingConfig, ae, false);
 		if (ops != null && ops.size() > 1) {
-			// More than one operation found -> local declarations override interface-declared ones...
+			// More than one operation found -> local declarations override interface-declared ones... --> 译文：找到多个操作 -> 本地声明会覆盖接口声明的操作……
 			Collection<CacheOperation> localOps = parseCacheAnnotations(cachingConfig, ae, true);
 			if (localOps != null) {
 				return localOps;
@@ -89,7 +90,9 @@ public class SpringCacheAnnotationParser implements CacheAnnotationParser, Seria
 			DefaultCacheConfig cachingConfig, AnnotatedElement ae, boolean localOnly) {
 
 		Collection<? extends Annotation> annotations = (localOnly ?
+				// 查找所有直接声明的注释以及任何 @Inherited 超类注释
 				AnnotatedElementUtils.getAllMergedAnnotations(ae, CACHE_OPERATION_ANNOTATIONS) :
+				// 对整个类型层次结构（包括超类和已实现的接口）进行全面搜索
 				AnnotatedElementUtils.findAllMergedAnnotations(ae, CACHE_OPERATION_ANNOTATIONS));
 		if (annotations.isEmpty()) {
 			return null;
@@ -228,6 +231,7 @@ public class SpringCacheAnnotationParser implements CacheAnnotationParser, Seria
 	/**
 	 * Provides default settings for a given set of cache operations.
 	 */
+	// 为给定的缓存操作集提供默认设置。
 	private static class DefaultCacheConfig {
 
 		private final Class<?> target;

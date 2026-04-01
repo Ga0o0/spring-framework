@@ -39,6 +39,9 @@ import org.springframework.core.annotation.AliasFor;
  * @since 3.1
  * @see CacheConfig
  */
+// 此注解指示某个方法（或类上的所有方法）触发 {@link org.springframework.cache.Cache#evict(Object) 缓存清除} 操作。
+//
+// <p>此注解可用作<em>元注解</em>，以创建具有属性覆盖的自定义<em>组合注解</em>。</p>
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
@@ -137,6 +140,10 @@ public @interface CacheEvict {
 	 * <p>Note that setting this parameter to {@code true} and specifying a
 	 * {@link #key} is not allowed.
 	 */
+	// 缓存中的所有条目是否都被移除。
+	// <p>默认情况下，只有关联键下的值会被移除。
+	// <p>请注意，将此参数设置为{@code true}并指定一个
+	// 不允许使用 {@link #key}。
 	boolean allEntries() default false;
 
 	/**
@@ -148,6 +155,9 @@ public @interface CacheEvict {
 	 * will occur <em>after</em> the advised method is invoked successfully (i.e.
 	 * only if the invocation did not throw an exception).
 	 */
+	// 是否应在调用方法之前执行回收操作。
+	// <p>将此属性设置为{@code true}，则无论方法结果如何（即是否抛出异常），都会触发回收。
+	// <p>默认为{@code false}，这意味着缓存清除操作将在所建议的方法成功调用后（即仅当调用未抛出异常时）进行。
 	boolean beforeInvocation() default false;
 
 }

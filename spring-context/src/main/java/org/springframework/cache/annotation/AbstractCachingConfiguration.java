@@ -44,6 +44,7 @@ import org.springframework.util.function.SingletonSupplier;
  * @since 3.1
  * @see EnableCaching
  */
+// 抽象基类 {@code @Configuration} 提供通用结构，以启用 Spring 的注解驱动缓存管理功能。
 @Configuration(proxyBeanMethods = false)
 public abstract class AbstractCachingConfiguration implements ImportAware {
 
@@ -81,6 +82,8 @@ public abstract class AbstractCachingConfiguration implements ImportAware {
 				return null;
 			}
 			if (candidates.size() > 1) {
+				// 实际找到了 candidates.size() 个 CachingConfigurer 的实现，但预期只有一个。
+				// 请重构配置，确保 CachingConfigurer 只被实现一次，或者完全不被实现。
 				throw new IllegalStateException(candidates.size() + " implementations of " +
 						"CachingConfigurer were found when only 1 was expected. " +
 						"Refactor the configuration such that CachingConfigurer is " +
@@ -94,6 +97,7 @@ public abstract class AbstractCachingConfiguration implements ImportAware {
 	/**
 	 * Extract the configuration from the nominated {@link CachingConfigurer}.
 	 */
+	// 从指定的 {@link CachingConfigurer} 中提取配置。
 	protected void useCachingConfigurer(CachingConfigurerSupplier cachingConfigurerSupplier) {
 		this.cacheManager = cachingConfigurerSupplier.adapt(CachingConfigurer::cacheManager);
 		this.cacheResolver = cachingConfigurerSupplier.adapt(CachingConfigurer::cacheResolver);
@@ -119,6 +123,11 @@ public abstract class AbstractCachingConfiguration implements ImportAware {
 		 * @param <T> the type of the supplier
 		 * @return another supplier mapped by the specified function
 		 */
+		// 将 {@link CachingConfigurer} 提供程序适配到指定映射函数提供的另一个提供程序。
+		// 如果底层 {@link CachingConfigurer} 为 {@code null}，则返回 {@code null}，并且不会调用映射函数。
+		// @param provider 用于适配提供程序的提供程序
+		// @param <T> 提供程序的类型
+		// @return 由指定函数映射的另一个提供程序
 		@Nullable
 		public <T> Supplier<T> adapt(Function<CachingConfigurer, T> provider) {
 			return () -> {

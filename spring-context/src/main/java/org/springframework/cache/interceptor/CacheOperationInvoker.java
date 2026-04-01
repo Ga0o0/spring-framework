@@ -29,6 +29,9 @@ import org.springframework.lang.Nullable;
  * @author Stephane Nicoll
  * @since 4.1
  */
+// 抽象缓存操作的调用。
+//
+// p>不提供传递已检查异常的方法，但提供了一个特殊的异常，用于包装底层调用抛出的任何异常。调用者需要专门处理此类异常。</p>
 @FunctionalInterface
 public interface CacheOperationInvoker {
 
