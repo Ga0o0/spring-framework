@@ -1,0 +1,153 @@
+package org.springframework.sample.tx.code_analysis;
+
+import org.springframework.beans.factory.config.TypedStringValue;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.ManagedMap;
+import org.springframework.beans.factory.support.RootBeanDefinition;
+import org.springframework.beans.factory.xml.AbstractSingleBeanDefinitionParser;
+import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource;
+import org.springframework.transaction.interceptor.NoRollbackRuleAttribute;
+import org.springframework.transaction.interceptor.RollbackRuleAttribute;
+import org.springframework.transaction.interceptor.RuleBasedTransactionAttribute;
+import org.springframework.util.StringUtils;
+import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Element;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * {@code <tx:advice />} -> TxAdviceBeanDefinitionParser
+ *
+ * @see org.springframework.transaction.config.TxAdviceBeanDefinitionParser
+ * @see org.springframework.transaction.config.TxAdviceBeanDefinitionParser#doParse(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext, org.springframework.beans.factory.support.BeanDefinitionBuilder)
+ * @see org.springframework.transaction.config.TxAdviceBeanDefinitionParser#parseAttributeSource(org.w3c.dom.Element, org.springframework.beans.factory.xml.ParserContext)
+ * @see org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource
+ * @see org.springframework.transaction.interceptor.NameMatchTransactionAttributeSource#nameMap
+ * @see org.springframework.transaction.interceptor.RuleBasedTransactionAttribute
+ */
+public class CA02_Xml_TxAdviceBeanDefinitionParser {
+
+	// class TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+	static class CA01_TxAdviceBeanDefinitionParser extends AbstractSingleBeanDefinitionParser {
+		private static final String METHOD_ELEMENT = "method";
+		private static final String METHOD_NAME_ATTRIBUTE = "name";
+		private static final String ATTRIBUTES_ELEMENT = "attributes";
+		private static final String TIMEOUT_ATTRIBUTE = "timeout";
+		private static final String READ_ONLY_ATTRIBUTE = "read-only";
+		private static final String PROPAGATION_ATTRIBUTE = "propagation";
+		private static final String ISOLATION_ATTRIBUTE = "isolation";
+		private static final String ROLLBACK_FOR_ATTRIBUTE = "rollback-for";
+		private static final String NO_ROLLBACK_FOR_ATTRIBUTE = "no-rollback-for";
+
+		// 解析 <tx:advice/> 元素属性，并构建相关依赖注入到 TransactionInterceptor
+		@Override
+		protected void doParse(Element element, ParserContext parserContext, BeanDefinitionBuilder builder) {
+			// 1. 处理 <tx:advice id="" transaction-manager=""/> 元素的属性 transaction-manager 的值，注入到属性 transactionManager 中；默认为 transactionManager
+			// builder.addPropertyReference("transactionManager", TxNamespaceHandler.getTransactionManagerName(element)); // -> 源码
+			builder.addPropertyReference("transactionManager", CA01_Xml_TxNamespaceHandler.CA01_TxNamespaceHandler.getTransactionManagerName(element));
+
+			// 2. 处理 <tx:advice/> 的子元素：<tx:attributes/>，并封装成 AnnotationTransactionAttributeSource，注入到属性 transactionAttributeSource 中
+			List<Element> txAttributes = DomUtils.getChildElementsByTagName(element, ATTRIBUTES_ELEMENT);
+			// txAttributes 元素只能由 0 个或 1 个
+			if (txAttributes.size() > 1) {
+				// 元素 <attributes> 在元素 <advice> 中最多允许出现一次
+				parserContext.getReaderContext().error(
+						"Element <attributes> is allowed at most once inside element <advice>", element);
+			}
+			else if (txAttributes.size() == 1) {
+				// Using attributes source. --> 译文：使用属性源。
+				Element attributeSourceElement = txAttributes.get(0);
+				// 解析元素 <tx:attributes/>，并使用其内容（<tx:method/>）来封装一个 NameMatchTransactionAttributeSource 类型的 RootBeanDefinition
+				RootBeanDefinition attributeSourceDefinition = parseAttributeSource(attributeSourceElement, parserContext);
+				builder.addPropertyValue("transactionAttributeSource", attributeSourceDefinition);
+			}
+			else {
+				// Assume annotations source. --> 译文：假设注释来源。
+				builder.addPropertyValue("transactionAttributeSource",
+						new RootBeanDefinition("org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"));
+			}
+		}
+
+		// 解析元素 <tx:attributes/>，并使用其内容（<tx:method/>）来封装一个 NameMatchTransactionAttributeSource 类型的 RootBeanDefinition
+		private RootBeanDefinition parseAttributeSource(Element attrEle, ParserContext parserContext) {
+			// 1. 解析元素 <tx:attributes/> 的子元素 <tx:method/>；存在多个
+			List<Element> methods = DomUtils.getChildElementsByTagName(attrEle, METHOD_ELEMENT);
+			// 元素 <tx:method/> 的封装列表
+			ManagedMap<TypedStringValue, RuleBasedTransactionAttribute> transactionAttributeMap =
+					new ManagedMap<>(methods.size());
+			transactionAttributeMap.setSource(parserContext.extractSource(attrEle));
+
+			for (Element methodEle : methods) {
+				String name = methodEle.getAttribute(METHOD_NAME_ATTRIBUTE); // name
+				TypedStringValue nameHolder = new TypedStringValue(name);
+				nameHolder.setSource(parserContext.extractSource(methodEle));
+
+				// 1. RuleBasedTransactionAttribute
+				RuleBasedTransactionAttribute attribute = new RuleBasedTransactionAttribute();
+				String propagation = methodEle.getAttribute(PROPAGATION_ATTRIBUTE); // propagation
+				String isolation = methodEle.getAttribute(ISOLATION_ATTRIBUTE); // isolation
+				String timeout = methodEle.getAttribute(TIMEOUT_ATTRIBUTE); // timeout
+				String readOnly = methodEle.getAttribute(READ_ONLY_ATTRIBUTE); // read-only
+				if (StringUtils.hasText(propagation)) {
+					attribute.setPropagationBehaviorName(RuleBasedTransactionAttribute.PREFIX_PROPAGATION + propagation); // PREFIX_PROPAGATION = "PROPAGATION_"
+				}
+				if (StringUtils.hasText(isolation)) {
+					attribute.setIsolationLevelName(RuleBasedTransactionAttribute.PREFIX_ISOLATION + isolation); // PREFIX_ISOLATION = "ISOLATION_"
+				}
+				if (StringUtils.hasText(timeout)) {
+					attribute.setTimeoutString(timeout);
+				}
+				if (StringUtils.hasText(readOnly)) {
+					attribute.setReadOnly(Boolean.parseBoolean(methodEle.getAttribute(READ_ONLY_ATTRIBUTE))); // READ_ONLY_ATTRIBUTE = "read-only"
+				}
+
+				// 回滚和不回滚规则列表
+				List<RollbackRuleAttribute> rollbackRules = new ArrayList<>(1);
+				// 处理属性 rollback-for，并封装成 RollbackRuleAttribute
+				if (methodEle.hasAttribute(ROLLBACK_FOR_ATTRIBUTE)) { // rollback-for
+					String rollbackForValue = methodEle.getAttribute(ROLLBACK_FOR_ATTRIBUTE);
+					addRollbackRuleAttributesTo(rollbackRules, rollbackForValue);
+				}
+				// 处理属性 rollback-for，并封装成 NoRollbackRuleAttribute
+				// public class NoRollbackRuleAttribute extends RollbackRuleAttribute { //... }
+				if (methodEle.hasAttribute(NO_ROLLBACK_FOR_ATTRIBUTE)) { // no-rollback-for
+					String noRollbackForValue = methodEle.getAttribute(NO_ROLLBACK_FOR_ATTRIBUTE);
+					addNoRollbackRuleAttributesTo(rollbackRules, noRollbackForValue);
+				}
+				attribute.setRollbackRules(rollbackRules);
+
+				// key：parserContext.extractSource(methodEle)；value：RuleBasedTransactionAttribute
+				transactionAttributeMap.put(nameHolder, attribute);
+			}
+
+			// 2. 使用 元素 <tx:method/> 的封装列表来构建一个 NameMatchTransactionAttributeSource
+			RootBeanDefinition attributeSourceDefinition = new RootBeanDefinition(NameMatchTransactionAttributeSource.class);
+			attributeSourceDefinition.setSource(parserContext.extractSource(attrEle));
+			// 最终 nameMap 的值会被设置给 NameMatchTransactionAttributeSource#nameMap；通过以下的方法：
+			// see AbstractAutowireCapableBeanFactory.populateBean() 的代码段 applyPropertyValues(beanName, mbd, bw, pvs)
+			// populateBean() 会去处理 AbstractBeanDefinition#propertyValues（kv形式；k为属性名，v为属性值） 属性的值，将其注入到对应属性中
+			attributeSourceDefinition.getPropertyValues().add("nameMap", transactionAttributeMap);
+			return attributeSourceDefinition;
+		}
+
+		private void addRollbackRuleAttributesTo(List<RollbackRuleAttribute> rollbackRules, String rollbackForValue) {
+			// 将逗号分隔的列表（例如，CSV 文件中的一行）转换为字符串数组。
+			String[] exceptionTypeNames = StringUtils.commaDelimitedListToStringArray(rollbackForValue);
+			for (String typeName : exceptionTypeNames) {
+				// 根据 RollbackRuleAttribute.getExceptionName() 可知 typeName 即 ExceptionName；
+				rollbackRules.add(new RollbackRuleAttribute(typeName.strip()));
+			}
+		}
+
+		private void addNoRollbackRuleAttributesTo(List<RollbackRuleAttribute> rollbackRules, String noRollbackForValue) {
+			// 将逗号分隔的列表（例如，CSV 文件中的一行）转换为字符串数组。
+			String[] exceptionTypeNames = StringUtils.commaDelimitedListToStringArray(noRollbackForValue);
+			for (String typeName : exceptionTypeNames) {
+				rollbackRules.add(new NoRollbackRuleAttribute(typeName.strip()));
+			}
+		}
+	}
+
+}

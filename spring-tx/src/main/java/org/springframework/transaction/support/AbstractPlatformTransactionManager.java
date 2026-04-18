@@ -457,7 +457,7 @@ public abstract class AbstractPlatformTransactionManager
 	/**
 	 * Create a TransactionStatus for an existing transaction.
 	 */
-	// 为现有交易创建 TransactionStatus。
+	// 为现有事务创建 TransactionStatus。
 	private TransactionStatus handleExistingTransaction(
 			TransactionDefinition definition, Object transaction, boolean debugEnabled)
 			throws TransactionException {
@@ -1232,6 +1232,10 @@ public abstract class AbstractPlatformTransactionManager
 	 * @see #doRollback
 	 * @see DefaultTransactionStatus#getTransaction
 	 */
+	// 返回当前事务状态的事务对象。
+	// <p>返回的对象通常特定于具体的事务管理器实现，并以可修改的方式承载相应的事务状态。该对象将直接或作为 DefaultTransactionStatus 实例的一部分传递给其他模板方法（例如 doBegin 和 doCommit）。
+	// <p>返回的对象应包含有关任何现有事务的信息，即在当前对事务管理器调用 getTransaction 之前已启动的事务。因此，doGetTransaction 实现通常会查找现有事务并将相应的状态存储在返回的事务对象中。
+	// @return 当前事务对象
 	protected abstract Object doGetTransaction() throws TransactionException;
 
 	/**
@@ -1249,7 +1253,7 @@ public abstract class AbstractPlatformTransactionManager
 	 * @throws TransactionException in case of system errors
 	 * @see #doGetTransaction
 	 */
-	// 检查给定的事务对象是否指示现有事务（即已启动的事务）。
+	// 检查给定的事务对象是否存在现有事务（即已启动的事务）。
 	// <p>结果将根据新事务的指定传播行为进行评估。
 	// 现有事务可能会被暂停（如果为 PROPAGATION_REQUIRES_NEW），或者新事务可能会参与现有事务（如果为 PROPAGATION_REQUIRED）。
 	// <p>默认实现返回 {@code false}，假设通常不支持参与现有事务。当然，鼓励子类提供此类支持。
@@ -1313,7 +1317,7 @@ public abstract class AbstractPlatformTransactionManager
 	// @param definition TransactionDefinition 实例，描述传播行为、隔离级别、只读标志、超时和事务名称
 	// @throws TransactionException（如果发生创建或系统错误）
 	// @throws org.springframework.transaction.NestedTransactionNotSupportedException（如果底层事务不支持嵌套）
-	protected abstract void doBegin(Object transaction, TransactionDefinition definition)
+	protected abstract void  doBegin(Object transaction, TransactionDefinition definition)
 			throws TransactionException;
 
 	/**

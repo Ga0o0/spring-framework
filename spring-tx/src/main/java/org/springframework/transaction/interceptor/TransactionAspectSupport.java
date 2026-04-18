@@ -769,7 +769,7 @@ public abstract class TransactionAspectSupport implements BeanFactoryAware, Init
 	 * @param txInfo information about the current transaction
 	 * @param ex throwable encountered
 	 */
-	// 处理可抛出对象，完成事务。我们可能会提交或回滚，具体取决于配置。
+	// 处理 throwable，完成事务。我们可能会提交或回滚，具体取决于配置。
 	// @param txInfo 当前事务的信息
 	// @param ex 遇到的可抛出对象
 	protected void completeTransactionAfterThrowing(@Nullable TransactionInfo txInfo, Throwable ex) {

@@ -34,8 +34,8 @@ import org.springframework.lang.Nullable;
  * @see org.springframework.transaction.annotation.AnnotationTransactionAttributeSource
  */
 // {@link TransactionInterceptor} 用于元数据检索的策略接口。
-//*
-//* <p>实现知道如何获取事务属性，无论是从配置、源级别的元数据属性（例如注解）还是其他任何地方。
+//
+// <p>实现知道如何获取事务属性，无论是从配置、源级别的元数据属性（例如注解）还是其他任何地方。
 public interface TransactionAttributeSource {
 
 	/**
